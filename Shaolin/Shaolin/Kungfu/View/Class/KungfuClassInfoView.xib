@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="KungfuClassInfoView">
+            <connections>
+                <outlet property="classNameLabel" destination="gvN-sZ-yKd" id="Gc4-4M-NdH"/>
+                <outlet property="contentView" destination="iN0-l3-epB" id="aCV-zs-Vvh"/>
+                <outlet property="webContentView" destination="QdX-Ds-lb6" id="xCH-dL-8aP"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="300"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="课程" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gvN-sZ-yKd">
+                    <rect key="frame" x="40" y="101" width="334" height="24"/>
+                    <fontDescription key="fontDescription" type="system" weight="medium" pointSize="20"/>
+                    <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZfR-34-Ol3">
+                    <rect key="frame" x="16" y="22" width="25" height="25"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="25" id="Qbb-vm-JPk"/>
+                        <constraint firstAttribute="height" constant="25" id="YfA-Ce-Pgr"/>
+                    </constraints>
+                    <state key="normal" image="class_dissmissBtn"/>
+                    <connections>
+                        <action selector="closeAction:" destination="-1" eventType="touchUpInside" id="O0s-fR-5DI"/>
+                    </connections>
+                </button>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QdX-Ds-lb6">
+                    <rect key="frame" x="0.0" y="145" width="414" height="155"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                </view>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="ZfR-34-Ol3" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="22" id="Hx2-kV-Noc"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="QdX-Ds-lb6" secondAttribute="trailing" id="ITe-Ar-Kis"/>
+                <constraint firstItem="ZfR-34-Ol3" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="16" id="OXi-Ru-gWf"/>
+                <constraint firstAttribute="bottom" secondItem="QdX-Ds-lb6" secondAttribute="bottom" id="YYH-qU-03E"/>
+                <constraint firstItem="gvN-sZ-yKd" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="40" id="anh-OY-mI7"/>
+                <constraint firstItem="QdX-Ds-lb6" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="cnd-H8-rF9"/>
+                <constraint firstItem="gvN-sZ-yKd" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="57" id="i99-NU-V58"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="gvN-sZ-yKd" secondAttribute="trailing" constant="40" id="jEb-Ya-JqR"/>
+                <constraint firstItem="QdX-Ds-lb6" firstAttribute="top" secondItem="gvN-sZ-yKd" secondAttribute="bottom" constant="20" id="jHh-SE-tjy"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <point key="canvasLocation" x="67" y="-33"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="class_dissmissBtn" width="17" height="10"/>
+    </resources>
+</document>

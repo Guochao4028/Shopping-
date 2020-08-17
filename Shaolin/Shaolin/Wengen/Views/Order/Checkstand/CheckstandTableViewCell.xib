@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="KGk-i7-Jjw" customClass="CheckstandTableViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="iWX-X3-WNm">
+                        <rect key="frame" x="16" y="13.5" width="20" height="17"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="20" id="Afq-OT-EO9"/>
+                            <constraint firstAttribute="height" constant="17" id="tHs-ZT-HMw"/>
+                        </constraints>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="微信支付" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZPi-BO-ckx">
+                        <rect key="frame" x="46" y="11.5" width="60" height="21"/>
+                        <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="15"/>
+                        <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="iZi-9k-8BV">
+                        <rect key="frame" x="284" y="11.5" width="21" height="21"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="21" id="84y-Vb-GzD"/>
+                            <constraint firstAttribute="width" constant="21" id="pZy-XJ-lws"/>
+                        </constraints>
+                    </imageView>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="iWX-X3-WNm" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="DZo-uQ-XfS"/>
+                    <constraint firstItem="iWX-X3-WNm" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="EIP-9I-czD"/>
+                    <constraint firstItem="iZi-9k-8BV" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="Ei1-02-Skc"/>
+                    <constraint firstItem="ZPi-BO-ckx" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="qHK-XB-fw7"/>
+                    <constraint firstItem="ZPi-BO-ckx" firstAttribute="leading" secondItem="iWX-X3-WNm" secondAttribute="trailing" constant="10" id="yoE-pR-paI"/>
+                    <constraint firstAttribute="trailing" secondItem="iZi-9k-8BV" secondAttribute="trailing" constant="15" id="zH3-KC-UVI"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="aW0-zy-SZf"/>
+            <connections>
+                <outlet property="iconImageView" destination="iWX-X3-WNm" id="sFL-8o-hVv"/>
+                <outlet property="nameLabel" destination="ZPi-BO-ckx" id="dyf-v8-e46"/>
+                <outlet property="selectImageView" destination="iZi-9k-8BV" id="NT9-na-3D5"/>
+            </connections>
+            <point key="canvasLocation" x="120" y="64"/>
+        </tableViewCell>
+    </objects>
+</document>

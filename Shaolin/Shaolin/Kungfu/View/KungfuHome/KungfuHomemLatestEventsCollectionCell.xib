@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="KungfuHomemLatestEventsCollectionCell">
+            <rect key="frame" x="0.0" y="0.0" width="215" height="190"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="215" height="190"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="timg.jpeg" translatesAutoresizingMaskIntoConstraints="NO" id="CLi-Qr-IHn">
+                        <rect key="frame" x="16" y="6" width="196" height="111"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="111" id="jyh-Vj-OS7"/>
+                        </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="lgf_CornerRadius">
+                                <real key="value" value="0.0"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                <real key="value" value="4"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="功夫挑战 | 拳法挑战" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GfE-sa-d1W">
+                        <rect key="frame" x="16" y="131" width="196" height="21"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="21" id="5jT-fX-ybT"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="23人已参加" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0gX-uV-adK">
+                        <rect key="frame" x="16" y="158" width="196" height="21"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="21" id="1Mw-Bd-5zx"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                        <color key="textColor" red="0.60784313725490191" green="0.60784313725490191" blue="0.60784313725490191" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+            </view>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="GfE-sa-d1W" firstAttribute="top" secondItem="CLi-Qr-IHn" secondAttribute="bottom" constant="14" id="BvU-94-3dx"/>
+                <constraint firstItem="GfE-sa-d1W" firstAttribute="trailing" secondItem="CLi-Qr-IHn" secondAttribute="trailing" id="FHR-o9-4Sh"/>
+                <constraint firstItem="GfE-sa-d1W" firstAttribute="leading" secondItem="CLi-Qr-IHn" secondAttribute="leading" id="JQz-ff-3cG"/>
+                <constraint firstItem="0gX-uV-adK" firstAttribute="top" secondItem="GfE-sa-d1W" secondAttribute="bottom" constant="6" id="RZu-Us-Co1"/>
+                <constraint firstItem="0gX-uV-adK" firstAttribute="trailing" secondItem="GfE-sa-d1W" secondAttribute="trailing" id="RbC-lm-9LD"/>
+                <constraint firstItem="CLi-Qr-IHn" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="6" id="Tng-y4-reT"/>
+                <constraint firstItem="0gX-uV-adK" firstAttribute="leading" secondItem="GfE-sa-d1W" secondAttribute="leading" id="UEW-ma-oYE"/>
+                <constraint firstAttribute="trailing" secondItem="CLi-Qr-IHn" secondAttribute="trailing" constant="3" id="WYu-B2-1QW"/>
+                <constraint firstItem="CLi-Qr-IHn" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="16" id="kyL-Sj-4qf"/>
+            </constraints>
+            <connections>
+                <outlet property="eventsImgv" destination="CLi-Qr-IHn" id="wUS-FO-GIH"/>
+                <outlet property="eventsNameLabel" destination="GfE-sa-d1W" id="RLH-a1-g9B"/>
+                <outlet property="eventsNumberLabel" destination="0gX-uV-adK" id="Tsv-hM-MQy"/>
+            </connections>
+            <point key="canvasLocation" x="131.15942028985509" y="88.392857142857139"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="timg.jpeg" width="216" height="181.44000244140625"/>
+    </resources>
+</document>

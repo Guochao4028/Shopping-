@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="324" id="KGk-i7-Jjw" customClass="WengenStrictSelectionTableCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="324"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="324"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="3VU-m3-8YK">
+                        <rect key="frame" x="16" y="12" width="288" height="114"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="114" id="3tm-Ns-6Aw"/>
+                        </constraints>
+                    </imageView>
+                    <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="esS-Xf-que">
+                        <rect key="frame" x="12" y="130" width="292" height="171"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="171" id="na0-8v-u3n"/>
+                        </constraints>
+                        <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="2.5" minimumInteritemSpacing="2.5" id="4cy-qG-2l9">
+                            <size key="itemSize" width="50" height="50"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                    </collectionView>
+                    <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="JAf-V7-a1f">
+                        <rect key="frame" x="0.0" y="308" width="320" height="10"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="10" id="HJz-vY-2lT"/>
+                        </constraints>
+                        <color key="pageIndicatorTintColor" red="0.84705882352941175" green="0.84705882352941175" blue="0.84705882352941175" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="currentPageIndicatorTintColor" red="0.85490196080000003" green="0.66666666669999997" blue="0.18039215689999999" alpha="1" colorSpace="calibratedRGB"/>
+                    </pageControl>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="esS-Xf-que" firstAttribute="trailing" secondItem="3VU-m3-8YK" secondAttribute="trailing" id="0QM-nA-OOU"/>
+                    <constraint firstItem="JAf-V7-a1f" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="8KJ-Zx-PhW"/>
+                    <constraint firstAttribute="trailing" secondItem="3VU-m3-8YK" secondAttribute="trailing" constant="16" id="HnE-66-Das"/>
+                    <constraint firstItem="esS-Xf-que" firstAttribute="top" secondItem="3VU-m3-8YK" secondAttribute="bottom" constant="4" id="KR6-Tj-NDx"/>
+                    <constraint firstAttribute="trailing" secondItem="JAf-V7-a1f" secondAttribute="trailing" id="OI7-u1-L6d"/>
+                    <constraint firstItem="esS-Xf-que" firstAttribute="leading" secondItem="3VU-m3-8YK" secondAttribute="leading" constant="-4" id="VNo-kN-jtm"/>
+                    <constraint firstItem="3VU-m3-8YK" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="XFr-D0-Jmf"/>
+                    <constraint firstAttribute="bottom" secondItem="JAf-V7-a1f" secondAttribute="bottom" constant="6" id="eC1-br-zf3"/>
+                    <constraint firstItem="3VU-m3-8YK" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="12" id="hEu-ge-2sa"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="aW0-zy-SZf"/>
+            <connections>
+                <outlet property="collectionView" destination="esS-Xf-que" id="o25-LW-mol"/>
+                <outlet property="pageControl" destination="JAf-V7-a1f" id="mTn-7q-lHd"/>
+                <outlet property="strictSelectionBannerImageView" destination="3VU-m3-8YK" id="UbK-7X-tKM"/>
+            </connections>
+            <point key="canvasLocation" x="-739.13043478260875" y="-120.53571428571428"/>
+        </tableViewCell>
+    </objects>
+</document>

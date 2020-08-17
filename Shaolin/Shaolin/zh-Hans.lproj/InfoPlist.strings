@@ -1,0 +1,20 @@
+/* 
+  InfoPlist.strings
+  Shaolin
+
+  Created by 王精明 on 2020/7/22.
+  Copyright © 2020 syqaxldy. All rights reserved.
+*/
+
+"CFBundleDisplayName" = "少林";
+"NSBluetoothPeripheralUsageDescription" = "需要允许开启蓝牙，以便连接蓝牙设备";
+"NSCalendarsUsageDescription" = "需要允许访问您的日历，以便设置提醒事项";
+"NSCameraUsageDescription" = "需要允许开启相机，用于帖子中上传图片功能";
+"NSContactsUsageDescription" = "需要访问您的通讯录，以便进行分享";
+"NSLocationAlwaysUsageDescription" = "需要允许访问位置，需要允许开启定位访问位置信息，用于查找小区和提供周边服务，以及计算商品的距离";
+"NSLocationUsageDescription" = "需要允许开启定位访问位置信息，用于查找小区和提供周边服务，以及计算商品的距离";
+"NSLocationWhenInUseUsageDescription" = "需要允许使用期间访问位置信息，用于查找小区和提供周边服务，以及计算商品的距离";
+"NSMicrophoneUsageDescription" = "需要允许访问您的麦克风，以便使用语音功能";
+"NSPhotoLibraryAddUsageDescription" = "需要访问您的相册,进行保存图片";
+"NSPhotoLibraryUsageDescription" = "需要允许使用相册，用于文章或视频中上传图片功能";
+

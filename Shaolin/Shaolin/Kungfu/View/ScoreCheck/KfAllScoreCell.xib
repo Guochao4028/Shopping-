@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="KGk-i7-Jjw" customClass="KfAllScoreCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="123"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="123"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3V6-S0-aGH">
+                        <rect key="frame" x="16" y="5" width="288" height="113"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="考试段位" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PoG-x5-IoL">
+                                <rect key="frame" x="16" y="15" width="189" height="18"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="报名时间" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gam-Gp-Wqg">
+                                <rect key="frame" x="16" y="43" width="189" height="18"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="kungfu_hege" translatesAutoresizingMaskIntoConstraints="NO" id="NoM-ip-NXf">
+                                <rect key="frame" x="208" y="15" width="40" height="40"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="WGm-X8-RW2"/>
+                                    <constraint firstAttribute="width" constant="40" id="nbR-9V-jc1"/>
+                                </constraints>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TC8-6b-cgs">
+                                <rect key="frame" x="183" y="64" width="90" height="32"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="32" id="XSi-18-p4T"/>
+                                    <constraint firstAttribute="width" constant="90" id="xPB-mw-UHN"/>
+                                </constraints>
+                                <state key="normal" title="查询成绩">
+                                    <color key="titleColor" red="0.40000000000000002" green="0.40000000000000002" blue="0.40000000000000002" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                        <real key="value" value="4"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="lgf_BorderWidth">
+                                        <real key="value" value="1"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="lgf_BorderColor">
+                                        <color key="value" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="checkHandle:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="Vo8-Wv-H7d"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="考试时间" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FnH-nF-MBV">
+                                <rect key="frame" x="16" y="71" width="189" height="18"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="FnH-nF-MBV" firstAttribute="leading" secondItem="Gam-Gp-Wqg" secondAttribute="leading" id="2ZC-GW-vun"/>
+                            <constraint firstItem="NoM-ip-NXf" firstAttribute="top" secondItem="3V6-S0-aGH" secondAttribute="top" constant="15" id="3KT-hW-AxK"/>
+                            <constraint firstItem="TC8-6b-cgs" firstAttribute="centerX" secondItem="NoM-ip-NXf" secondAttribute="centerX" id="7EU-4m-m71"/>
+                            <constraint firstItem="NoM-ip-NXf" firstAttribute="leading" secondItem="PoG-x5-IoL" secondAttribute="trailing" constant="3" id="Gmi-UP-E1B"/>
+                            <constraint firstItem="PoG-x5-IoL" firstAttribute="leading" secondItem="3V6-S0-aGH" secondAttribute="leading" constant="16" id="ONP-0k-uoZ"/>
+                            <constraint firstAttribute="trailing" secondItem="NoM-ip-NXf" secondAttribute="trailing" constant="40" id="b1h-hS-yjl"/>
+                            <constraint firstItem="FnH-nF-MBV" firstAttribute="trailing" secondItem="Gam-Gp-Wqg" secondAttribute="trailing" id="hWv-1L-8Pq"/>
+                            <constraint firstItem="PoG-x5-IoL" firstAttribute="top" secondItem="3V6-S0-aGH" secondAttribute="top" constant="15" id="kNT-pu-ogX"/>
+                            <constraint firstItem="Gam-Gp-Wqg" firstAttribute="leading" secondItem="PoG-x5-IoL" secondAttribute="leading" id="mlh-kQ-uqQ"/>
+                            <constraint firstItem="Gam-Gp-Wqg" firstAttribute="trailing" secondItem="PoG-x5-IoL" secondAttribute="trailing" id="orC-D5-kCN"/>
+                            <constraint firstItem="FnH-nF-MBV" firstAttribute="top" secondItem="Gam-Gp-Wqg" secondAttribute="bottom" constant="10" id="ozb-4I-DUf"/>
+                            <constraint firstItem="TC8-6b-cgs" firstAttribute="centerY" secondItem="FnH-nF-MBV" secondAttribute="centerY" id="uRc-uV-DLh"/>
+                            <constraint firstItem="Gam-Gp-Wqg" firstAttribute="top" secondItem="PoG-x5-IoL" secondAttribute="bottom" constant="10" id="vk9-J2-C4o"/>
+                        </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                <real key="value" value="4"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="3V6-S0-aGH" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="5" id="7Fz-os-GSK"/>
+                    <constraint firstAttribute="bottom" secondItem="3V6-S0-aGH" secondAttribute="bottom" constant="5" id="UK2-UK-A3T"/>
+                    <constraint firstItem="3V6-S0-aGH" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="g9i-V4-MK0"/>
+                    <constraint firstAttribute="trailing" secondItem="3V6-S0-aGH" secondAttribute="trailing" constant="16" id="hzd-9Z-PYv"/>
+                </constraints>
+            </tableViewCellContentView>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <viewLayoutGuide key="safeArea" id="aW0-zy-SZf"/>
+            <connections>
+                <outlet property="applyLabel" destination="Gam-Gp-Wqg" id="3Ve-2P-A5g"/>
+                <outlet property="checkBtn" destination="TC8-6b-cgs" id="LVx-lF-9g1"/>
+                <outlet property="levelLabel" destination="PoG-x5-IoL" id="plt-or-JBo"/>
+                <outlet property="scoreImgv" destination="NoM-ip-NXf" id="Y22-GW-3fa"/>
+                <outlet property="testLabel" destination="FnH-nF-MBV" id="5vn-AR-rKS"/>
+                <outlet property="whiteBgView" destination="3V6-S0-aGH" id="71U-XU-DIF"/>
+            </connections>
+            <point key="canvasLocation" x="131.8840579710145" y="102.79017857142857"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="kungfu_hege" width="45.5" height="40"/>
+    </resources>
+</document>

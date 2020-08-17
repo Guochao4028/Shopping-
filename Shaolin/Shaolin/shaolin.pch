@@ -1,0 +1,223 @@
+//
+//  shaolin.pch
+//  Shaolin
+//
+//  Created by edz on 2020/3/4.
+//  Copyright © 2020 syqaxldy. All rights reserved.
+//
+
+#ifndef shaolin_pch
+#define shaolin_pch
+#define kWidth [UIScreen mainScreen].bounds.size.width
+#define kHeight ([UIScreen mainScreen].bounds.size.height)
+#ifdef __OBJC__
+#import "UILabel+Size.h"
+
+#import "NSDictionary+Safe.h"
+#import "IQKeyboardManager.h"
+#import "KungfuViewController.h"
+#import "MeViewController.h"
+#import "WengenViewController.h"
+#import "ActivityViewController.h"
+#import "FoundViewController.h"
+#import "Masonry.h"
+#import "solveJsonData.h"
+#import <MJRefresh.h>
+#import <SDWebImage/UIImageView+WebCache.h>
+#import "UIColor+Hex.h"
+#import <TZImagePickerController/TZImagePickerController.h>
+#import "RootViewController.h"
+#import "MJExtension.h"
+#import "MBProgressHUD.h"
+#import "SLAppInfoModel.h"
+#import "UILabelLeftTopAlign.h"
+#import "XLPageViewController.h"
+#import "ShareSDK/ShareSDK.h"
+#import "ShareSDKUI/ShareSDK+SSUI.h"
+#import "Eleven.h"
+#import "UIView+Extension.h"
+#import "UIColor+Extension.h"
+#import "NoDataView.h"
+#import "LYEmptyViewHeader.h"
+#import "WRNavigationBar.h"
+#import "UIScrollView+EmptyDataSet.h"
+#import "WSSafeObject.h"
+#import "ShaolinProgressHUD.h"
+#import "SLLocalizedHelper.h"
+
+//#import <EaseUI/EaseUI.h>
+
+#ifdef __OBJC__
+//不包含实时视频功能 SDK 的头文件
+#import <HyphenateLite/HyphenateLite.h>
+// UI 头文件
+#endif
+
+#import "EMAlertController.h"
+
+
+#import "NSJSONSerialization+CheckResult.h"
+/**
+ 常用的一些回调
+ */
+#import "DefineBlocks.h"
+/**
+ url文件，所有的url都在里面
+ */
+#import "DefinedURLs.h"
+/**
+ 自定义枚举
+ */
+#import "DefinedEnums.h"
+/**
+ 自定义宏
+ */
+#import "DefinedKeys.h"
+
+/**
+ 数据单例
+ */
+#import "ModelTool.h"
+
+/**
+ 网络层，所有网络的调用都在这个类中
+ */
+#import "DataManager.h"
+#import "LoginManager.h"
+#import "NSObject+Alert.h"
+#import "UIViewController+Util.h"
+#import <UINavigationController+FDFullscreenPopGesture.h>
+#import "CommonAPI.h"
+#import "UIControl+ZHW.h"
+
+#ifdef DEBUG //调试
+
+#define NSLog(FORMAT, ...) fprintf(stderr, "类:%s: %d 行\t%s\n", [[[NSString stringWithUTF8String: __FILE__] lastPathComponent] UTF8String], __LINE__, [[NSString stringWithFormat: FORMAT, ## __VA_ARGS__] UTF8String]);
+
+#else // 发布
+
+#define NSLog(FORMAT, ...) nil
+
+#endif
+
+#define xx_weakify(var)   __weak typeof(var) weakSelf = var
+#define xx_strongify(var) __strong typeof(var) strongSelf = var
+
+
+#define kScreenWidth [UIScreen mainScreen].bounds.size.width
+#define kScreenHeight [UIScreen mainScreen].bounds.size.height
+
+#define WEAKSELF  typeof(self) __weak weakSelf = self;
+# define SJWeakObj(o) autoreleasepool{} __weak typeof(o) sjWeak##o = o;     // 弱引用
+# define SJStrongObj(o) autoreleasepool{} __strong typeof(o) o = sjWeak##o; // 强引用
+#define IS_iphoneX (((int)((kHeight/kWidth)*100) == 216)?YES:NO)
+#define NavBar_Height (IS_iphoneX ? 88.f : 64.f)
+#define Height_TabBar ((IS_iphoneX==YES)?83.0f: 49.0f)
+#define StatueBar_Height  (IS_iphoneX ? 44.f : 20.f)
+#define TabBarButtom_H        (IS_iphoneX ? 34.f : 15.f)
+#define BottomMargin_X    (IS_iphoneX ? 34 : 0)
+
+#define kUIColorFromHex(hex) [UIColor colorWithRed:((float)((hex & 0xFF0000) >> 16))/255.0 green:((float)((hex & 0xFF00) >> 8))/255.0 blue:((float)(hex & 0xFF))/255.0 alpha:1.0]
+
+#define SLChange(r) ((r)*(kWidth/375.f))
+#define SLLog(fmt,...)    NSLog((@"%s [Line %d] " fmt),__PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
+#define RGBA(r, g, b, a)                    [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a]
+#define kColor_LightGray [UIColor colorWithRed:245 / 255.0 green:245 / 255.0 blue:245 / 255.0 alpha:1.0]
+#define kColor_Blue [UIColor colorWithRed:45 / 255.0 green:116 / 255.0 blue:215 / 255.0 alpha:1.0]
+#define kColor_Gray [UIColor colorWithRed:229 / 255.0 green:229 / 255.0 blue:229 / 255.0 alpha:1.0]
+
+//字体
+#define kFont(A) [UIFont fontWithName:@"PingFangSC-Light" size:A]
+#define kRegular(A) [UIFont fontWithName:@"PingFangSC-Regular" size:A]
+//加粗字体
+#define kBoldFont(A) [UIFont fontWithName:@"PingFangSC-Semibold" size:A]
+#define kMediumFont(A) [UIFont fontWithName:@"PingFang-SC-Medium" size:A]
+
+//等宽字体
+#define kHelveticaFont(A) [UIFont fontWithName:@"HelveticaNeue" size:A]
+//等宽细字体
+#define kHelveticaLightFont(A) [UIFont fontWithName:@"HelveticaNeue-Light" size:A]
+//等宽粗字体
+#define kHelveticaBoldFont(A) [UIFont fontWithName:@"HelveticaNeue-Bold" size:A]
+
+#define EMVIEWTOPMARGIN (IS_iPhoneX ? 22.f : 0.f)
+#define EMVIEWBOTTOMMARGIN (IS_iPhoneX ? 34.f : 0.f)
+
+//IM
+//账号状态
+#define ACCOUNT_LOGIN_CHANGED @"loginStateChange"
+
+//聊天
+#define CHAT_PUSHVIEWCONTROLLER @"EMPushChatViewController" // 会话列表
+#define CHAT_CLEANMESSAGES @"EMChatCleanMessages" //聊天
+
+//消息动图
+#define MSG_EXT_GIF_ID @"em_expression_id"
+#define MSG_EXT_GIF @"em_is_big_expression"
+
+//消息撤回
+#define MSG_EXT_RECALL @"em_recall"
+
+//多人会议邀请
+#define MSG_EXT_CALLOP @"em_conference_op"
+#define MSG_EXT_CALLID @"em_conference_id"
+#define MSG_EXT_CALLPSWD @"em_conference_password"
+
+
+//Typing
+#define MSG_TYPING_BEGIN @"TypingBegin"
+#define MSG_TYPING_END @"TypingEnd"
+
+
+#define CALL_SELECTCONFERENCECELL @"EMSelectConferenceCell"
+#define NOTIF_ID @"EMNotifId"
+#define NOTIF_NAVICONTROLLER @"EMNaviController"
+#define GROUP_INFO_PUSHVIEWCONTROLLER @"EMPushGroupInfoViewController"
+#define CHATROOM_INFO_PUSHVIEWCONTROLLER @"EMPushChatroomInfoViewController"
+
+
+// 搜索历史记录
+#define KHistorySearchPath [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"SLSearchhistories.plist"]
+
+
+#define KGoodsHistorySearchPath [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"SLSearchGoodsHistories.plist"]
+
+
+#define KAgainBuyCarPath [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"SLAgainBuyCar.plist"]
+
+
+#define KTemporaryFilePath [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"SLTemporaryFile.plist"]
+
+
+#define HtmlPath \
+({\
+NSString *path = [[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:@"html"];\
+NSFileManager *fileManager = [NSFileManager defaultManager];\
+BOOL isDir = FALSE;\
+BOOL isDirExist = [fileManager fileExistsAtPath:path isDirectory:&isDir];\
+if(!(isDirExist && isDir)){BOOL bCreateDir = [fileManager createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];\
+if(!bCreateDir){NSLog(@"创建文件夹失败！", nil));}NSLog(@"创建文件夹成功，文件路径%@", nil),path);}\
+(path);\
+})
+
+
+#define TipSeconds 1
+
+// 网络异常提示语
+#define kNetErrorPrompt SLLocalizedString(@"网络异常，请检查网络设置！")
+
+// token
+#define kToken @"access_token"
+
+// token的刷新时间
+#define kTokenRefreshIn @"refresh_in"
+
+// token的过期时间
+#define kTokenExpiresIn @"expires_in"
+
+
+
+
+#endif
+
+#endif /* shaolin_pch */

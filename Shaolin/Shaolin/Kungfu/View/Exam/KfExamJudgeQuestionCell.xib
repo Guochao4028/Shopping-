@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" rowHeight="110" id="KGk-i7-Jjw" customClass="KfExamJudgeQuestionCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="110"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="110"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ypI-QD-5CO">
+                        <rect key="frame" x="16" y="10" width="288" height="100"/>
+                        <color key="backgroundColor" red="0.98039215686274506" green="0.98039215686274506" blue="0.98039215686274506" alpha="1" colorSpace="calibratedRGB"/>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                <real key="value" value="4"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </view>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7fo-m1-CKc">
+                        <rect key="frame" x="56" y="69" width="80" height="30"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="30" id="C5V-ft-JW4"/>
+                            <constraint firstAttribute="width" constant="80" id="T9g-FR-vOi"/>
+                        </constraints>
+                        <state key="normal" title="   正确" image="exam_unChoose">
+                            <color key="titleColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
+                        </state>
+                        <connections>
+                            <action selector="chooseTrueHandle:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="oqP-R2-KbK"/>
+                        </connections>
+                    </button>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="第一题" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xUE-uR-6If">
+                        <rect key="frame" x="27" y="26" width="266" height="17"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ivV-WM-aqt">
+                        <rect key="frame" x="184" y="69" width="80" height="30"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="80" id="mza-Q4-arj"/>
+                            <constraint firstAttribute="height" constant="30" id="yHW-4l-7pG"/>
+                        </constraints>
+                        <state key="normal" title="   错误" image="exam_choose">
+                            <color key="titleColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
+                        </state>
+                        <connections>
+                            <action selector="chooseFalseHandle:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="yD9-ZC-MbR"/>
+                        </connections>
+                    </button>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="xUE-uR-6If" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="26" id="24B-jM-CUc"/>
+                    <constraint firstItem="7fo-m1-CKc" firstAttribute="centerX" secondItem="H2p-sc-9uM" secondAttribute="centerX" constant="-64" id="Anm-9d-r2l"/>
+                    <constraint firstAttribute="trailing" secondItem="ypI-QD-5CO" secondAttribute="trailing" constant="16" id="D8W-Kl-h4R"/>
+                    <constraint firstItem="ivV-WM-aqt" firstAttribute="centerX" secondItem="H2p-sc-9uM" secondAttribute="centerX" constant="64" id="FWr-hG-z5R"/>
+                    <constraint firstAttribute="trailing" secondItem="xUE-uR-6If" secondAttribute="trailing" constant="27" id="J7V-z8-RhY"/>
+                    <constraint firstItem="ivV-WM-aqt" firstAttribute="centerY" secondItem="7fo-m1-CKc" secondAttribute="centerY" id="Rhr-8k-HEk"/>
+                    <constraint firstAttribute="bottom" secondItem="7fo-m1-CKc" secondAttribute="bottom" constant="11" id="TMo-3i-yaU"/>
+                    <constraint firstItem="7fo-m1-CKc" firstAttribute="top" secondItem="xUE-uR-6If" secondAttribute="bottom" constant="26" id="VuQ-Db-sky"/>
+                    <constraint firstItem="ypI-QD-5CO" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="WFQ-OS-LuU"/>
+                    <constraint firstItem="ypI-QD-5CO" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="WZV-Z8-igg"/>
+                    <constraint firstItem="xUE-uR-6If" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="27" id="faJ-ai-qDM"/>
+                    <constraint firstAttribute="bottom" secondItem="ypI-QD-5CO" secondAttribute="bottom" id="oyi-Dx-3t5"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="bgView" destination="ypI-QD-5CO" id="LEH-0f-2cS"/>
+                <outlet property="chooseFalseBtn" destination="ivV-WM-aqt" id="WZh-6H-pX1"/>
+                <outlet property="chooseTrueBtn" destination="7fo-m1-CKc" id="3mx-im-cyP"/>
+                <outlet property="questionContentLabel" destination="xUE-uR-6If" id="YyN-j9-esp"/>
+            </connections>
+            <point key="canvasLocation" x="-17.39130434782609" y="32.142857142857139"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="exam_choose" width="15" height="15"/>
+        <image name="exam_unChoose" width="16" height="16"/>
+    </resources>
+</document>
