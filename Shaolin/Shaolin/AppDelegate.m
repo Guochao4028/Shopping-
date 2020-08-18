@@ -27,7 +27,6 @@
 #endif
 
 
-
 @interface AppDelegate ()<UINavigationControllerDelegate,UINavigationBarDelegate,EMClientDelegate, JPUSHRegisterDelegate>
  
 
