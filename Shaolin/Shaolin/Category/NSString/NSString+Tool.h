@@ -35,6 +35,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 ///隐藏手机号码中间的四位数字
 + (NSString *)numberSuitScanf:(NSString *)numberStr;
+
+///名字信息脱敏(只显示姓，名显示* 如：王**，name小于两位返回原值)
++ (NSString *)nameDataMasking:(NSString *)name;
+///身份证信息信息脱敏(只显示头尾各一位，如2****************6，idCard小于三位返回原值)
++ (NSString *)idCardDataMasking:(NSString *)idCard;
+
 ///当前时间 时间格式 00:13
 +(NSString*)currentTime;
 
@@ -62,6 +68,9 @@ NS_ASSUME_NONNULL_BEGIN
 ///验证密码复杂度
 ///必须包含大写字母，小写字母，数字，特殊字符四种中的三种，长度要求8到16位
 -(BOOL)passwordComplexityVerification;
+
+///替换rang区域字符串为*，实现信息脱敏
+- (NSString *)dataMasking:(NSRange)rang;
 @end
 
 NS_ASSUME_NONNULL_END

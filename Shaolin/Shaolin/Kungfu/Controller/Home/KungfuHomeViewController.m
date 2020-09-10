@@ -282,9 +282,9 @@ static NSString *const compilationCellId = @"KungfuHomeCompilationCell";
         KungfuHomeScoreCell * cell = [tableView dequeueReusableCellWithIdentifier:scoreCellId];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.resultDic = self.scoreDic;
-        cell.learnHandle = ^{
-            [[SLAppInfoModel sharedInstance] postPageChangeNotification:KNotificationKungfuPageChange index:@"3"];
-        };
+//        cell.learnHandle = ^{
+//            [[SLAppInfoModel sharedInstance] postPageChangeNotification:KNotificationKungfuPageChange index:@"3"];
+//        };
         cell.examHandle = ^{
             [[SLAppInfoModel sharedInstance] postPageChangeNotification:KNotificationKungfuPageChange index:@"1"];
         };
@@ -369,11 +369,11 @@ static NSString *const compilationCellId = @"KungfuHomeCompilationCell";
     }
     
     if (indexPath.section == 1) {
-        return 110;
+        return 55;
     }
     
     if (indexPath.section == 2) {
-        return 100;
+        return 305;
     }
     
     if (indexPath.section == 3) {
@@ -385,16 +385,19 @@ static NSString *const compilationCellId = @"KungfuHomeCompilationCell";
     }
     
     if (indexPath.section == 5) {
-        CGFloat classCellHeight = 132;
-        CGFloat blankHeight = 185;
+        CGFloat classCellHeight = 83;
+        CGFloat blankHeight = 140;
+        CGFloat moreHeight = 0;
         NSUInteger classCellCount = 0;
         if (indexPath.row == 0) {
             classCellCount = self.noobClassList.count>3 ? 3:self.noobClassList.count;
+            moreHeight = self.noobClassList.count>3 ? 45:0;
         } else {
             classCellCount = self.upClassList.count>3 ? 3:self.upClassList.count;
+            moreHeight = self.upClassList.count>3 ? 45:0;
         }
         
-        return classCellCount * classCellHeight + blankHeight;
+        return classCellCount * classCellHeight + blankHeight + moreHeight;
     }
     
     return .001;
@@ -418,6 +421,7 @@ static NSString *const compilationCellId = @"KungfuHomeCompilationCell";
 -(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
     UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWidth, 10)];
+    v.backgroundColor = [UIColor hexColor:@"fafafa"];
     return v;
 }
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
@@ -429,7 +433,7 @@ static NSString *const compilationCellId = @"KungfuHomeCompilationCell";
         sectionHeader.frame = CGRectMake(0, 0, kWidth, 45);
     }
     sectionHeader.arrowHidden = !(section==4 || section==3);
-    sectionHeader.titleString = @[@"",SLLocalizedString(@"我的成就"),@"",SLLocalizedString(@"热门课程"),SLLocalizedString(@"最新活动"),SLLocalizedString(@"课程专题")][section];
+    sectionHeader.titleString = @[@"",SLLocalizedString(@"我的成就"),@"",SLLocalizedString(@"热门教程"),SLLocalizedString(@"最新活动"),SLLocalizedString(@"教程专题")][section];
     sectionHeader.userInteractionEnabled = (section==4 || section==3);
     sectionHeader.sectionViewHandle = ^{
         if (section == 3) {

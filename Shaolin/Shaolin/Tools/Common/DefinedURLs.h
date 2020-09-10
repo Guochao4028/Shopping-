@@ -162,6 +162,8 @@
 
 //ahq 列表
 #define URL_POST_SHOPAPI_COMMON_AHP_GETAHQLIST @"/shopapi/common/ahq/getAhqList"
+//猜你想问
+#define URL_POST_SHOPAPI_COMMON_AHP_GUESSLIST @"/shopapi/common/ahq/guessList"
 
 
 
@@ -238,12 +240,25 @@
 #define ACTIVITY_LEVEL_ACTIVITYCHECKEDLEVEL @"/activity/activityCheckedLevel"
 //法会列表
 #define Activity_RiteList @"/pujaController/pujaList"
+
+/*!法会二级、三级类别列表*/
+#define Activity_RiteSecondList @"/pujaController/pujaClassification"
+/*!法会四级类别列表*/
+#define Activity_RiteFourList @"/pujaController/matterInfoList"
+
+/*! 法会时间*/
+#define Activity_RiteDate @"/pujaController/rulesCorrespondTime"
+
 /*! 法会详情*/
 #define Activity_RiteDetails @"/pujaController/pujaDetails"
 /*! 法会表单结构*/
 #define Activity_RiteFormModel @"/pujaController/pujaType"
 /*! 提交表单*/
 #define Activity_RiteFormSignUp @"/pujaController/pujaSignUp"
+/*! 法会订单支付成功获取祝福语*/
+#define Activity_RiteBlessing @"/pujaController/blessing"
+/*! 是否去内坛*/
+#define Activity_RitePujaSignUpUpdate @"/pujaController/pujaSignUpUpdate"
 
 //法会最早最晚时间，筛选用
 #define Activity_RiteTimeRange @"/pujaController/timeInterval"
@@ -251,10 +266,20 @@
 //法会 报名详情
 #define Activity_RitePujaSignUpOrderCodeInfo @"/pujaController/pujaSignUpOrderCodeInfo"
 
+//往期法会时间
+#define Activity_RitePastReviewTime @"/pujaController/pastReviewTime"
+
+//检查四级法会事项时间
+#define Activity_RiteCheckedTime @"/pujaController/checkedTime"
+
 
 /*! 获取法会列表公告数据*/
 #define Activity_RiteMarqueeList @"/pujaController/notice"
 
+//搜索法会
+#define Activity_SearchRite @"/pujaController/search"
+//往期法会
+#define Activity_PastRiteList @"/pujaController/pastReviewList"
 //我的法会
 #define Activity_MyRite @"/pujaController/pujaSignUpByMemberId"
 
@@ -267,13 +292,16 @@
 #define Me_UserChangeDate @"/memberApp/memberApp/member/update" //修改个人资料
 #define Me_RealNameIdCard @"/shareApp/shareApp/share/idcardverify" //实名认证
 #define Me_IdcardReason @"/shareApp/shareApp/share/idcardReason"    //实名认证拒绝原因
+#define Me_PersonAuthenticationToken @"/common/RPManualToken"    //获取实人认证token及BizId
+#define Me_PersonAuthenticationResult @"/common/RPManualVerifyResult"   //获取实人认证结果
+
 #define Me_ChangePassword @"/memberApp/memberApp/member/updatepas"//修改密码
 #define Me_BackPassword @"/memberApp/memberApp/member/updateseek" //找回密码
 #define Me_Readhistory @"/readhistoryApp/readhistoryApp/readhistory"//阅读历史
 #define Me_OutLogin @"/login/quit" //退出登录
 #define Me_Get_ActivityList @"/activity/activityMyself"//我的活动
-#define Me_POST_CourseReadHistory @"/gradeapi/common/Course/getCourseReadHistory"//课程观看历史
-#define Me_POST_CourseBuyHistory @"/gradeapi/common/Course/getCourseBuyHistory"//课程购买历史
+#define Me_POST_CourseReadHistory @"/gradeapi/common/Course/getCourseReadHistory"//教程观看历史
+#define Me_POST_CourseBuyHistory @"/gradeapi/common/Course/getCourseBuyHistory"//教程购买历史
 #define Me_POST_ExamProof @"/pay/examProofList" //考试凭证列表
 
 #define Me_Get_WebNewsList @"/findApp/newsinformationApp/newsinformation/search" // 发文管理 和 草稿箱
@@ -298,14 +326,14 @@
 #define Me_CheckAppVersion @"/common/sendingData"
 /*********************************段品制********************************************/
 #define KungFu_HotCity @"/mechanism/popularCities" //机构热门城市
-#define KungFu_HotClass @"/shopapi/common/goods/getHotWord" //热门课程
+#define KungFu_HotClass @"/shopapi/common/goods/getHotWord" //热门教程
 #define KungFu_HotActivity @"/activity/applicationsHot" //热门活动
 #define KungFu_Achievements @"/level/achievements" //我的成就
 // 查看证书列表
 #define KungFu_Certificate @"/certificateApp/certificate/get"
 // 查看成绩列表
 #define KungFu_ScoreList @"/achievementsApp/achievements/get"
-// 查看课程列表
+// 查看教程列表
 #define KungFu_ClassList @"/gradeapi/common/Course/getCourseList"
 // 机构列表
 #define KungFu_InstitutionList @"/mechanism/mechanismList"
@@ -336,7 +364,7 @@
 #define KungFu_ScoreList @"/achievementsApp/achievements/get" // 查看成绩列表
 #define KungFu_ScoreDetail @"/achievementsApp/achievements/detail" // 查看成绩详情
 
-#define KungFu_ClassList @"/gradeapi/common/Course/getCourseList" // 查看课程列表
+#define KungFu_ClassList @"/gradeapi/common/Course/getCourseList" // 查看教程列表
 
 #define KungFu_InstitutionList @"/mechanism/mechanismList"  // 机构列表
 #define KungFu_ApplicationsSave @"/activity/applicationsSave"  // 提交报名信息
@@ -348,11 +376,11 @@
 
 //#define KungFu_applicationsSearch @"/applicationsApp/applications/get"  // 查询报名信息
 
-// 查询课程详情
+// 查询教程详情
 #define KungFu_ClassDetail @"/gradeapi/common/Course/getCourseInfo"
-#define KungFu_SetCourseReadHistory @"/gradeapi/common/Course/setCourseReadHistory" //添加课程观看历史
+#define KungFu_SetCourseReadHistory @"/gradeapi/common/Course/setCourseReadHistory" //添加教程观看历史
 
-// 收藏课程
+// 收藏教程
 #define KungFu_ClassCollect @"/gradeapi/common/Course/setList"
 
 // 苹果内购验证

@@ -222,7 +222,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
         [NSKeyedArchiver archiveRootObject:self.historyArray toFile:KGoodsHistorySearchPath];
     }
     
-    if ([self.typeString isEqualToString:SLLocalizedString(@"课程")]) {
+    if ([self.typeString isEqualToString:SLLocalizedString(@"教程")]) {
         KungfuClassListViewController *resultVC = [[KungfuClassListViewController alloc]init];
         resultVC.searchText = searchStr;
         [self.navigationController pushViewController:resultVC animated:YES];
@@ -306,7 +306,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
             cell.backgroundColor = UIColor.clearColor;
             cell.contentView.backgroundColor = UIColor.clearColor;
             
-            NSArray * list = @[SLLocalizedString(@"课程"),SLLocalizedString(@"活动"),SLLocalizedString(@"机构")];
+            NSArray * list = @[SLLocalizedString(@"教程"),SLLocalizedString(@"活动"),SLLocalizedString(@"机构")];
             cell.textLabel.text = list[indexPath.row];
             cell.textLabel.font = kRegular(12);
             cell.textLabel.textColor = [UIColor hexColor:@"333333"];
@@ -332,7 +332,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (tableView == self.searchTypeTable) {
-        NSArray * list = @[SLLocalizedString(@"课程"),SLLocalizedString(@"活动"),SLLocalizedString(@"机构")];
+        NSArray * list = @[SLLocalizedString(@"教程"),SLLocalizedString(@"活动"),SLLocalizedString(@"机构")];
         self.typeString = list[indexPath.row];
         return;
     }
@@ -381,8 +381,32 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
 
 - (void)getHotCity {
     WEAKSELF
-    [[KungfuManager sharedInstance]postHotCitySuccess:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
-        NSLog(@"%@",responseObject);
+//    [[KungfuManager sharedInstance]postHotCitySuccess:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+//        NSLog(@"%@",responseObject);
+//        if ([[responseObject objectForKey:@"code"] integerValue]==200) {
+//            NSArray *arr;
+//            @try {
+//                if ([[responseObject objectForKey:@"data"] isKindOfClass:[NSArray class]]) {
+//                    arr = [responseObject objectForKey:@"data"];
+//                }else{
+//                    arr = [[responseObject objectForKey:@"data"] objectForKey:@"data"];
+//                }
+//            } @catch (NSException *exception) {
+//            } @finally {
+//                weakSelf.hotArray = [HotCityModel mj_objectArrayWithKeyValuesArray:arr];
+//                [weakSelf requestData];
+//            }
+//
+//        }
+//    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+//
+//    }];
+    
+    [[KungfuManager sharedInstance]postHotCitySuccess:^(NSDictionary * _Nullable resultDic) {
+        
+    } failure:^(NSString * _Nullable errorReason) {
+        
+    } finish:^(NSDictionary * _Nullable responseObject, NSString * _Nullable errorReason) {
         if ([[responseObject objectForKey:@"code"] integerValue]==200) {
             NSArray *arr;
             @try {
@@ -396,11 +420,10 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
                 weakSelf.hotArray = [HotCityModel mj_objectArrayWithKeyValuesArray:arr];
                 [weakSelf requestData];
             }
-           
         }
-    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-        
     }];
+    
+    
 }
 - (void)switchAction{
     WEAKSELF

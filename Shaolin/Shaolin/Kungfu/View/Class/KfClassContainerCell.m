@@ -5,7 +5,7 @@
 //  Created by ws on 2020/5/19.
 //  Copyright © 2020 syqaxldy. All rights reserved.
 //
-//  这个cell里放一个tableView，tableview的cell是单节课程
+//  这个cell里放一个tableView，tableview的cell是单节教程
 
 #import "KfClassContainerCell.h"
 #import "KungfuClassSubCell.h"

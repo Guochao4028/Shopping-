@@ -47,7 +47,7 @@
     if (infoModel.name != nil && infoModel.name.length > 0) {
         [self.storeNameLabel setText:infoModel.name];
     }else{
-       [self.storeNameLabel setText:SLLocalizedString(@"段品制课程")];
+       [self.storeNameLabel setText:SLLocalizedString(@"段品制教程")];
     }
     
 }

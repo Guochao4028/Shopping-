@@ -32,6 +32,11 @@
 
 
 
+@property (weak, nonatomic) IBOutlet UILabel *radio2ItemTitleLabel;
+@property (weak, nonatomic) IBOutlet UILabel *radio1ItemTitleLabel;
+
+
+
 
 /** 下拉列表 */
 @property (weak, nonatomic) IBOutlet UIView *dropDownView;
@@ -156,7 +161,17 @@
     [self.radio1ImageView setImage:[UIImage imageNamed:@"exam_choose"]];
     [self.radio2ImageView setImage:[UIImage imageNamed:@"exam_unChoose"]];
 
-    [self.registModel setValueType:@"1"];
+    NSString *itemType = self.model[@"itemType"];
+    
+    NSInteger itemTypeInteger = [itemType integerValue];
+    
+    if (itemTypeInteger == 1) {
+        [self.registModel setValueType:@"1"];
+    }else{
+        [self.registModel setGender:@"男"];
+    }
+    
+    
 
 }
 
@@ -165,7 +180,17 @@
     [self.radio2ImageView setImage:[UIImage imageNamed:@"exam_choose"]];
     [self.radio1ImageView setImage:[UIImage imageNamed:@"exam_unChoose"]];
 
-    [self.registModel setValueType:@"2"];
+    
+    
+    NSString *itemType = self.model[@"itemType"];
+    
+    NSInteger itemTypeInteger = [itemType integerValue];
+    
+    if (itemTypeInteger == 1) {
+        [self.registModel setValueType:@"2"];
+    }else{
+        [self.registModel setGender:@"女"];
+    }
 
     
 }
@@ -373,6 +398,9 @@
         [self.radioView setHidden:NO];
          [self.radioTitleLabel setText:model[@"title"]];
         
+        [self.radio1ItemTitleLabel setText:model[@"item1Title"]];
+        [self.radio2ItemTitleLabel setText:model[@"item2Title"]];
+        
     }else if ([type isEqualToString:@"3"] == YES){
         [self.normalView setHidden:YES];
         [self.dropDownView setHidden:NO];
@@ -538,20 +566,24 @@
     //    }
     
     
-
-    
-    //valueType 姓名 1 曾名或法名  2
-    NSInteger valueType = [self.registModel.valueType integerValue];
-    if (valueType == 1 || valueType == 0) {
-        [self.radio1ImageView setImage:[UIImage imageNamed:@"exam_choose"]];
-        [self.radio2ImageView setImage:[UIImage imageNamed:@"exam_unChoose"]];
-        self.registModel.valueType = @"1";
-    }else if(valueType == 2) {
+    if ([title isEqualToString:SLLocalizedString(@"证书显示名：")]) {
+        //valueType 姓名 1 曾名或法名  2
+        NSInteger valueType = [self.registModel.valueType integerValue];
+        if (valueType == 1 || valueType == 0) {
+            [self.radio1ImageView setImage:[UIImage imageNamed:@"exam_choose"]];
+            [self.radio2ImageView setImage:[UIImage imageNamed:@"exam_unChoose"]];
+            self.registModel.valueType = @"1";
+        }else if(valueType == 2) {
+            [self.radio1ImageView setImage:[UIImage imageNamed:@"exam_unChoose"]];
+            [self.radio2ImageView setImage:[UIImage imageNamed:@"exam_choose"]];
+            self.registModel.valueType = @"2";
+        }
+    }else if ([title isEqualToString:SLLocalizedString(@"性      别：")]){
         [self.radio1ImageView setImage:[UIImage imageNamed:@"exam_unChoose"]];
-        [self.radio2ImageView setImage:[UIImage imageNamed:@"exam_choose"]];
-        self.registModel.valueType = @"2";
-
+        [self.radio2ImageView setImage:[UIImage imageNamed:@"exam_unChoose"]];
     }
+    
+    
 }
 
 

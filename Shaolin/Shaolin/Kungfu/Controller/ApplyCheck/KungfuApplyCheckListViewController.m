@@ -123,8 +123,6 @@ static NSString *const checkCellId = @"ApplyCheckListCell";
     
     
     cell.checkHandle = ^{
-
-//        KungfuWebViewController * webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_SignupDetail(model.accuratenumber, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_applyDetail];
         KungfuApplyDetailViewController * vc = [KungfuApplyDetailViewController new];
         vc.applyId = model.accuratenumber;
         [weakSelf.navigationController pushViewController:vc animated:YES];
@@ -140,8 +138,6 @@ static NSString *const checkCellId = @"ApplyCheckListCell";
     
     KungfuApplyDetailViewController * vc = [KungfuApplyDetailViewController new];
     vc.applyId = model.accuratenumber;
-    
-//    KungfuWebViewController * webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_SignupDetail(model.accuratenumber, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_applyDetail];
     [self.navigationController pushViewController:vc animated:YES];
 }
 

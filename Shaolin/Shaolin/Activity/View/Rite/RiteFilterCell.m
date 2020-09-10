@@ -9,13 +9,15 @@
 #import "RiteFilterCell.h"
 #import "UIButton+CenterImageAndTitle.h"
 #import "UIImage+YYWebImage.h"
+#import "UIColor+LGFGradient.h"
 
 @interface RiteFilterCell()
 
 @property (nonatomic, strong) UIButton * timeBtn;
 @property (nonatomic, strong) UIButton * doingBtn;
 @property (nonatomic, strong) UIButton * finishedBtn;
-
+@property (nonatomic, strong) UIColor * gradientColor;
+@property (nonatomic, strong) UIColor * alphaColor;
 //@property (nonatomic, strong) UIView * bottomLine;
 
 @end
@@ -43,14 +45,14 @@
     [self.doingBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(30);
         make.centerY.mas_equalTo(self.contentView);
-        make.left.mas_equalTo(self.timeBtn.mas_right).offset(35);
+        make.left.mas_equalTo(self.timeBtn.mas_right).offset((kScreenWidth/2 - 140)/2);
         make.width.mas_equalTo(70);
     }];
     
     [self.finishedBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(30);
         make.centerY.mas_equalTo(self.contentView);
-        make.right.mas_equalTo(self.contentView).offset(-35);
+        make.left.mas_equalTo(self.doingBtn.mas_right);
         make.width.mas_equalTo(70);
     }];
     
@@ -123,18 +125,18 @@
     
     if ([typeStr isEqualToString:@"近期"]) {
         self.doingBtn.titleLabel.font = kMediumFont(15);
-        self.doingBtn.selected = YES;
+        self.doingBtn.backgroundColor = self.gradientColor;
         
-        self.finishedBtn.selected = NO;
         self.finishedBtn.titleLabel.font = kRegular(15);
+        self.finishedBtn.backgroundColor = self.alphaColor;
         
     } else {
         self.finishedBtn.titleLabel.font = kMediumFont(15);
-        self.finishedBtn.selected = YES;
+        self.finishedBtn.backgroundColor = self.gradientColor;
         
-        self.doingBtn.selected = NO;
         self.doingBtn.titleLabel.font = kRegular(15);
-    
+        self.doingBtn.backgroundColor = self.alphaColor;
+        
     }
     
 //    [UIView animateWithDuration:0.3 animations:^{
@@ -174,14 +176,10 @@
         _doingBtn.titleLabel.font = kRegular(15);
         [_doingBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [_doingBtn setTitle:@"近期" forState:UIControlStateNormal];
-        //        [_stateBtn setImage:[UIImage imageNamed:@"rite_blackArrow"] forState:UIControlStateNormal];
         
-//        [_doingBtn setTitleColor:WENGEN_RED forState:UIControlStateSelected];
-        //        [_stateBtn setImage:[UIImage imageNamed:@"rite_redArrow"] forState:UIControlStateSelected];
-        
-        //        [_stateBtn horizontalCenterTitleAndImage];
-        [_doingBtn setBackgroundImage:[UIImage yy_imageWithColor:[UIColor hexColor:@"8e2b25"]] forState:UIControlStateSelected];
-        [_doingBtn setBackgroundImage:[UIImage yy_imageWithColor:[UIColor hexColor:@"8e2b25" alpha:0.5]] forState:UIControlStateNormal];
+        [_doingBtn setBackgroundColor:self.gradientColor];
+//        [_doingBtn setBackgroundImage:[UIImage yy_imageWithColor:selectColor] forState:UIControlStateSelected];
+//        [_doingBtn setBackgroundImage:[UIImage yy_imageWithColor:[UIColor hexColor:@"8e2b25" alpha:0.5]] forState:UIControlStateNormal];
         [_doingBtn addTarget:self action:@selector(doingRiteHandle) forControlEvents:UIControlEventTouchUpInside];
     }
     return _doingBtn;
@@ -195,17 +193,22 @@
         [_finishedBtn setTitle:@"往期" forState:UIControlStateNormal];
         _finishedBtn.titleLabel.font = kRegular(15);
         [_finishedBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        //        [_stateBtn setImage:[UIImage imageNamed:@"rite_blackArrow"] forState:UIControlStateNormal];
+
         
-//        [_finishedBtn setTitleColor:WENGEN_RED forState:UIControlStateSelected];
-        //        [_stateBtn setImage:[UIImage imageNamed:@"rite_redArrow"] forState:UIControlStateSelected];
-        
-        [_finishedBtn setBackgroundImage:[UIImage yy_imageWithColor:[UIColor hexColor:@"8e2b25"]] forState:UIControlStateSelected];
-        [_finishedBtn setBackgroundImage:[UIImage yy_imageWithColor:[UIColor hexColor:@"8e2b25" alpha:0.5]] forState:UIControlStateNormal];
-        
+        [_finishedBtn setBackgroundColor:self.alphaColor];
+
         [_finishedBtn addTarget:self action:@selector(finishRiteHandle) forControlEvents:UIControlEventTouchUpInside];
     }
     return _finishedBtn;
+}
+
+-(UIColor *)gradientColor {
+    return [UIColor lgf_GradientFromColor:[UIColor hexColor:@"8e2b25" alpha:0.5] toColor:[UIColor hexColor:@"8e2b25" alpha:1] height:35];
+}
+
+
+-(UIColor *)alphaColor {
+    return [UIColor lgf_GradientFromColor:[UIColor hexColor:@"8e2b25" alpha:0.15] toColor:[UIColor hexColor:@"8e2b25" alpha:0.3] height:35];
 }
 
 //-(UIView *)bottomLine {

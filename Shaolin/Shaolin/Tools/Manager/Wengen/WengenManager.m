@@ -415,25 +415,40 @@
 ///(文创 商城) 新建收货地址文件
 -(void)getAddressListFile{
     /* 创建网络下载对象 */
-    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+//    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
     
     /* 下载地址 */
     NSURL *url = [NSURL URLWithString:ADD(URL_GET_AREA_LIST_TXT)];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+//    NSURLRequest *request = [NSURLRequest requestWithURL:url];
     /* 下载路径 */
     NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
     NSString *filePath = [path stringByAppendingPathComponent:url.lastPathComponent];
-    /* 开始请求下载 */
-    NSURLSessionDownloadTask *downloadTask = [manager downloadTaskWithRequest:request progress:^(NSProgress * _Nonnull downloadProgress) {
-    } destination:^NSURL * _Nonnull(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response) {
-        /* 设定下载到的位置 */
-        return [NSURL fileURLWithPath:filePath];
+//    /* 开始请求下载 */
+//    NSURLSessionDownloadTask *downloadTask = [manager downloadTaskWithRequest:request progress:^(NSProgress * _Nonnull downloadProgress) {
+//    } destination:^NSURL * _Nonnull(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response) {
+//        /* 设定下载到的位置 */
+//        return [NSURL fileURLWithPath:filePath];
+//
+//    } completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePathUrl, NSError * _Nullable error) {
+//        NSLog(@"下载完成");
+//        [ModelTool processingAddressData:filePath];
+//    }];
+//    [downloadTask resume];
+    
+    
+    [SLRequest downloadRequestWithApi:ADD(URL_GET_AREA_LIST_TXT) parameters:@"" downloadSavePath:filePath progress:^(double progress) {
+        NSLog(@"progress : %f", progress);
+    } success:^(id  _Nullable responseObject) {
         
-    } completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePathUrl, NSError * _Nullable error) {
+    } failure:^(NSString * _Nullable errorReason) {
+        
+    } finish:^(id  _Nullable responseObject, NSError * _Nullable error) {
         NSLog(@"下载完成");
         [ModelTool processingAddressData:filePath];
     }];
-    [downloadTask resume];
+    
+
+    
     [SLRequest refreshToken];
 }
 
@@ -1302,6 +1317,8 @@
             NSArray *dicArray = resultDic[DATAS][LIST];
             NSArray *dataList = [OrderDetailsModel mj_objectArrayWithKeyValuesArray:dicArray];
             if (call) call(dataList);
+        } else {
+            if (call) call(errorReason);
         }
     }];
     
@@ -1626,23 +1643,40 @@
 ///(文创 商城) 支付密码校验
 -(void)payPasswordCheck:(NSDictionary *)param Callback:(MessageCallBack)call{
     
-    
-    
     [SLRequest postJsonRequestWithApi:URL_POST_USER_PAYPASSWORDCHECK parameters:param success:^(NSDictionary * _Nullable resultDic) {
-    } failure:^(NSString * _Nullable errorReason) {
-    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
         
         Message *message = [[Message alloc]init];
-        BOOL isSuccess = NO;
-        if ([ModelTool checkResponseObject:resultDic]){
-            isSuccess = YES;
-        }else{
-            isSuccess = NO;
-        }
-        message.isSuccess = isSuccess;
-        message.reason = resultDic[MSG];
+        message.isSuccess = YES;
         
+        if ([resultDic isKindOfClass:[NSString class]]) {
+             message.reason = (NSString *)resultDic;
+        }else{
+            message.reason = resultDic[MSG];
+        }
+        
+       
         if (call) call(message);
+        
+    } failure:^(NSString * _Nullable errorReason) {
+        
+        Message *message = [[Message alloc]init];
+        message.isSuccess = NO;
+        message.reason = errorReason;
+        if (call) call(message);
+        
+    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
+        
+//        Message *message = [[Message alloc]init];
+//        BOOL isSuccess = NO;
+//        if ([ModelTool checkResponseObject:resultDic]){
+//            isSuccess = YES;
+//        }else{
+//            isSuccess = NO;
+//        }
+//        message.isSuccess = isSuccess;
+//        message.reason = resultDic[MSG];
+//        
+//        if (call) call(message);
     }];
     
     
@@ -1733,8 +1767,6 @@
         message.isSuccess = isSuccess;
         message.reason = resultDic[MSG];
         
-        
-        if (call) call(message);
         
         if (call) call(message);
     }];
@@ -2118,6 +2150,37 @@
     //    }];
 }
 
+///(文创 商城) ahq 猜你想问 列表
+-(void)getGuessList:(NSDictionary *)param Callback:(NSArrayCallBack)call{
+    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_AHP_GUESSLIST parameters:param success:^(NSDictionary * _Nullable resultDic) {
+    } failure:^(NSString * _Nullable errorReason) {
+    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
+        
+        if ([ModelTool checkResponseObject:resultDic]) {
+            
+            NSLog(@"dic : %@", resultDic);
+            
+            NSArray *dataArray;
+            if ([resultDic[DATAS] isKindOfClass:[NSArray class]] == YES) {
+                dataArray = resultDic[DATAS];
+            }else{
+                dataArray =  resultDic[DATAS][LIST];
+            }
+            
+            NSArray *dataList = [CustomerServieListModel mj_objectArrayWithKeyValuesArray:dataArray];
+            
+            if (call) {
+                call(dataList);
+            }
+            
+        }else{
+            if (call) {
+                call(nil);
+            }
+        }
+    }];
+    
+}
 
 #pragma mark - 构造单例
 +(instancetype)shareInstance{

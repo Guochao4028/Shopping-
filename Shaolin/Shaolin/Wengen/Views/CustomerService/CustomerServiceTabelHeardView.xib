@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -11,6 +11,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CustomerServiceTabelHeardView">
             <connections>
                 <outlet property="contentView" destination="iN0-l3-epB" id="RHk-4f-wgQ"/>
+                <outlet property="problemListViewH" destination="3Fj-Vx-d2Z" id="h8s-g7-lbL"/>
                 <outlet property="tableView" destination="45D-tC-iMI" id="7TM-LJ-B0p"/>
             </connections>
         </placeholder>
@@ -116,6 +117,7 @@
                     </subviews>
                     <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                     <constraints>
+                        <constraint firstAttribute="height" constant="256" id="3Fj-Vx-d2Z"/>
                         <constraint firstAttribute="trailing" secondItem="7Hb-Ia-Hph" secondAttribute="trailing" id="4QV-r8-kFh"/>
                         <constraint firstItem="7Hb-Ia-Hph" firstAttribute="leading" secondItem="3X1-nO-J3b" secondAttribute="leading" id="AbI-tO-4PP"/>
                         <constraint firstItem="7Hb-Ia-Hph" firstAttribute="top" secondItem="3X1-nO-J3b" secondAttribute="top" id="PV4-Oa-5a7"/>
@@ -140,7 +142,6 @@
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="3X1-nO-J3b" secondAttribute="bottom" constant="15" id="3F0-tc-fbo"/>
                 <constraint firstItem="gw1-H6-RMq" firstAttribute="top" secondItem="PmC-42-6fI" secondAttribute="bottom" constant="15" id="6wf-31-XW2"/>
                 <constraint firstItem="PmC-42-6fI" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="9NB-e6-0hH"/>
                 <constraint firstItem="gw1-H6-RMq" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="HFA-4a-9zW"/>
@@ -155,7 +156,7 @@
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
-            <point key="canvasLocation" x="46" y="8"/>
+            <point key="canvasLocation" x="-223" y="-38"/>
         </view>
     </objects>
     <resources>

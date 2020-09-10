@@ -1,6 +1,7 @@
 {
   "images" : [
     {
+      "filename" : "cer_bgImg.png",
       "idiom" : "universal",
       "scale" : "1x"
     },

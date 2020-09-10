@@ -10,7 +10,7 @@
 #import "RiteRegistrationFormViewController.h"
 #import "KungfuWebViewController.h"
 
-#import "RiteModel.h"
+#import "RitePastModel.h"
 #import "ActivityManager.h"
 #import "DefinedHost.h"
 
@@ -57,7 +57,6 @@ static NSString *const riteCellId = @"RitePastListCell";
     [super viewDidAppear:animated];
     
     self.navigationController.navigationBar.hidden = NO;
-//    [self.homeTableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationFade];
 }
 
 - (void)viewDidLoad {
@@ -67,7 +66,8 @@ static NSString *const riteCellId = @"RitePastListCell";
     
     [self initUI];
     
-    [self requestRiteList];
+
+    [self requestPastRiteList];
     [self requestTimeRange];
 }
 
@@ -108,7 +108,13 @@ static NSString *const riteCellId = @"RitePastListCell";
 #pragma mark - request
 
 - (void)requestTimeRange {
-    [ActivityManager getRiteRangeAndsuccess:^(NSDictionary * _Nullable resultDic) {
+    [ActivityManager getPastRiteRangeWithownedLabel:self.ownedLabel success:^(NSDictionary * _Nullable resultDic) {
+        
+        if (IsNilOrNull(resultDic)) {
+            self.timeChooseBtn.hidden = YES;
+            return;
+        }
+        
         int startDate = [resultDic[@"initialTime"] intValue];
         int endDate = [resultDic[@"endingTime"] intValue];
 
@@ -121,41 +127,28 @@ static NSString *const riteCellId = @"RitePastListCell";
         self.timePickerView.dataSourceArr = self.yearsRange;
         
     } failure:^(NSString * _Nullable errorReason) {
+        
+        self.timeChooseBtn.hidden = YES;
+        [ShaolinProgressHUD singleTextAutoHideHud:errorReason];
     } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
     }];
 }
 
-- (void)requestRiteList {
+- (void)requestPastRiteList {
     
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
 
     NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithDictionary:@{
         @"pageSize":@(30),
-        @"pageNum":@(self.pageNum)
+        @"pageNum":@(self.pageNum),
+        @"ownedLabel":self.ownedLabel,
+        @"year":self.yearStr
     }];
-    
-//    if (self.startYear && self.startMonth && self.endYear && self.endMonth) {
-//        NSString * startDate = [NSString stringWithFormat:@"%@-%@",self.startYear,[self converWithMonth:self.startMonth]];
-//        NSString * endDate = [NSString stringWithFormat:@"%@-%@",self.endYear,[self converWithMonth:self.endMonth]];
-//        [params setValue:startDate forKey:@"startDate"];
-//        [params setValue:endDate forKey:@"endDate"];
-//    }
-    
-    NSString * typeCode = @"";
-//    if (self.typeStr && ![self.typeStr isEqualToString:@"全部"]) {
-//        if ([self.typeStr isEqualToString:@"近期"]) {
-//            typeCode = @"1";
-//        }
-//        if ([self.typeStr isEqualToString:@"往期"]) {
-//            typeCode = @"2";
-//        }
-        [params setValue:typeCode forKey:@"type"];
-//    }
-    
-    [ActivityManager getRiteListWithParams:params success:^(NSDictionary * _Nullable resultDic) {
+ 
+    [ActivityManager getPastRiteListWithParams:[params copy] success:^(NSDictionary * _Nullable resultDic) {
         
         NSArray * data = resultDic[@"data"];
-        NSArray * dataList = [RiteModel mj_objectArrayWithKeyValuesArray:data];
+        NSArray * dataList = [RitePastModel mj_objectArrayWithKeyValuesArray:data];
         
         [self.riteList addObjectsFromArray:dataList];
         
@@ -172,6 +165,7 @@ static NSString *const riteCellId = @"RitePastListCell";
     } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
         [hud hideAnimated:YES];
     }];
+    
 }
 
 #pragma mark - event
@@ -216,7 +210,7 @@ static NSString *const riteCellId = @"RitePastListCell";
 //    WEAKSELF
     RitePastListCell * cell = [tableView dequeueReusableCellWithIdentifier:riteCellId];
     if (self.riteList.count) {
-        RiteModel * model = self.riteList[indexPath.row];
+        RitePastModel * model = self.riteList[indexPath.row];
         cell.cellModel = model;
         cell.isFirst = indexPath.row == 0;
     }
@@ -226,38 +220,41 @@ static NSString *const riteCellId = @"RitePastListCell";
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    RiteModel * model = self.riteList[indexPath.row];
-    KungfuWebViewController *webVC;
+    RitePastModel * model = self.riteList[indexPath.row];
     
-    switch ([model.pujaType intValue]) {
-        // 1:水路法会 2 普通法会 3 全年佛事 4 建寺安僧
-        case 1:{
-            webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteSL(model.pujaType, model.pujaCode, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_rite];
-            webVC.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:webVC animated:YES];
-        }
-            break;
-        case 2:{
-            webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteSL(model.pujaType, model.pujaCode, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_rite];
-            webVC.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:webVC animated:YES];
-        }
-            break;
-        case 3:{
-            
-        }
-            break;
-        case 4:{
-            webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteBuild(model.pujaType, model.pujaCode, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_rite];
-            webVC.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:webVC animated:YES];
-        }
-            break;
-        default:
-            break;
-    }
+    KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteDetail(model.code, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_rite];
+    webVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:webVC animated:YES];
+
+//    列表现在只会出现法会，所以直接跳转法会详情，不用判断
+//    switch ([model.type intValue]) {
+//        // 1:水陆法会 2 普通法会 3 全年佛事 4 建寺安僧
+//        case 1:{
+//
+//        }
+//            break;
+//        case 2:{
+//            webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteSL(model.type, model.code, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_rite];
+//            webVC.hidesBottomBarWhenPushed = YES;
+//            [self.navigationController pushViewController:webVC animated:YES];
+//        }
+//            break;
+//        case 3:{
+//
+//        }
+//            break;
+//        case 4:{
+//            webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteBuild(model.type, model.code, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_rite];
+//            webVC.hidesBottomBarWhenPushed = YES;
+//            [self.navigationController pushViewController:webVC animated:YES];
+//        }
+//            break;
+//        default:
+//            break;
+//    }
     
     if (webVC){
+        webVC.fillToView = YES;
         [webVC hideWebViewScrollIndicator];
     }
 }
@@ -294,17 +291,16 @@ static NSString *const riteCellId = @"RitePastListCell";
         
         [_homeTableView registerNib:[UINib nibWithNibName:NSStringFromClass([RitePastListCell class]) bundle:nil] forCellReuseIdentifier:riteCellId];
         
-//        [_homeTableView registerClass:[RiteFilterCell class] forCellReuseIdentifier:filterCellId];
         
         _homeTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
             weakSelf.pageNum = 1;
             [weakSelf.riteList removeAllObjects];
-            [weakSelf requestRiteList];
+            [weakSelf requestPastRiteList];
         }];
 
         _homeTableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
             weakSelf.pageNum++;
-            [weakSelf requestRiteList];
+            [weakSelf requestPastRiteList];
         }];
         
     }

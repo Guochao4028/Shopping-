@@ -106,16 +106,16 @@
  */
 - (void)postRealName:(NSString *)nameStr SexStr:(NSString *)sexStr IDCard:(NSString *)idCard Address:(NSString *)addressStr Positive:(NSString *)positiveStr Counter:(NSString *)counterStr Hands:(NSString *)handsStr Personal:(NSString *)personalStr Type:(NSString *)type birthTime:(NSString *)birthTime finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish {
     NSDictionary *params = @{
-        @"name":nameStr,
-        @"gender":sexStr,
-        @"idNum":idCard,
-        @"account":addressStr,
-        @"positive":positiveStr,
-        @"counter":counterStr,
-        @"hands":handsStr,
-        @"personal":personalStr,
-        @"type":type,
-        @"birthTime":birthTime,
+        @"name":nameStr ? nameStr : @"",
+        @"gender":sexStr ? sexStr : @"",
+        @"idNum":idCard ? idCard : @"",
+        @"account":addressStr ? addressStr : @"",
+        @"positive":positiveStr ? positiveStr : @"",
+        @"counter":counterStr ? counterStr : @"",
+        @"hands":handsStr ? handsStr : @"",
+        @"personal":personalStr ? personalStr : @"",
+        @"type":type ? type : @"",
+        @"birthTime":birthTime ? birthTime : @"",
     };
     [SLRequest postJsonRequestWithApi:Me_RealNameIdCard parameters:params success:nil failure:nil finish:finish];
     
@@ -125,6 +125,16 @@
  */
 - (void)getIdcardReasonBlock:(void (^_Nullable)(id responseObject, NSString *errorReason))finish {
     [SLRequest getRequestWithApi:Me_IdcardReason parameters:@{} success:nil failure:nil finish:finish];
+}
+
+//获取阿里实人认证token信息
+- (void)getPersonAuthenticationToken:(NSDictionary *)params finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish {
+    [SLRequest getRequestWithApi:Me_PersonAuthenticationToken parameters:params success:nil failure:nil finish:finish];
+}
+
+//获取阿里实人认证结果
+- (void)getPersonAuthenticationResult:(NSDictionary *)params finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish {
+    [SLRequest postHttpRequestWithApi:Me_PersonAuthenticationResult parameters:params success:nil failure:nil finish:finish];
 }
 /*
  *  退出登录
@@ -393,7 +403,7 @@
 }
 
 /**
- *  我的收藏 - 课程
+ *  我的收藏 - 教程
  */
 - (void)postMyCollectCourse:(NSDictionary *)params finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish {
     [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_COLLECT_MYCOLLECT parameters:params success:nil failure:nil finish:finish];

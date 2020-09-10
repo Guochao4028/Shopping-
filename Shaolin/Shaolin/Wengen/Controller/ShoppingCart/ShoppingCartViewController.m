@@ -46,6 +46,8 @@
 
 #import "KungfuClassDetailViewController.h"
 
+#import "SLRouteManager.h"
+
 static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCell";
 
 @interface ShoppingCartViewController ()<WengenNavgationViewDelegate, UITableViewDelegate, UITableViewDataSource, ShoppingCratTableCellDelegate, ShoppingCratHeadViewDelegate>
@@ -507,61 +509,23 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
         }
         
         if (goodsTypeSelect == NO) {
-            [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"课程和实物不能同时下单") view:self.view afterDelay:TipSeconds];
+            [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"教程和实物不能同时下单") view:self.view afterDelay:TipSeconds];
             return;
         }
         
         
         ShoppingCartGoodsModel *goodsModel  = [allSelectedGoodsArray firstObject];
-        //判断商品是否是课程
+        //判断商品是否是教程
         if ([goodsModel.type isEqualToString:@"2"]) {
-            //判断是否实名验证
-            SLAppInfoModel *model = [SLAppInfoModel sharedInstance];
-            //获取 实名状态   1：已认证  2：审核中 3：已拒绝 0：未认证
-            int verifiedState = [model.verifiedState intValue];
-            //如果实名就跳转填写订单
-            
-            if (verifiedState == 2) {
-                [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"实名认证正在审核中，请耐心等待") view:self.view afterDelay:TipSeconds];
-                return;
-            }else if (verifiedState == 1) {
+            SLRouteRealNameAuthenticationState state = [SLRouteManager pushRealNameAuthenticationState:self.navigationController showAlert:YES];
+            if (state == RealNameAuthenticationStateSuccess) {
+                //如果实名就跳转填写订单
                 OrderFillCourseViewController *orderFillCourseVC = [[OrderFillCourseViewController alloc]init];
                 
                 orderFillCourseVC.dataArray = modelMutabelArray;
                 
                 [self.navigationController pushViewController:orderFillCourseVC animated:YES];
-            }else{
-                
-                //如果没有实名就跳转实名认证
-                [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
-                [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
-                [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
-                [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
-                [SMAlert setAlertBackgroundColor:[UIColor colorWithWhite:0 alpha:0.5]];
-                UIView *customView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 300, 100)];
-                UILabel *title = [[UILabel alloc]initWithFrame:CGRectMake(0, 10, 300, 21)];
-                [title setFont:kMediumFont(15)];
-                [title setTextColor:[UIColor colorForHex:@"333333"]];
-                title.text = SLLocalizedString(@"实名认证");
-                [title setTextAlignment:NSTextAlignmentCenter];
-                [customView addSubview:title];
-                
-                UILabel *neirongLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, CGRectGetMaxY(title.frame)+10, 270, 38)];
-                [neirongLabel setFont:kRegular(13)];
-                [neirongLabel setTextColor:[UIColor colorForHex:@"333333"]];
-                neirongLabel.text = SLLocalizedString(@"您还没有实名认证，请进行实名认证");
-                neirongLabel.numberOfLines = 0;
-                [customView addSubview:neirongLabel];
-                
-                [SMAlert showCustomView:customView stroke:YES confirmButton:[SMButton initWithTitle:SLLocalizedString(@"实名认证") clickAction:^{
-                    
-                    //如果没有实名就跳转实名认证
-                    RealNameViewController *realNameVC = [[RealNameViewController alloc]init];
-                    [self.navigationController pushViewController:realNameVC animated:YES];
-                    
-                }] cancleButton:[SMButton initWithTitle:SLLocalizedString(@"取消") clickAction:nil]];
             }
-            
         }else{
             //如果是实物就直接跳转到填写订单
             OrderFillViewController *orderFillVC = [[OrderFillViewController alloc]init];
@@ -675,7 +639,7 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
         goodsDetailsVC.goodsModel = goodsItmeModel;
         [self.navigationController pushViewController:goodsDetailsVC animated:YES];
     }else{
-        //跳转到课程详情
+        //跳转到教程详情
         KungfuClassDetailViewController * vc = [[KungfuClassDetailViewController alloc]init];
         vc.classId = goodsModel.goods_id;
         [self.navigationController pushViewController:vc animated:YES];

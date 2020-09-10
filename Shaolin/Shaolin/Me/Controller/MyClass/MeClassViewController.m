@@ -21,7 +21,7 @@
     [super viewWillAppear:animated];
     [self wr_setNavBarShadowImageHidden:YES];
     [self wr_setNavBarBarTintColor:[UIColor colorForHex:@"8E2B25"]];
-    self.titleLabe.text = SLLocalizedString(@"我的课程");
+    self.titleLabe.text = SLLocalizedString(@"我的教程");
     self.titleLabe.textColor = [UIColor whiteColor];
     
     [self.leftBtn setImage:[UIImage imageNamed:@"real_left"] forState:(UIControlStateNormal)];

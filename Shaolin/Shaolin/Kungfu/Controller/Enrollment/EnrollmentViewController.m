@@ -358,7 +358,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
         [NSKeyedArchiver archiveRootObject:self.historyArray toFile:KGoodsHistorySearchPath];
     }
     
-    if ([self.typeString isEqualToString:SLLocalizedString(@"课程")]) {
+    if ([self.typeString isEqualToString:SLLocalizedString(@"教程")]) {
         KungfuClassListViewController *resultVC = [[KungfuClassListViewController alloc]init];
         resultVC.searchText = searchStr;
         [self.navigationController pushViewController:resultVC animated:YES];
@@ -482,7 +482,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
             cell.backgroundColor = UIColor.clearColor;
             cell.contentView.backgroundColor = UIColor.clearColor;
             
-            NSArray * list = @[SLLocalizedString(@"课程"),SLLocalizedString(@"活动"),SLLocalizedString(@"机构")];
+            NSArray * list = @[SLLocalizedString(@"教程"),SLLocalizedString(@"活动"),SLLocalizedString(@"机构")];
             cell.textLabel.text = list[indexPath.row];
             cell.textLabel.font = kRegular(12);
             cell.textLabel.textColor = [UIColor hexColor:@"333333"];
@@ -522,7 +522,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     [self hideSearchTypeTable];
     
     if (tableView == self.searchTypeTable) {
-        NSArray * list = @[SLLocalizedString(@"课程"),SLLocalizedString(@"活动"),SLLocalizedString(@"机构")];
+        NSArray * list = @[SLLocalizedString(@"教程"),SLLocalizedString(@"活动"),SLLocalizedString(@"机构")];
         self.typeString = list[indexPath.row];
     } else {
         if (indexPath.section != 0) {

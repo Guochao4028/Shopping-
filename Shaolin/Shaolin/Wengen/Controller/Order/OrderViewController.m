@@ -79,6 +79,7 @@
 #import "RiteRegistrationDetailsViewController.h"
 
 #import "RiteOrderDetailViewController.h"
+#import  "SLRouteManager.h"
 
 @interface OrderViewController ()<UITableViewDelegate, UITableViewDataSource, OrdeItmeTableViewCellDelegate, OrdeMoreItmeTableViewCellDelegate, OrderAfterSalesItmeTableViewCellDelegate, RiteOrderTableViewCellDelegate>
 
@@ -271,6 +272,7 @@
     
     CheckstandViewController *checkstandVC = [[CheckstandViewController alloc]init];
     
+    checkstandVC.isOrderState = YES;
     
     checkstandVC.activityCode = nil;
     
@@ -424,14 +426,15 @@
                             [orderItmeCell setListModel:self.dataArray[indexPath.row]];
                             [orderItmeCell setDelegate:self];
                             cell = orderItmeCell;
-                        }else if ([goods_typeStr isEqualToString:@"5"] || [goods_typeStr isEqualToString:@"6"] || [goods_typeStr isEqualToString:@"7"]){
+                        }else if ([goods_typeStr isEqualToString:@"5"] || [goods_typeStr isEqualToString:@"6"] || [goods_typeStr isEqualToString:@"7"]|| [goods_typeStr isEqualToString:@"8"]){
+//                            1：实物，2：教程，3：报名，5:法事佛事类型-法会，6:法事佛事类型-佛事， 7:法事佛事类型-建寺供僧 8:普通法会 4:交流会
                             RiteOrderTableViewCell *riteOrderCell = [tableView dequeueReusableCellWithIdentifier:@"RiteOrderTableViewCell"];
                             [riteOrderCell setListModel:self.dataArray[indexPath.row]];
                             [riteOrderCell setDelegate:self];
                             cell = riteOrderCell;
                             
                             
-                        }else{
+                        }else if ([goods_typeStr isEqualToString:@"2"] || [goods_typeStr isEqualToString:@"3"] || [goods_typeStr isEqualToString:@"4"]){
                             WEAKSELF
                             KungfuOrderItemCell *orderItmeCell = [tableView dequeueReusableCellWithIdentifier:@"KungfuOrderItemCell"];
                             orderItmeCell.orderModel = model;
@@ -454,6 +457,11 @@
                             };
                             
                             cell = orderItmeCell;
+                        }else{
+                            RiteOrderTableViewCell *riteOrderCell = [tableView dequeueReusableCellWithIdentifier:@"RiteOrderTableViewCell"];
+                           [riteOrderCell setListModel:self.dataArray[indexPath.row]];
+                           [riteOrderCell setDelegate:self];
+                           cell = riteOrderCell;
                         }
                         
                     }else{
@@ -668,7 +676,7 @@
             orderDetailsVC.orderPrice = model.order_car_money;
             
             [self.navigationController pushViewController:orderDetailsVC animated:YES];
-        }else if ([goodsModel.goods_type isEqualToString:@"5"] || [goodsModel.goods_type isEqualToString:@"6"] || [goodsModel.goods_type isEqualToString:@"7"]){
+        }else if ([goodsModel.goods_type isEqualToString:@"5"] || [goodsModel.goods_type isEqualToString:@"6"] || [goodsModel.goods_type isEqualToString:@"7"]|| [goodsModel.goods_type isEqualToString:@"8"]){
             
             RiteOrderDetailViewController *orderDetailsVC = [[RiteOrderDetailViewController alloc]init];
             
@@ -677,13 +685,20 @@
             
             [self.navigationController pushViewController:orderDetailsVC animated:YES];
             
-        }else{
+        }else if ([goodsModel.goods_type isEqualToString:@"2"] || [goodsModel.goods_type isEqualToString:@"3"] || [goodsModel.goods_type isEqualToString:@"4"]){
             
             KungfuOrderDetailViewController *orderDetailsVC = [[KungfuOrderDetailViewController alloc]init];
             
             orderDetailsVC.orderId = model.order_car_sn;
             orderDetailsVC.orderPrice = model.order_car_money;
             
+            [self.navigationController pushViewController:orderDetailsVC animated:YES];
+        }else{
+            RiteOrderDetailViewController *orderDetailsVC = [[RiteOrderDetailViewController alloc]init];
+                       
+                       orderDetailsVC.orderId = model.order_car_sn;
+                       orderDetailsVC.orderPrice = model.order_car_money;
+                       
             [self.navigationController pushViewController:orderDetailsVC animated:YES];
         }
         
@@ -852,6 +867,7 @@
     CheckstandViewController *checkstandVC = [[CheckstandViewController alloc]init];
     
     checkstandVC.activityCode = nil;
+    checkstandVC.isOrderState = YES;
     
     if ([goods_type isEqualToString:@"3"]) {
         checkstandVC.activityCode = goodsModel.cate_id;
@@ -1110,7 +1126,7 @@
     }
     
     if (goodsTypeSelect == NO) {
-        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"课程和实物不能同时下单") view:WINDOWSVIEW afterDelay:TipSeconds];
+        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"教程和实物不能同时下单") view:WINDOWSVIEW afterDelay:TipSeconds];
         return;
     }
     
@@ -1127,6 +1143,7 @@
     
     CheckstandViewController *checkstandVC = [[CheckstandViewController alloc]init];
     checkstandVC.activityCode = nil;
+    checkstandVC.isOrderState = YES;
     
     if ([goods_type isEqualToString:@"3"]) {
         checkstandVC.activityCode = goodsModel.cate_id;
@@ -1467,7 +1484,7 @@
     }
     
     if (goodsTypeSelect == NO) {
-        [ShaolinProgressHUD singleTextHud:@"课程和实物不能同时下单" view:WINDOWSVIEW afterDelay:TipSeconds];
+        [ShaolinProgressHUD singleTextHud:@"教程和实物不能同时下单" view:WINDOWSVIEW afterDelay:TipSeconds];
         return;
     }
     
@@ -1492,9 +1509,16 @@
         checkstandVC.isCourse = YES;
     }
     
+    checkstandVC.isOrderState = YES;
     checkstandVC.goodsAmountTotal = [NSString stringWithFormat:@"￥%@", model.order_car_money];
     checkstandVC.order_no = model.order_car_sn;
     
+    //TODO:法会订单支付成功后展示祝福语
+    if ([goodsModel isRiteGoodsType]){
+        checkstandVC.paySuccessfulBlock = ^(NSString * _Nonnull orderCode) {
+            [SLRouteManager pushRiteBlessingViewController:self.navigationController orderCode:orderCode];
+        };
+    }
     [self.navigationController pushViewController:checkstandVC animated:YES];
     
 }

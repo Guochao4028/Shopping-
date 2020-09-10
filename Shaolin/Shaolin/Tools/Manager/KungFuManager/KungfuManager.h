@@ -17,14 +17,27 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)sharedInstance;
 
 // 热门城市
--(void)postHotCitySuccess:(void (^)(NSURLSessionDataTask * task, id responseObject))success failure:(void (^)(NSURLSessionDataTask * task, NSError * error))failure;
+//-(void)postHotCitySuccess:(void (^)(NSURLSessionDataTask * task, id responseObject))success failure:(void (^)(NSURLSessionDataTask * task, NSError * error))failure;
+-(void)postHotCitySuccess:(SLSuccessDicBlock)success
+                  failure:(SLFailureReasonBlock)failure
+                   finish:(SLFinishedResultBlock)finish;
+
+
 // 活动分类
--(void)classificationSuccess:(void (^)(NSURLSessionDataTask * task, id responseObject))success failure:(void (^)(NSURLSessionDataTask * task, NSError * error))failure;
+//-(void)classificationSuccess:(void (^)(NSURLSessionDataTask * task, id responseObject))success failure:(void (^)(NSURLSessionDataTask * task, NSError * error))failure;
+
+-(void)classificationSuccess:(SLSuccessDicBlock)success
+                     failure:(SLFailureReasonBlock)failure
+                      finish:(SLFinishedResultBlock)finish;
 
 /*
 * 分类查询适配活动 || 段 品阶 品查询适配活动
 */
-- (void)activityList:(NSDictionary *)params Success:(void (^)(NSURLSessionDataTask * task, id responseObject))success failure:(void (^)(NSURLSessionDataTask * task, NSError * error))failure;
+//- (void)activityList:(NSDictionary *)params Success:(void (^)(NSURLSessionDataTask * task, id responseObject))success failure:(void (^)(NSURLSessionDataTask * task, NSError * error))failure;
+- (void)activityList:(NSDictionary *)params
+             Success:(SLSuccessDicBlock)success
+             failure:(SLFailureReasonBlock)failure
+              finish:(SLFinishedResultBlock)finish;
 
 
 /// 活动分类
@@ -41,7 +54,7 @@ NS_ASSUME_NONNULL_BEGIN
 -(void)activityCheckedLevel:(NSDictionary *)param callbacl:(NSObjectCallBack)call;
 
 
-///热门课程
+///热门教程
 -(void)getHotClassListAndCallback:(NSArrayCallBack)call;
 ///热门活动
 -(void)getHotActivityListAndCallback:(NSArrayCallBack)call;
@@ -55,13 +68,13 @@ NS_ASSUME_NONNULL_BEGIN
 -(void)getScoreList:(NSDictionary *)params callback:(NSArrayCallBack)call;
 ////成绩详情查询
 -(void)getScoreDetailWithParams:(NSDictionary *)params callbacl:(NSObjectCallBack)call;
-///课程列表查询
+///教程列表查询
 -(void)getClassWithDic:(NSDictionary *)dic ListAndCallback:(NSArrayCallBack)call;
 ///获取机构列表
 -(void)getInstitutionListWithDic:(NSDictionary *)dic ListAndCallback:(NSArrayCallBack)call;
-///收藏课程
+///收藏教程
 -(void)getClassCollectWithDic:(NSDictionary *)dic callback:(MessageCallBack)call;
-// 取消收藏课程
+// 取消收藏教程
 - (void)postClassCancelCollectWithDic:(NSDictionary *)dic callback:(MessageCallBack)call;
 ///提交报名信息
 -(void)applicationsSaveWithDic:(NSDictionary *)dic callback:(MessageCallBack)call;
@@ -81,9 +94,9 @@ NS_ASSUME_NONNULL_BEGIN
 ///保存答题
 -(void)getSaveExaminationWithDic:(NSDictionary *)dic callback:(MessageCallBack)call;
 
-///课程详情
+///教程详情
 -(void)getClassDetailWithDic:(NSDictionary *)dic callback:(NSDictionaryCallBack)call;
-///添加课程观看历史
+///添加教程观看历史
 -(void)setCourseReadHistory:(NSDictionary *)dict callback:(NSDictionaryCallBack)call;
 
 ///提交机构报名信息

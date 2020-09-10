@@ -7,23 +7,22 @@
 //
 
 #import "SLSearchResultViewController.h"
-#import "SLSearchView.h"
-#import "AllSearchViewController.h"
-#import "SLSearchResultView.h"
-#import "HomeManager.h"
-
-#import "SinglePhotoCell.h"
-#import "MorePhotoCell.h"
-#import "StickCell.h"
-#import "AdvertisingOneCell.h"
-
-#import "FoundModel.h"
-#import "AllTableViewCell.h"
 #import "FoundVideoListVc.h"
 #import "FoundDetailsViewController.h"
-#import "PureTextTableViewCell.h"
+#import "KungfuWebViewController.h"
+#import "AllSearchViewController.h"
+
+
+#import "SLSearchResultView.h"
 #import "SLSearchTableViewCell.h"
+
+#import "HomeManager.h"
+#import "ActivityManager.h"
+
+#import "FoundModel.h"
+
 #import "NSString+Tool.h"
+#import "DefinedHost.h"
 
 @interface SLSearchResultViewController ()<UITextFieldDelegate,UITableViewDelegate,UITableViewDataSource,DZNEmptyDataSetSource,DZNEmptyDataSetDelegate>
 @property(nonatomic,strong) UITextField *textField;
@@ -31,147 +30,33 @@
 @property(nonatomic,strong) UITableView *tableView;
 @property(nonatomic,strong) NSMutableArray *foundArray;
 @property (nonatomic, copy) NSString *totalStr;
-@property (nonatomic, assign) NSInteger pager;
+@property (nonatomic, assign) NSInteger pageNum;
 @property (nonatomic, assign) NSInteger pageSize;
 @end
 
 @implementation SLSearchResultViewController
+
 -(void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
     self.navigationController.navigationBar.hidden = YES;
 }
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.pageSize = 30;
+    
+    
     self.view.backgroundColor = [UIColor whiteColor];
+    
+    self.pageNum = 1;
+    self.pageSize = 30;
+    
     self.textField.text = self.searchStr;
+    
     [self setupUI];
-    [self searchData:self.searchStr];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerCellAction:) name:@"VideoPlayerAction" object:nil];
-    self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-        [self searchData:self.searchStr];
-    }];
-    self.tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
-        // 上拉加载
-        [self loadNowMoreAction:self.searchStr];
-    }];
-    
-    
-    
-    [self.view addSubview:self.tableView];
-    [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(0);
-        make.top.mas_equalTo(NavBar_Height);
-        make.width.mas_equalTo(kWidth);
-        make.height.mas_equalTo(kHeight-NavBar_Height);
-    }];
-    
-    
-    
-    [self registerCell];
-    
 }
--(void)playerCellAction:(NSNotification *)user
-{
-    NSDictionary *dic = user.userInfo;
-    NSIndexPath *indexpath = [dic objectForKey:@"indexPath"];
-    
-    FoundModel *model = self.foundArray[indexpath.row];
-    if ([model.type isEqualToString:@"3"]) {
-        // 是广告
-        [[SLAppInfoModel sharedInstance] advertEventResponseWithFoundModel:model];
-    } else
-    {
-        FoundVideoListVc *vC = [[FoundVideoListVc alloc]init];
-           vC.hidesBottomBarWhenPushed = YES;
-           vC.fieldId = model.fieldId;
-           vC.videoId = model.id;
-           vC.tabbarStr = @"Found";
-           vC.typeStr = @"1";
-           [self.navigationController pushViewController:vC animated:YES];
-    }
-}
--(void)searchData:(NSString *)searchStr
-{
-    self.pager = 1;
-    NSString *pageSizeStr = [NSString stringWithFormat:@"%ld", self.pageSize];
-    
-    [self.tableView.mj_footer resetNoMoreData];
-    
-    [[HomeManager sharedInstance] getSearchTabbarStr:self.tabbarStr Serach:searchStr PageNum:@"1" PageSize:pageSizeStr Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
-        NSLog(@"%@",responseObject);
-        if ([[responseObject objectForKey:@"code"] integerValue]==200) {
-            NSArray *arr = [solveJsonData changeType:[[responseObject objectForKey:@"data"] objectForKey:@"data"]];
-            NSString *total = [[responseObject objectForKey:@"data"] objectForKey:@"total"];
-            if (arr.count >0) {
-                if ([total integerValue] > self.pager*self.pageSize) {
-                    self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
-                        [self loadNowMoreAction:searchStr];
-                    }];
-                }
-//                else {
-//                    self.tableView.mj_footer.hidden = YES;
-//                }
-                [self.tableView setHidden:NO];
-                self.foundArray = [FoundModel mj_objectArrayWithKeyValuesArray:arr];
-                [self.tableView reloadData];
-                [self.tableView.mj_header endRefreshing];
-            }else
-            {
-                [self.foundArray removeAllObjects];
-                [self.tableView.mj_header endRefreshing];
-                self.tableView.mj_footer.hidden = YES;
-                [self.tableView reloadData];
-                
-//                self.tableView.hidden = YES;
-            }
-        }else
-        {
-//            self.tableView.hidden = YES;
-            self.tableView.mj_footer.hidden = YES;
-            [self.tableView.mj_header endRefreshing];
-            [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
-            [self.tableView.mj_footer endRefreshingWithNoMoreData];
-        }
-    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-        [self.tableView.mj_header endRefreshing];
-        [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
-    }];
-    
-    
-}
-#pragma mark - 上拉加载
--(void)loadNowMoreAction:(NSString *)searchStr
-{
-    self.pager ++;
-    NSString *pageSizeStr = [NSString stringWithFormat:@"%ld", self.pageSize];
-    [[HomeManager sharedInstance] getSearchTabbarStr:self.tabbarStr Serach:searchStr PageNum:[NSString stringWithFormat:@"%tu",self.pager] PageSize:pageSizeStr Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
-        if ([[responseObject objectForKey:@"code"] integerValue]==200) {
-            NSArray *arr = [FoundModel mj_objectArrayWithKeyValuesArray:[solveJsonData changeType:[[responseObject objectForKey:@"data"] objectForKey:@"data"]]];
-            if (arr.count <1) {
-                [self.tableView.mj_header endRefreshing];
-                [self.tableView.mj_footer endRefreshingWithNoMoreData];
-            }else
-            {
-                [self.foundArray addObjectsFromArray:arr];
-                [self.tableView reloadData];
-                [self.tableView.mj_footer endRefreshing];
-            }
-        }else
-        {
-            [ShaolinProgressHUD singleTextHud:responseObject[@"message"] view:self.view afterDelay:TipSeconds];
-        }
-        
-    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-        [self.tableView.mj_footer endRefreshing];
-        [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
-    }];
-    
-    
-}
--(void)setupUI
-{
+
+- (void)setupUI {
     self.navigationController.navigationBar.hidden =YES;
     
     UIView *view = [[UIView alloc] init];
@@ -188,9 +73,6 @@
     UIButton *leftBtn = [[UIButton alloc]init];
     
     [leftBtn setImage:[UIImage imageNamed:@"left"] forState:(UIControlStateNormal)];
-    //    [self.left setTitle:@"" forState:(UIControlStateNormal)];
-    //    self.left.titleEdgeInsets = UIEdgeInsetsMake(0, 30, 0, 0);
-    //           leftBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 45);
     [leftBtn addTarget:self action:@selector(leftAction) forControlEvents:(UIControlEventTouchUpInside)];
     [self.view addSubview:leftBtn];
     [leftBtn mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -247,62 +129,165 @@
         make.height.mas_equalTo(1);
         make.top.mas_equalTo(view.mas_bottom).offset(SLChange(7));
     }];
+    
+    [self.view addSubview:self.tableView];
+    
+    [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(0);
+        make.top.mas_equalTo(NavBar_Height);
+        make.width.mas_equalTo(kWidth);
+        make.height.mas_equalTo(kHeight-NavBar_Height-kBottomSafeHeight);
+    }];
+        
+    [self.tableView.mj_header beginRefreshing];
 }
--(void)searchAction
-{
-    if (self.textField.text.length == 0) {
-        [self.foundArray removeAllObjects];
-        [self.tableView reloadData];
-//        self.tableView.hidden = YES;
-        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"搜索内容不能为空") view:self.view afterDelay:TipSeconds];
-    }else
-    {
-        self.searchStr = self.textField.text;
-        [self searchData:self.searchStr];
+
+#pragma mark - request
+- (void)requestSearchResultList {
+    
+    [self.foundArray removeAllObjects];
+    
+    if (self.isRite) {
+        [self searchRite];
+    } else {
+        [self searchActivity];
     }
 }
+
+- (void)searchActivity {
+    
+    NSString * pageNum = [NSString stringWithFormat:@"%ld",self.pageNum];
+    NSString * pageSize = [NSString stringWithFormat:@"%ld",self.pageSize];
+    
+//    [[HomeManager sharedInstance] getSearchTabbarStr:self.tabbarStr Serach:self.searchStr PageNum:pageNum PageSize:pageSize Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+//            NSLog(@"%@",responseObject);
+//            if ([[responseObject objectForKey:@"code"] integerValue]==200) {
+//                
+//                NSArray *arr = [solveJsonData changeType:[[responseObject objectForKey:@"data"] objectForKey:@"data"]];
+//                    
+//                [self.foundArray addObjectsFromArray:[FoundModel mj_objectArrayWithKeyValuesArray:arr]];
+//                
+//                [self.tableView.mj_header endRefreshing];
+//                [self.tableView.mj_footer endRefreshing];
+//                [self.tableView reloadData];
+//                    
+//            }
+//        } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+//            [self.tableView.mj_header endRefreshing];
+//            [self.tableView.mj_footer endRefreshing];
+//            [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
+//        }];
+    
+    
+    [[HomeManager sharedInstance]getSearchTabbarStr:self.tabbarStr Serach:self.searchStr PageNum:pageNum PageSize:pageSize Success:^(NSDictionary * _Nullable resultDic) {
+        
+    } failure:^(NSString * _Nullable errorReason) {
+        
+    } finish:^(NSDictionary * _Nullable responseObject, NSString * _Nullable errorReason) {
+        NSLog(@"%@",responseObject);
+        if ([[responseObject objectForKey:@"code"] integerValue]==200) {
+            
+            NSArray *arr = [solveJsonData changeType:[[responseObject objectForKey:@"data"] objectForKey:@"data"]];
+                
+            [self.foundArray addObjectsFromArray:[FoundModel mj_objectArrayWithKeyValuesArray:arr]];
+            
+        }
+        [self.tableView.mj_header endRefreshing];
+                   [self.tableView.mj_footer endRefreshing];
+                   [self.tableView reloadData];
+    }];
+}
+
+- (void)searchRite {
+    
+    NSDictionary * parames = @{@"search":self.searchStr};
+    [ActivityManager getSearchRiteListWithParams:parames success:^(NSDictionary * _Nullable resultDic) {
+        
+        NSArray * data = resultDic[@"data"];
+        
+        if (data.count) {
+            for (NSDictionary * dic in data) {
+                FoundModel * m = [FoundModel new];
+                m.title = NotNilAndNull(dic[@"name"])?dic[@"name"]:@"";
+                m.type = NotNilAndNull(dic[@"type"])?dic[@"type"]:@"";
+                m.code = NotNilAndNull(dic[@"code"])?dic[@"code"]:@"";
+                m.author = @"";
+                m.isRite = YES;
+                
+                [self.foundArray addObject:m];
+            }
+        }
+        
+        [self.tableView reloadData];
+        
+    } failure:^(NSString * _Nullable errorReason) {
+        
+        [ShaolinProgressHUD singleTextAutoHideHud:errorReason];
+    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
+        
+        [self.tableView.mj_header endRefreshing];
+        [self.tableView.mj_footer endRefreshing];
+    }];
+}
+
+
+#pragma mark - event
+- (void)leftAction {
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)searchAction {
+    
+    if (self.textField.text.length == 0) {
+        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请输入搜索内容") view:self.view afterDelay:TipSeconds];
+        return;
+    } else {
+        self.searchStr = self.textField.text;
+    }
+    
+    [self setHistoryArrWithStr:self.searchStr];
+    [self requestSearchResultList];
+    [self.view endEditing:YES];
+}
+
+- (void)setHistoryArrWithStr:(NSString *)str
+{
+    if (str.length == 0) {
+        return;;
+    }
+    
+    for (int i = 0; i < _historyArray.count; i++) {
+        if ([_historyArray[i] isEqualToString:str]) {
+            [_historyArray removeObjectAtIndex:i];
+            break;
+        }
+    }
+    [_historyArray insertObject:str atIndex:0];
+    [NSKeyedArchiver archiveRootObject:_historyArray toFile:KHistorySearchPath];
+}
+
+#pragma mark - textFieldDelegate
+
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-    
-    NSLog(@"点击了搜索");
-    
-    
     if (self.textField.text.length == 0) {
-        [self.foundArray removeAllObjects];
-        [self.tableView reloadData];
-//        self.tableView.hidden = YES;
-        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"搜索内容不能为空") view:self.view afterDelay:TipSeconds];
-    }else
-    {
+        self.searchStr = @"";
+    } else {
         self.searchStr = self.textField.text;
-        [self searchData:self.searchStr];
     }
-    [_textField resignFirstResponder];
-    return YES;
     
+    [self requestSearchResultList];
+    [self.view endEditing:YES];
+    
+    return YES;
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    
     if ([NSString isContainsEmoji:string]) {
         return NO;
     }
     return YES;
-}
-
--(void)registerCell
-{
-    
-    [_tableView registerClass:[SinglePhotoCell class]
-       forCellReuseIdentifier:NSStringFromClass([SinglePhotoCell class])];
-    
-    [_tableView registerClass:[MorePhotoCell class]
-       forCellReuseIdentifier:NSStringFromClass([MorePhotoCell class])];
-    [_tableView registerClass:[PureTextTableViewCell class]
-       forCellReuseIdentifier:NSStringFromClass([PureTextTableViewCell class])];
-    
-    [_tableView registerClass:[StickCell class] forCellReuseIdentifier:NSStringFromClass([StickCell class])];
-    [_tableView registerClass:[AdvertisingOneCell class] forCellReuseIdentifier:NSStringFromClass([AdvertisingOneCell class])];
-    [_tableView registerClass:[SLSearchTableViewCell class] forCellReuseIdentifier:NSStringFromClass([SLSearchTableViewCell class])];
 }
 
 #pragma mark - DZNEmptyDataSetDelegate && dataSource
@@ -346,36 +331,43 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     FoundModel *model = self.foundArray[indexPath.row];
 
-    if ([model.type isEqualToString:@"3"]) {
-        // 是广告
-        [[SLAppInfoModel sharedInstance] advertEventResponseWithFoundModel:model];
-    }else{
-       NSInteger clicksCount = [model.clicks integerValue];
-        clicksCount += 1;
-        model.clicks = [NSString stringWithFormat:@"%ld",clicksCount];
-        [self.foundArray setObject:model atIndexedSubscript:indexPath.row];
-        [_tableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section], nil] withRowAnimation:UITableViewRowAnimationNone];
-        
-        if ([model.kind isEqualToString:@"3"]) {
-            FoundVideoListVc *vC = [[FoundVideoListVc alloc]init];
-            vC.hidesBottomBarWhenPushed = YES;
-            vC.fieldId = model.fieldId;
-            vC.videoId = model.id;
-            vC.tabbarStr = @"Found";
-            vC.typeStr = @"1";
-            [self.navigationController pushViewController:vC animated:YES];
-        } else {
-            FoundDetailsViewController *vC = [[FoundDetailsViewController alloc]init];
-            vC.idStr = model.id;
-            vC.tabbarStr = self.tabbarStr;
-            vC.typeStr = @"1";
-            vC.stateStr = !model.state ? @"" : model.state;
-            vC.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:vC animated:YES];
+    if (model.isRite) {
+        KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteDetail(model.code, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_rite];
+        webVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:webVC animated:YES];
+        webVC.fillToView = YES;
+        [webVC hideWebViewScrollIndicator];
+    } else {
+        if ([model.type isEqualToString:@"3"]) {
+            // 是广告
+            [[SLAppInfoModel sharedInstance] advertEventResponseWithFoundModel:model];
+        }else{
+           NSInteger clicksCount = [model.clicks integerValue];
+            clicksCount += 1;
+            model.clicks = [NSString stringWithFormat:@"%ld",clicksCount];
+            [self.foundArray setObject:model atIndexedSubscript:indexPath.row];
+            [_tableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section], nil] withRowAnimation:UITableViewRowAnimationNone];
+            
+            if ([model.kind isEqualToString:@"3"]) {
+                FoundVideoListVc *vC = [[FoundVideoListVc alloc]init];
+                vC.hidesBottomBarWhenPushed = YES;
+                vC.fieldId = model.fieldId;
+                vC.videoId = model.id;
+                vC.tabbarStr = @"Found";
+                vC.typeStr = @"1";
+                [self.navigationController pushViewController:vC animated:YES];
+            } else {
+                FoundDetailsViewController *vC = [[FoundDetailsViewController alloc]init];
+                vC.idStr = model.id;
+                vC.tabbarStr = self.tabbarStr;
+                vC.typeStr = @"1";
+                vC.stateStr = !model.state ? @"" : model.state;
+                vC.hidesBottomBarWhenPushed = YES;
+                [self.navigationController pushViewController:vC animated:YES];
+            }
         }
     }
 }
@@ -386,9 +378,37 @@
     return model.cellHeight;
 }
 
--(void)leftAction
-{
-    [self.navigationController popViewControllerAnimated:YES];
+#pragma mark - Getters
+- (UITableView *)tableView {
+    WEAKSELF
+    if (!_tableView) {
+        _tableView = [[UITableView alloc] init];
+        _tableView.delegate = self;
+        _tableView.dataSource = self;
+        _tableView.showsVerticalScrollIndicator = NO;
+        _tableView.showsHorizontalScrollIndicator = NO;
+        _tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+        _tableView.tableFooterView = [UIView new];
+        _tableView.emptyDataSetSource = self;
+        _tableView.emptyDataSetDelegate = self;
+        
+        [_tableView registerClass:[SLSearchTableViewCell class] forCellReuseIdentifier:NSStringFromClass([SLSearchTableViewCell class])];
+
+        
+        _tableView.separatorColor = [UIColor colorWithRed:238/255.0 green:238/255.0 blue:238/255.0 alpha:1.0];
+        
+        _tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+            weakSelf.pageNum = 1;
+            [weakSelf.foundArray removeAllObjects];
+            [weakSelf requestSearchResultList];
+        }];
+
+        _tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
+            weakSelf.pageNum++;
+            [weakSelf requestSearchResultList];
+        }];
+    }
+    return _tableView;
 }
 
 -(UITextField *)textField
@@ -410,24 +430,11 @@
     return _textField;
 }
 
-#pragma mark - Getters
-- (UITableView *)tableView {
-    if (!_tableView) {
-        _tableView = [[UITableView alloc] init];
-        _tableView.delegate = self;
-        _tableView.dataSource = self;
-        _tableView.showsVerticalScrollIndicator = NO;
-        _tableView.showsHorizontalScrollIndicator = NO;
-        _tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-        _tableView.tableFooterView = [UIView new];
-        _tableView.emptyDataSetSource = self;
-        _tableView.emptyDataSetDelegate = self;
-        
-        _tableView.separatorColor = [UIColor colorWithRed:238/255.0 green:238/255.0 blue:238/255.0 alpha:1.0];
-        
+-(NSMutableArray *)foundArray {
+    if (!_foundArray) {
+        _foundArray = [NSMutableArray new];
     }
-    return _tableView;
+    return _foundArray;
 }
-
 
 @end

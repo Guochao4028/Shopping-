@@ -26,12 +26,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 @protocol WJMCheckBoxViewDelegate <NSObject>
+@optional
 - (void)checkboxView:(WJMCheckBoxView *)checkboxView didSelectItemAtIdentifier:(NSString *)identifier;
 - (void)checkboxView:(WJMCheckBoxView *)checkboxView didDeselectItemAtIdentifier:(NSString *)identifier;
 @end
 
 @interface WJMCheckBoxView : UIView
-//default [btns count];
+/*!default [btns count];*/
 @property (nonatomic) NSUInteger maximumValue;
 @property (nonatomic, weak) id<WJMCheckBoxViewDelegate>delegate;
 /*! 如果实现block，则不会进入代理方法, identifier为button的identifier, WJMCheckBoxView的identifier需要自己获取*/

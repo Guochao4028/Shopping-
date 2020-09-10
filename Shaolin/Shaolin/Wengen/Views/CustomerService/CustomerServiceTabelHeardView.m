@@ -15,6 +15,10 @@
 @property (strong, nonatomic) IBOutlet UIView *contentView;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 
+//默认 256
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *problemListViewH;
+
+
 
 @end
 
@@ -40,6 +44,8 @@
      [_tableView registerNib:[UINib nibWithNibName:NSStringFromClass([CustomerServiceHeardTableCell class])bundle:nil] forCellReuseIdentifier:@"CustomerServiceHeardTableCell"];
     
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    
+    self.problemListViewH.constant = 0;
 }
 
 #pragma mark - UITableViewDelegate, UITableViewDataSource
@@ -70,6 +76,9 @@
 #pragma mark - setter / getter
 -(void)setDataArray:(NSArray *)dataArray{
     _dataArray = dataArray;
+    if ([dataArray count]) {
+        self.problemListViewH.constant = 256;
+    }
     [self.tableView reloadData];
 }
 

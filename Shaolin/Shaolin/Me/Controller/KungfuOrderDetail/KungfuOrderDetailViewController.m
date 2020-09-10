@@ -162,6 +162,9 @@
         
         if([object isKindOfClass:[NSArray class]] == YES){
             NSArray *tmpArray = (NSArray *)object;
+            if (tmpArray.count == 0){
+                [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"订单获取异常")];
+            }
             
             NSArray *temp = [tmpArray copy];
             NSString *status = @"9";
@@ -202,6 +205,8 @@
             }
       
             [self.tableView reloadData];
+        } else if ([object isKindOfClass:[NSString class]]){
+            [ShaolinProgressHUD singleTextAutoHideHud:(NSString *)object];
         }
     }];
 }
@@ -219,6 +224,7 @@
     checkstandVC.goodsAmountTotal = [NSString stringWithFormat:@"￥%@", self.orderPrice];
     checkstandVC.order_no = self.detailsModel.order_sn;
     checkstandVC.isCourse = YES;
+    checkstandVC.isOrderState = YES;
     [self.navigationController pushViewController:checkstandVC animated:YES];
 }
 

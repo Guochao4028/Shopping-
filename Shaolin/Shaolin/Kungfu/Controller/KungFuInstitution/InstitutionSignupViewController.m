@@ -60,11 +60,13 @@
             2,单选  （选择 性别 男 女 ）
             3,下拉列表
      isEditor : 1 可以编辑， 2 不可编辑
-     
+     itemType 区分 证书显示名 1 or 性别 2
+     item1Title 标题
+     item2Title 标题
      */
     self.dataArray = @[
         @{@"title":SLLocalizedString(@"姓      名："), @"type":@"1", @"isEditor":@"1"},
-         @{@"title":SLLocalizedString(@"性      别："), @"type":@"2"},
+        @{@"title":SLLocalizedString(@"性      别："), @"type":@"2", @"itemType":@"2", @"item1Title":@"男", @"item2Title":@"女", @"isEditor":@"1"},
         @{@"title":SLLocalizedString(@"年      龄："), @"type":@"1", @"isEditor":@"1"},
         @{@"title":SLLocalizedString(@"联系方式："), @"type":@"1", @"isEditor":@"1"},
         @{@"title":SLLocalizedString(@"通讯地址："), @"type":@"1", @"isEditor":@"1"},
@@ -112,7 +114,7 @@
         return;
     }
     
-    if (telephone.length >= 7 && telephone.length <= 12) {
+    if (!(telephone.length >= 7 && telephone.length <= 12)) {
            [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请填写正确手机号") view:WINDOWSVIEW afterDelay:TipSeconds];
            return;
        }

@@ -33,6 +33,8 @@
 
 #import "ActivityManager.h"
 
+#import "CustomerServicViewController.h"
+
 
 
 @interface RiteOrderDetailViewController ()<WengenNavgationViewDelegate, UITableViewDelegate, UITableViewDataSource, RiteOrderDetailFooterViewDelegate>
@@ -47,6 +49,8 @@
 @property(nonatomic, strong) NSMutableArray * ordersubInfoList;
 @property(nonatomic, strong) RiteOrderDetailHeaderView * headerView;
 @property(nonatomic, strong) RiteOrderDetailFooterView *footerView;
+
+@property(nonatomic, copy)NSString *im;
 
 
 @end
@@ -142,12 +146,16 @@
         self.headerView.frame = CGRectMake(0, 0, self.headerView.width, 110);
         
         [self.orderInfoList addObject:@"支付时间："];
-        [self.orderInfoList addObject:@"发票类型："];
-        
         //支付时间
         [self.ordersubInfoList addObject:NotNilAndNull(self.detailsModel.pay_time)?self.detailsModel.pay_time:@""];
-        //发票类型
-        [self.ordersubInfoList addObject:self.detailsModel.invoiceTypeString];
+        
+        if ([orderModel.order_check integerValue] == 1) {
+            [self.orderInfoList addObject:@"发票类型："];
+            //发票类型
+            [self.ordersubInfoList addObject:self.detailsModel.invoiceTypeString];
+        }
+        
+        
     }
 }
 
@@ -158,6 +166,9 @@
         
         if([object isKindOfClass:[NSArray class]] == YES){
             NSArray *tmpArray = (NSArray *)object;
+            if (tmpArray.count == 0){
+                [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"订单获取异常")];
+            }
             
             NSArray *temp = [tmpArray copy];
             NSString *status = @"9";
@@ -189,6 +200,8 @@
                 NSString * realName = resultDic[@"zhaizhuName"];
                 NSString * telephone = resultDic[@"contactNumber"];
                 
+                self.im = resultDic[@"pujaServiceIMId"];
+                
                 self.detailsModel.name = realName;
                 self.detailsModel.phone = telephone;
                 [self.headerView setDetailsModel:self.detailsModel];
@@ -200,6 +213,8 @@
             
       
             [self.tableView reloadData];
+        } else if ([object isKindOfClass:[NSString class]]){
+            [ShaolinProgressHUD singleTextAutoHideHud:(NSString *)object];
         }
     }];
 }
@@ -215,6 +230,7 @@
     
     CheckstandViewController *checkstandVC = [[CheckstandViewController alloc]init];
     checkstandVC.goodsAmountTotal = [NSString stringWithFormat:@"￥%@", self.orderPrice];
+    checkstandVC.isOrderState = YES;
     checkstandVC.order_no = self.detailsModel.order_sn;
     [self.navigationController pushViewController:checkstandVC animated:YES];
 }
@@ -223,8 +239,13 @@
 // 联系客服
 - (void)contactCustomerService:(UIButton *)btn{
 //    NSInteger indexTag =  btn.tag - 100;
-    EMChatViewController *chatVC = [[EMChatViewController alloc] initWithConversationId:@"2" type:EMConversationTypeChat createIfNotExist:YES];
-    [self.navigationController pushViewController:chatVC animated:YES];
+    
+    CustomerServicViewController *servicVC = [[CustomerServicViewController alloc]init];
+    servicVC.servicType = @"2";
+    servicVC.imID = self.im;
+    [self.navigationController pushViewController:servicVC animated:YES];
+//    EMChatViewController *chatVC = [[EMChatViewController alloc] initWithConversationId:@"2" type:EMConversationTypeChat createIfNotExist:YES];
+//    [self.navigationController pushViewController:chatVC animated:YES];
 }
 
 // 删除订单
@@ -570,6 +591,8 @@
         _headerView.timeOutHandle = ^{
 
             weakSelf.detailsModel.status = @"7";
+            
+            weakSelf.detailsModel.cannel = @"支付超时";
 
             [weakSelf.headerView setDetailsModel:weakSelf.detailsModel];
 //            [weakSelf.footerView setDetailsModel:weakSelf.detailsModel];

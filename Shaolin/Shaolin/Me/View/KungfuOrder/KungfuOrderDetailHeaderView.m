@@ -80,10 +80,10 @@
          ([currentTime integerValue] - [createTime integerValue]) 剩下的时间
          */
         /**
-         课程和商品 是30分钟
+         教程和商品 是30分钟
          活动和法会 是2个小时  120分钟
          */
-        ///1：实物，2：课程，3：报名，5:法事佛事类型-法会，6:法事佛事类型-佛事， 7:法事佛事类型-建寺供僧
+        ///1：实物，2：教程，3：报名，5:法事佛事类型-法会，6:法事佛事类型-佛事， 7:法事佛事类型-建寺供僧
         NSInteger timeDifference = (1800 - ([currentTime integerValue] - create));
         if ([detailsModel.type intValue] == 3) {
             timeDifference =((120 * 60) - ([currentTime integerValue] - create));

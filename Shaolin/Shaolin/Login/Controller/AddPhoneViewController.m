@@ -101,7 +101,7 @@
     }];
     CGFloat leftPadding = SLChange(37.5), rightPadding = -SLChange(37.5);
     CGFloat topPadding = SLChange(46);
-    CGFloat textFieldLeftPadding = SLChange(30), textFieldRightPadding = -SLChange(30);
+    CGFloat textFieldLeftPadding = SLChange(10), textFieldRightPadding = -SLChange(10);
     CGFloat operationTypeLabelHeight = SLChange(28);
     CGFloat textFieldBackViewHeight = SLChange(45);
     CGFloat finishButtonHeight = SLChange(45);
@@ -228,14 +228,17 @@
         if (password.length < 8){
             [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"请输入最少8位密码")];
         } else if ([password isEqualToString:password2]){
-            [self.view endEditing:YES];
-            
-            [ShaolinProgressHUD defaultSingleLoadingWithText:nil];
+            if ([password passwordComplexityVerification]){
+                [self.view endEditing:YES];
+                [ShaolinProgressHUD defaultSingleLoadingWithText:nil];
 #ifdef AddPhoneViewController_ProcedureTesting
-            [self login:@"18510023002" password:@"11111111"];
+                [self login:@"18510023002" password:@"11111111"];
 #else
-            [self login:self.phoneNumber password:password code:self.code certCode:certCode];
+                [self login:self.phoneNumber password:password code:self.code certCode:certCode];
 #endif
+            } else {
+                [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"密码需要包含字母大小写和数字，请重新输入")];
+            }
         } else {
             [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"两次密码不一致，请重新输入")];
         }
@@ -457,23 +460,13 @@
 //    }];
     
     [[LoginManager sharedInstance]postCheckCodePhoneNumber:phoneNumber code:code codeType:codeType Success:^(NSDictionary * _Nullable resultDic) {
-        
-        if ([ModelTool checkResponseObject:resultDic]){
-            if (success) success();
-        } else {
-            NSString *message = [resultDic objectForKey:MSG];
-            [ShaolinProgressHUD singleTextAutoHideHud:message];
-            if (failure) failure();
-        }
-        
+        if (success) success();
     } failure:^(NSString * _Nullable errorReason) {
         if (failure) failure();
         [ShaolinProgressHUD singleTextAutoHideHud:errorReason];
     } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
         
     }];
-    
-    
 }
 
 - (void)postSendCodePhoneNumber:(NSString *)phoneNumber codeType:(NSString *)codeType{
@@ -554,7 +547,7 @@
     //        [ShaolinProgressHUD singleTextAutoHideHud:kNetErrorPrompt];
     //    }];
     
-    [[LoginManager sharedInstance]postRigestPhoneNumber:phoneNumber PassWord:password Code:self.codeTextField.text certCode:code Success:^(NSDictionary * _Nullable resultDic) {
+    [[LoginManager sharedInstance]postRigestPhoneNumber:phoneNumber PassWord:password Code:code certCode:certCode Success:^(NSDictionary * _Nullable resultDic) {
         [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"绑定成功")];
         if (weakSelf.addPhoneSuccess) (weakSelf.addPhoneSuccess(resultDic));
     } failure:^(NSString * _Nullable errorReason) {
@@ -615,7 +608,7 @@
 }
 
 - (void)setDefaultTextFieldPlaceholder{
-    [self setextFieldPlaceholder:SLLocalizedString(@"请输入8-16位密码") textField:self.passwordTextField];
+    [self setextFieldPlaceholder:SLLocalizedString(@"密码至少8个字符，必须包含字母、数字") textField:self.passwordTextField];
     [self setextFieldPlaceholder:SLLocalizedString(@"请确认密码") textField:self.passwordTextField2];
     
     [self setextFieldPlaceholder:SLLocalizedString(@"请输入手机号") textField:self.phoneNumberTextField];
@@ -623,7 +616,10 @@
 }
 
 - (void)setextFieldPlaceholder:(NSString *)placeholder textField:(UITextField *)textField{
-    textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeholder attributes:@{NSForegroundColorAttributeName: [UIColor colorForHex:@"999999"]}];
+    textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeholder attributes:@{
+        NSForegroundColorAttributeName: [UIColor colorForHex:@"999999"],
+        NSFontAttributeName : kRegular(14),
+    }];
 }
 
 - (UIView *)createTextFieldBackView{

@@ -42,7 +42,7 @@ static NSString *const typeCellId = @"typeTableCell";
     [super viewDidLoad];
     
     
-    self.typeString = SLLocalizedString(@"课程");
+    self.typeString = SLLocalizedString(@"教程");
     [self initUI];
 }
 
@@ -84,7 +84,7 @@ static NSString *const typeCellId = @"typeTableCell";
     cell.backgroundColor = UIColor.clearColor;
     cell.contentView.backgroundColor = UIColor.clearColor;
     
-    NSArray * list = @[SLLocalizedString(@"课程"),SLLocalizedString(@"活动"),SLLocalizedString(@"机构")];
+    NSArray * list = @[SLLocalizedString(@"教程"),SLLocalizedString(@"活动"),SLLocalizedString(@"机构")];
     cell.textLabel.text = list[indexPath.row];
     cell.textLabel.font = kRegular(12);
     cell.textLabel.textColor = [UIColor hexColor:@"333333"];
@@ -112,7 +112,7 @@ static NSString *const typeCellId = @"typeTableCell";
 //    if (indexPath.row == 2) {
 //        self.classType = KfClassType_pay;
 //    }
-    NSArray * list = @[SLLocalizedString(@"课程"),SLLocalizedString(@"活动"),SLLocalizedString(@"机构")];
+    NSArray * list = @[SLLocalizedString(@"教程"),SLLocalizedString(@"活动"),SLLocalizedString(@"机构")];
     self.typeString = list[indexPath.row];
     [self hideTypeTable];
 }
@@ -156,13 +156,13 @@ static NSString *const typeCellId = @"typeTableCell";
     [view addSubview:image];
     UILabel *titleL = [[UILabel alloc] initWithFrame:CGRectMake(SLChange(35), SLChange(15), kWidth - SLChange(95), SLChange(16))];
     titleL.text = title;
-    titleL.font = [UIFont systemFontOfSize:16];
-    titleL.textColor = [UIColor blackColor];
+    titleL.font = kMediumFont(16);
+    titleL.textColor = [UIColor hexColor:@"333333"];
     titleL.textAlignment = NSTextAlignmentLeft;
     [view addSubview:titleL];
     
     if ([title isEqualToString:SLLocalizedString(@"搜索历史")]) {
-        image.frame = CGRectMake(SLChange(11), SLChange(15), SLChange(16), SLChange(16));
+        image.frame = CGRectMake(11, SLChange(15), 17, 17);
          image.image = [UIImage imageNamed:@"history_search"];
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
         btn.frame = CGRectMake(kWidth - 45, 10, 28, 30);
@@ -275,13 +275,13 @@ static NSString *const typeCellId = @"typeTableCell";
 
 - (UIView *)setNoHistoryView {
     UIView *historyView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.navgationView.frame), kWidth, SLChange(80))];
-    UIImageView *image = [[UIImageView alloc]initWithFrame:CGRectMake(SLChange(11), SLChange(10), SLChange(16), SLChange(16))];
+    UIImageView *image = [[UIImageView alloc]initWithFrame:CGRectMake(11, SLChange(15), 17, 17)];
     image.image = [UIImage imageNamed:@"history_search"];
     
-    UILabel *titleL = [[UILabel alloc] initWithFrame:CGRectMake(SLChange(35), SLChange(10), kWidth - SLChange(50), SLChange(16))];
+    UILabel *titleL = [[UILabel alloc] initWithFrame:CGRectMake(SLChange(35), SLChange(15), kWidth - SLChange(50), SLChange(16))];
     titleL.text = SLLocalizedString(@"搜索历史");
-    titleL.font = [UIFont systemFontOfSize:16];
-    titleL.textColor = [UIColor blackColor];
+    titleL.font = kMediumFont(16);
+    titleL.textColor = [UIColor hexColor:@"333333"];
     titleL.textAlignment = NSTextAlignmentLeft;
     
     UILabel *notextL = [[UILabel alloc] initWithFrame:CGRectMake(SLChange(35), CGRectGetMaxY(titleL.frame) + SLChange(20), SLChange(100), SLChange(20))];
@@ -298,7 +298,7 @@ static NSString *const typeCellId = @"typeTableCell";
 
 - (void) requestSearchWithText:(NSString *)text {
     if (text.length == 0) {
-        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"搜索内容不能为空") view:self.view afterDelay:TipSeconds];
+        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请输入搜索内容") view:self.view afterDelay:TipSeconds];
         return;
     }
     if ([self.historyArray containsObject:text]) {
@@ -325,7 +325,7 @@ static NSString *const typeCellId = @"typeTableCell";
 
 
 - (void) pushResultControllerWithSearchText:(NSString *)text {
-    if ([self.typeString isEqualToString:SLLocalizedString(@"课程")]) {
+    if ([self.typeString isEqualToString:SLLocalizedString(@"教程")]) {
         KungfuClassListViewController *resultVC = [[KungfuClassListViewController alloc]init];
         resultVC.searchText = text;
         [self.navigationController pushViewController:resultVC animated:YES];

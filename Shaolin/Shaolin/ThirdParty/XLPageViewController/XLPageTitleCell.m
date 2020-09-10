@@ -67,6 +67,7 @@
 }
 
 - (void)configCellOfSelected:(BOOL)selected {
+    self.textLabel.backgroundColor = selected ? self.config.backgroundSelectedColor : self.config.backgroundNormalColor;
     self.textLabel.textColor = selected ? self.config.titleSelectedColor : self.config.titleNormalColor;
     self.textLabel.font = selected ? self.config.titleSelectedFont : self.config.titleNormalFont;
     XLPageTitleLabel *label = (XLPageTitleLabel *)self.textLabel;

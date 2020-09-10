@@ -12,7 +12,8 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface RiteSecondLevelListViewController : RootViewController
-
+@property (nonatomic, copy) NSString *pujaType;
+@property (nonatomic, copy) NSString *pujaCode;
 @end
 
 NS_ASSUME_NONNULL_END

@@ -10,6 +10,7 @@
 #import "PersonDataEditVc.h"
 #import "ChangePasswordVc.h"
 #import "RealNameViewController.h"
+#import "SelectAuthenticationMethodViewController.h"
 #import "AddressViewController.h"
 #import "PayPasswordVc.h"
 #import "MeManager.h"
@@ -57,6 +58,10 @@
 
 - (void)setDicData:(NSDictionary *)dicData{
     _dicData = dicData;
+    for (UIViewController *vc in self.navigationController.viewControllers){
+        if (![[vc class] isKindOfClass:[SelectAuthenticationMethodViewController class]]) continue;
+        [(SelectAuthenticationMethodViewController *)vc setParams:dicData];
+    }
     [self getData];
 }
 
@@ -185,6 +190,7 @@
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    
      static NSString *cellIdentifier = @"cellID";
      UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
      if (!cell)
@@ -241,16 +247,17 @@
             ChangePasswordVc *v = [[ChangePasswordVc alloc]init];
             [self.navigationController pushViewController:v animated:YES];
         } else if (indexPath.row == 1) {
-            if ([[self.dicData objectForKey:@"verifiedState"] integerValue]==1) {
-                [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"实名认证已经认证成功!") view:self.view afterDelay:TipSeconds];
-                return;
-            }
-            if ([[self.dicData objectForKey:@"verifiedState"] integerValue]==2) {
-                [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"实名认证正在审核中!") view:self.view afterDelay:TipSeconds];
-                return;
-            }
-            
-            RealNameViewController *v  =[[RealNameViewController alloc]init];
+//            if ([[self.dicData objectForKey:@"verifiedState"] integerValue]==1) {
+//                [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"实名认证已经认证成功!") view:self.view afterDelay:TipSeconds];
+//                return;
+//            }
+//            if ([[self.dicData objectForKey:@"verifiedState"] integerValue]==2) {
+//                [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"实名认证正在审核中!") view:self.view afterDelay:TipSeconds];
+//                return;
+//            }
+//            RealNameViewController *v  =[[RealNameViewController alloc]init];
+            SelectAuthenticationMethodViewController *v = [[SelectAuthenticationMethodViewController alloc] init];
+            v.params = self.dicData;
             [self.navigationController pushViewController:v animated:YES];
         }else if (indexPath.row == 2){ //支付密码
             PayPasswordVc * v = [PayPasswordVc new];

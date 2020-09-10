@@ -11,6 +11,8 @@
 #import "ActivityManager.h"
 #import "MyRiteCellModel.h"
 #import "RiteRegistrationDetailsViewController.h"
+#import "KungfuWebViewController.h"
+#import "DefinedHost.h"
 
 static NSString *const riteCellId = @"MyRiteRegisteredCell";
 
@@ -75,7 +77,7 @@ static NSString *const riteCellId = @"MyRiteRegisteredCell";
 }
 
 - (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView {
-    NSString *text = @"暂无报名法会";
+    NSString *text = SLLocalizedString(@"暂无报名");
     
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont boldSystemFontOfSize:15.0f],
                                  NSForegroundColorAttributeName: [UIColor hexColor:@"999999"]};
@@ -103,16 +105,32 @@ static NSString *const riteCellId = @"MyRiteRegisteredCell";
     MyRiteCellModel * model = self.riteList[indexPath.row];
     cell.riteModel = model;
     
+    cell.detailSelectHandle = ^{
+
+        RiteRegistrationDetailsViewController * vc = [RiteRegistrationDetailsViewController new];
+        vc.orderCode = model.orderCode;
+        [self.navigationController pushViewController:vc animated:YES];
+    };
+    
     return cell;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     MyRiteCellModel * model = self.riteList[indexPath.row];
+    NSString *url;
+    NSString *token = [SLAppInfoModel sharedInstance].access_token;
     
-    RiteRegistrationDetailsViewController * vc = [RiteRegistrationDetailsViewController new];
-    vc.orderCode = model.orderCode;
-    [self.navigationController pushViewController:vc animated:YES];
+    if ([model.type isEqualToString:@"3"] || [model.type isEqualToString:@"4"]) {
+        url = URL_H5_RiteThreeDetail(model.type, model.code, model.buddhismTypeId, token);
+    }else{
+        url = URL_H5_RiteDetail(model.code, token);
+       
+    }
+    
+    KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:url type:KfWebView_rite];
+    webVC.fillToView = YES;
+    [self.navigationController pushViewController:webVC animated:YES];
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -122,7 +140,7 @@ static NSString *const riteCellId = @"MyRiteRegisteredCell";
 - (UITableView *)infoTable {
     WEAKSELF
     if (!_infoTable) {
-        _infoTable = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, kWidth, kHeight - kNavBarHeight - kStatusBarHeight) style:(UITableViewStylePlain)];
+        _infoTable = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, kWidth, kHeight - kNavBarHeight - kStatusBarHeight - kBottomSafeHeight) style:(UITableViewStylePlain)];
         _infoTable.delegate = self;
         _infoTable.dataSource = self;
         _infoTable.backgroundColor = UIColor.whiteColor;

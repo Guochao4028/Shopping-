@@ -168,6 +168,7 @@
 #pragma mark - setter / getter
 
 -(void)setListModel:(OrderListModel *)listModel{
+    
     _listModel = listModel;
     
     [self.numberLabel setText:[NSString stringWithFormat:@"功德编号：%@", listModel.order_sn]];
@@ -210,12 +211,23 @@
         // 已完成
         [self p_finished];
         
-        BOOL is_invoice = [goodsModel.is_invoice boolValue];
-           NSString *buttonTitle = @"查看发票";
-           if (is_invoice == NO) {
-               buttonTitle = @"补开发票";
-           }
-        [self.secondButton setTitle:buttonTitle forState:UIControlStateNormal];
+       NSInteger order_check = [goodsModel.order_check integerValue];
+        
+        if (order_check == 1) {
+            BOOL is_invoice = [goodsModel.is_invoice boolValue];
+               NSString *buttonTitle = @"查看发票";
+               if (is_invoice == NO) {
+                   buttonTitle = @"补开发票";
+               }
+            [self.secondButton setTitle:buttonTitle forState:UIControlStateNormal];
+        }else{
+            [self.secondButton setHidden:YES];
+               
+            self.secondButtonW.constant = 0;
+            self.intervalW.constant = 0;
+        }
+        
+        
         
     }else if(status == 6 || status == 7){
         // 已取消
@@ -262,7 +274,7 @@
 - (IBAction)firstButonAction:(UIButton *)sender {
     NSString *title = sender.titleLabel.text;
     
-    if ([title isEqualToString:@"报名详情"]) {
+    if ([title isEqualToString:@"详情"]) {
         if ([self.delegate respondsToSelector:@selector(riteOrderTableViewCell: subjects:)]) {
             [self.delegate riteOrderTableViewCell:self subjects:self.listModel];
         }

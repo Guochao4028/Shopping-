@@ -16,12 +16,15 @@ NS_ASSUME_NONNULL_BEGIN
 /*!法会活动type*/
 @property (nonatomic, copy) NSString *pujaType;
 /*!法会活动name*/
-@property (nonatomic, copy) NSString *pujaName;
+@property (nonatomic, copy) NSString *name;
 /*!法会活动简介*/
-@property (nonatomic, copy) NSString *pujaIntroduction;
+@property (nonatomic, copy) NSString *introduction;
 /*!法会缩略图*/
-@property (nonatomic, copy) NSString *thumbnailUrl;
+@property (nonatomic, copy) NSString *imgUrl;
 
+@property (nonatomic, copy) NSString *buddhismId;
+@property (nonatomic, copy) NSString *buddhismTypeId;
+@property (nonatomic, copy) NSString *classif;
 /*!是否点赞*/
 @property (nonatomic, copy) NSString *collectionsState;
 @end

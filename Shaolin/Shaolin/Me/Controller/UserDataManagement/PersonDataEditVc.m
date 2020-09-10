@@ -446,20 +446,36 @@
 }
 - (void)submitPhoto:(NSData *)fileData {
     [ShaolinProgressHUD defaultSingleLoadingWithText:SLLocalizedString(@"正在上传图片")];
-    [[HomeManager sharedInstance] postSubmitPhotoWithFileData:fileData isVedio:NO Success:^(NSURLSessionDataTask *task, id responseObject) {
-        NSDictionary *dic = responseObject;
-        NSLog(@"submitPhoto+++%@", dic);
-        if ([[dic objectForKey:@"code"] isEqualToString:@"200"]) {
-            [ShaolinProgressHUD hideSingleProgressHUD];
-            self.headerUrl = [NSString stringWithFormat:@"%@",[dic objectForKey:@"data"]];
-            [self.headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.headerUrl]]];
-        } else {
-            [ShaolinProgressHUD singleTextHud:[dic objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
-        }
-    } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        NSLog(@"%@",error.debugDescription);
-        [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
-    }];
+//    [[HomeManager sharedInstance] postSubmitPhotoWithFileData:fileData isVedio:NO Success:^(NSURLSessionDataTask *task, id responseObject) {
+//        NSDictionary *dic = responseObject;
+//        NSLog(@"submitPhoto+++%@", dic);
+//        if ([[dic objectForKey:@"code"] isEqualToString:@"200"]) {
+//            [ShaolinProgressHUD hideSingleProgressHUD];
+//            self.headerUrl = [NSString stringWithFormat:@"%@",[dic objectForKey:@"data"]];
+//            [self.headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.headerUrl]]];
+//        } else {
+//            [ShaolinProgressHUD singleTextHud:[dic objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
+//        }
+//    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+//        NSLog(@"%@",error.debugDescription);
+//        [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
+//    }];
+//    
+    
+    [[HomeManager sharedInstance]postSubmitPhotoWithFileData:fileData isVedio:NO Success:^(NSDictionary * _Nullable resultDic) {
+       } failure:^(NSString * _Nullable errorReason) {
+       } finish:^(NSDictionary * _Nullable responseObject, NSString * _Nullable errorReason) {
+          NSDictionary *dic = responseObject;
+           NSLog(@"submitPhoto+++%@", dic);
+           if ([[dic objectForKey:@"code"] isEqualToString:@"200"]) {
+               [ShaolinProgressHUD hideSingleProgressHUD];
+               self.headerUrl = [NSString stringWithFormat:@"%@",[dic objectForKey:@"data"]];
+               [self.headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.headerUrl]]];
+           } else {
+               [ShaolinProgressHUD singleTextHud:[dic objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
+           }
+           
+       }];
 }
 -(UILabel *)nameLabel
 {

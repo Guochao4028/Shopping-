@@ -75,7 +75,7 @@
 
 #pragma mark - test
 - (void)testUI{
-    self.courseTitleLabel.text = SLLocalizedString(@"少林弓步冲拳课程");
+    self.courseTitleLabel.text = SLLocalizedString(@"少林弓步冲拳教程");
     self.descLabel.text = SLLocalizedString(@"少林小通臂拳具有完整的技术 和理论体系。它以武术技艺...");
     self.priceLabel.text = [NSString stringWithFormat:@"￥%@", @"265.66"];
     [self.courseVideoImageView sd_setImageWithURL:[NSURL URLWithString:@"https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1142166796,2385197542&fm=26&gp=0.jpg"] placeholderImage:nil];

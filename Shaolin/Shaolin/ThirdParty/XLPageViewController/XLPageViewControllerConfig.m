@@ -14,6 +14,8 @@
     XLPageViewControllerConfig *config = [[XLPageViewControllerConfig alloc] init];
     
     //标题-----------------------------------
+    config.backgroundNormalColor = [UIColor clearColor];
+    config.backgroundSelectedColor = [UIColor clearColor];
     //默认未选中标题颜色 灰色
     config.titleNormalColor = [UIColor colorWithRed:51/255.0 green:51/255.0 blue:51/255.0 alpha:1.0];
     //默认选中标题颜色 黑色

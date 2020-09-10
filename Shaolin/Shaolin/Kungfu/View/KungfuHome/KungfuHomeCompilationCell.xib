@@ -25,14 +25,14 @@
                                 <color key="textColor" red="0.9882352941176471" green="0.99607843137254903" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="新人都在学这些课程" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gTt-S2-mBS">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="新人都在学这些教程" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gTt-S2-mBS">
                                 <rect key="frame" x="16" y="68" width="255" height="15"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <color key="textColor" red="0.98823529409999999" green="0.99607843139999996" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eAW-ND-gWT">
-                                <rect key="frame" x="16" y="106" width="256" height="43"/>
+                                <rect key="frame" x="16" y="106" width="256" height="77"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
@@ -40,13 +40,13 @@
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Sfp-RR-D4t">
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Sfp-RR-D4t">
                                 <rect key="frame" x="16" y="164" width="255" height="20"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="20" id="tY3-cf-2pv"/>
                                 </constraints>
                                 <state key="normal" title="查看更多">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <color key="titleColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                                 </state>
                                 <connections>
                                     <action selector="moreBtnHandle:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="tKe-pI-6fG"/>
@@ -62,10 +62,10 @@
                             <constraint firstItem="eAW-ND-gWT" firstAttribute="top" secondItem="gTt-S2-mBS" secondAttribute="bottom" constant="23" id="F8d-3U-Kdl"/>
                             <constraint firstAttribute="trailing" secondItem="eAW-ND-gWT" secondAttribute="trailing" constant="16" id="LgU-Pi-KKi"/>
                             <constraint firstItem="Sfp-RR-D4t" firstAttribute="leading" secondItem="rJo-6e-nfO" secondAttribute="leading" constant="16" id="U5d-bi-aqs"/>
-                            <constraint firstItem="Sfp-RR-D4t" firstAttribute="top" secondItem="eAW-ND-gWT" secondAttribute="bottom" constant="15" id="Wv3-nW-H9n"/>
                             <constraint firstItem="gTt-S2-mBS" firstAttribute="leading" secondItem="8J2-1r-m7z" secondAttribute="leading" id="aZo-lX-pb3"/>
                             <constraint firstItem="gTt-S2-mBS" firstAttribute="trailing" secondItem="8J2-1r-m7z" secondAttribute="trailing" id="fdA-Wa-7KM"/>
                             <constraint firstAttribute="trailing" secondItem="Sfp-RR-D4t" secondAttribute="trailing" constant="17" id="ncz-r0-is7"/>
+                            <constraint firstAttribute="bottom" secondItem="eAW-ND-gWT" secondAttribute="bottom" constant="16" id="vI1-EA-2VB"/>
                             <constraint firstAttribute="bottom" secondItem="Sfp-RR-D4t" secondAttribute="bottom" constant="15" id="wvp-78-9DS"/>
                             <constraint firstItem="gTt-S2-mBS" firstAttribute="top" secondItem="8J2-1r-m7z" secondAttribute="bottom" constant="9" id="wwH-fN-F6x"/>
                         </constraints>

@@ -110,7 +110,44 @@
     [self getData];
 }
 - (void)getData {
-    [[HomeManager sharedInstance] getHomeVideoListFieldld:@"" TabbarStr:@"Found" VideoId:self.model.id PageNum:@"1" PageSize:@"30" Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+//    [[HomeManager sharedInstance] getHomeVideoListFieldld:@"" TabbarStr:@"Found" VideoId:self.model.id PageNum:@"1" PageSize:@"30" Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+//        if ([[responseObject objectForKey:@"code"] integerValue]== 200) {
+//            NSArray *arr = [[responseObject objectForKey:@"data"] objectForKey:@"data"];
+//            NSString *collection;
+//            NSString *praise;
+//            
+//            for (NSDictionary *dic in arr) {
+//                praise =[NSString stringWithFormat:@"%@", [dic objectForKey:@"praise"]];
+//                collection = [NSString stringWithFormat:@"%@",[dic objectForKey:@"collection"]];
+//                self.collectionStr = [NSString stringWithFormat:@"%@",[dic objectForKey:@"collections"]];
+//                self.praiseStr = [NSString stringWithFormat:@"%@",[dic objectForKey:@"praises"]];
+//            }
+//            if ([praise isEqualToString:@"1"]) {
+//                [self.praiseBtn setSelected:NO];
+//            }else {
+//                [self.praiseBtn setSelected:YES];
+//            }
+//            if ([collection isEqualToString:@"1"]) {
+//                [self.collectionBtn setSelected:NO];
+//            }else {
+//                [self.collectionBtn setSelected:YES];
+//            }
+//            [self.praiseBtn setTitle:self.praiseStr forState:(UIControlStateNormal)];
+//            [self.collectionBtn setTitle:self.collectionStr forState:(UIControlStateNormal)];
+//            
+//            [self restyleButtons];
+//        }
+//        NSLog(@"%@",responseObject);
+//    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+//        
+//    }];
+    
+    
+    [[HomeManager sharedInstance]getHomeVideoListFieldld:@"" TabbarStr:@"Found" VideoId:self.model.id PageNum:@"1" PageSize:@"30" Success:^(NSDictionary * _Nullable resultDic) {
+        
+    } failure:^(NSString * _Nullable errorReason) {
+        
+    } finish:^(NSDictionary * _Nullable responseObject, NSString * _Nullable errorReason) {
         if ([[responseObject objectForKey:@"code"] integerValue]== 200) {
             NSArray *arr = [[responseObject objectForKey:@"data"] objectForKey:@"data"];
             NSString *collection;
@@ -138,8 +175,6 @@
             [self restyleButtons];
         }
         NSLog(@"%@",responseObject);
-    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-        
     }];
 }
 - (void)setUI {
@@ -411,18 +446,35 @@
 }
 - (void)sharedSuccess:(UIButton *)btn {
     NSString *contentId = [NSString stringWithFormat:@"%@",self.model.id];
-    [[HomeManager sharedInstance]postPraiseContentId:contentId Type:@"1" Kind:@"2" MemberId:@"" MemberName:@"" Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
-        NSLog(@"%@",responseObject);
-        if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
-            
-            NSInteger sharedStrCount = [self.sharedStr integerValue];
-            sharedStrCount += 1;
-            self.sharedStr =[NSString stringWithFormat:@" %ld",sharedStrCount];
-            [btn setSelected:YES];
-            [btn setTitle:[NSString stringWithFormat:@" %ld",sharedStrCount] forState:(UIControlStateNormal)];
-        }
-    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+//    [[HomeManager sharedInstance]postPraiseContentId:contentId Type:@"1" Kind:@"2" MemberId:@"" MemberName:@"" Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+//        NSLog(@"%@",responseObject);
+//        if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
+//            
+//            NSInteger sharedStrCount = [self.sharedStr integerValue];
+//            sharedStrCount += 1;
+//            self.sharedStr =[NSString stringWithFormat:@" %ld",sharedStrCount];
+//            [btn setSelected:YES];
+//            [btn setTitle:[NSString stringWithFormat:@" %ld",sharedStrCount] forState:(UIControlStateNormal)];
+//        }
+//    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+//        
+//    }];
+//    
+    
+    [[HomeManager sharedInstance]postPraiseContentId:contentId Type:@"1" Kind:@"2" MemberId:@"" MemberName:@"" Success:^(NSDictionary * _Nullable resultDic) {
         
+    } failure:^(NSString * _Nullable errorReason) {
+        
+    } finish:^(NSDictionary * _Nullable responseObject, NSString * _Nullable errorReason) {
+        NSLog(@"%@",responseObject);
+             if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
+                 
+                 NSInteger sharedStrCount = [self.sharedStr integerValue];
+                 sharedStrCount += 1;
+                 self.sharedStr =[NSString stringWithFormat:@" %ld",sharedStrCount];
+                 [btn setSelected:YES];
+                 [btn setTitle:[NSString stringWithFormat:@" %ld",sharedStrCount] forState:(UIControlStateNormal)];
+             }
     }];
 }
 
@@ -456,7 +508,29 @@
 #pragma mark - 点赞成功
 - (void)praiseSuccess:(UIButton *)btn {
     NSString *contentId = [NSString stringWithFormat:@"%@",self.model.id];
-    [[HomeManager sharedInstance]postPraiseContentId:contentId Type:@"1" Kind:@"2" MemberId:@"" MemberName:@"" Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+//    [[HomeManager sharedInstance]postPraiseContentId:contentId Type:@"1" Kind:@"2" MemberId:@"" MemberName:@"" Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+//        NSLog(@"%@",responseObject);
+//        if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
+//
+//            NSInteger likeCount = [self.praiseStr integerValue];
+//            likeCount += 1;
+//            self.praiseStr =[NSString stringWithFormat:@" %ld",likeCount];
+//            [btn setSelected:YES];
+//            [btn setTitle:[NSString stringWithFormat:@" %ld",likeCount] forState:(UIControlStateNormal)];
+//
+//            [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"点赞成功") view:self.view afterDelay:TipSeconds];
+//        }else
+//        {
+//            [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
+//        }
+//    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+//        [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
+//    }];
+    [[HomeManager sharedInstance]postPraiseContentId:contentId Type:@"1" Kind:@"2" MemberId:@"" MemberName:@"" Success:^(NSDictionary * _Nullable resultDic) {
+        
+    } failure:^(NSString * _Nullable errorReason) {
+        
+    } finish:^(NSDictionary * _Nullable responseObject, NSString * _Nullable errorReason) {
         NSLog(@"%@",responseObject);
         if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
             
@@ -471,8 +545,6 @@
         {
             [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
         }
-    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-        [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
     }];
 }
 -(void)canclePraiseAction:(NSMutableArray *)arr Button:(UIButton *)btn {
@@ -523,7 +595,29 @@
 #pragma mark - 收藏成功
 - (void)collectionSuccess:(UIButton *)btn {
     NSString *contentId = [NSString stringWithFormat:@"%@",self.model.id];
-    [[HomeManager sharedInstance]postCollectionContentId:contentId Type:@"1" Kind:@"2" MemberId:@"" MemberName:@"" Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+//    [[HomeManager sharedInstance]postCollectionContentId:contentId Type:@"1" Kind:@"2" MemberId:@"" MemberName:@"" Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+//        NSLog(@"%@",responseObject);
+//        if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
+//            
+//            NSInteger likeCount = [self.collectionStr integerValue];
+//            likeCount += 1;
+//            self.collectionStr = [NSString stringWithFormat:@" %ld",likeCount];
+//            [btn setSelected:YES];
+//            [btn setTitle:[NSString stringWithFormat:@" %ld",likeCount] forState:(UIControlStateNormal)];
+//            
+//            [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"收藏成功") view:self.view afterDelay:TipSeconds];
+//        }else
+//        {
+//            [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
+//        }
+//    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+//        [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
+//    }];
+//    
+    [[HomeManager sharedInstance]postCollectionContentId:contentId Type:@"1" Kind:@"2" MemberId:@"" MemberName:@"" Success:^(NSDictionary * _Nullable resultDic) {
+        
+    } failure:^(NSString * _Nullable errorReason) {
+    } finish:^(NSDictionary * _Nullable responseObject, NSString * _Nullable errorReason) {
         NSLog(@"%@",responseObject);
         if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
             
@@ -538,8 +632,6 @@
         {
             [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
         }
-    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-        [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
     }];
 }
 #pragma mark - 取消收藏

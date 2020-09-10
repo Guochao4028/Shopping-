@@ -9,9 +9,12 @@
 #import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
-
+@class RiteThreeLevelModel;
 @interface RiteThreeLevelTableViewCell : UITableViewCell
-
+@property (nonatomic, copy) NSString *pujaType;
+@property (nonatomic, strong) RiteThreeLevelModel *model;
+@property (nonatomic, copy) void(^buttonClickBlock)(UIButton *button);
+- (void)showLine:(BOOL)isShow;
 @end
 
 NS_ASSUME_NONNULL_END

@@ -43,7 +43,7 @@ static NSString *const cerCellId = @"KfCertificateCell";
     [super viewDidLoad];
     
     self.titleLabe.text = SLLocalizedString(@"证书查询");
-    self.view.backgroundColor = [UIColor hexColor:@"FAFAFA"];
+    self.view.backgroundColor = [UIColor whiteColor];// [UIColor hexColor:@"FAFAFA"];
 
     [self layoutView];
     [self loadData];

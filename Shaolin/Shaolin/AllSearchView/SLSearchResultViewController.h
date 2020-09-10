@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSMutableArray *hotArray;
 @property (nonatomic, strong) NSMutableArray *historyArray;
 @property(nonatomic,copy) NSString *tabbarStr;
+@property(nonatomic,assign) BOOL isRite; //是否是法会
 @end
 
 NS_ASSUME_NONNULL_END

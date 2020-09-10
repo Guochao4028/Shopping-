@@ -258,7 +258,29 @@ static  NSString* firseCellid = @"firseCell";
     }
     NSString *contentId = [NSString stringWithFormat:@"%@",model.id];
     NSLog(@"%@ --- %@",contentId,model.type);
-    [[HomeManager sharedInstance]postCollectionContentId:contentId Type:model.type Kind:@"2" MemberId:@"" MemberName:@"" Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+//    [[HomeManager sharedInstance]postCollectionContentId:contentId Type:model.type Kind:@"2" MemberId:@"" MemberName:@"" Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+//        NSLog(@"%@",responseObject);
+//        if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
+//            NSInteger likeCount = [model.collections integerValue];
+//            likeCount += 1;
+//            model.collection = @"2";
+//            model.collections = [NSString stringWithFormat:@"%ld",likeCount];
+//            self.foundArray[indexPath.row] = model;
+//            [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];
+//            
+//            [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"收藏成功") view:self.view afterDelay:TipSeconds];
+//        } else {
+//            [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
+//        }
+//    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+//        [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
+//    }];
+    
+    [[HomeManager sharedInstance]postCollectionContentId:contentId Type:model.type Kind:@"2" MemberId:@"" MemberName:@"" Success:^(NSDictionary * _Nullable resultDic) {
+        
+    } failure:^(NSString * _Nullable errorReason) {
+        
+    } finish:^(NSDictionary * _Nullable responseObject, NSString * _Nullable errorReason) {
         NSLog(@"%@",responseObject);
         if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
             NSInteger likeCount = [model.collections integerValue];
@@ -272,8 +294,6 @@ static  NSString* firseCellid = @"firseCell";
         } else {
             [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
         }
-    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-        [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
     }];
 }
 #pragma mark - 取消收藏

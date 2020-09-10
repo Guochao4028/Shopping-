@@ -229,7 +229,11 @@
     if (self.controlViewAppearedCallback) {
         self.controlViewAppearedCallback(YES);
     }
-    [self autoFadeOutControlView];
+    if (self.alwaysControlViewAppeared) {
+        [self cancelAutoFadeOutControlView];
+    } else {
+        [self autoFadeOutControlView];
+    }
     [UIView animateWithDuration:animated ? self.autoFadeTimeInterval : 0 animations:^{
         if (self.player.isFullScreen) {
             [self.landScapeControlView showControlView];

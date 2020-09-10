@@ -102,7 +102,7 @@
     OrderGoodsModel *goodsItem = self.goodsArray[indexPath.row];
     
     if ([goodsItem.goods_type intValue] == 2) {
-        // 课程
+        // 教程
         cell.playIcon.hidden = NO;
     } else {
         cell.playIcon.hidden = YES;

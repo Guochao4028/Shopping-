@@ -293,22 +293,40 @@
 }
 - (void)submitPhoto:(NSData *)fileData {
     [ShaolinProgressHUD defaultSingleLoadingWithText:SLLocalizedString(@"正在上传图片")];
-    [[HomeManager sharedInstance] postSubmitPhotoWithFileData:fileData isVedio:NO Success:^(NSURLSessionDataTask *task, id responseObject) {
-        [ShaolinProgressHUD hideSingleProgressHUD];
-        NSDictionary *dic = responseObject;
-        NSLog(@"submitPhoto+++%@", dic);
-        if ([[dic objectForKey:@"code"] isEqualToString:@"200"]) {
-            self.taxStr = [NSString stringWithFormat:@"%@",[dic objectForKey:@"data"]];
-            [self.imageViewLogo sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.taxStr]]];
-            self.taxCameraImage.hidden = YES;
-        } else {
-            self.taxCameraImage.hidden = NO;
-            [ShaolinProgressHUD singleTextHud:[dic objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
-        }
-    } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        NSLog(@"%@",error.debugDescription);
-        [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
-    }];
+//    [[HomeManager sharedInstance] postSubmitPhotoWithFileData:fileData isVedio:NO Success:^(NSURLSessionDataTask *task, id responseObject) {
+//        [ShaolinProgressHUD hideSingleProgressHUD];
+//        NSDictionary *dic = responseObject;
+//        NSLog(@"submitPhoto+++%@", dic);
+//        if ([[dic objectForKey:@"code"] isEqualToString:@"200"]) {
+//            self.taxStr = [NSString stringWithFormat:@"%@",[dic objectForKey:@"data"]];
+//            [self.imageViewLogo sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.taxStr]]];
+//            self.taxCameraImage.hidden = YES;
+//        } else {
+//            self.taxCameraImage.hidden = NO;
+//            [ShaolinProgressHUD singleTextHud:[dic objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
+//        }
+//    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+//        NSLog(@"%@",error.debugDescription);
+//        [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
+//    }];
+//    
+    
+    [[HomeManager sharedInstance]postSubmitPhotoWithFileData:fileData isVedio:NO Success:^(NSDictionary * _Nullable resultDic) {
+          } failure:^(NSString * _Nullable errorReason) {
+          } finish:^(NSDictionary * _Nullable responseObject, NSString * _Nullable errorReason) {
+            [ShaolinProgressHUD hideSingleProgressHUD];
+              NSDictionary *dic = responseObject;
+              NSLog(@"submitPhoto+++%@", dic);
+              if ([[dic objectForKey:@"code"] isEqualToString:@"200"]) {
+                  self.taxStr = [NSString stringWithFormat:@"%@",[dic objectForKey:@"data"]];
+                  [self.imageViewLogo sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.taxStr]]];
+                  self.taxCameraImage.hidden = YES;
+              } else {
+                  self.taxCameraImage.hidden = NO;
+                  [ShaolinProgressHUD singleTextHud:[dic objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
+              }
+              
+          }];
 }
 #pragma mark - 提交
 - (void)nextAction {

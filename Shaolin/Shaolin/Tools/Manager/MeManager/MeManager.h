@@ -37,11 +37,16 @@ NS_ASSUME_NONNULL_BEGIN
 //实名失败原因
 - (void)getIdcardReasonBlock:(void (^_Nullable)(id responseObject, NSString *errorReason))finish;
 
+/**获取阿里实人认证token信息*/
+- (void)getPersonAuthenticationToken:(NSDictionary *)params finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish;
+/**获取阿里实人认证结果*/ 
+- (void)getPersonAuthenticationResult:(NSDictionary *)params finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish;
+
 // 退出登录
 - (void)postOutLoginSuccess:(void (^_Nullable)(id responseObject))success failure:(void (^_Nullable)(NSString *errorReason))failure finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish;
 // 获取我的活动
 - (void)postMeActivityList:(NSDictionary *)params finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish;
-// 我的课程
+// 我的教程
 - (void)postMeClassList:(NSString *)url params:(NSDictionary *)params finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish;
 // 我的 考试凭证
 - (void)postExamProof:(NSDictionary *)params finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish;
@@ -75,7 +80,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)getHistory:(NSDictionary *)params success:(void (^_Nullable)(id responseObject))success failure:(void (^_Nullable)(NSString *errorReason))failure finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish;
 // 我的收藏
 - (void)getCollection:(NSDictionary *)params success:(void (^_Nullable)(id responseObject))success failure:(void (^_Nullable)(NSString *errorReason))failure finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish;
-// 我的收藏 - 课程
+// 我的收藏 - 教程
 - (void)postMyCollectCourse:(NSDictionary *)params finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish;
 // 我的收藏 - 法会
 - (void)getMyCollectRite:(NSDictionary *)params success:(SLSuccessDicBlock)success failure:(SLFailureReasonBlock)failure finish:(SLFinishedResultBlock)finish;

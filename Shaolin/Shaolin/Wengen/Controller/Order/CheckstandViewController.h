@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL isActivity;
 
 
-/// yes 是课程
+/// yes 是教程
 @property (nonatomic, assign) BOOL isCourse;
 /// yes 是从报名进入
 @property (nonatomic, assign) BOOL isSignUp;

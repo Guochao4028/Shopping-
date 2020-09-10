@@ -48,6 +48,10 @@ typedef NS_ENUM(NSInteger,FoundShowType) {
 /** cell的高度*/
 @property (nonatomic, assign) CGFloat cellHeight;
 
+
+@property (nonatomic, assign) BOOL isRite;
+@property (nonatomic, copy) NSString *code;
+
 @property (nonatomic, copy) NSString *videoTimeStr;
 ///检查返回数据
 +(BOOL) checkResponseObject:(NSDictionary *)responseObject;

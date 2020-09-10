@@ -41,8 +41,35 @@
     
     
     self.nameLabel.text = model.goods_name;
+   
+    ///5:水陆法会，6:全年佛事， 7:建寺供僧 8:普通法会
+    NSInteger type = [model.type integerValue];
     
-    self.storeNameLabel.text = model.goods_name;
+    NSString *typeStr;
+    
+    switch (type) {
+        case 5:
+            typeStr = @"水陆法会";
+            break;
+            
+            case 6:
+            typeStr = @"全年佛事";
+            break;
+            
+            case 7:
+            typeStr = @"功德募捐";
+            break;
+            
+            case 8:
+            typeStr = @"普通法会";
+            break;
+            
+        default:
+            typeStr = @"";
+            break;
+    }
+    
+    self.storeNameLabel.text = typeStr;
     
     [self.goodsImg sd_setImageWithURL:[NSURL URLWithString:model.goods_image[0]] placeholderImage:[UIImage imageNamed:@"default_small"]];
 

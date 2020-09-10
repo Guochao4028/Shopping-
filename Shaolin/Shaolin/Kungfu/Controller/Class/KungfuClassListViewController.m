@@ -91,7 +91,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     
     
     if (NotNilAndNull(self.searchText)) {
-        self.typeString = SLLocalizedString(@"课程");
+        self.typeString = SLLocalizedString(@"教程");
         [self updateSearchViewUI];
     }
 }
@@ -228,7 +228,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
         [NSKeyedArchiver archiveRootObject:self.historyArray toFile:KGoodsHistorySearchPath];
     }
     
-    if ([self.typeString isEqualToString:SLLocalizedString(@"课程")]) {
+    if ([self.typeString isEqualToString:SLLocalizedString(@"教程")]) {
         self.searchText = searchStr;
         [self.tableView.mj_header beginRefreshing];
     }
@@ -339,7 +339,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
 
 - (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView
 {
-    NSString *text = SLLocalizedString(@"暂无课程");
+    NSString *text = SLLocalizedString(@"暂无教程");
     
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont boldSystemFontOfSize:15.0f],
                                  NSForegroundColorAttributeName: [UIColor hexColor:@"999999"]};
@@ -396,7 +396,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:typeCellId];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
-        NSArray * list = @[SLLocalizedString(@"全部课程"),SLLocalizedString(@"免费"),SLLocalizedString(@"段品制会员"),SLLocalizedString(@"付费")];
+        NSArray * list = @[SLLocalizedString(@"全部教程"),SLLocalizedString(@"免费"),SLLocalizedString(@"段品制会员"),SLLocalizedString(@"付费")];
         cell.textLabel.text = list[indexPath.row];
         cell.textLabel.font = kRegular(12);
         cell.textLabel.textColor = [UIColor hexColor:@"333333"];
@@ -415,7 +415,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
             cell.backgroundColor = UIColor.clearColor;
             cell.contentView.backgroundColor = UIColor.clearColor;
             
-            NSArray * list = @[SLLocalizedString(@"课程"),SLLocalizedString(@"活动"),SLLocalizedString(@"机构")];
+            NSArray * list = @[SLLocalizedString(@"教程"),SLLocalizedString(@"活动"),SLLocalizedString(@"机构")];
             cell.textLabel.text = list[indexPath.row];
             cell.textLabel.font = kRegular(12);
             cell.textLabel.textColor = [UIColor hexColor:@"333333"];
@@ -460,7 +460,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
         
         [self.tableView.mj_header beginRefreshing];
     } else if (tableView == self.searchTypeTable) {
-        NSArray * list = @[SLLocalizedString(@"课程"),SLLocalizedString(@"活动"),SLLocalizedString(@"机构")];
+        NSArray * list = @[SLLocalizedString(@"教程"),SLLocalizedString(@"活动"),SLLocalizedString(@"机构")];
         self.typeString = list[indexPath.row];
     } else {
         
@@ -503,7 +503,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     [self hideSearchTypeTable];
 }
 - (void)setNoData {
-    NSString *titleStr = SLLocalizedString(@"暂无课程");
+    NSString *titleStr = SLLocalizedString(@"暂无教程");
     LYEmptyView *emptyView = [LYEmptyView emptyActionViewWithImageStr:@"categorize_nogoods"
                                                              titleStr:titleStr
                                                             detailStr:@""
@@ -573,7 +573,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
         [self.typeSortBtn setTitle:SLLocalizedString(@"付费") forState:UIControlStateNormal];
     }
     if (_classType == KfClassType_all) {
-        [self.typeSortBtn setTitle:SLLocalizedString(@"全部课程") forState:UIControlStateNormal];
+        [self.typeSortBtn setTitle:SLLocalizedString(@"全部教程") forState:UIControlStateNormal];
     }
     
     [self.typeSortBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, - self.typeSortBtn.imageView.image.size.width - 3, 0, self.typeSortBtn.imageView.image.size.width)];

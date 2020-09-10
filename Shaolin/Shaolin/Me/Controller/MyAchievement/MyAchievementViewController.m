@@ -132,11 +132,11 @@
     NSString * bottomString = @"";
     
     if (indexPath.section == 0 && self.scoreDic) {
-        cell.myAchieveLabel.text = SLLocalizedString(@"课程成就");
+        cell.myAchieveLabel.text = SLLocalizedString(@"教程成就");
 //        if ([curriculumStr isEqualToString:@"0%"]) {
-//            bottomString = SLLocalizedString(@"您当前暂无学习课程");
+//            bottomString = SLLocalizedString(@"您当前暂无学习教程");
 //        } else {
-            bottomString = [NSString stringWithFormat:SLLocalizedString(@"您已学的课程已超过全球%@的学员"),curriculumStr];
+            bottomString = [NSString stringWithFormat:SLLocalizedString(@"您已学的教程已超过全球%@的学员"),curriculumStr];
 //        }
     } else {
         if (self.scoreDic) {

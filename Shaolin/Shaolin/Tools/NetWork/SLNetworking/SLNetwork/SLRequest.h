@@ -102,6 +102,13 @@ typedef NS_ENUM(NSInteger, SLRequestSerializerType) {
                            failure:(nullable SLFailureReasonBlock)failureBlock
                             finish:(SLFinishedResultBlock)finishBlock;
 
++ (NSString *)downloadRequestWithApi:(NSString *)api
+                          parameters:(id)parameter
+                    downloadSavePath:(NSString *)downloadSavePath
+                            progress:(SLProgressNumBlock)progressBlock
+                             success:(nullable SLSuccessBlock)successBlock
+                             failure:(nullable SLFailureReasonBlock)failureBlock
+                              finish:(SLFinishedBlock)finishBlock;
 /// 客户端刷新token
 + (void)refreshToken;
 #pragma mark -

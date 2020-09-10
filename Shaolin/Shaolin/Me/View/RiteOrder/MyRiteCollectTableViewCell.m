@@ -46,23 +46,23 @@
     }];
     [self.titleBackView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(self.imageV.mas_right).mas_equalTo(16);
-        make.right.mas_equalTo(-16);
+        make.right.mas_equalTo(self.collectButton.mas_left).mas_offset(-5);
         make.centerY.mas_equalTo(self.imageV);
     }];
     [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(0);
         make.left.mas_equalTo(0);
-        make.height.mas_equalTo(14);
+//        make.right.mas_equalTo(-10);
         make.width.mas_equalTo(self.titleBackView);
     }];
     [self.descriptionLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.titleLabel.mas_bottom).mas_offset(11);
+        make.top.mas_equalTo(self.titleLabel.mas_bottom).mas_offset(5);
         make.left.width.mas_equalTo(self.titleLabel);
         make.bottom.mas_equalTo(0);
     }];
     
     [self.collectButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(15);
+        make.centerY.mas_equalTo(self.imageV);
         make.right.mas_equalTo(-9);
         make.size.mas_equalTo(CGSizeMake(15, 15));
     }];
@@ -70,10 +70,10 @@
 
 - (void)setModel:(MyRiteCollectModel *)model{
     _model = model;
-    [self.imageV sd_setImageWithURL:[NSURL URLWithString:model.thumbnailUrl] placeholderImage:[UIImage imageNamed:@"default_big"]];
-    self.titleLabel.text = model.pujaName;
-    self.descriptionLabel.text = model.pujaIntroduction;
-    self.collectButton.selected = [model.collectionsState integerValue];
+    [self.imageV sd_setImageWithURL:[NSURL URLWithString:model.imgUrl] placeholderImage:[UIImage imageNamed:@"default_big"]];
+    self.titleLabel.text = model.name;
+    self.descriptionLabel.text = model.introduction;
+    self.collectButton.selected = YES;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -85,7 +85,7 @@
 - (UIImageView *)imageV{
     if (!_imageV){
         _imageV = [[UIImageView alloc] init];
-        _imageV.contentMode = UIViewContentModeScaleAspectFit;
+        _imageV.contentMode = UIViewContentModeScaleAspectFill;
         _imageV.layer.cornerRadius = 0;
         _imageV.clipsToBounds = YES;
     }
@@ -104,6 +104,7 @@
         _titleLabel = [[UILabel alloc] init];
         _titleLabel.textColor = [UIColor colorForHex:@"333333"];
         _titleLabel.font = kRegular(14);
+        _titleLabel.numberOfLines = 2;
     }
     return _titleLabel;
 }
@@ -113,7 +114,7 @@
         _descriptionLabel = [[UILabel alloc] init];
         _descriptionLabel.textColor = [UIColor colorForHex:@"999999"];
         _descriptionLabel.font = kRegular(12);
-        _descriptionLabel.numberOfLines = 3;
+        _descriptionLabel.numberOfLines = 2;
     }
     return _descriptionLabel;
 }

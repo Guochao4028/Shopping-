@@ -98,10 +98,11 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
 
 -(void)viewWillAppear:(BOOL)animated{
 //    [self hideNavBar];
+    [super viewWillAppear:animated];
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
     [self.navigationController.navigationBar setHidden:YES];
     
-    [super viewWillAppear:animated];
+    
     
     [[DataManager shareInstance] getOrderAndCartCount];
     

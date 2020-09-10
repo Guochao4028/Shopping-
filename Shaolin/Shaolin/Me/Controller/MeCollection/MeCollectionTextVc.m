@@ -209,25 +209,45 @@
     NSString *contentId = [NSString stringWithFormat:@"%@",layout.id];
     NSLog(@"%@ --- %@",contentId,layout.type);
     
-    [[HomeManager sharedInstance]postCollectionContentId:contentId Type:layout.type Kind:@"2" MemberId:@"" MemberName:@"" Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
-           NSLog(@"%@",responseObject);
-           if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
-              
-               NSInteger likeCount = [layout.collections integerValue];
-               likeCount += 1;
-               layout.collections = [NSString stringWithFormat:@"%ld",likeCount];
-               [self.foundArray setObject:layout atIndexedSubscript:indexPath.row];
-               [btn setSelected:YES];
-               [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];
+//    [[HomeManager sharedInstance]postCollectionContentId:contentId Type:layout.type Kind:@"2" MemberId:@"" MemberName:@"" Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+//           NSLog(@"%@",responseObject);
+//           if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
+//
+//               NSInteger likeCount = [layout.collections integerValue];
+//               likeCount += 1;
+//               layout.collections = [NSString stringWithFormat:@"%ld",likeCount];
+//               [self.foundArray setObject:layout atIndexedSubscript:indexPath.row];
+//               [btn setSelected:YES];
+//               [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];
+//
+//               [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"收藏成功") view:self.view afterDelay:TipSeconds];
+//           }else
+//           {
+//               [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
+//           }
+//       } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+//           [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
+//       }];
+    
+    [[HomeManager sharedInstance]postCollectionContentId:contentId Type:layout.type Kind:@"2" MemberId:@"" MemberName:@"" Success:^(NSDictionary * _Nullable resultDic) {
+    } failure:^(NSString * _Nullable errorReason) {
+    } finish:^(NSDictionary * _Nullable responseObject, NSString * _Nullable errorReason) {
+         NSLog(@"%@",responseObject);
+                  if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
+                     
+                      NSInteger likeCount = [layout.collections integerValue];
+                      likeCount += 1;
+                      layout.collections = [NSString stringWithFormat:@"%ld",likeCount];
+                      [self.foundArray setObject:layout atIndexedSubscript:indexPath.row];
+                      [btn setSelected:YES];
+                      [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];
 
-               [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"收藏成功") view:self.view afterDelay:TipSeconds];
-           }else
-           {
-               [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
-           }
-       } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-           [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
-       }];
+                      [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"收藏成功") view:self.view afterDelay:TipSeconds];
+                  }else
+                  {
+                      [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
+                  }
+    }];
 }
 
 #pragma mark - DZNEmptyDataSetDelegate && dataSource

@@ -192,7 +192,7 @@
 
 -(void)searchNavgationView:(SearchNavgationView *)navgationView searchWord:(NSString *)text{
     if (text.length == 0) {
-        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"搜索内容不能为空") view:self.view afterDelay:TipSeconds];
+        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请输入搜索内容") view:self.view afterDelay:TipSeconds];
         return;
     }
     if ([self.historyArray containsObject:text]) {

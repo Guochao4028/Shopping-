@@ -104,28 +104,55 @@
 -(void)setData
 {
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
-    [[HomeManager sharedInstance] getArticleDetails:self.idStr tabbarStr:self.tabbarStr otherParams:^NSDictionary * _Nonnull{
-        if ([self.tabbarStr isEqualToString:@"Found"] && self.stateStr) { return @{@"state" : self.stateStr}; }
-        return nil;
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
-        [hud hideAnimated:YES];
-        NSLog(@"%@",responseObject);
-        if ([[responseObject objectForKey:@"code"] integerValue]==200) {
-            NSArray *arr = [[responseObject objectForKey:@"data"] objectForKey:@"data"];
-            NSDictionary *dic ;
-            for (NSDictionary *dicc in arr) {
-                dic = dicc;
-            }
-            
-            self.dataDic = [[NSMutableDictionary alloc]initWithDictionary:dic];;
-            NSLog(@"%@",self.dataDic);
-            [self assignment:dic];
-            
-        }
-    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-        [hud hideAnimated:YES];
-    }];
+//    [[HomeManager sharedInstance] getArticleDetails:self.idStr tabbarStr:self.tabbarStr otherParams:^NSDictionary * _Nonnull{
+//        if ([self.tabbarStr isEqualToString:@"Found"] && self.stateStr) { return @{@"state" : self.stateStr}; }
+//        return nil;
+//    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+//        [hud hideAnimated:YES];
+//        NSLog(@"%@",responseObject);
+//        if ([[responseObject objectForKey:@"code"] integerValue]==200) {
+//            NSArray *arr = [[responseObject objectForKey:@"data"] objectForKey:@"data"];
+//            NSDictionary *dic ;
+//            for (NSDictionary *dicc in arr) {
+//                dic = dicc;
+//            }
+//            
+//            self.dataDic = [[NSMutableDictionary alloc]initWithDictionary:dic];;
+//            NSLog(@"%@",self.dataDic);
+//            [self assignment:dic];
+//            
+//        }
+//    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+//        [hud hideAnimated:YES];
+//    }];
+//    
     
+   [[HomeManager sharedInstance]getArticleDetails:self.idStr tabbarStr:self.tabbarStr otherParams:^NSDictionary * _Nonnull{
+         if ([self.tabbarStr isEqualToString:@"Found"] && self.stateStr) {
+             return @{@"state" : self.stateStr};
+             
+         }
+               return nil;
+    } success:^(NSDictionary * _Nullable resultDic) {
+        
+    } failure:^(NSString * _Nullable errorReason) {
+        
+    } finish:^(NSDictionary * _Nullable responseObject, NSString * _Nullable errorReason) {
+         [hud hideAnimated:YES];
+               NSLog(@"%@",responseObject);
+               if ([[responseObject objectForKey:@"code"] integerValue]==200) {
+                   NSArray *arr = [[responseObject objectForKey:@"data"] objectForKey:@"data"];
+                   NSDictionary *dic ;
+                   for (NSDictionary *dicc in arr) {
+                       dic = dicc;
+                   }
+                   
+                   self.dataDic = [[NSMutableDictionary alloc]initWithDictionary:dic];;
+                   NSLog(@"%@",self.dataDic);
+                   [self assignment:dic];
+                   
+               }
+    }];
     
 }
 
@@ -347,7 +374,33 @@
 {
     
     NSString *contentId  =[NSString stringWithFormat:@"%@",[self.dataDic objectForKey:@"id"]];
-    [[HomeManager sharedInstance]postCollectionContentId:contentId Type:self.typeStr Kind:@"1" MemberId:@"" MemberName:@"" Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+//    [[HomeManager sharedInstance]postCollectionContentId:contentId Type:self.typeStr Kind:@"1" MemberId:@"" MemberName:@"" Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+//        NSLog(@"%@",responseObject);
+//        if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
+//            
+//            NSInteger likeCount = [[self.dataDic objectForKey:@"collections"] integerValue];
+//            likeCount += 1;
+//            
+//            
+//            [btn setSelected:YES];
+//            self.focusLabel.text = [NSString stringWithFormat:@"%ld",likeCount];
+//            self.focusLabel.hidden = NO;
+//            [self.dataDic setObject:[NSString stringWithFormat:@"%ld",likeCount] forKey:@"collections"];
+//            [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"收藏成功") view:self.view afterDelay:TipSeconds];
+//        }else
+//        {
+//            [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
+//        }
+//    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+//        [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
+//    }];
+//    
+    
+    [[HomeManager sharedInstance]postCollectionContentId:contentId Type:self.typeStr Kind:@"1" MemberId:@"" MemberName:@"" Success:^(NSDictionary * _Nullable resultDic) {
+        
+    } failure:^(NSString * _Nullable errorReason) {
+        
+    } finish:^(NSDictionary * _Nullable responseObject, NSString * _Nullable errorReason) {
         NSLog(@"%@",responseObject);
         if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
             
@@ -364,9 +417,8 @@
         {
             [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
         }
-    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-        [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
     }];
+    
 }
 #pragma mark - 取消收藏
 -(void)foucsCancle:(UIButton *)btn
@@ -443,26 +495,48 @@
 {
     
     NSString *contentId  =[NSString stringWithFormat:@"%@",[self.dataDic objectForKey:@"id"]];
-    [[HomeManager sharedInstance]postPraiseContentId:contentId Type:self.typeStr Kind:@"1" MemberId:@"" MemberName:@"" Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
-        NSLog(@"%@",responseObject);
-        if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
-            
-            
-            NSInteger likeCount = [[self.dataDic objectForKey:@"praises"] integerValue];
-            likeCount += 1;
-            
-            
-            [btn setSelected:YES];
-            self.praiseLabel.text = [NSString stringWithFormat:@"%ld",likeCount];
-            self.praiseLabel.hidden = NO;
-            [self.dataDic setObject:[NSString stringWithFormat:@"%ld",likeCount] forKey:@"praises"];
-            [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"点赞成功") view:self.view afterDelay:TipSeconds];
-        }else
-        {
-            [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
-        }
-    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-        [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
+//    [[HomeManager sharedInstance]postPraiseContentId:contentId Type:self.typeStr Kind:@"1" MemberId:@"" MemberName:@"" Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+//        NSLog(@"%@",responseObject);
+//        if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
+//
+//
+//            NSInteger likeCount = [[self.dataDic objectForKey:@"praises"] integerValue];
+//            likeCount += 1;
+//
+//
+//            [btn setSelected:YES];
+//            self.praiseLabel.text = [NSString stringWithFormat:@"%ld",likeCount];
+//            self.praiseLabel.hidden = NO;
+//            [self.dataDic setObject:[NSString stringWithFormat:@"%ld",likeCount] forKey:@"praises"];
+//            [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"点赞成功") view:self.view afterDelay:TipSeconds];
+//        }else
+//        {
+//            [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
+//        }
+//    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+//        [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
+//    }];
+    
+    [[HomeManager sharedInstance]postPraiseContentId:contentId Type:self.typeStr Kind:@"1" MemberId:@"" MemberName:@"" Success:^(NSDictionary * _Nullable resultDic) {
+    } failure:^(NSString * _Nullable errorReason) {
+    } finish:^(NSDictionary * _Nullable responseObject, NSString * _Nullable errorReason) {
+         NSLog(@"%@",responseObject);
+               if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
+                   
+                   
+                   NSInteger likeCount = [[self.dataDic objectForKey:@"praises"] integerValue];
+                   likeCount += 1;
+                   
+                   
+                   [btn setSelected:YES];
+                   self.praiseLabel.text = [NSString stringWithFormat:@"%ld",likeCount];
+                   self.praiseLabel.hidden = NO;
+                   [self.dataDic setObject:[NSString stringWithFormat:@"%ld",likeCount] forKey:@"praises"];
+                   [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"点赞成功") view:self.view afterDelay:TipSeconds];
+               }else
+               {
+                   [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
+               }
     }];
 }
 #pragma mark - 取消点赞
@@ -501,8 +575,25 @@
 -(void)sharedSuccess{
     WEAKSELF
     NSString *contentId  =[NSString stringWithFormat:@"%@",[self.dataDic objectForKey:@"id"]];
-    [[HomeManager sharedInstance]postSharedContentId:contentId Type:self.typeStr Kind:@"1" MemberId:@"" MemberName:@"" Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
-        NSLog(@"%@",responseObject);
+    //    [[HomeManager sharedInstance]postSharedContentId:contentId Type:self.typeStr Kind:@"1" MemberId:@"" MemberName:@"" Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+    //        NSLog(@"%@",responseObject);
+    //        if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
+    //            NSInteger forwardsCount = [[self.dataDic objectForKey:@"forwards"] integerValue];
+    //            forwardsCount += 1;
+    //
+    //            weakSelf.shareLabel.text = [NSString stringWithFormat:@"%ld",forwardsCount];
+    //            weakSelf.shareLabel.hidden = NO;
+    //            [weakSelf.dataDic setObject:[NSString stringWithFormat:@"%ld",forwardsCount] forKey:@"forwards"];
+    //        }
+    //    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+    //
+    //    }];
+    
+    
+    [[HomeManager sharedInstance]postSharedContentId:contentId Type:self.typeStr Kind:@"1" MemberId:@"" MemberName:@"" Success:^(NSDictionary * _Nullable resultDic) {
+    } failure:^(NSString * _Nullable errorReason) {
+    } finish:^(NSDictionary * _Nullable responseObject, NSString * _Nullable errorReason) {
+        
         if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
             NSInteger forwardsCount = [[self.dataDic objectForKey:@"forwards"] integerValue];
             forwardsCount += 1;
@@ -511,8 +602,6 @@
             weakSelf.shareLabel.hidden = NO;
             [weakSelf.dataDic setObject:[NSString stringWithFormat:@"%ld",forwardsCount] forKey:@"forwards"];
         }
-    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-        
     }];
 }
 

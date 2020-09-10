@@ -71,6 +71,15 @@ NS_ASSUME_NONNULL_BEGIN
 @interface XLPageViewControllerConfig : NSObject
 
 /**
+ 标题默认背景颜色 默认clearColor
+ */
+@property (nonatomic, strong) UIColor *backgroundNormalColor;
+
+/**
+标题选中背景颜色 默认clearColor
+*/
+@property (nonatomic, strong) UIColor *backgroundSelectedColor;
+/**
  标题正常颜色 默认 grayColor
  */
 @property (nonatomic, strong) UIColor *titleNormalColor;

@@ -7,7 +7,7 @@
 //
 
 #import "KungfuHomeModuleCollectionCell.h"
-
+#import "UIView+LGFExtension.h"
 
 
 @implementation KungfuHomeModuleCollectionCell
@@ -21,45 +21,64 @@
     return self;
 }
 - (void)setUI {
-    UIView *view = [[UIView alloc]init];
-    view.layer.cornerRadius = 4;
-    view.layer.masksToBounds = YES;
-    view.backgroundColor = [UIColor colorForHex:@"FFFFFF"];
-    [self.contentView addSubview:view];
-    [view mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.contentView addSubview:self.bgView];
+    
+    [self.bgView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.width.mas_equalTo(self.contentView.mas_width);
-        make.height.mas_equalTo(100);
+        make.height.mas_equalTo(132);
         make.left.mas_equalTo(0);
         make.top.mas_equalTo(0);
     }];
-    [view  addSubview:self.imageIcon];
-     [view  addSubview:self.nameLabel];
+    
     [self.imageIcon mas_makeConstraints:^(MASConstraintMaker *make) {
-           make.size.mas_equalTo(SLChange(34));
-           make.centerX.mas_equalTo(view);
-           make.top.mas_equalTo(SLChange(12));
-       }];
+        make.size.mas_equalTo(30);
+        make.centerX.mas_equalTo(self.bgView);
+        make.top.mas_equalTo(24);
+    }];
+    
     [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.mas_equalTo(view.mas_width);
-        make.height.mas_equalTo(SLChange(21));
-        make.top.mas_equalTo(self.imageIcon.mas_bottom).offset(SLChange(12));
-         make.left.mas_equalTo(0);
+        make.width.mas_equalTo(self.bgView.mas_width);
+        make.height.mas_equalTo(30);
+        make.top.mas_equalTo(self.imageIcon.mas_bottom).offset(31);
+        make.left.mas_equalTo(0);
     }];
 }
+
+-(UIView *)bgView {
+    if (!_bgView) {
+        _bgView = [UIView new];
+        _bgView.backgroundColor = [UIColor colorForHex:@"FFFFFF"];
+        
+        _bgView.layer.cornerRadius = 4;
+        _bgView.layer.masksToBounds = NO;
+        
+        [_bgView lgf_SetLayerShadow:[UIColor colorForHex:@"E4E4E4"] offset:CGSizeMake(0, 0) radius:5];
+        _bgView.layer.shadowOpacity = 0.4;
+        
+        [_bgView addSubview:self.imageIcon];
+        [_bgView addSubview:self.nameLabel];
+    }
+    return _bgView;
+}
+
+
 - (UIImageView *)imageIcon {
     if (!_imageIcon) {
-        _imageIcon = [[UIImageView alloc]init];
+        _imageIcon = [UIImageView new];
     }
     return _imageIcon;
 }
+
 - (UILabel *)nameLabel {
     if (!_nameLabel) {
-        _nameLabel = [[UILabel alloc]init];
+        _nameLabel = [UILabel new];
         _nameLabel.font = kRegular(14);
-         _nameLabel.textAlignment = NSTextAlignmentCenter;
-        _nameLabel.textColor = [UIColor colorForHex:@"333333"];
+        _nameLabel.textAlignment = NSTextAlignmentCenter;
+        _nameLabel.textColor = [UIColor colorForHex:@"8E2B25"];
     }
     return _nameLabel;
 }
+
+
 
 @end

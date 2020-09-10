@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ShowBigImageViewController : RootViewController
 @property (nonatomic, copy) NSString *imageUrl;
+@property (nonatomic, copy) NSString *placeholderImage;//默认：空
 
 @property (nonatomic, copy) NSString *titleString;
 
@@ -22,6 +23,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) void (^saveButtonClickBlock)(void);
 // 底部calcelButton 点击事件为空，设置了cancelButtonClickBlock，则调用cancelButtonClickBlock
 @property (nonatomic, copy) void (^cancelButtonClickBlock)(void);
+/**
+ 隐藏底部按钮
+ 默认是no 不隐藏
+ yes 隐藏
+ */
+@property(nonatomic, assign)BOOL isHiddenBottom;
 @end
 
 NS_ASSUME_NONNULL_END

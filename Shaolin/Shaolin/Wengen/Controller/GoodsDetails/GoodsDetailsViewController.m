@@ -128,7 +128,7 @@
 //        [weakSelf.navigationController pushViewController:chatVC animated:YES];
 //
         CustomerServicViewController *customerServicVC = [[CustomerServicViewController alloc]init];
-        customerServicVC.storeModel = weakSelf.storeInfoModel;
+        customerServicVC.imID = weakSelf.storeInfoModel.im;
         [weakSelf.navigationController pushViewController:customerServicVC animated:YES];
         
         
@@ -290,7 +290,20 @@
                 id dataModel =  dataDic[@"attr"][@"name"];
                 if([dataModel isKindOfClass:[NSNull class]] != YES){
                     if (self.attr_id == nil ||self.attr_id.length == 0) {
-                        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请选择商品规格") view:self.view afterDelay:TipSeconds];
+//                        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请选择商品规格") view:self.view afterDelay:TipSeconds];
+                        
+                        GoodsSpecificationView *specificationView = [[GoodsSpecificationView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
+                        
+                        [specificationView setGoodsNumber:self.goodsNumber];
+                        
+                        [specificationView setGoods_attr_id:self.attr_id];
+                        
+                        [specificationView setDelegate:self];
+                        
+                        UIWindow *window =[[UIApplication sharedApplication]keyWindow];
+                        specificationView.model = self.infoModel;
+                        [window addSubview:specificationView];
+                        
                         return;
                     }
                 }
@@ -329,7 +342,21 @@
                 id dataModel =  dataDic[@"attr"][@"name"];
                 if([dataModel isKindOfClass:[NSNull class]] != YES){
                     if (self.attr_id == nil ||self.attr_id.length == 0) {
-                        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请选择商品规格") view:self.view afterDelay:TipSeconds];
+//                        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请选择商品规格") view:self.view afterDelay:TipSeconds];
+                        
+                        GoodsSpecificationView *specificationView = [[GoodsSpecificationView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
+                        
+                        [specificationView setGoodsNumber:self.goodsNumber];
+                        
+                        [specificationView setGoods_attr_id:self.attr_id];
+                        
+                        [specificationView setDelegate:self];
+                        
+                        UIWindow *window =[[UIApplication sharedApplication]keyWindow];
+                        specificationView.model = self.infoModel;
+                        [window addSubview:specificationView];
+                        
+                        
                         return;
                     }
                 }
@@ -389,7 +416,7 @@
     
     
     CustomerServicViewController *customerServicVC = [[CustomerServicViewController alloc]init];
-    customerServicVC.storeModel = self.storeInfoModel;
+    customerServicVC.imID = self.storeInfoModel.im;
     [self.navigationController pushViewController:customerServicVC animated:YES];
 }
 

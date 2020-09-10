@@ -191,7 +191,31 @@
     NSString *pageNum = [NSString stringWithFormat:@"%ld", self.pager];
     NSString *pageSize = @"30";
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
-    [[HomeManager sharedInstance] getHomeListFieldld:fieldId PageNum:pageNum PageSize:pageSize Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+//    [[HomeManager sharedInstance] getHomeListFieldld:fieldId PageNum:pageNum PageSize:pageSize Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+//        [hud hideAnimated:YES];
+//        if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
+//            NSArray *arr = [solveJsonData changeType:[[responseObject objectForKey:@"data"] objectForKey:@"data"]];
+//            NSArray *foundModelArray = [FoundModel mj_objectArrayWithKeyValuesArray:arr];
+//            [self.foundArray addObjectsFromArray:foundModelArray];
+//            if (self.foundArray.count == 0){
+//                self.tableView.ly_emptyView = self.emptyView;
+//            }
+//            [self.tableView reloadData];
+//            [self.tableView layoutIfNeeded];
+//            if (success) success(foundModelArray);
+//        } else {
+//            [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
+//        }
+//    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+//        [hud hideAnimated:YES];
+//        if (failure) failure(error);
+//    }];
+    
+    [[HomeManager sharedInstance] getHomeListFieldld:fieldId PageNum:pageNum PageSize:pageSize Success:^(NSDictionary * _Nullable resultDic) {
+        
+    } failure:^(NSString * _Nullable errorReason) {
+        
+    } finish:^(NSDictionary * _Nullable responseObject, NSString * _Nullable errorReason) {
         [hud hideAnimated:YES];
         if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
             NSArray *arr = [solveJsonData changeType:[[responseObject objectForKey:@"data"] objectForKey:@"data"]];
@@ -206,10 +230,8 @@
         } else {
             [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
         }
-    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-        [hud hideAnimated:YES];
-        if (failure) failure(error);
     }];
+    
 }
 
 - (void)update{

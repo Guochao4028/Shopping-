@@ -101,6 +101,8 @@
 /// 控制层显示、隐藏动画的时长，默认0.25秒
 @property (nonatomic, assign) NSTimeInterval autoFadeTimeInterval;
 
+/// 始终展示控制层 (开始播放后autoHiddenTimeInterval秒自动隐藏)
+@property (nonatomic, assign) BOOL alwaysControlViewAppeared;
 /// 横向滑动控制播放进度时是否显示控制层,默认 YES.
 @property (nonatomic, assign) BOOL horizontalPanShowControlView;
 
@@ -145,5 +147,12 @@
  重置控制层
  */
 - (void)resetControlView;
-
+/**
+ 显示控制层
+ */
+- (void)showControlViewWithAnimated:(BOOL)animated;
+/**
+ 隐藏控制层
+*/
+- (void)hideControlViewWithAnimated:(BOOL)animated;
 @end

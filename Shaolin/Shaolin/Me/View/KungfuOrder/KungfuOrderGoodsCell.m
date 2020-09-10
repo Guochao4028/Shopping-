@@ -55,8 +55,8 @@
     self.addCarBtn.hidden = YES;
     self.bgPlayBtn.hidden = YES;
     if ([model.type intValue] == 2) {
-        //课程
-        self.storeNameLabel.text = SLLocalizedString(@"段品制课程");
+        //教程
+        self.storeNameLabel.text = SLLocalizedString(@"段品制教程");
         [self.levelLabel setText:[NSString stringWithFormat:SLLocalizedString(@"所属位阶：%@"),model.goods_level]];
         self.bgPlayBtn.hidden = NO;
     }

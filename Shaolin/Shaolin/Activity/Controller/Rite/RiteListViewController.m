@@ -7,7 +7,6 @@
 //
 
 #import "RiteListViewController.h"
-#import "RiteRegistrationFormViewController.h"
 #import "KungfuWebViewController.h"
 
 #import "WengenBannerModel.h"
@@ -28,9 +27,8 @@
 #import "NSDate+BRPickerView.h"
 #import "NSDate+LGFDate.h"
 
-#import "RiteRegistrationFormViewController.h"
-
-#import "RitePastListViewController.h"
+#import "RiteSecondLevelListViewController.h"
+#import "RiteBlessingViewController.h"
 
 static NSString *const filterCellId = @"RiteFilterCell";
 static NSString *const bannerCellId = @"KungfuHomeBannerCell";
@@ -137,7 +135,7 @@ static NSInteger riteIndex = 4;
     self.marqueeList = @[];
     [ActivityManager getMarqueeList:^(NSDictionary * _Nullable resultDic) {
         NSArray *array = (NSArray *)resultDic;
-        if (array && [array isKindOfClass:[NSArray class]]) {
+        if (array && [array isKindOfClass:[NSArray class]] && array.count > 0) {
             self.marqueeList = [WengenBannerModel mj_objectArrayWithKeyValuesArray:array];
             [self setShowMarquee:YES];
         } else {
@@ -259,33 +257,18 @@ static NSInteger riteIndex = 4;
     self.tableOffsetY = scrollView.contentOffset.y;
 }
 
-
-- (void)pushRiteLongViewController{
-    NSString *strState = [SLAppInfoModel sharedInstance].verifiedState;
-    if (IsNilOrNull(strState) || [strState isEqualToString:@"0"] || [strState isEqualToString:@"3"]) {
-        [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"您还没有实名认证，请前往\"我的\"进行实名认证")];
-        return;
-    }
-    if ([strState isEqualToString:@"2"]) {
-        [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"实名认证正在审核中，请耐心等待")];
-        return;
-    }
-    
-    RiteRegistrationFormViewController *vc = [[RiteRegistrationFormViewController alloc] init];
-    vc.pujaType = @"3";
-    
-    NSDate *minDate = [NSDate date];
-    NSDate *maxDate = [minDate lgf_DateByAddingYears:1];
-    NSString *startTime = [NSDate br_stringFromDate:minDate dateFormat:@"yyyy-MM-dd"];;
-    NSString *endTime = [NSDate br_stringFromDate:maxDate dateFormat:@"yyyy-MM-dd"];;
-    
-    vc.startTime = startTime;
-    vc.endTime = endTime;
-    
-    vc = [RitePastListViewController new];
+- (void)pushRiteSecondLevelListViewController:(NSString *)pujaType pujaCode:(NSString *)pujaCode{
+    RiteSecondLevelListViewController *vc = [RiteSecondLevelListViewController new];
+    vc.pujaType = pujaType;
+    vc.pujaCode = pujaCode;
     vc.hidesBottomBarWhenPushed = YES;
-    
-    
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
+- (void)pushRiteBlessingViewController{
+    RiteBlessingViewController *vc = [[RiteBlessingViewController alloc] init];
+    vc.orderCode = @"20201005451942419";
+    vc.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:vc animated:YES];
 }
 #pragma mark - delegate && dataSources
@@ -333,10 +316,12 @@ static NSInteger riteIndex = 4;
     if (indexPath.section == longRiteJoinIndex) {
         RiteJoinCell * cell = [tableView dequeueReusableCellWithIdentifier:joinCellId];
         cell.reservationHandleBlock = ^{
-            [weakSelf pushRiteLongViewController];
+            //全年佛事
+            [weakSelf pushRiteSecondLevelListViewController:@"3" pujaCode:@""];
         };
         cell.donateHandleBlock = ^{
-//            [weakSelf ]
+            //功德募捐(原建寺供僧)
+            [weakSelf pushRiteSecondLevelListViewController:@"4" pujaCode:@""];
             NSLog(@"点击了功德募捐");
         };
         
@@ -374,14 +359,22 @@ static NSInteger riteIndex = 4;
     
     RiteCell * cell = [tableView dequeueReusableCellWithIdentifier:riteCellId];
     if (self.riteList.count) {
+        WEAKSELF
         RiteModel * model = self.riteList[indexPath.row];
         cell.cellModel = model;
         cell.positionType = RiteCellPositionCenter;
-        
-        if (indexPath.row == 0) {
+        cell.cellSelectHandle = ^{
+            KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteDetail(model.code, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_rite];
+            webVC.fillToView = YES;
+            webVC.hidesBottomBarWhenPushed = YES;
+            [webVC hideWebViewScrollIndicator];
+            [weakSelf.navigationController pushViewController:webVC animated:YES];
+        };
+        if (self.riteList.count == 1){
+            cell.positionType = RiteCellPositionOnlyOne;
+        } else if (indexPath.row == 0) {
             cell.positionType = RiteCellPositionFirst;
-        }
-        if (indexPath.row == self.riteList.count - 1) {
+        } else if (indexPath.row == self.riteList.count - 1) {
             cell.positionType = RiteCellPositionLast;
         }
     }
@@ -391,61 +384,23 @@ static NSInteger riteIndex = 4;
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-//    if (indexPath.section == marqueeIndex) {
-//        [self.sexPickerView show];
-//
-//        RiteLongRegistrationFormViewController *vc = [[RiteLongRegistrationFormViewController alloc] init];
-//        vc.hidesBottomBarWhenPushed = YES;
-//        [self.navigationController pushViewController:vc animated:YES];
-//    }
-//
-//    if (indexPath.section == longRiteJoinIndex) {
-//        [self pushRiteLongViewController];
-//    }
     
-    if (indexPath.section == riteIndex) {
-        
-        RiteModel * model = self.riteList[indexPath.row];
-        KungfuWebViewController *webVC;
-        
-        switch ([model.pujaType intValue]) {
-            // 1:水路法会 2 普通法会 3 全年佛事 4 建寺安僧
-            case 1:{
-                webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteSL(model.pujaType, model.pujaCode, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_rite];
-                webVC.hidesBottomBarWhenPushed = YES;
-                [self.navigationController pushViewController:webVC animated:YES];
-            }
-                break;
-            case 2:{
-                webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteSL(model.pujaType, model.pujaCode, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_rite];
-                webVC.hidesBottomBarWhenPushed = YES;
-                [self.navigationController pushViewController:webVC animated:YES];
-            }
-                break;
-            case 3:{
-                [self pushRiteLongViewController];
-            }
-                break;
-            case 4:{
-                webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteBuild(model.pujaType, model.pujaCode, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_rite];
-                webVC.hidesBottomBarWhenPushed = YES;
-                [self.navigationController pushViewController:webVC animated:YES];
-            }
-                break;
-            default:
-                break;
-        }
-        
-        if (webVC){
-            [webVC hideWebViewScrollIndicator];
-        }
-    }
+//    if (indexPath.section == riteIndex) {
+//
+//        RiteModel * model = self.riteList[indexPath.row];
+//
+//        KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteDetail(model.code, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_rite];
+//        webVC.fillToView = YES;
+//        webVC.hidesBottomBarWhenPushed = YES;
+//        [webVC hideWebViewScrollIndicator];
+//        [self.navigationController pushViewController:webVC animated:YES];
+//    }
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == bannerIndex) {
-        return 154;
+        return 142;
     }
     
     if (indexPath.section == marqueeIndex) {
@@ -544,6 +499,10 @@ static NSInteger riteIndex = 4;
         _homeTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
             weakSelf.pageNum = 1;
             [weakSelf.riteList removeAllObjects];
+            
+            [weakSelf requestBanner];
+            [weakSelf requestMarquee];
+            [weakSelf requestTimeRange];
             [weakSelf requestRiteList];
         }];
 

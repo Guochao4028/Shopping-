@@ -7,6 +7,7 @@
 //
 
 #import "RiteContactInformationTableViewCell.h"
+#import "NSString+Size.h"
 
 @interface RiteContactInformationTableViewCell ()
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
@@ -15,6 +16,7 @@
 @property (weak, nonatomic) IBOutlet UIView *puJaContactView;
 @property (weak, nonatomic) IBOutlet UIView *RitePhoneView;
 @property(nonatomic, copy)NSString *phoneStr;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *nameLabelW;
 @end
 
 @implementation RiteContactInformationTableViewCell
@@ -43,9 +45,22 @@
 
 -(void)setContentStr:(NSString *)contentStr{
      NSArray  *array = [contentStr componentsSeparatedByString:@"|"];
-    [self.nameLabel setText:array[0]];
-    [self.phoneLabel setText:array[1]];
+    
+    NSString *name = array[0];
+    [self.nameLabel setText:name];
+    
     self.phoneStr = array[1];
+    [self.phoneLabel setText:self.phoneStr];
+    
+   CGFloat width = [name sizeWithFont:kRegular(15) maxSize:CGSizeMake(CGFLOAT_MAX, 21)].width +1;
+    
+    self.nameLabelW.constant = 75;
+    
+    if (width > 75) {
+        self.nameLabelW.constant = width;
+    }
+    
+   
 }
 
 

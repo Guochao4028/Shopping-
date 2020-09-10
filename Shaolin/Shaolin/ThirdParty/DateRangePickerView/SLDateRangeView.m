@@ -202,7 +202,7 @@
         return [NSString stringWithFormat:@"%@月",self.startMonths[row]];
     }
     if (component == 2) {
-        return [NSString stringWithFormat:@"%@月",self.endYears[row]];
+        return [NSString stringWithFormat:@"%@年",self.endYears[row]];
     }
     
     return [NSString stringWithFormat:@"%@月",self.endMonths[row]];

@@ -27,13 +27,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 
-//"id": 53,课程id <number>
-//"name": "罗汉拳",课程名称 <string>
-//"cover": "https://static.oss.cdn.oss.gaoshier.cn/image/bfc3bc7a-0037-43ca-85f8-4d8cac760226.png",课程封面图 <string>
-//"level": 1,课程级别 <number>
+//"id": 53,教程id <number>
+//"name": "罗汉拳",教程名称 <string>
+//"cover": "https://static.oss.cdn.oss.gaoshier.cn/image/bfc3bc7a-0037-43ca-85f8-4d8cac760226.png",教程封面图 <string>
+//"level": 1,教程级别 <number>
 //"weight": "10",时长 <string>
 //"user_num": 0,购买人数 <number>
-//"level_name": "一段",课程名称 <string>
+//"level_name": "一段",教程名称 <string>
 //"desc2": "不知道",简介 <string>
 //"price": "10.00",价格 <string>
 //"old_price": "0.00"... <string>

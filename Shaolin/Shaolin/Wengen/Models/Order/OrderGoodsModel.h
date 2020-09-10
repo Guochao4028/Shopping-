@@ -62,10 +62,10 @@ NS_ASSUME_NONNULL_BEGIN
 ///1：仅退款，2：退货退款， 3：换货
 @property(nonatomic, copy)NSString *type;
 
-///1：实物，2：课程，3：报名，5:法事佛事类型-法会，6:法事佛事类型-佛事， 7:法事佛事类型-建寺供僧
+///1：实物，2：教程，3：报名，5:法事佛事类型-法会，6:法事佛事类型-佛事， 7:法事佛事类型-建寺供僧 8:普通法会 4:交流会
 @property(nonatomic, copy)NSString *goods_type;
 
-///课程简介
+///教程简介
 @property(nonatomic, copy)NSString *Intro;
 
 ///
@@ -85,6 +85,12 @@ NS_ASSUME_NONNULL_BEGIN
 // 简介分类
 @property(nonatomic, copy)NSString *desc;
 
+//法会 订单审核状态 用于判断 发票 显示
+//0未审核 1通过 2没通过
+@property(nonatomic, copy)NSString *order_check;
+
+
+- (BOOL)isRiteGoodsType;
 @end
 
 NS_ASSUME_NONNULL_END

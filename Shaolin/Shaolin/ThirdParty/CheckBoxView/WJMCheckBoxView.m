@@ -137,7 +137,7 @@
 }
 
 - (void)deselectAllCheckBtn{
-    for (WJMCheckboxBtn *btn in _selectCheckboxBtns){
+    for (WJMCheckboxBtn *btn in _allCheckboxBtns){
         [btn setSelected:NO];
     }
     [_selectCheckboxBtns removeAllObjects];
@@ -145,7 +145,7 @@
 
 - (NSArray <NSString *> *)getSelectCheckBoxBtnIdentifier{
     NSMutableArray *selectIde = [@[] mutableCopy];
-    for (WJMCheckboxBtn *btn in _selectCheckboxBtns){
+    for (WJMCheckboxBtn *btn in _allCheckboxBtns){
         if (btn.selected){
             [selectIde addObject:btn.identifier];
         }
@@ -174,7 +174,7 @@
     else{
         [_selectCheckboxBtns removeObject:btn];
         if (self.didDeselectItemAtIdentifier){
-            
+            self.didDeselectItemAtIdentifier(btn.identifier);
         } else if ([self.delegate respondsToSelector:@selector(checkboxView:didDeselectItemAtIdentifier:)]){
             [self.delegate checkboxView:self didDeselectItemAtIdentifier:btn.identifier];
         }

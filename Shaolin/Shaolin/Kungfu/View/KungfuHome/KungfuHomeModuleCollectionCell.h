@@ -12,8 +12,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface KungfuHomeModuleCollectionCell : UICollectionViewCell
 
-@property(nonatomic,strong) UIImageView *imageIcon;
-@property(nonatomic,strong) UILabel *nameLabel;
+@property (nonatomic, strong) UIImageView *imageIcon;
+@property (nonatomic, strong) UILabel *nameLabel;
+@property (nonatomic, strong) UIView *bgView;
 
 @end
 

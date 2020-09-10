@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSArray * classList;
 @property (nonatomic, copy) void(^ selectHandle)(NSString * classId);
 @property (nonatomic, copy) void(^ moreHandle)(NSString * filterType);
-- (void) updateCellUI;
+//- (void) updateCellUI;
 
 @end
 

@@ -62,6 +62,7 @@ NS_ASSUME_NONNULL_BEGIN
 //- (NSMutableArray *) getIapList;
 //- (void) saveIapList:(NSMutableArray *)iapList;
 - (NSString *) deviceString;
+- (void) pushController:(UIViewController *)controller;
 @end
 
 NS_ASSUME_NONNULL_END

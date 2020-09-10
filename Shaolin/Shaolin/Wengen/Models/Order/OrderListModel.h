@@ -44,9 +44,9 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property(nonatomic, copy)NSString *status;
 /**
- 0：未分配（待支付），1：实体，2：虚拟
+ 0：未分配（待支付），1：实体，2：虚拟 (已弃用)
  */
-@property(nonatomic, copy)NSString *is_virtual;
+@property(nonatomic, copy)NSString *is_virtual;//(已弃用)
 
 
 /**

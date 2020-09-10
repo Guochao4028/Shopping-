@@ -70,10 +70,10 @@ typedef NS_ENUM(NSInteger, CCLimitType){
     [UIApplication sharedApplication].applicationSupportsShakeToEdit = NO;
 
     // 键盘监听
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillChanged:)
-                                                 name:UIKeyboardWillChangeFrameNotification
-                                               object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(keyboardWillChanged:)
+//                                                 name:UIKeyboardWillChangeFrameNotification
+//                                               object:nil];
 }
 -(void)dealloc
 {

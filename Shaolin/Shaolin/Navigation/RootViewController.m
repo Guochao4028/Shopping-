@@ -14,6 +14,10 @@
 
 @implementation RootViewController
 
+-(void)dealloc {
+    NSLog(@"%@释放了",NSStringFromClass([self class]));
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
@@ -51,6 +55,7 @@
 {
     
 }
+
 
 
 - (UIWindow *)rootWindow {

@@ -77,7 +77,7 @@
         self.timeLabel.text = [NSString stringWithFormat:SLLocalizedString(@"授权时间：%@"),time];
     }
     
-    
+/*
    int state = [cellModel.state intValue];
     
     if (state == 0) {
@@ -109,7 +109,7 @@
                 self.cerGetBtn.userInteractionEnabled = NO;
             }
     
-  
+*/
 }
 
 

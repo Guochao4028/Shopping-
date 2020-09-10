@@ -30,6 +30,8 @@
 
 //#import <Bugly/Bugly.h>
 
+
+
 @interface AppDelegate ()
 
 @end
@@ -61,6 +63,19 @@
     [[UIButton appearance] setExclusiveTouch:YES];
     //    [[UIButton appearance] setShowsTouchWhenHighlighted:YES];
     
+    UILabel * testLabel = [UILabel new];
+    testLabel.text = @"测试系统";
+    testLabel.backgroundColor = UIColor.whiteColor;
+    testLabel.textColor = WENGEN_RED;
+    testLabel.frame = CGRectMake(kScreenWidth - 42, 80, 40, 16);
+    testLabel.layer.cornerRadius = 8;
+    testLabel.layer.borderColor = WENGEN_RED.CGColor;
+    testLabel.layer.borderWidth = 0.5;
+    testLabel.font = kRegular(8);
+    testLabel.textAlignment = NSTextAlignmentCenter;
+    testLabel.clipsToBounds = YES;
+    
+    [self.window addSubview:testLabel];
 }
 
 -(void)initNetWork {
@@ -202,11 +217,7 @@
     }
     
     //1. 初始化SDK
-//    EMOptions *options = [EMOptions optionsWithAppkey:@"1113200506107739#xxxim"];
-    
-    EMOptions *options = [EMOptions optionsWithAppkey:@"1115200518010293#labuladuo"];
-    
-//    EMOptions *options = [EMOptions optionsWithAppkey:@"1133200611065275#shaolintemple"];
+    EMOptions *options = [EMOptions optionsWithAppkey:EMAppKey];
     
     options.enableConsoleLog = YES;
     options.logLevel = EMLogLevelDebug;

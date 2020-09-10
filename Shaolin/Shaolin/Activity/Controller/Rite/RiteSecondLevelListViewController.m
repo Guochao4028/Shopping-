@@ -10,8 +10,16 @@
 #import "XLPageViewController.h"
 #import "ActivityManager.h"
 #import "UIColor+LGFGradient.h"
+#import "RiteSecondLevelModel.h"
+#import "RiteThreeLevelModel.h"
+#import "RiteThreeLevelListViewController.h"
+#import "RiteSecondLevelListViewCell.h"
+
 @interface RiteSecondLevelListViewController () <XLPageViewControllerDelegate, XLPageViewControllerDataSrouce>
-@property (nonatomic, strong) NSArray *titleArray;
+@property (nonatomic, strong) NSArray *datas;
+@property (nonatomic, strong) UIImageView *formBackImageView;//水墨风背景
+@property (nonatomic, strong) UIImageView *formLotusImageView;//莲花
+@property (nonatomic, strong) XLPageViewControllerConfig *config;
 @property (nonatomic, strong) XLPageViewController *pageViewController;
 @end
 
@@ -20,27 +28,61 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    [self.view addSubview:self.formBackImageView];
     [self initPageViewController];
     
     [self buildData];
+    
+    if ([self.pujaType isEqualToString:@"4"]){
+        self.titleLabe.text = SLLocalizedString(@"功德");
+    } else if ([self.pujaType isEqualToString:@"3"]){
+        self.titleLabe.text = SLLocalizedString(@"佛事");
+    } else if ([self.pujaType isEqualToString:@"2"]){
+        self.titleLabe.text = SLLocalizedString(@"法会");
+    } else if ([self.pujaType isEqualToString:@"1"]){
+        self.titleLabe.text = SLLocalizedString(@"水陆法会");
+    }
+    [self.formBackImageView addSubview:self.formLotusImageView];
+    [self.formBackImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.mas_equalTo(0);
+    }];
+    [self.formLotusImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.mas_equalTo(self.formBackImageView);
+        make.bottom.mas_equalTo(0);
+        make.width.mas_equalTo(185);
+        make.height.mas_equalTo(145);
+    }];
+}
+
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    [self.navigationController.navigationBar setBackgroundImage:[[UIImage alloc] init] forBarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
+    [self.navigationController.navigationBar setShadowImage:[UIImage new]];
 }
 
 - (void)initPageViewController {
     XLPageViewControllerConfig *config = [XLPageViewControllerConfig defaultConfig];
     config.titleSpace = 0;
     config.titleViewHeight = 44;
-    config.titleNormalColor = [UIColor clearColor];
-    config.titleSelectedColor = [UIColor lgf_GradientFromColor:[UIColor colorForHex:@"C1564C"] toColor:[UIColor colorForHex:@"8E2B25"] height:config.titleViewHeight];
-    config.titleViewInset = UIEdgeInsetsMake(0, 16, 0, 16);
+    config.titleNormalColor = [UIColor colorForHex:@"333333"];
+    config.titleSelectedColor = [UIColor colorForHex:@"FFFFFF"];
+    
+    config.backgroundNormalColor = [UIColor colorForHex:@"FAFAFA"];
+    config.backgroundSelectedColor = [UIColor lgf_GradientFromColor:[UIColor colorForHex:@"C1564C"] toColor:[UIColor colorForHex:@"8E2B25"] height:50];//[UIColor colorForHex:@"8E2B25"];
+    config.titleViewInset = UIEdgeInsetsMake(0, 0, 0, 0);
     config.shadowLineColor = [UIColor whiteColor];
     config.shadowLineWidth = 20;
     config.shadowLineHeight = 1;
-    self.pageViewController = [[XLPageViewController alloc] initWithConfig:config];
+    config.titleNormalFont = kRegular(15);
+    config.titleSelectedFont = kRegular(15);
+    config.titleColorTransition = NO;
+    self.config = config;
     
-    self.pageViewController.view.frame = CGRectMake(0, NavBar_Height+5, kWidth, kHeight-NavBar_Height-5);
+    self.pageViewController = [[XLPageViewController alloc] initWithConfig:config];
+    self.pageViewController.view.frame = CGRectMake(0, 0, kWidth, kHeight);
     self.pageViewController.delegate = self;
     self.pageViewController.dataSource = self;
-    
+    [self.pageViewController registerClass:[RiteSecondLevelListViewCell class] forTitleViewCellWithReuseIdentifier:@"RiteSecondLevelListViewCell"];
     
     [self addChildViewController:self.pageViewController];
     [self.view addSubview:self.pageViewController.view];
@@ -48,13 +90,33 @@
 
 - (void)buildData {
     [self initPageViewController];
+    NSString *code = self.pujaCode ? self.pujaCode : @"";
+    NSString *type = self.pujaType ? self.pujaType : @"";
+    NSDictionary *params = @{
+        @"code" : code,
+        @"type" : type,
+    };
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
-    //初始化数据，配置默认已订阅和为订阅的标题数组
-    [ActivityManager getRiteReservationList:nil failure:nil finish:^(id  _Nonnull responseObject, NSString * _Nonnull errorReason) {
+    [ActivityManager getRiteReservationList:params success:nil failure:nil finish:^(id  _Nonnull responseObject, NSString * _Nonnull errorReason) {
         [hud hideAnimated:YES];
-        self.titleArray = @[];
+        self.datas = @[];
         if ([ModelTool checkResponseObject:responseObject]){
-            self.titleArray = @[@"消灾", @"超度", @"随喜"];
+            NSArray *datas = responseObject[DATAS];
+            self.datas = [RiteSecondLevelModel mj_objectArrayWithKeyValuesArray:datas];
+            if (self.datas.count){
+                self.config.titleWidth = CGRectGetWidth(self.view.frame)/self.datas.count;
+                if (self.datas.count > 1){
+                    self.config.backgroundSelectedColor = [UIColor lgf_GradientFromColor:[UIColor colorForHex:@"C1564C"] toColor:[UIColor colorForHex:@"8E2B25"] height:50];
+                    self.config.titleSelectedColor = [UIColor colorForHex:@"FFFFFF"];
+                    self.config.shadowLineColor = [UIColor whiteColor];
+                } else {
+                    self.config.backgroundSelectedColor = [UIColor colorForHex:@"FAFAFA"];
+                    self.config.titleSelectedColor = [UIColor colorForHex:@"8E2B25"];
+                    self.config.shadowLineColor = [UIColor colorForHex:@"8E2B25"];
+                }
+            } else {
+                self.config.titleWidth = 0;
+            }
         } else {
             [ShaolinProgressHUD singleTextAutoHideHud:errorReason];
         }
@@ -65,33 +127,39 @@
 
 #pragma mark TableViewDelegate&DataSource
 - (UIViewController *)pageViewController:(XLPageViewController *)pageViewController viewControllerForIndex:(NSInteger)index {
-//    RecommendViewController *vc = [[RecommendViewController alloc] init];
-//    NSDictionary *dic = self.dataArr[index];
-//    vc.identifier = index;
-//    vc.selectPage = [[dic objectForKey:@"id"] integerValue];
-//    return vc;
-    return nil;
+    RiteThreeLevelListViewController *vc = [[RiteThreeLevelListViewController alloc] init];
+    vc.pujaType = self.pujaType;
+    vc.pujaCode = self.pujaCode;
+    RiteSecondLevelModel *model = self.datas[index];
+    vc.riteSecondLevelModel = model;
+    return vc;
 }
 
 - (NSString *)pageViewController:(XLPageViewController *)pageViewController titleForIndex:(NSInteger)index {
-    return self.titleArray[index];
+    RiteSecondLevelModel *model = self.datas[index];
+    return model.buddhismName;
 }
 
 - (NSInteger)pageViewControllerNumberOfPage {
-    return self.titleArray.count;
+    return self.datas.count;
 }
 
 - (void)pageViewController:(XLPageViewController *)pageViewController didSelectedAtIndex:(NSInteger)index {
-    
-    NSLog(@"切换到了：%@", self.titleArray[index]);
+    RiteSecondLevelModel *model = self.datas[index];
+    NSLog(@"切换到了：%@", model.buddhismName);
 }
 
 - (void)pageViewController:(XLPageViewController *)pageViewController refreshAtIndex:(NSInteger)index{
-//    RecommendViewController *vc = (RecommendViewController *)[pageViewController viewControllerForIndex:index];
-//    if (![vc isKindOfClass:[RecommendViewController class]]) return;
-//    [vc refreshAndScrollToTop];
+    RiteThreeLevelListViewController *vc = (RiteThreeLevelListViewController *)[pageViewController viewControllerForIndex:index];
+    if (![vc isKindOfClass:[RiteThreeLevelListViewController class]]) return;
+    [vc refreshAndScrollToTop];
 }
 
+- (__kindof XLPageTitleCell *)pageViewController:(XLPageViewController *)pageViewController titleViewCellForItemAtIndex:(NSInteger)index {
+    RiteSecondLevelListViewCell *cell = [pageViewController dequeueReusableTitleViewCellWithIdentifier:@"RiteSecondLevelListViewCell" forIndex:index];
+    cell.vLineView.hidden = (self.datas.count - 1 == index);
+    return cell;
+}
 /*
 #pragma mark - Navigation
 
@@ -102,4 +170,22 @@
 }
 */
 
+- (UIImageView *)formBackImageView{
+   if (!_formBackImageView){
+        _formBackImageView = [[UIImageView alloc] init];
+        _formBackImageView.contentMode = UIViewContentModeScaleAspectFill;
+       _formBackImageView.image = [UIImage imageNamed:@"riteFormBackImage"];
+    }
+    return _formBackImageView;
+}
+
+- (UIImageView *)formLotusImageView{
+    if (!_formLotusImageView){
+        _formLotusImageView = [[UIImageView alloc] init];
+        _formLotusImageView.contentMode = UIViewContentModeScaleAspectFit;
+        _formLotusImageView.image = [UIImage imageNamed:@"riteFormLotusImage"];
+        
+    }
+    return _formLotusImageView;
+}
 @end

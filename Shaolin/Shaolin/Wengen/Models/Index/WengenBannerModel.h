@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface WengenBannerModel : NSObject
 
+@property(nonatomic, copy)NSString *content;
 
 @property(nonatomic, copy)NSString *bannerName;
 @property(nonatomic, copy)NSString *contentUrl;

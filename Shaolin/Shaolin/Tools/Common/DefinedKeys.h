@@ -17,6 +17,9 @@
 //(iapPayList);\
 //})
 
+///环信key
+#define EMAppKey @"1133200611065275#shaolintemple"
+
 ///设备屏幕的宽度
 #define ScreenWidth [[UIScreen mainScreen]bounds].size.width
 ///设备屏幕的高度
@@ -95,7 +98,7 @@
 //#define KNotificationKfPageChangeExam @"KungFuExaminationSelectExam"
 //// 功夫 - 活动报名
 //#define KNotificationKfPageChangeActivity @"KungFuExaminationSelectActivity"
-//// 功夫 - 课程
+//// 功夫 - 教程
 //#define KNotificationKfPageChangeClass @"KungFuExaminationSelectClass"
 //// 功夫 - 报名查询
 //#define KNotificationKfPageChangeEnrollment @"KungFuExaminationSelectEnrollment"

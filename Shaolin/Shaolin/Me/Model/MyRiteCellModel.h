@@ -12,12 +12,22 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface MyRiteCellModel : NSObject
 
-@property (nonatomic, copy) NSString * pujaIntroduction;
+//@property (nonatomic, copy) NSString * pujaIntroduction;
+//@property (nonatomic, copy) NSString * actuallyPaidMoney;
+//@property (nonatomic, copy) NSString * orderCode;
+//@property (nonatomic, copy) NSString * pujaCode;
+//@property (nonatomic, copy) NSString * pujaName;
+//@property (nonatomic, copy) NSString * pujatype;
+//@property (nonatomic, copy) NSString * thumbnailUrl;
+
+
+@property (nonatomic, copy) NSString * buddhismTypeId;
+@property (nonatomic, copy) NSString * introduction;
 @property (nonatomic, copy) NSString * actuallyPaidMoney;
 @property (nonatomic, copy) NSString * orderCode;
-@property (nonatomic, copy) NSString * pujaCode;
-@property (nonatomic, copy) NSString * pujaName;
-@property (nonatomic, copy) NSString * pujatype;
+@property (nonatomic, copy) NSString * code;
+@property (nonatomic, copy) NSString * name;
+@property (nonatomic, copy) NSString * type;
 @property (nonatomic, copy) NSString * thumbnailUrl;
 
 @end

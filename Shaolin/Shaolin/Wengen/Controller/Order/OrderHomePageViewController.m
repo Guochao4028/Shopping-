@@ -74,7 +74,7 @@
 //返回按钮
 -(void)tapBack{
     
-    self.tabBarController.selectedIndex = 4;
+//    self.tabBarController.selectedIndex = 4;
     
      [self.navigationController popToRootViewControllerAnimated:YES];
 }

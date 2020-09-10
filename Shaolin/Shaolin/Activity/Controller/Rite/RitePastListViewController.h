@@ -14,6 +14,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface RitePastListViewController : RootViewController
 
+@property (nonatomic, strong) NSString * ownedLabel;
+
 @end
 
 NS_ASSUME_NONNULL_END

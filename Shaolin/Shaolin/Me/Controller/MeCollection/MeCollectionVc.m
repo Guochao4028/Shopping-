@@ -80,7 +80,7 @@
     }
 }
 - (void)buildData {
-    self.enabledTitles = @[SLLocalizedString(@"课程"),SLLocalizedString(@"文章"),SLLocalizedString(@"视频")];
+    self.enabledTitles = @[SLLocalizedString(@"教程"),SLLocalizedString(@"文章"),SLLocalizedString(@"视频")];
     self.config = [XLPageViewControllerConfig defaultConfig];
       
     self.config.titleWidth = kWidth/3;

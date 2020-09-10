@@ -70,13 +70,13 @@
     [view addSubview:image];
     UILabel *titleL = [[UILabel alloc] initWithFrame:CGRectMake(SLChange(35), SLChange(15), kWidth - SLChange(95), SLChange(16))];
     titleL.text = title;
-    titleL.font = [UIFont systemFontOfSize:16];
-    titleL.textColor = [UIColor blackColor];
+    titleL.font = kMediumFont(16);
+    titleL.textColor = [UIColor hexColor:@"333333"];
     titleL.textAlignment = NSTextAlignmentLeft;
     [view addSubview:titleL];
     
     if ([title isEqualToString:SLLocalizedString(@"搜索历史")]) {
-        image.frame = CGRectMake(SLChange(11), SLChange(15), SLChange(16), SLChange(16));
+        image.frame = CGRectMake(11, SLChange(15), 17, 17);
          image.image = [UIImage imageNamed:@"history_search"];
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
         btn.frame = CGRectMake(kWidth - 45, 10, 28, 30);
@@ -193,13 +193,13 @@
 
 - (UIView *)setNoHistoryView {
     UIView *historyView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.navgationView.frame), kWidth, SLChange(80))];
-    UIImageView *image = [[UIImageView alloc]initWithFrame:CGRectMake(SLChange(11), SLChange(10), SLChange(16), SLChange(16))];
+    UIImageView *image = [[UIImageView alloc]initWithFrame:CGRectMake(11, SLChange(15), 17, 17)];
     image.image = [UIImage imageNamed:@"history_search"];
     
-    UILabel *titleL = [[UILabel alloc] initWithFrame:CGRectMake(SLChange(35), SLChange(10), kWidth - SLChange(50), SLChange(16))];
+    UILabel *titleL = [[UILabel alloc] initWithFrame:CGRectMake(SLChange(35), SLChange(15), kWidth - SLChange(50), SLChange(16))];
     titleL.text = SLLocalizedString(@"搜索历史");
-    titleL.font = [UIFont systemFontOfSize:16];
-    titleL.textColor = [UIColor blackColor];
+    titleL.font = kMediumFont(16);
+    titleL.textColor = [UIColor hexColor:@"333333"];
     titleL.textAlignment = NSTextAlignmentLeft;
     
     UILabel *notextL = [[UILabel alloc] initWithFrame:CGRectMake(SLChange(35), CGRectGetMaxY(titleL.frame) + SLChange(20), SLChange(100), SLChange(20))];
@@ -221,7 +221,7 @@
 
 -(void)searchNavgationView:(SearchNavgationView *)navgationView searchWord:(NSString *)text{
     if (text.length == 0) {
-        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"搜索内容不能为空") view:self.view afterDelay:TipSeconds];
+        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请输入搜索内容") view:self.view afterDelay:TipSeconds];
         return;
     }
     if ([self.historyArray containsObject:text]) {

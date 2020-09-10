@@ -250,6 +250,13 @@
     [[WengenManager shareInstance]getAhqList:param Callback:call];
 }
 
+
+///(文创 商城) ahq 猜你想问 列表
+-(void)getGuessList:(NSDictionary *)param Callback:(NSArrayCallBack)call{
+    [[WengenManager shareInstance]getGuessList:param Callback:call];
+}
+
+
 /**********************************功夫（段品制）***********************************/
 
 /// 活动分类

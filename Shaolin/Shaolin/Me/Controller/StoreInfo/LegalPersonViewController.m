@@ -131,7 +131,27 @@
 }
 - (void)submitPhoto:(NSData *)fileData {
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:SLLocalizedString(@"正在上传图片")];
-    [[HomeManager sharedInstance] postSubmitPhotoWithFileData:fileData isVedio:NO Success:^(NSURLSessionDataTask *task, id responseObject) {
+//    [[HomeManager sharedInstance] postSubmitPhotoWithFileData:fileData isVedio:NO Success:^(NSURLSessionDataTask *task, id responseObject) {
+//        [hud hideAnimated:YES];
+//        NSDictionary *dic = responseObject;
+//        NSLog(@"submitPhoto+++%@", dic);
+//        if ([[dic objectForKey:@"code"] isEqualToString:@"200"]) {
+//            self.choosePhotoImage.hidden = YES;
+//            self.cardImgStr = [NSString stringWithFormat:@"%@",[dic objectForKey:@"data"]];
+//            [self.idImageView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.cardImgStr]]];
+//            
+//        } else {
+//            self.choosePhotoImage.hidden = NO;
+//            [ShaolinProgressHUD singleTextHud:[dic objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
+//        }
+//    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+//        NSLog(@"%@",error.debugDescription);
+//        [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
+//    }];
+    
+    [[HomeManager sharedInstance]postSubmitPhotoWithFileData:fileData isVedio:NO Success:^(NSDictionary * _Nullable resultDic) {
+    } failure:^(NSString * _Nullable errorReason) {
+    } finish:^(NSDictionary * _Nullable responseObject, NSString * _Nullable errorReason) {
         [hud hideAnimated:YES];
         NSDictionary *dic = responseObject;
         NSLog(@"submitPhoto+++%@", dic);
@@ -144,9 +164,7 @@
             self.choosePhotoImage.hidden = NO;
             [ShaolinProgressHUD singleTextHud:[dic objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
         }
-    } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        NSLog(@"%@",error.debugDescription);
-        [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
+        
     }];
 }
 #pragma mark - 证件日期--长期

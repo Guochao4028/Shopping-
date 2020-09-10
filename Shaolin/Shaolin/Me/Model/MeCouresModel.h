@@ -18,9 +18,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *intro;
 /**图片*/
 @property (nonatomic, copy) NSString *cover;
-/**课程名称*/
+/**教程名称*/
 @property (nonatomic, copy) NSString *name;
-/**课程ID*/
+/**教程ID*/
 @property (nonatomic, copy) NSString *couresId;
 @end
 

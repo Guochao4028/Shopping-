@@ -62,7 +62,7 @@ static NSString *const moreCellId = @"tableCell";
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (self.classList.count > 3) {
-        return 3;
+        return 4;
     }
     return self.classList.count;
 }
@@ -70,11 +70,11 @@ static NSString *const moreCellId = @"tableCell";
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-//    if (indexPath.row < 3) {
+    if (indexPath.row < 3) {
         KungfuHomeCompilationSubCell * cell = [tableView dequeueReusableCellWithIdentifier:subCellId];
         cell.cellModel = self.classList[indexPath.row];
         
-        if (indexPath.row == 2 || indexPath.row == self.classList.count - 1) {
+        if (indexPath.row == 3 || indexPath.row == self.classList.count - 1) {
             cell.bottomCellLine.hidden = YES;
         } else {
             cell.bottomCellLine.hidden = NO;
@@ -82,39 +82,47 @@ static NSString *const moreCellId = @"tableCell";
         
         
         return cell;
-//    }
+    }
     
     
-//    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:moreCellId];
-//    cell.textLabel.font = kRegular(15);
-//    cell.backgroundColor = UIColor.clearColor;
-//    cell.textLabel.textColor = [UIColor hexColor:@"333333"];
-//    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-//    cell.textLabel.textAlignment = NSTextAlignmentCenter;
-//    cell.textLabel.text = SLLocalizedString(@"查看更多");
-//
-//    return cell;
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:moreCellId];
+    cell.textLabel.font = kRegular(15);
+    cell.backgroundColor = UIColor.clearColor;
+    cell.textLabel.textColor = [UIColor hexColor:@"333333"];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    cell.textLabel.textAlignment = NSTextAlignmentCenter;
+    cell.textLabel.text = SLLocalizedString(@"查看更多");
+
+    return cell;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-//    if (indexPath.row > 2) {
-//        [[SLAppInfoModel sharedInstance] postPageChangeNotification:KNotificationKungfuPageChange index:@"3"];
-//    } else {
+    if (indexPath.row > 2) {
+        if (self.moreHandle) {
+            NSString * filterType;
+            if (self.tag == 0) {
+                filterType = @"is_new";
+            } else if (self.tag == 1) {
+                filterType = @"is_delicate";
+            }
+            self.moreHandle(filterType);
+        }
+    } else {
         ClassListModel *cellModel = self.classList[indexPath.row];
         if (self.selectHandle) {
             self.selectHandle(cellModel.classId);
         }
-//    }
+    }
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-//    if (indexPath.row > 2) {
-//        return 45;
-//    }
+    if (indexPath.row > 2) {
+        return 45;
+    }
     
-    return 132;
+    return 83;
 }
 
 
@@ -140,21 +148,23 @@ static NSString *const moreCellId = @"tableCell";
     
     if (self.tag == 0) {
         self.bigTitleLabel.text = SLLocalizedString(@"新手必学");
-        self.contentLabel.text = SLLocalizedString(@"新人都在学这些课程");
+        self.contentLabel.text = SLLocalizedString(@"新人都在学这些教程");
     } else {
-        self.bigTitleLabel.text = SLLocalizedString(@"进阶课程");
-        self.contentLabel.text = SLLocalizedString(@"基础扎实后进阶学习的课程");
+        self.bigTitleLabel.text = SLLocalizedString(@"进阶教程");
+        self.contentLabel.text = SLLocalizedString(@"基础扎实后进阶学习的教程");
     }
     
+    CGFloat moreHeight = 0;
     CGFloat classCount = classList.count;
     if (classCount > 3) {
         classCount = 3;
-        self.moreBtn.hidden = NO;
+        moreHeight = 45;
+//        self.moreBtn.hidden = NO;
     } else {
-        self.moreBtn.hidden = YES;
+//        self.moreBtn.hidden = YES;
     }
     
-    self.classTableView.frame = CGRectMake(0, 10, self.whiteBgView.width, classList.count * 132);
+    self.classTableView.frame = CGRectMake(0, 10, self.whiteBgView.width, classCount * 83 + moreHeight);
 
     
     [self.classTableView reloadData];

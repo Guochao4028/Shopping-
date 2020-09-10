@@ -168,6 +168,9 @@
         
         if([object isKindOfClass:[NSArray class]] == YES){
             NSArray *tmpArray = (NSArray *)object;
+            if (tmpArray.count == 0){
+                [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"订单获取异常")];
+            }
             
             self.originalArray = tmpArray;
             
@@ -225,6 +228,8 @@
             }
             
             [self.tableView reloadData];
+        } else if ([object isKindOfClass:[NSString class]]){
+            [ShaolinProgressHUD singleTextAutoHideHud:(NSString *)object];
         }
     }];
 }
@@ -239,6 +244,7 @@
     checkstandVC.goodsAmountTotal = [NSString stringWithFormat:@"￥%@", self.orderPrice];
     
     checkstandVC.order_no = model.order_sn;
+    checkstandVC.isOrderState = YES;
     
     [self.navigationController pushViewController:checkstandVC animated:YES];
 }
@@ -610,7 +616,7 @@
             GoodsStoreInfoModel *storeInfoModel = (GoodsStoreInfoModel *)object;
             
             CustomerServicViewController *customerServicVC = [[CustomerServicViewController alloc]init];
-            customerServicVC.storeModel = storeInfoModel;
+            customerServicVC.imID = storeInfoModel.im;
             [self.navigationController pushViewController:customerServicVC animated:YES];
         }
     }];

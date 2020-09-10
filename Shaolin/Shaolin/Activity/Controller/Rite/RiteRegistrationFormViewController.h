@@ -11,7 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface RiteRegistrationFormViewController : RootViewController
-/*!pujaType 1:水路法会 2 普通法会 3 全年佛事 4 建寺安僧*/
+/*!pujaType 1:水陆法会 2 普通法会 3 全年佛事 4 建寺安僧*/
 @property (nonatomic, copy) NSString *pujaType;
 /*!法会活动code*/
 @property (nonatomic, copy) NSString *pujaCode;

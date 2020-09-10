@@ -41,7 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
  "pay_type": 1,1 免费 2 会员 3 付费 <number>
  "id": 53,... <number>
  "level_name": "一段",... <string>
- "name": "罗汉拳",课程名称 <string>
+ "name": "罗汉拳",教程名称 <string>
  "old_price": "0.00",价格 <string>
  "video_url": "",视频 <string>
  "weight": "10",时长 <string>
@@ -51,7 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
  -"goods_next": [...<array>
  -{
  "id": 457,... <number>
- "name": "罗汉拳第一节",课程名称 <string>
+ "name": "罗汉拳第一节",教程名称 <string>
  "video": "https://static.oss.cdn.oss.gaoshier.cn/other/88614123-23af-4135-9c57-51e6b2d66835.mp4",... <string>
  "update_time": "2020-05-20",更新时间 <string>
  "value": "",观看时间 <string>

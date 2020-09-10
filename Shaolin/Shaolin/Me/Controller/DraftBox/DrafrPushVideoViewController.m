@@ -328,19 +328,36 @@
         [self postDataWithCoverUrlPlist:coverUrlPlist];
     }else {
         NSData *data = [[NSData alloc] initWithContentsOfFile:videoUrl];
-        [[HomeManager sharedInstance] postSubmitPhotoWithFileData:data isVedio:YES Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
-        {
-            NSDictionary *dic = responseObject;
-            if ([[dic objectForKey:@"code"] integerValue]== 200) {
-                [paramerDic setValue:[dic objectForKey:@"data"] forKey:@"route"];
-                [coverUrlPlist addObject:paramerDic];
-                [self postDataWithCoverUrlPlist:coverUrlPlist];
-            } else {
-                [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"发布失败") view:[UIApplication sharedApplication].keyWindow afterDelay:TipSeconds];
-            }
-        } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-            NSLog(@"%@",error);
-            [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
+//        [[HomeManager sharedInstance] postSubmitPhotoWithFileData:data isVedio:YES Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
+//        {
+//            NSDictionary *dic = responseObject;
+//            if ([[dic objectForKey:@"code"] integerValue]== 200) {
+//                [paramerDic setValue:[dic objectForKey:@"data"] forKey:@"route"];
+//                [coverUrlPlist addObject:paramerDic];
+//                [self postDataWithCoverUrlPlist:coverUrlPlist];
+//            } else {
+//                [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"发布失败") view:[UIApplication sharedApplication].keyWindow afterDelay:TipSeconds];
+//            }
+//        } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+//            NSLog(@"%@",error);
+//            [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
+//        }];
+        
+        
+        
+        [[HomeManager  sharedInstance]postSubmitPhotoWithFileData:data isVedio:YES Success:^(NSDictionary * _Nullable resultDic) {
+        } failure:^(NSString * _Nullable errorReason) {
+        } finish:^(NSDictionary * _Nullable responseObject, NSString * _Nullable errorReason) {
+         
+           NSDictionary *dic = responseObject;
+                     if ([[dic objectForKey:@"code"] integerValue]== 200) {
+                         [paramerDic setValue:[dic objectForKey:@"data"] forKey:@"route"];
+                         [coverUrlPlist addObject:paramerDic];
+                         [self postDataWithCoverUrlPlist:coverUrlPlist];
+                     } else {
+                         [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"发布失败") view:[UIApplication sharedApplication].keyWindow afterDelay:TipSeconds];
+                     }
+            
         }];
     }
 }

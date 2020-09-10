@@ -7,7 +7,7 @@
 //
 
 #import "RitePastListCell.h"
-#import "RiteModel.h"
+#import "RitePastModel.h"
 
 @interface RitePastListCell()
 
@@ -39,13 +39,13 @@
     }
 }
 
--(void)setCellModel:(RiteModel *)cellModel {
+-(void)setCellModel:(RitePastModel *)cellModel {
     _cellModel = cellModel;
 
-    self.nameLabel.text = cellModel.pujaName;
-    self.contentLabel.text = cellModel.pujaIntroduction;
+    self.nameLabel.text = cellModel.reviewTitle;
+    self.contentLabel.text = cellModel.reviewIntroduction;
 
-    [self.riteImgv sd_setImageWithURL:[NSURL URLWithString:cellModel.thumbnailUrl] placeholderImage:[UIImage imageNamed:@"default_small"]];
+    [self.riteImgv sd_setImageWithURL:[NSURL URLWithString:cellModel.reviewThumbnailUrl] placeholderImage:[UIImage imageNamed:@"default_big"]];//default_big，default_small
 }
 
 

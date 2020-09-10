@@ -140,6 +140,13 @@
 @end
 
 @implementation SimpleModel
+- (instancetype)init{
+    self = [super init];
+    if (self) {
+        self.enable = YES;
+    }
+    return self;
+}
 
 + (instancetype)identifier:(NSString *)identifier title:(NSString *)title {
     SimpleModel *model = [[SimpleModel alloc] init];

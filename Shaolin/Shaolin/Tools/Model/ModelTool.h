@@ -63,7 +63,7 @@ typedef void(^CountingChamber)(NSInteger currentCountNumber, BOOL isSuccess, Mes
 /// 根据订单列表数据 计算高度 并返回数据
 +(NSArray *)calculateHeight:(NSArray<OrderListModel *> *)dataArray;
 
-///计算课程时间
+///计算教程时间
 ///type
 ///CalculatedTimeTypeDonotSecond 不带秒 超过30秒进一
 +(NSString *)calculatedTimeWith:(CalculatedTimeType)type secondStr:(NSString *)secondStr;

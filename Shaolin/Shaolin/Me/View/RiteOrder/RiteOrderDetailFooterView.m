@@ -112,17 +112,26 @@
         self.secondButtonW.constant = 0;
         self.intervalW.constant = 0;
         
-        InvoiceModel *invoiceModel = detailsModel.invoice;
-               NSString *buttonTitle = @"查看发票";
-               if (invoiceModel == nil) {
-                   buttonTitle = @"补开发票";
-               }else{
-                   if (invoiceModel.invoice_type == nil) {
-                       buttonTitle = @"补开发票";
-                   }
-               }
+        NSInteger order_check = [detailsModel.order_check integerValue];
         
-        [self.firstButton setTitle:buttonTitle forState:UIControlStateNormal];
+        if (order_check == 1) {
+            
+             InvoiceModel *invoiceModel = detailsModel.invoice;
+                          NSString *buttonTitle = @"查看发票";
+                          if (invoiceModel == nil) {
+                              buttonTitle = @"补开发票";
+                          }else{
+                              if (invoiceModel.invoice_type == nil) {
+                                  buttonTitle = @"补开发票";
+                              }
+                          }
+                   
+                   [self.firstButton setTitle:buttonTitle forState:UIControlStateNormal];
+        }else{
+            [self.firstButton setHidden:YES];
+        }
+        
+       
         
     }
     

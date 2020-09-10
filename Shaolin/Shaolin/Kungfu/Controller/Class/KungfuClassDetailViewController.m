@@ -40,6 +40,7 @@
 #import "SLPlayerView.h"
 #import "AVCSelectSharpnessView.h"
 #import <sys/utsname.h>
+#import "SLRouteManager.h"
 
 static NSString *const classCellId = @"KungfuClassInfoCell";
 static NSString *const classConCellId = @"KfClassContainerCell";
@@ -101,12 +102,12 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
     AppDelegate * slAppDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     slAppDelegate.allowOrentitaionRotation = YES;
     
-    // 添加课程观看记录
+    // 添加教程观看记录
     if (self.currentClassData) {
         [self setCourseReadHistory:self.currentClassData time:self.playerView.saveCurrentTime];
     }
     [self destroyPlayVideo];
-    NSLog(@"课程详情界面释放了");
+    NSLog(@"教程详情界面释放了");
 }
 
 
@@ -218,7 +219,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
     if (!self.classId) {
         return;
     }
-    
+//    65949.94
     NSString *goodsId = self.classId;
     NSString *attrId = data.classGoodsId;
     
@@ -246,7 +247,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
             NSString * buttonTitle = self.tableFooterViewBuyBtn.titleLabel.text;
             
             if ([buttonTitle containsString:SLLocalizedString(@"最低段位")]) {
-                [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"您当前位阶与该课程不符") view:self.view afterDelay:TipSeconds];
+                [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"您当前位阶与该教程不符") view:self.view afterDelay:TipSeconds];
                 return;
             }
             
@@ -278,7 +279,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
         [self setCourseReadHistory:self.currentClassData time:self.playerView.saveCurrentTime];
     }
     
-    // 添加当前课程播放记录，进度1秒
+    // 添加当前教程播放记录，进度1秒
     [self setCourseReadHistory:goodsModel time:self.playerView.saveCurrentTime];
 
     self.currentClassData = goodsModel;
@@ -305,7 +306,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
     self.videoEndView.hidden = YES;
     [self.playerView playViewPrepareWithVid:videoModel.videoMeta.videoId playAuth:videoModel.playAuth];
     
-    // 隐藏课程图
+    // 隐藏教程图
     [self.headerView hideSdcScrollView];
     self.headerView.playBtn.hidden = YES;
 }
@@ -341,7 +342,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
     UILabel *title = [[UILabel alloc]initWithFrame:customView.bounds];
     [title setFont:[UIFont systemFontOfSize:15]];
     [title setTextColor:[UIColor darkGrayColor]];
-    title.text = SLLocalizedString(@"是否加入我的课程？");
+    title.text = SLLocalizedString(@"是否加入我的教程？");
     [title setTextAlignment:NSTextAlignmentCenter];
     [customView addSubview:title];
     
@@ -371,7 +372,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
             [hud hideAnimated:YES];
             
             NSString * errorMsg = result[@"msg"];
-            [ShaolinProgressHUD singleTextAutoHideHud:NotNilAndNull(errorMsg)?errorMsg:SLLocalizedString(@"课程信息获取失败")];
+            [ShaolinProgressHUD singleTextAutoHideHud:NotNilAndNull(errorMsg)?errorMsg:SLLocalizedString(@"教程信息获取失败")];
         }
     }];
 }
@@ -438,11 +439,11 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
     NSString * buttonTitle = self.tableFooterViewBuyBtn.titleLabel.text;
     
     if ([buttonTitle containsString:SLLocalizedString(@"最低段位")]) {
-        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"您当前位阶与该课程不符") view:self.view afterDelay:TipSeconds];
+        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"您当前位阶与该教程不符") view:self.view afterDelay:TipSeconds];
         return;
     }
     
-    if ([buttonTitle isEqualToString:SLLocalizedString(@"观看课程")]) {
+    if ([buttonTitle isEqualToString:SLLocalizedString(@"观看教程")]) {
         if (IsNilOrNull(self.model.goods_next) || !self.model.goods_next.count) {
             return;
         }
@@ -459,21 +460,15 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
         [self goPayClass];
     }
     
-    if ([buttonTitle isEqualToString:SLLocalizedString(@"学习课程")]) {
+    if ([buttonTitle isEqualToString:SLLocalizedString(@"学习教程")]) {
         [self goPayClass];
     }
 }
 
 ///支付流程
 - (void)goPayClass {
-    SLAppInfoModel *model = [SLAppInfoModel sharedInstance];
-    //获取 实名状态
-    int verifiedState = [model.verifiedState intValue];
-    //如果实名就跳转填写订单
-    if (verifiedState == 2) {
-        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"实名认证正在审核中，请耐心等待") view:self.view afterDelay:TipSeconds];
-        return;
-    } else if (verifiedState == 1) {
+    SLRouteRealNameAuthenticationState state = [SLRouteManager pushRealNameAuthenticationState:self.navigationController showAlert:YES];
+    if (state == RealNameAuthenticationStateSuccess) {
         NSMutableArray *modelMutabelArray = [NSMutableArray array];
         NSMutableDictionary *tam = [NSMutableDictionary dictionary];
         
@@ -497,36 +492,6 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
         OrderFillCourseViewController *orderFillVC = [[OrderFillCourseViewController alloc] init];
         orderFillVC.dataArray = modelMutabelArray;
         [self.navigationController pushViewController:orderFillVC animated:YES];
-    }else{
-        //如果没有实名就跳转实名认证
-        [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
-        [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
-        [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
-        [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
-        [SMAlert setAlertBackgroundColor:[UIColor colorWithWhite:0 alpha:0.5]];
-        UIView *customView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 300, 100)];
-        UILabel *title = [[UILabel alloc]initWithFrame:CGRectMake(0, 10, 300, 21)];
-        [title setFont:kMediumFont(15)];
-        [title setTextColor:[UIColor colorForHex:@"333333"]];
-        title.text = SLLocalizedString(@"实名认证");
-        [title setTextAlignment:NSTextAlignmentCenter];
-        [customView addSubview:title];
-        
-        UILabel *neirongLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, CGRectGetMaxY(title.frame)+10, 270, 38)];
-        [neirongLabel setFont:kRegular(13)];
-        [neirongLabel setTextColor:[UIColor colorForHex:@"333333"]];
-        neirongLabel.text = SLLocalizedString(@"您还没有实名认证，请进行实名认证");
-        neirongLabel.numberOfLines = 0;
-        neirongLabel.textAlignment = NSTextAlignmentCenter;
-        [customView addSubview:neirongLabel];
-        
-        [SMAlert showCustomView:customView stroke:YES confirmButton:[SMButton initWithTitle:SLLocalizedString(@"实名认证") clickAction:^{
-            
-            //如果没有实名就跳转实名认证
-            RealNameViewController *realNameVC = [[RealNameViewController alloc]init];
-            [self.navigationController pushViewController:realNameVC animated:YES];
-            
-        }] cancleButton:[SMButton initWithTitle:SLLocalizedString(@"取消") clickAction:nil]];
     }
 }
 ///加入购物车
@@ -536,7 +501,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
     
     // 数量
     [dic setValue:@(1) forKey:@"num"];
-    // 1 商品 2 课程
+    // 1 商品 2 教程
     [dic setValue:@(2) forKey:@"type"];
     // 商品id
     [dic setValue:self.model.classDetailId forKey:@"goods_id"];
@@ -544,7 +509,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
     [ShaolinProgressHUD defaultSingleLoadingWithText:nil view:nil];
     [[DataManager shareInstance] addCar:dic Callback:^(Message *message) {
         if (message.isSuccess) {
-            [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"已成功加入我的课程") view:WINDOWSVIEW afterDelay:TipSeconds];
+            [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"已成功加入我的教程") view:WINDOWSVIEW afterDelay:TipSeconds];
             
             int carNumber = [self.numberLabel.text intValue] + 1;
             [self.numberLabel setText:[NSString stringWithFormat:@"%d",carNumber]];
@@ -563,30 +528,30 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
         make.left.mas_equalTo(16);
     }];
     if ([self.model.buy boolValue]) {
-        [self.tableFooterViewBuyBtn setTitle:SLLocalizedString(@"观看课程") forState:UIControlStateNormal];
+        [self.tableFooterViewBuyBtn setTitle:SLLocalizedString(@"观看教程") forState:UIControlStateNormal];
     } else {
         if ([self.model isFreeClass]) {
-            // 免费课程
+            // 免费教程
             [self.tableFooterViewBuyBtn setTitle:SLLocalizedString(@"免费观看") forState:UIControlStateNormal];
         }
         
         if ([self.model isVIPClass]) {
-            // 会员课程  判断等级
+            // 会员教程  判断等级
             if ([userModel.level_id intValue] < [self.model.look_level intValue]) {
-                NSString *title = [NSString stringWithFormat:SLLocalizedString(@"最低段位%@可观看课程"), self.model.look_level_name];
+                NSString *title = [NSString stringWithFormat:SLLocalizedString(@"最低段位%@可观看教程"), self.model.look_level_name];
                 [self.tableFooterViewBuyBtn setTitle:title forState:UIControlStateNormal];
             } else {
-                [self.tableFooterViewBuyBtn setTitle:SLLocalizedString(@"学习课程") forState:UIControlStateNormal];
+                [self.tableFooterViewBuyBtn setTitle:SLLocalizedString(@"学习教程") forState:UIControlStateNormal];
             }
         }
         
         if ([self.model isPayClass]) {
-            // 付费课程
+            // 付费教程
             
 //            [self.tableFooterViewBuyBtn mas_updateConstraints:^(MASConstraintMaker *make) {
 //                make.left.mas_equalTo((kWidth - 32 - 13)/2 + 13);
 //            }];
-            [self.tableFooterViewBuyBtn setTitle:SLLocalizedString(@"学习课程") forState:UIControlStateNormal];
+            [self.tableFooterViewBuyBtn setTitle:SLLocalizedString(@"学习教程") forState:UIControlStateNormal];
         }
     }
 }
@@ -765,7 +730,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
     
     if (indexPath.section == 2) {
         if (self.recommendedClassList.count){
-            return SLChange(130);
+            return 170;
         }
         return 0;
     }
@@ -854,7 +819,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
     _model = model;
     
     if (IsNilOrNull(model)) {
-        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"课程获取失败，请稍后重试") view:self.view afterDelay:TipSeconds];
+        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"教程获取失败，请稍后重试") view:self.view afterDelay:TipSeconds];
         [self.navigationController popViewControllerAnimated:YES];
     }
     
@@ -979,7 +944,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
         _tableFooterViewBuyBtn.backgroundColor = [UIColor hexColor:@"8E2B25"];
         _tableFooterViewBuyBtn.layer.cornerRadius = 20;
         _tableFooterViewBuyBtn.titleLabel.font = [UIFont systemFontOfSize:15];
-        [_tableFooterViewBuyBtn setTitle:SLLocalizedString(@"观看课程") forState:UIControlStateNormal];
+        [_tableFooterViewBuyBtn setTitle:SLLocalizedString(@"观看教程") forState:UIControlStateNormal];
         [_tableFooterViewBuyBtn addTarget:self action:@selector(playClass) forControlEvents:UIControlEventTouchUpInside];
     }
     return _tableFooterViewBuyBtn;
@@ -992,7 +957,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
         _tableFooterViewAddShoppingCartBtn.layer.cornerRadius = 20;
         _tableFooterViewAddShoppingCartBtn.titleLabel.font = [UIFont systemFontOfSize:15];
         [_tableFooterViewAddShoppingCartBtn setTitleColor:[UIColor hexColor:@"333333"] forState:UIControlStateNormal];
-        [_tableFooterViewAddShoppingCartBtn setTitle:SLLocalizedString(@"加入我的课程") forState:UIControlStateNormal];
+        [_tableFooterViewAddShoppingCartBtn setTitle:SLLocalizedString(@"加入我的教程") forState:UIControlStateNormal];
         [_tableFooterViewAddShoppingCartBtn addTarget:self action:@selector(addShoppingCartBtn) forControlEvents:UIControlEventTouchUpInside];
     }
     return _tableFooterViewAddShoppingCartBtn;

@@ -276,7 +276,6 @@
             
         }else if (indexPath.row == 2) {
             KungfuExaminationNoticeViewController *vc = [KungfuExaminationNoticeViewController new];
-//            KungfuWebViewController * vc = [[KungfuWebViewController alloc] initWithUrl:URL_H5_ExamNotice([SLAppInfoModel sharedInstance].access_token) type:KfWebView_examNoti];
             vc.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:vc animated:NO];
         }else if (indexPath.row == 3) {

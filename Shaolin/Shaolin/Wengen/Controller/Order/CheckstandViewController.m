@@ -27,6 +27,8 @@
 #import "OrderDetailsViewController.h"
 #import "GoodsDetailsViewController.h"
 
+#import "OrderHomePageViewController.h"
+
 static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableViewCell";
 
 @interface CheckstandViewController ()<WengenNavgationViewDelegate, UITableViewDelegate, UITableViewDataSource>
@@ -176,6 +178,9 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
             
             //根据活动编号查询是否有符合该段位且该机构的 考试凭证
             if (self.activityCode && self.activityCode.length){
+             
+
+                
                 [[DataManager shareInstance]checkProof:@{@"activityCode":self.activityCode} callback:^(NSDictionary *result) {
                     NSDictionary *dic ;
                     NSInteger selectLoction;
@@ -432,11 +437,39 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
     
     [SMAlert showCustomView:customView stroke:YES confirmButton:[SMButton initWithTitle:SLLocalizedString(@"继续支付") clickAction:nil] cancleButton:[SMButton initWithTitle:SLLocalizedString(@"残忍离开") clickAction:^{
         
-        if (self.isActivity == YES) {
-            [self.navigationController popToRootViewControllerAnimated:YES];
-            return;
-        }
+//        if (self.isActivity == YES) {
+//            [self.navigationController popToRootViewControllerAnimated:YES];
+//            return;
+//        }
+//
+//        if (self.isOrderState == YES) {
+//            UIViewController * popVc = nil;
+//            for (UIViewController * vc in self.navigationController.viewControllers) {
+//
+//                if (
+//                    [vc isKindOfClass:[OrderDetailsViewController class]]
+//                    ||[vc isKindOfClass:[OrderViewController class]]
+//                    ||[vc isKindOfClass:[BalanceManagementVc class]]
+//                    ||[vc isKindOfClass:[GoodsDetailsViewController class]]
+//
+//
+//                    )
+//                {
+//                    popVc = vc;
+//                }
+//            }
+//
+//            if (popVc) {
+//                [self.navigationController popToViewController:popVc animated:YES];
+//            } else {
+//                [self.navigationController popToRootViewControllerAnimated:YES];
+//            }
+//        }else{
+//            [self.navigationController popViewControllerAnimated:YES];
+//        }
         
+        
+     
         if (self.isOrderState == YES) {
             UIViewController * popVc = nil;
             for (UIViewController * vc in self.navigationController.viewControllers) {
@@ -444,10 +477,6 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
                 if (
                     [vc isKindOfClass:[OrderDetailsViewController class]]
                     ||[vc isKindOfClass:[OrderViewController class]]
-                    ||[vc isKindOfClass:[BalanceManagementVc class]]
-                    ||[vc isKindOfClass:[GoodsDetailsViewController class]]
-            
-                    
                     )
                 {
                     popVc = vc;
@@ -460,8 +489,15 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
                 [self.navigationController popToRootViewControllerAnimated:YES];
             }
         }else{
-            [self.navigationController popViewControllerAnimated:YES];
+            
+            OrderHomePageViewController *orderVC = [[OrderHomePageViewController alloc]init];
+            [self.navigationController pushViewController:orderVC animated:YES];
+            
+            
         }
+        
+        
+        
     }]];
 }
 
@@ -646,31 +682,33 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
 
 
 -(void)setGoodsAmountTotal:(NSString *)goodsAmountTotal{
+    if ([goodsAmountTotal hasPrefix:@"￥"]){
+        goodsAmountTotal = [goodsAmountTotal substringFromIndex:1];
+    }
+    _goodsAmountTotal = [NSString stringWithFormat:@"￥%.2f", [goodsAmountTotal floatValue]];
+    NSString *amountTotal = _goodsAmountTotal;
+    //    else{
+    //        NSMutableAttributedString *attrStr = [[NSMutableAttributedString alloc] initWithString:goodsAmountTotal];
+    //        [attrStr addAttribute:NSFontAttributeName value:[UIFont fontWithName:MediumFont size:17] range:NSMakeRange(0, 1)];
+    //        [attrStr addAttribute:NSFontAttributeName value:[UIFont fontWithName:MediumFont size:25] range:NSMakeRange(1, goodsAmountTotal.length-1)];
+    //
+    //        self.priceLabel.attributedText = attrStr;
     
-    _goodsAmountTotal = goodsAmountTotal;
+    //    }
     
-    NSRange range = [goodsAmountTotal rangeOfString:@"."];
     
-    if (range.location != NSNotFound) {
-        if (goodsAmountTotal != nil) {
-            NSMutableAttributedString *attrStr = [[NSMutableAttributedString alloc] initWithString:goodsAmountTotal];
-            
-            NSString *tem = [goodsAmountTotal substringFromIndex:range.location];
-            
-            [attrStr addAttribute:NSFontAttributeName value:[UIFont fontWithName:MediumFont size:17] range:NSMakeRange(0, 1)];
-            
-            [attrStr addAttribute:NSFontAttributeName value:[UIFont fontWithName:MediumFont size:25] range:NSMakeRange(1, range.location-1)];
-            [attrStr addAttribute:NSFontAttributeName value:[UIFont fontWithName:MediumFont size:18] range:NSMakeRange(range.location, tem.length)];
-            
-            self.priceLabel.attributedText = attrStr;
-        }
-    }else{
-        NSMutableAttributedString *attrStr = [[NSMutableAttributedString alloc] initWithString:goodsAmountTotal];
+    if (amountTotal != nil) {
+        NSRange range = [amountTotal rangeOfString:@"."];
+        NSMutableAttributedString *attrStr = [[NSMutableAttributedString alloc] initWithString:amountTotal];
+        
+        NSString *tem = [amountTotal substringFromIndex:range.location];
+        
         [attrStr addAttribute:NSFontAttributeName value:[UIFont fontWithName:MediumFont size:17] range:NSMakeRange(0, 1)];
-        [attrStr addAttribute:NSFontAttributeName value:[UIFont fontWithName:MediumFont size:25] range:NSMakeRange(1, goodsAmountTotal.length-1)];
+        
+        [attrStr addAttribute:NSFontAttributeName value:[UIFont fontWithName:MediumFont size:25] range:NSMakeRange(1, range.location-1)];
+        [attrStr addAttribute:NSFontAttributeName value:[UIFont fontWithName:MediumFont size:18] range:NSMakeRange(range.location, tem.length)];
         
         self.priceLabel.attributedText = attrStr;
-        
     }
     
 }

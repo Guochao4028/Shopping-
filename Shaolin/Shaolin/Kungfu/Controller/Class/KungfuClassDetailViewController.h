@@ -7,7 +7,7 @@
 //
 //
 //
-//  课程详情
+//  教程详情
 
 #import <UIKit/UIKit.h>
 

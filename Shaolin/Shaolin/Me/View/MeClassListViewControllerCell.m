@@ -34,7 +34,7 @@
     self.timeLabel.text = @"42:11";
     self.tipsLabel.text = @"";
     if ([self.model.testStr isEqualToString:@"1"]){
-        self.tipsLabel.text = SLLocalizedString(@"已购买本课程，可放心观看");
+        self.tipsLabel.text = SLLocalizedString(@"已购买本教程，可放心观看");
     }
     [self.imageV sd_setImageWithURL:[NSURL URLWithString:@"https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1142166796,2385197542&fm=26&gp=0.jpg"] placeholderImage:[UIImage imageNamed:@"shaolinlogo"]];
 }
@@ -49,7 +49,7 @@
     self.timeLabel.text = [NSString stringWithFormat:@"%.2ld:%.2ld", hour, minute];
     self.tipsLabel.text = @"";
     if ([self.model.testStr isEqualToString:@"1"]){
-        self.tipsLabel.text = SLLocalizedString(@"已购买本课程，可放心观看");
+        self.tipsLabel.text = SLLocalizedString(@"已购买本教程，可放心观看");
     }
     [self.imageV sd_setImageWithURL:[NSURL URLWithString:model.cover] placeholderImage:[UIImage imageNamed:@"shaolinlogo"]];
 }

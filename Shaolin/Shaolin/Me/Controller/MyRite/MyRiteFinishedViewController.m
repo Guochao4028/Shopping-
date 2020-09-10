@@ -116,6 +116,13 @@ static NSString *const riteCellId = @"MyRiteRegisteredCell";
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    MyRiteCellModel * model = self.riteList[indexPath.row];
+    
+    CGFloat top = 15;
+    
+    
+    
     return 123;
 }
 

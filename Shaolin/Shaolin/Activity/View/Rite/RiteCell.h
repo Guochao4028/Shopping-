@@ -14,6 +14,7 @@ typedef NS_ENUM(NSUInteger, RiteCellPositionType) {
     RiteCellPositionCenter = 0,
     RiteCellPositionFirst,
     RiteCellPositionLast,
+    RiteCellPositionOnlyOne,
 };
 
 
@@ -24,7 +25,7 @@ typedef NS_ENUM(NSUInteger, RiteCellPositionType) {
 @property (nonatomic, strong) RiteModel * cellModel;
 @property (nonatomic, assign) RiteCellPositionType positionType;
 
-
+@property (nonatomic, copy) void (^ cellSelectHandle)(void);
 
 @end
 

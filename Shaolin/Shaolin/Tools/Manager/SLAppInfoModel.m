@@ -20,7 +20,7 @@
 #import "ClassifyHomeViewController.h"
 #import "FoundVideoListVc.h"
 #import "RiteRegistrationFormViewController.h"
-
+#import "RiteSecondLevelListViewController.h"
 #import "NSDate+BRPickerView.h"
 #import "NSDate+LGFDate.h"
 
@@ -257,7 +257,7 @@ static SLAppInfoModel *currentUser = nil;
     int kind = [subM.kind intValue];
     NSString * fieldId = subM.fieldId;
     NSString * valud = subM.valud;
-    // 1:水路法会 2 普通法会 3 全年佛事 4 建寺安僧
+    // 1:水陆法会 2 普通法会 3 全年佛事 4 建寺安僧
     NSString * riteType = subM.pujaType;
     
     switch (module) {
@@ -433,47 +433,20 @@ static SLAppInfoModel *currentUser = nil;
 
 - (void)pushRiteViewControllerWithRiteType:(NSString *)riteType riteId:(NSString *)riteId {
     //1:水陆法会 2 普通法会 3 全年佛事 4 建寺安僧
-    if ([riteType isEqualToString:@"3"]) {
-        
-        [self pushRiteLongViewController];
+    if ([riteType isEqualToString:@"3"] || [riteType isEqualToString:@"4"]) {
+        [self pushRiteLongViewController:riteType];
     } else {
-        
-        KungfuWebViewController *webVC;
-        if ([riteType isEqualToString:@"1"] || [riteType isEqualToString:@"2"]) {
-            
-            webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteSL(riteType, riteId, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_rite];
-        } else if ([riteType isEqualToString:@"4"]) {
-            
-            webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteBuild(riteType, riteId, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_rite];
-        }
+        KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteDetail(riteId, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_rite];
+        webVC.fillToView = YES;
         [self pushController:webVC];
     }
 }
 
-- (void)pushRiteLongViewController{
-    NSString *strState = [SLAppInfoModel sharedInstance].verifiedState;
-    if (IsNilOrNull(strState) || [strState isEqualToString:@"0"] || [strState isEqualToString:@"3"]) {
-        [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"您还没有实名认证，请前往\"我的\"进行实名认证")];
-        return;
-    }
-    if ([strState isEqualToString:@"2"]) {
-        [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"实名认证正在审核中，请耐心等待")];
-        return;
-    }
-    
-    RiteRegistrationFormViewController *vc = [[RiteRegistrationFormViewController alloc] init];
-    vc.pujaType = @"3";
-    
-    NSDate *minDate = [NSDate date];
-    NSDate *maxDate = [minDate lgf_DateByAddingYears:1];
-    NSString *startTime = [NSDate br_stringFromDate:minDate dateFormat:@"yyyy-MM-dd"];;
-    NSString *endTime = [NSDate br_stringFromDate:maxDate dateFormat:@"yyyy-MM-dd"];;
-    
-    vc.startTime = startTime;
-    vc.endTime = endTime;
-    
+- (void)pushRiteLongViewController:(NSString *)pujaType{
+    RiteSecondLevelListViewController *vc = [RiteSecondLevelListViewController new];
+    vc.pujaType = pujaType;
+    vc.pujaCode = @"";
     vc.hidesBottomBarWhenPushed = YES;
-
     [self pushController:vc];
 }
 

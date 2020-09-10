@@ -67,9 +67,9 @@
     }else{
         
             nameStr = NotNilAndNull([SLAppInfoModel sharedInstance].realname)?[SLAppInfoModel sharedInstance].realname:[SLAppInfoModel sharedInstance].nickname;
-            if (detailsModel.name.length > 0) {
-                nameStr = detailsModel.name;
-            }
+//            if (detailsModel.name.length > 0) {
+//                nameStr = detailsModel.name;
+//            }
             telephoneStr = [SLAppInfoModel sharedInstance].phoneNumber;
         
     }
@@ -90,7 +90,7 @@
          1800 = 30 * 60(30分钟 时间 转秒)
          ([currentTime integerValue] - [createTime integerValue]) 剩下的时间
          */
-        NSInteger timeDifference = ((120 * 60) - ([currentTime integerValue] - create));
+        NSInteger timeDifference = ((30 * 60) - ([currentTime integerValue] - create));
         [self timerFireWithTimeLeft:timeDifference];
         
     }else if ([detailsModel.status isEqualToString:@"6"]

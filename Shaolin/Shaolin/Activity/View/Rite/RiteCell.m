@@ -31,6 +31,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *allYearLabel;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *nameLabelTop;
 
+@property (weak, nonatomic) IBOutlet UIButton *cellSelectBtn;
 
 @end
 
@@ -60,7 +61,11 @@
     } else if (self.positionType == RiteCellPositionLast) {
         self.bottomVerLine.hidden = YES;
         self.cellLine.hidden = YES;
-    } else {}
+    } else if (self.positionType == RiteCellPositionOnlyOne){
+        self.topVerLine.hidden = YES;
+        self.bottomVerLine.hidden = YES;
+        self.cellLine.hidden = YES;
+    }
     
 }
 
@@ -89,17 +94,17 @@
     
     self.cnTimeLabel.text = cellModel.lunarTime;
     
-    self.nameLabel.text = cellModel.pujaName;
-    self.contentLabel.text = cellModel.pujaIntroduction;
+    self.nameLabel.text = cellModel.name;
+    self.contentLabel.text = cellModel.introduction;
     
-    if (cellModel.pujaIntroduction == nil) {
+    if (cellModel.introduction == nil) {
         self.nameLabelTop.constant = 24;
     }else{
         self.nameLabelTop.constant = 0;
     }
     
 //    [self.photoImgv sd_setImageWithURL:[NSURL URLWithString:cellModel.imgUrl] placeholderImage:[UIImage imageNamed:@"default_small"]];
-    [self.photoImgv sd_setImageWithURL:[NSURL URLWithString:cellModel.thumbnailUrl] placeholderImage:[UIImage imageNamed:@"default_small"]];
+    [self.photoImgv sd_setImageWithURL:[NSURL URLWithString:cellModel.thumbnailUrl] placeholderImage:[UIImage imageNamed:@"default_big"]];//default_big，default_small
 //    if ([cellModel.state isEqualToString:@"1"]) {
 //        self.stateBtn.hidden = NO;
 //        [self.stateBtn setBackgroundImage:[UIImage imageNamed:@"rite_ing"] forState:UIControlStateNormal];
@@ -125,6 +130,11 @@
     }
 }
 
+- (IBAction)cellSelectBtnEvent:(UIButton *)sender {
+    if (self.cellSelectHandle) {
+        self.cellSelectHandle();
+    }
+}
 
 - (void) updateLabelColor:(UIColor *)color {
     self.beginTimeLabel.textColor = color;

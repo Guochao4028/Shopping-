@@ -31,7 +31,7 @@
         
          NSString *CU = @"(^1(3[0-2]|4[5]|5[56]|66|7[56]|8[56])\\d{8}$)|(^1709\\d{7}$)";
 
-         NSString *CT = @"(^1(33|53|77|8[019]|99)\\d{8}$)|(^1700\\d{7}$)";
+         NSString *CT = @"([0-9]{11}$)";
          
          /**
           * 大陆地区固话及小灵通
@@ -120,6 +120,30 @@
     }
     return numberStr;
     
+}
+
++ (NSString *)nameDataMasking:(NSString *)name{
+    if (name == nil) return @"";
+    if (name.length <= 1) return name;
+    name = [name dataMasking:NSMakeRange(1, name.length - 1)];
+    return name;
+}
+
++ (NSString *)idCardDataMasking:(NSString *)idCard{
+    if (idCard == nil) return @"";
+    if (idCard.length <= 3) return @"";
+    idCard = [idCard dataMasking:NSMakeRange(1, idCard.length - 2)];
+    return idCard;
+}
+
+- (NSString *)dataMasking:(NSRange)rang{
+    NSString *string = self;
+    NSInteger begin = rang.location;
+    while (begin < NSMaxRange(rang) && string.length >= begin + 1) {
+        string = [string stringByReplacingCharactersInRange:NSMakeRange(begin, 1) withString:@"*"];
+        begin++;
+    }
+    return string;
 }
 
 +(NSString*)currentTime{

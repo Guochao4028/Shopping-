@@ -10,7 +10,7 @@
 #import "FormView.h"
 #import "FormViewModel.h"
 #import "RiteFormModel.h"
-#import "RiteDetailsModel.h"
+#import "RiteDateModel.h"
 #import "ActivityManager.h"
 #import "NSDate+LGFDate.h"
 #import "NSDate+BRPickerView.h"
@@ -26,7 +26,7 @@
 @property (nonatomic, strong) UILabel *tipsLabel;
 @property (nonatomic, strong) NSMutableArray <FormViewModel *> *datas;
 @property (nonatomic, strong) NSArray <RiteFormModel *> *riteFormModels;
-@property (nonatomic, strong) RiteDetailsModel *riteDetailsModel;
+@property (nonatomic, strong) RiteDateModel *riteDateModel;
 @property (nonatomic, copy) NSString *typeStr;//选中的一级标题
 @property (nonatomic, strong) UILabel *riteNameLabel;
 @end
@@ -119,17 +119,17 @@
     }];
     
     [ActivityManager getRiteDetails:self.pujaType pujaCode:self.pujaCode success:^(NSDictionary * _Nullable resultDic) {
-        weakSelf.riteDetailsModel = [RiteDetailsModel mj_objectWithKeyValues:resultDic];
-        if (weakSelf.riteDetailsModel.startTime && weakSelf.riteDetailsModel.startTime.length){
-            NSArray *timeArray = [weakSelf.riteDetailsModel.startTime componentsSeparatedByString:@" "];
+        weakSelf.riteDateModel = [RiteDateModel mj_objectWithKeyValues:resultDic];
+        if (weakSelf.riteDateModel.startTime && weakSelf.riteDateModel.startTime.length){
+            NSArray *timeArray = [weakSelf.riteDateModel.startTime componentsSeparatedByString:@" "];
             weakSelf.startTime = timeArray.firstObject;
         }
-        if (weakSelf.riteDetailsModel.endTime && weakSelf.riteDetailsModel.endTime.length){
-            NSArray *timeArray = [weakSelf.riteDetailsModel.endTime componentsSeparatedByString:@" "];
+        if (weakSelf.riteDateModel.endTime && weakSelf.riteDateModel.endTime.length){
+            NSArray *timeArray = [weakSelf.riteDateModel.endTime componentsSeparatedByString:@" "];
             weakSelf.endTime = timeArray.firstObject;
         }
     } failure:^(NSString * _Nullable errorReason) {
-        weakSelf.riteDetailsModel = nil;
+        weakSelf.riteDateModel = nil;
     } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
         dispatch_group_leave(group);
     }];
@@ -142,19 +142,19 @@
         if ([weakSelf.pujaType isEqualToString:@"3"] || [weakSelf.pujaType isEqualToString:@"4"]){//3 全年佛事 4 建寺安僧不显示法会名称
             
         } else {
-            if (weakSelf.riteDetailsModel && weakSelf.riteDetailsModel.pujaName.length){
-                weakSelf.riteNameLabel.text = weakSelf.riteDetailsModel.pujaName;
+            if (weakSelf.riteDateModel && weakSelf.riteDateModel.pujaName.length){
+                weakSelf.riteNameLabel.text = weakSelf.riteDateModel.pujaName;
                 [weakSelf.riteNameLabel mas_updateConstraints:^(MASConstraintMaker *make) {
                     make.top.mas_equalTo(15);
                     make.height.mas_equalTo(20);
                 }];
             }
         }
-        if (!weakSelf.riteFormModels && !weakSelf.riteDetailsModel){
+        if (!weakSelf.riteFormModels && !weakSelf.riteDateModel){
             [ShaolinProgressHUD singleTextAutoHideHud:kNetErrorPrompt];
         } else if (!weakSelf.riteFormModels){
             [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"获取法会信息失败")];
-        } else if (!weakSelf.riteDetailsModel && ![weakSelf.pujaType isEqualToString:@"4"]){//建寺安僧没有时间
+        } else if (!weakSelf.riteDateModel && ![weakSelf.pujaType isEqualToString:@"4"]){//建寺安僧没有时间
             [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"获取法会时间失败")];
         }
         [weakSelf reloadFormView];
@@ -175,7 +175,7 @@
     if (!self.pujaCode) self.pujaCode = @"";
     if (!self.pujaType) self.pujaType = @"";
     NSString *riteName = @"";
-    if (self.riteDetailsModel) riteName = self.riteDetailsModel.pujaName;
+    if (self.riteDateModel) riteName = self.riteDateModel.pujaName;
     [params setObject:riteName forKey:@"pujaName"]; //法会名称
     [params setObject:self.pujaType forKey:@"pujaType"];//法会类型 一级id
     [params setObject:self.pujaCode forKey:@"pujaCode"];//法会编号
@@ -260,13 +260,13 @@
     NSString *puJaClassification = self.pujaType;
     NSString *puJaClassificationName = @"";
     if ([self.pujaType isEqualToString:@"1"]){
-        puJaClassificationName = @"水路法会";
+        puJaClassificationName = @"水陆法会";
     } else if ([self.pujaType isEqualToString:@"2"]){
         puJaClassificationName = @"普通法会";
     } else if ([self.pujaType isEqualToString:@"3"]){
         puJaClassificationName = @"全年佛事";
     } else if ([self.pujaType isEqualToString:@"4"]){
-        puJaClassificationName = @"建寺安僧";
+        puJaClassificationName = @"功德募捐";
     }
 
     if (riteFormModel.buddhismId){
@@ -685,10 +685,10 @@
             [FormViewModel timePickerModel:FormViewLayoutStyle_Vertical identifier:@"超度者生日期" title:@"超度者生于" placeholder:@"请选择超度者生日期" startTime:@"" endTime:endTime],
             [FormViewModel timePickerModel:FormViewLayoutStyle_Vertical identifier:@"超度者殁日期" title:@"超度者殁于" placeholder:@"请选择超度者殁日期" startTime:@"" endTime:endTime],
         ]];
+        FormViewModel *yangshangModel = [FormViewModel textFieldModel:FormViewLayoutStyle_Vertical identifier:@"阳上人姓名" title:@"阳上人姓名" checkType:CCCheckNone placeholder:@"请输入阳上人姓名"];
+        [yangshangModel.params addEntriesFromDictionary:@{RiteFormModel_TextMaxLength_ParamsKey : @"14"}];
+        [array addObject:yangshangModel];
     }
-    FormViewModel *yangshangModel = [FormViewModel textFieldModel:FormViewLayoutStyle_Vertical identifier:@"阳上人姓名" title:@"阳上人姓名" checkType:CCCheckNone placeholder:@"请输入阳上人姓名"];
-    [yangshangModel.params addEntriesFromDictionary:@{RiteFormModel_TextMaxLength_ParamsKey : @"14"}];
-    [array addObject:yangshangModel];
     
     [array addObject:[FormViewModel textFieldModel:FormViewLayoutStyle_Vertical identifier:@"斋主姓名" title:@"斋主姓名" checkType:CCCheckNone placeholder:@"请输入斋主姓名"]];
     [array addObject:[FormViewModel textFieldModel:FormViewLayoutStyle_Vertical identifier:@"联系电话" title:@"联系电话" checkType:CCCheckPhone placeholder:@"请输入斋主联系电话"]];
@@ -705,8 +705,8 @@
 
 - (NSArray *)getBottomRegistrationFormModelList {
     NSMutableArray *array = [@[] mutableCopy];
-    if (self.riteDetailsModel.contactPerson && self.riteDetailsModel.contactPerson.length && self.riteDetailsModel.contactPhone && self.riteDetailsModel.contactPhone.length){
-        [array addObject:[FormViewModel phoneLabelModel:FormViewLayoutStyle_Vertical identifier:@"联系方式" title:@"联系方式" value:[NSString stringWithFormat:@"%@：%@", self.riteDetailsModel.contactPerson, self.riteDetailsModel.contactPhone]]];
+    if (self.riteDateModel.contactPerson && self.riteDateModel.contactPerson.length && self.riteDateModel.contactPhone && self.riteDateModel.contactPhone.length){
+        [array addObject:[FormViewModel phoneLabelModel:FormViewLayoutStyle_Vertical identifier:@"联系方式" title:@"联系方式" value:[NSString stringWithFormat:@"%@：%@", self.riteDateModel.contactPerson, self.riteDateModel.contactPhone]]];
     }
 //    else {
 //        [array addObject:[FormViewModel phoneLabelModel:FormViewLayoutStyle_Vertical identifier:@"联系方式" title:@"联系方式" value:@"延耘法师：15890077598"]];

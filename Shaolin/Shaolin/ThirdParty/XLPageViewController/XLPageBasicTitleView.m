@@ -339,6 +339,7 @@
     if (!self.config.shadowLineHidden) {
         self.shadowLine.hidden = [self.dataSource pageTitleViewNumberOfTitle] == 0;
     }
+    self.shadowLine.backgroundColor = self.config.shadowLineColor;
     [self fixShadowLineCenter];
 }
 

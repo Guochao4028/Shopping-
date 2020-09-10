@@ -53,7 +53,7 @@
 
 
 - (void)buildData {
-    self.enabledTitles = @[@"已收藏",@"已预约"];
+    self.enabledTitles = @[@"已收藏",@"已报名"];
     self.config = [XLPageViewControllerConfig defaultConfig];
       
     self.config.titleWidth = kWidth/2;

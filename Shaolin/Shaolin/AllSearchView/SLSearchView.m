@@ -155,13 +155,13 @@
 - (UIView *)setNoHistoryView
 {
     UIView *historyView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kWidth, SLChange(80))];
-    UIImageView *image = [[UIImageView alloc]initWithFrame:CGRectMake(SLChange(11), SLChange(10), SLChange(16), SLChange(16))];
+    UIImageView *image = [[UIImageView alloc]initWithFrame:CGRectMake(11, SLChange(15), 17, 17)];
     image.image = [UIImage imageNamed:@"history_search"];
     
-    UILabel *titleL = [[UILabel alloc] initWithFrame:CGRectMake(SLChange(35), SLChange(10), kWidth - SLChange(50), SLChange(16))];
+    UILabel *titleL = [[UILabel alloc] initWithFrame:CGRectMake(SLChange(35), SLChange(15), kWidth - SLChange(50), SLChange(16))];
     titleL.text = SLLocalizedString(@"搜索历史");
-    titleL.font = [UIFont systemFontOfSize:16];
-    titleL.textColor = [UIColor blackColor];
+    titleL.font = kMediumFont(16);
+    titleL.textColor = [UIColor hexColor:@"333333"];
     titleL.textAlignment = NSTextAlignmentLeft;
     
     UILabel *notextL = [[UILabel alloc] initWithFrame:CGRectMake(SLChange(35), CGRectGetMaxY(titleL.frame) + SLChange(20), SLChange(100), SLChange(20))];

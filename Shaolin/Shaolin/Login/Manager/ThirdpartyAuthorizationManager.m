@@ -80,29 +80,40 @@ static NSString *const SinaRedirectURI      = @"https://api.weibo.com/oauth2/def
 }
 
 + (void)registerApps{
-    BOOL wxSDK = [WXApi registerApp:WXAppId universalLink:UniversalLink];
+    if ([WXApi isWXAppInstalled]){
+        BOOL wxSDK = [WXApi registerApp:WXAppId universalLink:UniversalLink];
+        NSString *wxSDKVersion = [WXApi getApiVersion];
+        
+        NSLog(@"注册微信SDK%d", wxSDK);
+        NSLog(@"微信SDK版本：%@", wxSDKVersion);
+    }
+    if ([WeiboSDK isWeiboAppInstalled]){
+        BOOL wbSDK = [WeiboSDK registerApp:WBAppId];
 #ifdef DEBUG
     [WeiboSDK enableDebugMode:YES];
 #endif
-    
-    BOOL wbSDK = [WeiboSDK registerApp:WBAppId];
-    
-    ThirdpartyAuthorizationManager *manager = [ThirdpartyAuthorizationManager sharedInstance];
+        NSString *wbSDKVersion = [WeiboSDK getSDKVersion];
+        NSLog(@"注册微博SDK%d", wbSDK);
+        NSLog(@"微博SDK版本：%@", wbSDKVersion);
+    }
+    if ([TencentOAuth iphoneQQInstalled]){
+        ThirdpartyAuthorizationManager *manager = [ThirdpartyAuthorizationManager sharedInstance];
 //    manager.tencentOAuth = [[TencentOAuth alloc] initWithAppId:QQAppId andDelegate:manager];
-    manager.tencentOAuth = [[TencentOAuth alloc] initWithAppId:QQAppId andUniversalLink:UniversalLink andDelegate:manager];
-    manager.tencentOAuth.authMode = kAuthModeServerSideCode;
-    manager.tencentPermissions = [NSMutableArray arrayWithArray:
-                                  @[
-                                      /** 获取用户信息 */
-                                      kOPEN_PERMISSION_GET_USER_INFO,
-                                      /** 移动端获取用户信息 */
-                                      kOPEN_PERMISSION_GET_SIMPLE_USER_INFO,
-                                      /** 获取登录用户自己的详细信息 */
-                                      kOPEN_PERMISSION_GET_INFO]
-                                  ];
-    
-    NSLog(@"注册微信SDK%d", wxSDK);
-    NSLog(@"注册微博SDK%d", wbSDK);
+        manager.tencentOAuth = [[TencentOAuth alloc] initWithAppId:QQAppId andUniversalLink:UniversalLink andDelegate:manager];
+        manager.tencentOAuth.authMode = kAuthModeServerSideCode;
+        manager.tencentPermissions = [NSMutableArray arrayWithArray:
+                                      @[
+                                          /** 获取用户信息 */
+                                          kOPEN_PERMISSION_GET_USER_INFO,
+                                          /** 移动端获取用户信息 */
+                                          kOPEN_PERMISSION_GET_SIMPLE_USER_INFO,
+                                          /** 获取登录用户自己的详细信息 */
+                                          kOPEN_PERMISSION_GET_INFO]
+                                      ];
+        
+        NSString *qqSDKVersion = [TencentOAuth sdkVersion];
+        NSLog(@"QQSDK版本：%@", qqSDKVersion);
+    }
 }
 
 + (NSArray <NSString *> *)thirdpartyLoginTypes {
@@ -152,6 +163,11 @@ static NSString *const SinaRedirectURI      = @"https://api.weibo.com/oauth2/def
     NSString *relativePath = continueURL.relativePath;
     if ([relativePath containsString:WXAppId]) {
         return [WXApi handleOpenUniversalLink:userActivity delegate:self];
+    } else if ([relativePath containsString:QQAppId]) {
+        if ([TencentOAuth CanHandleUniversalLink:continueURL]){
+            return [TencentOAuth HandleUniversalLink:continueURL];
+        }
+        NSLog(@"TencentOAuth HandleUniversalLink");
     } else if ([urlStr containsString:UniversalLink]){
         // TODO: 从浏览器拉起少林APP后调用，携带的参数拼接在urlStr中，可能要做一下界面跳转操作
         NSLog(@"Shaolin handleOpenUniversalLink");
@@ -309,7 +325,7 @@ static NSString *const SinaRedirectURI      = @"https://api.weibo.com/oauth2/def
         if ([sharedModel.type isEqualToString:SharedModelType_Video]){
             object = [[QQApiVideoObject alloc] initWithURL:webUrl title:title description:description previewImageData:imageData targetContentType:QQApiURLTargetTypeVideo];
         } else {
-            object = [[QQApiURLObject alloc] initWithURL:webUrl title:title description:description previewImageData:imageData targetContentType:QQApiURLTargetTypeNotSpecified];//QQApiURLTargetTypeNotSpecified,QQApiURLTargetTypeNews
+            object = [[QQApiURLObject alloc] initWithURL:webUrl title:title description:description previewImageData:imageData targetContentType:QQApiURLTargetTypeNews];//QQApiURLTargetTypeNotSpecified,QQApiURLTargetTypeNews
         }
                 
         SendMessageToQQReq *req = [SendMessageToQQReq reqWithContent:object];

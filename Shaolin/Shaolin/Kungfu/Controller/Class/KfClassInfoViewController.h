@@ -5,7 +5,7 @@
 //  Created by ws on 2020/5/19.
 //  Copyright © 2020 syqaxldy. All rights reserved.
 //
-//  课程信息 - 从课程详情点击课程介绍进入
+//  教程信息 - 从教程详情点击教程介绍进入
 
 #import <UIKit/UIKit.h>
 

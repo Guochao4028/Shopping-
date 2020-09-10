@@ -50,11 +50,11 @@
     self.dataArray = @[
     @{@"title":SLLocalizedString(@"全部"), @"isSelected":@"1"},
     @{@"title":SLLocalizedString(@"商品"), @"isSelected":@"0"},
-    @{@"title":SLLocalizedString(@"课程"), @"isSelected":@"0"},
+    @{@"title":SLLocalizedString(@"教程"), @"isSelected":@"0"},
     @{@"title":SLLocalizedString(@"活动报名"), @"isSelected":@"0"},
     @{@"title":SLLocalizedString(@"退款"), @"isSelected":@"0"},
     @{@"title":SLLocalizedString(@"充值"), @"isSelected":@"0"},
-    @{@"title":SLLocalizedString(@"功德"), @"isSelected":@"0"},
+    @{@"title":SLLocalizedString(@"功德佛事"), @"isSelected":@"0"},
     
     ];
     

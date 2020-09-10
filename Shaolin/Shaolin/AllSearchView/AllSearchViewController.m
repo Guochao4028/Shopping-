@@ -49,7 +49,11 @@
 }
 -(void)viewWillAppear:(BOOL)animated
 {
-    [self hotData];
+    if ([self.tabbarStr isEqualToString:@"Activity"]) {
+        [self setSearchView];
+    } else {
+        [self hotData];
+    }
 }
 - (void)viewWillDisappear:(BOOL)animated
 {
@@ -72,27 +76,51 @@
 {
     [self.hotArray removeAllObjects];
     
-    [[HomeManager sharedInstance]getTopicTabbarStr:self.tabbarStr Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
-        NSLog(@"%@",responseObject);
-        if ([[responseObject objectForKey:@"code"] integerValue]==200) {
-            
-            if ([self.tabbarStr isEqualToString:@"Found"]) {
-                NSArray *arr = [[responseObject objectForKey:@"data"] objectForKey:@"list"];
-                for (NSDictionary *dic in arr) {
-                    [self.hotArray addObject:[dic objectForKey:@"name"]];
-                }
-                [self setSearchView];
-            }else
-            {
-                NSArray *arr = [[responseObject objectForKey:@"data"] objectForKey:@"data"];
-                for (NSDictionary *dic in arr) {
-                    [self.hotArray addObject:[dic objectForKey:@"name"]];
-                }
-                [self setSearchView];
-            }
-        }
-    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+//    [[HomeManager sharedInstance]getTopicTabbarStr:self.tabbarStr Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+//        NSLog(@"%@",responseObject);
+//        if ([[responseObject objectForKey:@"code"] integerValue]==200) {
+//            
+//            if ([self.tabbarStr isEqualToString:@"Found"]) {
+//                NSArray *arr = [[responseObject objectForKey:@"data"] objectForKey:@"list"];
+//                for (NSDictionary *dic in arr) {
+//                    [self.hotArray addObject:[dic objectForKey:@"name"]];
+//                }
+//                [self setSearchView];
+//            }else
+//            {
+//                NSArray *arr = [[responseObject objectForKey:@"data"] objectForKey:@"data"];
+//                for (NSDictionary *dic in arr) {
+//                    [self.hotArray addObject:[dic objectForKey:@"name"]];
+//                }
+//                [self setSearchView];
+//            }
+//        }
+//    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+//        
+//    }];
+    
+    [[HomeManager sharedInstance]getTopicTabbarStr:self.tabbarStr Success:^(NSDictionary * _Nullable resultDic) {
+    } failure:^(NSString * _Nullable errorReason) {
         
+    } finish:^(NSDictionary * _Nullable responseObject, NSString * _Nullable errorReason) {
+        NSLog(@"%@",responseObject);
+               if ([[responseObject objectForKey:@"code"] integerValue]==200) {
+                   
+                   if ([self.tabbarStr isEqualToString:@"Found"]) {
+                       NSArray *arr = [[responseObject objectForKey:@"data"] objectForKey:@"list"];
+                       for (NSDictionary *dic in arr) {
+                           [self.hotArray addObject:[dic objectForKey:@"name"]];
+                       }
+                       [self setSearchView];
+                   }else
+                   {
+                       NSArray *arr = [[responseObject objectForKey:@"data"] objectForKey:@"data"];
+                       for (NSDictionary *dic in arr) {
+                           [self.hotArray addObject:[dic objectForKey:@"name"]];
+                       }
+                       [self setSearchView];
+                   }
+               }
     }];
     
 }
@@ -258,17 +286,19 @@
 
 -(void)searchAction
 {
-    [self closeAction];
-    
     if (self.textField.text.length == 0) {
-        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"搜索内容不能为空") view:self.view afterDelay:TipSeconds];
+        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请输入搜索内容") view:self.view afterDelay:TipSeconds];
         return;
     }
+    
+    [self closeAction];
+    
     SLSearchResultViewController *searchResultVC = [[SLSearchResultViewController alloc] init];
     searchResultVC.searchStr = self.textField.text;
     searchResultVC.hotArray = _hotArray;
     searchResultVC.historyArray = _historyArray;
     searchResultVC.tabbarStr = self.tabbarStr;
+    searchResultVC.isRite = self.isRite;
     [self.navigationController pushViewController:searchResultVC animated:YES];
     [self setHistoryArrWithStr:self.textField.text];
 }
@@ -280,6 +310,7 @@
     searchResultVC.searchStr = str;
     searchResultVC.hotArray = _hotArray;
     searchResultVC.historyArray = _historyArray;
+    searchResultVC.isRite = self.isRite;
     searchResultVC.tabbarStr = self.tabbarStr;
     [self.navigationController pushViewController:searchResultVC animated:YES];
     [self setHistoryArrWithStr:str];
@@ -287,6 +318,11 @@
 
 - (void)setHistoryArrWithStr:(NSString *)str
 {
+
+    if (str.length == 0) {
+        return;;
+    }
+    
     for (int i = 0; i < _historyArray.count; i++) {
         if ([_historyArray[i] isEqualToString:str]) {
             [_historyArray removeObjectAtIndex:i];
@@ -305,9 +341,8 @@
     
     NSLog(@"点击了搜索");
     
-    
     if (self.textField.text.length == 0) {
-        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"搜索内容不能为空") view:self.view afterDelay:TipSeconds];
+        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请输入搜索内容") view:self.view afterDelay:TipSeconds];
     }else
     {
         [self pushToSearchResultWithSearchStr:self.textField.text];

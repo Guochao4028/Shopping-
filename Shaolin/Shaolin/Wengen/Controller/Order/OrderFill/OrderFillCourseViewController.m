@@ -206,7 +206,7 @@
         if (message.isSuccess == YES) {
             
             CheckstandViewController *checkstandVC = [[CheckstandViewController alloc]init];
-            checkstandVC.isOrderState = YES;
+//            checkstandVC.isOrderState = YES;
             checkstandVC.isCourse = YES;
             NSString *total = self.footerView.goodsAmountTotal;
             checkstandVC.goodsAmountTotal = total;

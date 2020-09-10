@@ -566,7 +566,29 @@ static CGFloat kFooterHeight = 47.f;
                             dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
                             UIImage *image = photos[i];
                             NSData *imageData = UIImageJPEGRepresentation(image, 1);
-                            [[HomeManager sharedInstance] postSubmitPhotoWithFileData:imageData isVedio:NO Success:^(NSURLSessionDataTask *task, id responseObject) {
+//                            [[HomeManager sharedInstance] postSubmitPhotoWithFileData:imageData isVedio:NO Success:^(NSURLSessionDataTask *task, id responseObject) {
+//                                NSDictionary *dic = responseObject;
+//                                NSLog(@"submitPhoto+++%@", dic);
+//                                if ([[dic objectForKey:@"code"] isEqualToString:@"200"]) {
+//
+//                                    [weakSelf.editorView insertImage:[dic objectForKey:@"data"]];
+//
+//
+//                                } else {
+//                                    [ShaolinProgressHUD singleTextHud:[dic objectForKey:@"msg"] view:[UIApplication sharedApplication].keyWindow afterDelay:TipSeconds];
+//                                }
+//                                dispatch_semaphore_signal(semaphore);
+//                            } failure:^(NSURLSessionDataTask *task, NSError *error) {
+//                                NSLog(@"%@",error.debugDescription);
+//
+//                                [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:[UIApplication sharedApplication].keyWindow afterDelay:TipSeconds];
+//                                dispatch_semaphore_signal(semaphore);
+//                            }];
+//
+                            
+                            [[HomeManager sharedInstance]postSubmitPhotoWithFileData:imageData isVedio:NO Success:^(NSDictionary * _Nullable resultDic) {
+                            } failure:^(NSString * _Nullable errorReason) {
+                            } finish:^(NSDictionary * _Nullable responseObject, NSString * _Nullable errorReason) {
                                 NSDictionary *dic = responseObject;
                                 NSLog(@"submitPhoto+++%@", dic);
                                 if ([[dic objectForKey:@"code"] isEqualToString:@"200"]) {
@@ -578,12 +600,11 @@ static CGFloat kFooterHeight = 47.f;
                                     [ShaolinProgressHUD singleTextHud:[dic objectForKey:@"msg"] view:[UIApplication sharedApplication].keyWindow afterDelay:TipSeconds];
                                 }
                                 dispatch_semaphore_signal(semaphore);
-                            } failure:^(NSURLSessionDataTask *task, NSError *error) {
-                                NSLog(@"%@",error.debugDescription);
                                 
-                                [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:[UIApplication sharedApplication].keyWindow afterDelay:TipSeconds];
-                                dispatch_semaphore_signal(semaphore);
                             }];
+                            
+                            
+                            
                             dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
                         }
                     });

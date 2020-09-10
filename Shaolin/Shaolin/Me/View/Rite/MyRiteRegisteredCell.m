@@ -36,13 +36,16 @@
 }
 
 - (IBAction)detailHandle:(UIButton *)sender {
+    if (self.detailSelectHandle) {
+        self.detailSelectHandle();
+    }
 }
 
 -(void)setRiteModel:(MyRiteCellModel *)riteModel {
     _riteModel = riteModel;
     
-    self.nameLabel.text = riteModel.pujaName;
-    self.contentLabel.text = riteModel.pujaIntroduction;
+    self.nameLabel.text = riteModel.name;
+    self.contentLabel.text = riteModel.introduction;
     self.priceLabel.text = [NSString stringWithFormat:@"¥ %@",riteModel.actuallyPaidMoney];
     
     [self.riteImgv sd_setImageWithURL:[NSURL URLWithString:riteModel.thumbnailUrl] placeholderImage:[UIImage imageNamed:@"default_small"]];

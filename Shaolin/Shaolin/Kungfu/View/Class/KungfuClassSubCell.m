@@ -34,7 +34,7 @@
         self.tryIcon.image = nil;
         
         if (![self.detailModel.buy boolValue] && [self.model.try_watch intValue] == 1) {
-            // 未购买且课程课节是试看时，显示试看标志
+            // 未购买且教程课节是试看时，显示试看标志
             self.tryIcon.image = [UIImage imageNamed:@"try_icon_red"];
         }
     } else {
@@ -43,7 +43,7 @@
         self.tryIcon.image = nil;
         
         if (![self.detailModel.buy boolValue] && [self.model.try_watch intValue] == 1) {
-            // 未购买且课程课节是试看时，显示试看标志
+            // 未购买且教程课节是试看时，显示试看标志
             self.tryIcon.image = [UIImage imageNamed:@"try_icon_black"];
         }
     }

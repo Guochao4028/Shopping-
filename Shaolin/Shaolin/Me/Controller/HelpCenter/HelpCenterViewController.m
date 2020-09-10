@@ -45,6 +45,13 @@
     
 }
 
+- (void)leftAction{
+    if ([self.webView canGoBack]){
+        [self.webView goBack];
+    } else {
+        [super leftAction];
+    }
+}
 #pragma mark - device
 - (UIStatusBarStyle)preferredStatusBarStyle {
     return UIStatusBarStyleDefault;

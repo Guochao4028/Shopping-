@@ -13,8 +13,11 @@ static NSString *const moduleCollectionCellId = @"KungfuHomeModuleCollectionCell
 
 @interface KungfuHomeModuleCell () <UICollectionViewDelegate,UICollectionViewDataSource>
 
-@property(nonatomic,strong) UICollectionView *collectionView;
-@property (nonatomic,strong) UICollectionViewFlowLayout *layout;
+@property (nonatomic, strong) UICollectionView *collectionView;
+@property (nonatomic, strong) UICollectionViewFlowLayout *layout;
+
+@property (nonatomic, strong) NSArray * titleList;
+@property (nonatomic, strong) NSArray * iconList;
 
 @end
 
@@ -46,36 +49,48 @@ static NSString *const moduleCollectionCellId = @"KungfuHomeModuleCollectionCell
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
   
-    return 4;
+    return 6;
 }
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
    
     KungfuHomeModuleCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:moduleCollectionCellId forIndexPath:indexPath];
          
-    NSArray *arr=@[@"kungfu_allClass",@"kungfu_huodong",@"kungfu_kaoshi",@"kungfu_baoming"];
      
-    cell.imageIcon.image = [UIImage imageNamed:arr[indexPath.row]];
-    NSArray *arrTitle = @[SLLocalizedString(@"全部课程"),SLLocalizedString(@"活动报名"),SLLocalizedString(@"理论考试"),SLLocalizedString(@"报名查询")];
-    cell.nameLabel.text = arrTitle[indexPath.row];
+    cell.imageIcon.image = [UIImage imageNamed:self.iconList[indexPath.row]];
+    cell.nameLabel.text = self.titleList[indexPath.row];
    
     return cell;
 }
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (indexPath.row == 0) {
-        [[SLAppInfoModel sharedInstance] postPageChangeNotification:KNotificationKungfuPageChange index:@"3"];
-    }
+    NSString * title = self.titleList[indexPath.row];
     
-    if (indexPath.row == 1) {
+    if ([title isEqualToString:SLLocalizedString(@"位阶教程")]) {
         [[SLAppInfoModel sharedInstance] postPageChangeNotification:KNotificationKungfuPageChange index:@"2"];
     }
     
-    if (indexPath.row == 2) {
-        [[SLAppInfoModel sharedInstance] postPageChangeNotification:KNotificationKungfuPageChange index:@"1"];
+    if ([title isEqualToString:SLLocalizedString(@"段品制介绍")]) {
+        [[SLAppInfoModel sharedInstance] postPageChangeNotification:KNotificationKungfuPageChange index:@"4"];
     }
     
-    if (indexPath.row == 3) {
-        [[SLAppInfoModel sharedInstance] postPageChangeNotification:KNotificationKungfuPageChange index:@"4"];
+    if ([title isEqualToString:SLLocalizedString(@"报名查询")]) {
+        Class vcClass = NSClassFromString(@"KungfuApplyCheckListViewController");
+        [[SLAppInfoModel sharedInstance] pushController:[vcClass new]];
+    }
+    
+    if ([title isEqualToString:SLLocalizedString(@"成绩查询")]) {
+        Class vcClass = NSClassFromString(@"KungfuAllScoreViewController");
+        [[SLAppInfoModel sharedInstance] pushController:[vcClass new]];
+    }
+    
+    if ([title isEqualToString:SLLocalizedString(@"证书查询")]) {
+        Class vcClass = NSClassFromString(@"KfCertificateCheckViewController");
+        [[SLAppInfoModel sharedInstance] pushController:[vcClass new]];
+    }
+    
+    if ([title isEqualToString:SLLocalizedString(@"考点公告")]) {
+        Class vcClass = NSClassFromString(@"KungfuExamNoticeViewController");
+        [[SLAppInfoModel sharedInstance] pushController:[vcClass new]];
     }
     
 }
@@ -83,25 +98,40 @@ static NSString *const moduleCollectionCellId = @"KungfuHomeModuleCollectionCell
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     
-    return 0.01;
+    return 3;
 }
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     
-    return 0.01;
+    return 15;
 }
 
 //设置每个item的UIEdgeInsets
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
 {
    
-    return UIEdgeInsetsMake(0, 0, 0, 0);
+    return UIEdgeInsetsMake(15, 16, 0, 16);
     
 }
--(UICollectionView *)collectionView
-{
+
+#pragma mark - getter
+
+-(NSArray *)iconList {
+    return @[@"kungfu_classIcon"
+             ,@"class_infoIcon"
+             ,@"class_search"
+             ,@"kungfu_Registrationquery"
+             ,@"kungfu_certificate"
+             ,@"class_notiIcon"];
+}
+
+-(NSArray *)titleList {
+    return @[SLLocalizedString(@"位阶教程"),SLLocalizedString(@"段品制介绍"),SLLocalizedString(@"报名查询"),SLLocalizedString(@"成绩查询"),SLLocalizedString(@"证书查询"),SLLocalizedString(@"考点公告")];
+}
+
+-(UICollectionView *)collectionView {
     if (!_collectionView) {
         
-        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(SLChange(16), 5, kWidth-SLChange(32),95) collectionViewLayout:self.layout];
+        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, kWidth,305) collectionViewLayout:self.layout];
         _collectionView.dataSource = self;
         _collectionView.delegate = self;
         _collectionView.backgroundColor = UIColor.whiteColor;
@@ -110,15 +140,14 @@ static NSString *const moduleCollectionCellId = @"KungfuHomeModuleCollectionCell
     }
     return _collectionView;
 }
--(UICollectionViewFlowLayout *)layout
-{
+-(UICollectionViewFlowLayout *)layout {
     if (!_layout) {
-            _layout = [UICollectionViewFlowLayout new];
-            _layout.minimumLineSpacing = 0;
-            _layout.minimumInteritemSpacing = 0;
-            _layout.itemSize = CGSizeMake((kWidth-SLChange(32))/4 - 1, 95);
-        }
-        return _layout;
+        _layout = [UICollectionViewFlowLayout new];
+        _layout.minimumLineSpacing = 15;
+        _layout.minimumInteritemSpacing = 6.5;
+        _layout.itemSize = CGSizeMake((kWidth - 32 - 8)/3 - 1, 130);
+    }
+    return _layout;
    
 }
 

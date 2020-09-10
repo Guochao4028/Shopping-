@@ -400,112 +400,133 @@ numericalValidationType:(NumericalValidationType)type
 /// 根据订单列表数据 计算高度 并返回数据
 +(NSArray *)calculateHeight:(NSArray<OrderListModel *> *)dataArray{
     NSMutableArray *tem = [NSMutableArray array];
-    for (OrderListModel *listModel in dataArray) {
+//    for (OrderListModel *listModel in dataArray) {
+//
+//        NSString *num_type = listModel.num_type;
+//
+//        NSString *is_virtual = listModel.is_virtual;
+//
+//        if ([num_type isEqualToString:@"1"] == YES || num_type == nil) {
+//
+//            if ( [is_virtual isEqualToString:@"1"]) {
+//                listModel.cellHight = 235;
+//
+//            }else if ([is_virtual isEqualToString:@"0"]) {
+//
+//                BOOL isEqual = YES;
+//
+//                NSString *goods_typeStr;
+//
+//                NSArray *orderStoreArray = listModel.order_goods;
+//
+//                for (OrderStoreModel *storeModel in orderStoreArray) {
+//                    for (OrderGoodsModel *goodsModel in storeModel.goods) {
+//
+//                        OrderGoodsModel *temGoodsModel = storeModel.goods[0];
+//                        if ([goodsModel.goods_type isEqualToString:temGoodsModel.goods_type]) {
+//                            isEqual = YES;
+//                            goods_typeStr = goodsModel.goods_type;
+//                        }else{
+//                            isEqual = NO;
+//                        }
+//                    }
+//                }
+//                if (isEqual) {
+//
+//                    if ([goods_typeStr isEqualToString:@"1"]) {
+//                        listModel.cellHight = 235;
+//                    }else{
+//                        if ([listModel.status isEqualToString:@"6"]||[listModel.status isEqualToString:@"7"]) {
+//                            listModel.cellHight = 180;
+//                        }else{
+//                            listModel.cellHight = 235;
+//                        }
+//                    }
+//                }else{
+//                    if ([listModel.status isEqualToString:@"6"]||[listModel.status isEqualToString:@"7"]) {
+//                        listModel.cellHight = 180;
+//                    }else{
+//                        listModel.cellHight = 235;
+//                    }
+//                }
+//            } else{
+//                if ([listModel.status isEqualToString:@"6"]||[listModel.status isEqualToString:@"7"]) {
+//                    listModel.cellHight = 180;
+//                }else{
+//                    listModel.cellHight = 235;
+//                }
+//            }
+//        }else{
+//             if ( [is_virtual isEqualToString:@"1"]) {
+//                           listModel.cellHight = 235;
+//
+//                       }else if ([is_virtual isEqualToString:@"0"]) {
+//
+//                           BOOL isEqual = YES;
+//
+//                           NSString *goods_typeStr;
+//
+//                           NSArray *orderStoreArray = listModel.order_goods;
+//
+//                           for (OrderStoreModel *storeModel in orderStoreArray) {
+//                               for (OrderGoodsModel *goodsModel in storeModel.goods) {
+//
+//                                   OrderGoodsModel *temGoodsModel = storeModel.goods[0];
+//                                   if ([goodsModel.goods_type isEqualToString:temGoodsModel.goods_type]) {
+//                                       isEqual = YES;
+//                                       goods_typeStr = goodsModel.goods_type;
+//                                   }else{
+//                                       isEqual = NO;
+//                                   }
+//                               }
+//                           }
+//                           if (isEqual) {
+//
+//                               if ([goods_typeStr isEqualToString:@"1"]) {
+//                                   listModel.cellHight = 235;
+//                               }else{
+//                                   if ([listModel.status isEqualToString:@"6"]||[listModel.status isEqualToString:@"7"]) {
+//                                       listModel.cellHight = 180;
+//                                   }else{
+//                                       listModel.cellHight = 235;
+//                                   }
+//                               }
+//                           }else{
+//                               if ([listModel.status isEqualToString:@"6"]||[listModel.status isEqualToString:@"7"]) {
+//                                   listModel.cellHight = 180;
+//                               }else{
+//                                   listModel.cellHight = 235;
+//                               }
+//                           }
+//                       } else{
+//                           if ([listModel.status isEqualToString:@"6"]||[listModel.status isEqualToString:@"7"]) {
+//                               listModel.cellHight = 180;
+//                           }else{
+//                               listModel.cellHight = 235;
+//                           }
+//                       }
+//        }
+//
+//        [tem addObject:listModel];
+//    }
+    
+    for(OrderListModel *listModel in dataArray) {
         
-        NSString *num_type = listModel.num_type;
+        //订单状态
+        NSInteger statusInteger = [listModel.status integerValue];
         
-        NSString *is_virtual = listModel.is_virtual;
-        
-        if ([num_type isEqualToString:@"1"] == YES || num_type == nil) {
-            
-            if ( [is_virtual isEqualToString:@"1"]) {
-                listModel.cellHight = 235;
-                
-            }else if ([is_virtual isEqualToString:@"0"]) {
-                
-                BOOL isEqual = YES;
-                
-                NSString *goods_typeStr;
-                
-                NSArray *orderStoreArray = listModel.order_goods;
-                
-                for (OrderStoreModel *storeModel in orderStoreArray) {
-                    for (OrderGoodsModel *goodsModel in storeModel.goods) {
-                        
-                        OrderGoodsModel *temGoodsModel = storeModel.goods[0];
-                        if ([goodsModel.goods_type isEqualToString:temGoodsModel.goods_type]) {
-                            isEqual = YES;
-                            goods_typeStr = goodsModel.goods_type;
-                        }else{
-                            isEqual = NO;
-                        }
-                    }
-                }
-                if (isEqual) {
-                    
-                    if ([goods_typeStr isEqualToString:@"1"]) {
-                        listModel.cellHight = 235;
-                    }else{
-                        if ([listModel.status isEqualToString:@"6"]||[listModel.status isEqualToString:@"7"]) {
-                            listModel.cellHight = 180;
-                        }else{
-                            listModel.cellHight = 235;
-                        }
-                    }
-                }else{
-                    if ([listModel.status isEqualToString:@"6"]||[listModel.status isEqualToString:@"7"]) {
-                        listModel.cellHight = 180;
-                    }else{
-                        listModel.cellHight = 235;
-                    }
-                }
-            } else{
-                if ([listModel.status isEqualToString:@"6"]||[listModel.status isEqualToString:@"7"]) {
-                    listModel.cellHight = 180;
-                }else{
-                    listModel.cellHight = 235;
-                }
+        NSArray *orderStoreArray = listModel.order_goods;
+        OrderStoreModel *storeModel = [orderStoreArray firstObject];
+        OrderGoodsModel *goodsModel = [storeModel.goods firstObject];
+        NSInteger goods_type = [goodsModel.goods_type integerValue];
+        CGFloat cellHight = 225;
+        ///1：实物，2：教程，3：报名，5:法事佛事类型-法会，6:法事佛事类型-佛事， 7:法事佛事类型-建寺供僧 8:普通法会 4:交流会
+        if (goods_type == 2 || goods_type == 3 || goods_type == 4) {
+            if (statusInteger == 6 || statusInteger == 7) {
+                cellHight = 180;
             }
-        }else{
-             if ( [is_virtual isEqualToString:@"1"]) {
-                           listModel.cellHight = 235;
-                           
-                       }else if ([is_virtual isEqualToString:@"0"]) {
-                           
-                           BOOL isEqual = YES;
-                           
-                           NSString *goods_typeStr;
-                           
-                           NSArray *orderStoreArray = listModel.order_goods;
-                           
-                           for (OrderStoreModel *storeModel in orderStoreArray) {
-                               for (OrderGoodsModel *goodsModel in storeModel.goods) {
-                                   
-                                   OrderGoodsModel *temGoodsModel = storeModel.goods[0];
-                                   if ([goodsModel.goods_type isEqualToString:temGoodsModel.goods_type]) {
-                                       isEqual = YES;
-                                       goods_typeStr = goodsModel.goods_type;
-                                   }else{
-                                       isEqual = NO;
-                                   }
-                               }
-                           }
-                           if (isEqual) {
-                               
-                               if ([goods_typeStr isEqualToString:@"1"]) {
-                                   listModel.cellHight = 235;
-                               }else{
-                                   if ([listModel.status isEqualToString:@"6"]||[listModel.status isEqualToString:@"7"]) {
-                                       listModel.cellHight = 180;
-                                   }else{
-                                       listModel.cellHight = 235;
-                                   }
-                               }
-                           }else{
-                               if ([listModel.status isEqualToString:@"6"]||[listModel.status isEqualToString:@"7"]) {
-                                   listModel.cellHight = 180;
-                               }else{
-                                   listModel.cellHight = 235;
-                               }
-                           }
-                       } else{
-                           if ([listModel.status isEqualToString:@"6"]||[listModel.status isEqualToString:@"7"]) {
-                               listModel.cellHight = 180;
-                           }else{
-                               listModel.cellHight = 235;
-                           }
-                       }
         }
+        listModel.cellHight = cellHight;
         [tem addObject:listModel];
     }
     
@@ -513,7 +534,7 @@ numericalValidationType:(NumericalValidationType)type
     return tem;
 }
 
-///计算课程时间
+///计算教程时间
 ///type
 ///CalculatedTimeTypeDonotSecond 不带秒 超过30秒进一
 +(NSString *)calculatedTimeWith:(CalculatedTimeType)type secondStr:(NSString *)secondStr{
@@ -537,6 +558,8 @@ numericalValidationType:(NumericalValidationType)type
         
     }else if(type == CalculatedTimeTypeSecond){
         timeStr = [NSString stringWithFormat:SLLocalizedString(@"%ld分钟%ld秒"),minute, seconds];
+    }else{
+        timeStr = @"";
     }
     
     return timeStr;

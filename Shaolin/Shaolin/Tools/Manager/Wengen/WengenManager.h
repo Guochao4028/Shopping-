@@ -160,6 +160,9 @@ NS_ASSUME_NONNULL_BEGIN
 ///(文创 商城) ahq 列表
 -(void)getAhqList:(NSDictionary *)param Callback:(NSArrayCallBack)call;
 
+///(文创 商城) ahq 猜你想问 列表
+-(void)getGuessList:(NSDictionary *)param Callback:(NSArrayCallBack)call;
+
 
 +(instancetype)shareInstance;
 

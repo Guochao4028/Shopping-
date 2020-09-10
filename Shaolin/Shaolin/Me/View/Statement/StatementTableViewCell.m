@@ -30,7 +30,7 @@
     self.imageV.image = [UIImage imageNamed:imageName];
     self.orderType.text = model.orderTypeVo;
     self.payState.text = model.payStateVo;
-    self.createTime.text = model.createTime;
+    self.createTime.text = model.isMonth;
     
 }
 

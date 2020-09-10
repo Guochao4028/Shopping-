@@ -99,7 +99,7 @@
     } mutableCopy];
     if ([self.statementType isEqualToString:SLLocalizedString(@"商品")]){
         [params setObject:@"1" forKey:@"orderType"];
-    } else if ([self.statementType isEqualToString:SLLocalizedString(@"课程")]){
+    } else if ([self.statementType isEqualToString:SLLocalizedString(@"教程")]){
         [params setObject:@"2" forKey:@"orderType"];
     } else if ([self.statementType isEqualToString:SLLocalizedString(@"活动报名")]){
         [params setObject:@"3" forKey:@"orderType"];

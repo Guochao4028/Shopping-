@@ -13,7 +13,7 @@
 //#define IsAppStore YES
 
 // 是否是预发布环境
-#define IsPre YES
+//#define IsPre YES
 
 // 是否是开发环境，注释掉为演示测试环境
 #define IsDevelop YES
@@ -104,6 +104,10 @@
 #define URL_H5_SharedActivityDetail(a) [NSString stringWithFormat:@"%@/activityDetail?id=%@",H5Host,a]
 
 /*
+ 法会活动祝福语分享链接
+ */
+#define URL_H5_SharedRiteBlessing(a) [NSString stringWithFormat:@"%@/blessing?id=%@", H5Host, a]
+/*
     店铺详情页证照信息
     shopInfo?id=123&token=789
 */
@@ -165,11 +169,15 @@
  */
 #define URL_H5_Parameter(a,b) [NSString stringWithFormat:@"%@/parameter?goodsId=%@&token=%@",H5Host,a,b]
 
-//水陆法会
-#define URL_H5_RiteSL(pujaType, pujaCode, token) [NSString stringWithFormat:@"%@/legco?pujaType=%@&pujaCode=%@&token=%@",H5Host,pujaType,pujaCode,token]
 
 //建寺
-#define URL_H5_RiteBuild(pujaType, pujaCode, token) [NSString stringWithFormat:@"%@/buildingTemples?pujaType=%@&pujaCode=%@&token=%@",H5Host,pujaType,pujaCode,token]
+//#define URL_H5_RiteBuild(pujaType, pujaCode, token) [NSString stringWithFormat:@"%@/buildingTemples?pujaType=%@&pujaCode=%@&token=%@",H5Host,pujaType,pujaCode,token]
 
+//法会详情
+#define URL_H5_RiteDetail(pujaCode, token) [NSString stringWithFormat:@"%@/lawSocietDetail?code=%@&token=%@",H5Host,pujaCode,token]
+//法会三级页详情
+#define URL_H5_RiteThreeDetail(pujaType, pujaCode, buddhismTypeId, token) [NSString stringWithFormat:@"%@/buddhismTypeIdFindDetail?type=%@&code=%@&id=%@&token=%@",H5Host, pujaType, pujaCode, buddhismTypeId, token]
+//本期回顾
+#define URL_H5_RiteDetailFinished(pujaCode, token) [NSString stringWithFormat:@"%@/oldLawSocietDetail?code=%@&token=%@",H5Host,pujaCode,token]
 
 #endif /* DefinedHost_h */

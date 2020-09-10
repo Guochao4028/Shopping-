@@ -66,7 +66,9 @@
     
     NSInteger index = [dict[@"index"] integerValue];
     
-    self.pageViewController.selectedIndex = index;
+    if (index < self.dataArr.count - 1) {
+        self.pageViewController.selectedIndex = index + 1;
+    }
 }
 
 - (void)initPageViewController {
@@ -90,8 +92,40 @@
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
     
     //初始化数据，配置默认已订阅和为订阅的标题数组
-    [[HomeManager sharedInstance]getHomeSegmentFieldldSuccess:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
-        NSLog(@"%@",responseObject);
+//    [[HomeManager sharedInstance]getHomeSegmentFieldldSuccess:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+//        NSLog(@"%@",responseObject);
+//        [hud hideAnimated:NO];
+//        if ([FoundModel checkResponseObject:responseObject]) {
+//            NSDictionary *dicccc = @{@"name":SLLocalizedString(@"推荐"),
+//                                     @"id":@"0"
+//            };
+//            [self.dataArr addObject:dicccc];
+//            NSArray *arr =[[responseObject objectForKey:@"data"] objectForKey:@"data"];
+//            [self.dataArr addObjectsFromArray:arr];
+//            
+//            NSMutableArray *arrTitle = [NSMutableArray array];
+//            for (NSDictionary *dic in self.dataArr) {
+//                [arrTitle addObject:[dic objectForKey:@"name"]];
+//            }
+//            self.enabledTitles = [NSMutableArray arrayWithArray:arrTitle];
+//        }else
+//        {
+//            [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:MSG] view:self.view afterDelay:TipSeconds];
+//        }
+//        [self.pageViewController reloadData];
+//        self.pageViewController.selectedIndex = 0;
+//    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+//        NSLog(@"%@",error);
+//        [hud hideAnimated:YES];
+//        [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
+//    }];
+    
+    
+    [[HomeManager sharedInstance]getHomeSegmentFieldldSuccess:^(NSDictionary * _Nullable resultDic) {
+        
+    } failure:^(NSString * _Nullable errorReason) {
+        
+    } finish:^(NSDictionary * _Nullable responseObject, NSString * _Nullable errorReason) {
         [hud hideAnimated:NO];
         if ([FoundModel checkResponseObject:responseObject]) {
             NSDictionary *dicccc = @{@"name":SLLocalizedString(@"推荐"),
@@ -112,10 +146,6 @@
         }
         [self.pageViewController reloadData];
         self.pageViewController.selectedIndex = 0;
-    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-        NSLog(@"%@",error);
-        [hud hideAnimated:YES];
-        [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
     }];
     
 }

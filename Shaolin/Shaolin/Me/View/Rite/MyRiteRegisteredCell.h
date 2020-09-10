@@ -13,6 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface MyRiteRegisteredCell : UITableViewCell
 
 @property (nonatomic, strong) MyRiteCellModel * riteModel;
+@property (nonatomic, copy) void (^ detailSelectHandle)(void);
 
 @end
 

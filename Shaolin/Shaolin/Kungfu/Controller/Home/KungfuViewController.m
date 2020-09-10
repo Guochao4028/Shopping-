@@ -65,13 +65,6 @@
     [self.view addSubview:self.searchView];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(kungFuPageChange:) name:KNotificationKungfuPageChange object:nil];
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(KungFuExaminationSelectExam) name:KNotificationKfPageChangeExam object:nil];
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(KungFuExaminationSelectActivity) name:KNotificationKfPageChangeActivity object:nil];
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(KungFuExaminationSelectClass) name:KNotificationKfPageChangeClass object:nil];
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(KungFuExaminationSelectEnrollment) name:KNotificationKfPageChangeEnrollment object:nil];
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(KungFuExaminationSelectInstitution) name:KNotificationKfPageChangeInstitution object:nil];
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(KungFuExaminationInfo) name:KNotificationKfInfo object:nil];
-    
 }
 
 - (void) kungFuPageChange:(NSNotification *)noti {
@@ -89,7 +82,7 @@
 
 
 - (void)buildData {
-    self.enabledTitles = @[SLLocalizedString(@"首页"),SLLocalizedString(@"考试"),SLLocalizedString(@"活动报名"),SLLocalizedString(@"课程"),SLLocalizedString(@"报名查询"),SLLocalizedString(@"机构列表"),SLLocalizedString(@"段品制介绍")];
+    self.enabledTitles = @[SLLocalizedString(@"段品制"),SLLocalizedString(@"以武会友"),SLLocalizedString(@"习武"),SLLocalizedString(@"机构列表"),SLLocalizedString(@"段品制介绍")];
     self.config = [XLPageViewControllerConfig defaultConfig];
       
    
@@ -120,22 +113,28 @@
     if (index == 0) {
         KungfuHomeViewController *vc = [[KungfuHomeViewController alloc] init];
         return vc;
-    }else if(index == 1){
-        KungfuExaminationViewController *vc = [[KungfuExaminationViewController alloc] init];
-        return vc;
-    }else if(index ==2){
+    }
+//    else if(index == 1){
+//        KungfuExaminationViewController *vc = [[KungfuExaminationViewController alloc] init];
+//        return vc;
+//    }
+    else if(index == 1){
         EnrollmentViewController *vc = [[EnrollmentViewController alloc]init];
         return vc;
-    }else if(index ==3){
+    }
+    else if(index == 2){
         KungfuClassListViewController *vc = [[KungfuClassListViewController alloc]init];
         return vc;
-    }else if(index ==4){
-        KungfuSignViewController *vc = [[KungfuSignViewController alloc]init];
-        return vc;
-    }else if(index ==5){
+    }
+//    else if(index ==4){
+//        KungfuSignViewController *vc = [[KungfuSignViewController alloc]init];
+//        return vc;
+//    }
+    else if(index == 3){
         KungfuInstitutionViewController *vc = [[KungfuInstitutionViewController alloc]init];
         return vc;
-    } else {
+    }
+    else {
         KungfuInfoViewController *vc = [KungfuInfoViewController new];
         return vc;
     }

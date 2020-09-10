@@ -163,7 +163,7 @@
     [self.cancelLabel setHidden:NO];
     [self.playVideoBgView setHidden:NO];
     if ([model.goods_type intValue] == 2) {
-        //课程
+        //教程
         [self.obligationView setHidden:YES];
         [self.completeView setHidden:NO];
         [self.bgPlayBtn setHidden:NO];

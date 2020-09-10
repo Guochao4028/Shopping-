@@ -109,7 +109,7 @@
     //         NSArray *arr = @[@"me_certificate_icon",@"me_tutorial_icon",@"me_activity_icon",@"me_test_icon"];
     ////         cell.numberLabel.text = arr[indexPath.row];
     //        cell.logoView.image = [UIImage imageNamed:arr[indexPath.row]];
-    //         NSArray *arrTitle = @[SLLocalizedString(@"我的证书"),SLLocalizedString(@"我的课程"),SLLocalizedString(@"我的活动"),SLLocalizedString(@"考试管理")];
+    //         NSArray *arrTitle = @[SLLocalizedString(@"我的证书"),SLLocalizedString(@"我的教程"),SLLocalizedString(@"我的活动"),SLLocalizedString(@"考试管理")];
     //            cell.nameLabel.text = arrTitle[indexPath.row];
     //
     return cell;

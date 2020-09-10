@@ -19,5 +19,8 @@
     return @{@"childern" : @"AddressInfoModel"};
 }
 
-
+- (BOOL)isRiteGoodsType {
+    BOOL isRite = [self.goods_type isEqualToString:@"5"] || [self.goods_type isEqualToString:@"6"] || [self.goods_type isEqualToString:@"7"];
+    return isRite;
+}
 @end

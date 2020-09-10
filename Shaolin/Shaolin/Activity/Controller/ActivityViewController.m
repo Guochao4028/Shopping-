@@ -14,9 +14,9 @@
 #import "RiteListViewController.h"
 
 @interface ActivityViewController ()<XLPageViewControllerDelegate,XLPageViewControllerDataSrouce>
-@property(nonatomic,strong) XLPageViewController *pageViewController;
-@property(nonatomic,strong)  XLPageViewControllerConfig *config;
-@property(nonatomic,strong) NSArray *dataArr;
+@property (nonatomic, strong) XLPageViewController *pageViewController;
+@property (nonatomic, strong) XLPageViewControllerConfig *config;
+@property (nonatomic, strong) NSArray *dataArr;
 @property (nonatomic, strong) NSArray *enabledTitles;
 
 @property (nonatomic, strong) NSArray *disabledTitles;
@@ -42,11 +42,13 @@
 }
 
 - (void) activityPageChange:(NSNotification *)noti {
-    
+
     NSDictionary *dict = noti.object;
     NSInteger index = [dict[@"index"] integerValue];
-    
-    self.pageViewController.selectedIndex = index;
+
+    if (index < self.dataArr.count - 1) {
+        self.pageViewController.selectedIndex = index + 1;
+    }
 }
 
 - (void)initPageViewController {
@@ -206,9 +208,9 @@
 }
 -(void)pushSearchView:(UITapGestureRecognizer *)tagGes
 {
-    
     AllSearchViewController *searVC = [[AllSearchViewController alloc]init];
     searVC.tabbarStr = @"Activity";
+    searVC.isRite = self.pageViewController.selectedIndex == 0;
     searVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:searVC animated:YES];
 }

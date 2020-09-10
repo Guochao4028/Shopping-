@@ -555,7 +555,7 @@ static int CollectionViewALineCellCount = 4;
 - (NSString *)getViewCollectionClassName:(NSString *)title{
     if ([title isEqualToString:SLLocalizedString(@"我的证书")]){
         return @"KfCertificateCheckViewController";
-    } else if ([title isEqualToString:SLLocalizedString(@"我的课程")]){
+    } else if ([title isEqualToString:SLLocalizedString(@"我的教程")]){
         return @"MeClassViewController";
     } else if ([title isEqualToString:SLLocalizedString(@"我的活动")]){
         return @"MeActivityViewController";
@@ -588,7 +588,7 @@ static int CollectionViewALineCellCount = 4;
 -(NSArray *)collectionViewOneDataArray {
     return @[
         SLLocalizedString(@"我的证书"),
-        SLLocalizedString(@"我的课程"),
+        SLLocalizedString(@"我的教程"),
         SLLocalizedString(@"我的活动"),
         SLLocalizedString(@"我的成就"),
     ];

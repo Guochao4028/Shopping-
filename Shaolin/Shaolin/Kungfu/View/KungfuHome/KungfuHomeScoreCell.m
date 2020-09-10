@@ -59,18 +59,18 @@
     NSString * curriculumStr = NotNilAndNull(resultDic[@"curriculum"])?resultDic[@"curriculum"]:@"";
     
     if (curriculumStr.length == 0 || [curriculumStr isEqualToString:@"0%"]) {
-        self.learnLabel.text = SLLocalizedString(@"您当前暂无学习课程");
-        self.learnBtn.hidden = NO;
+        self.learnLabel.text = SLLocalizedString(@"您当前暂无学习教程");
+//        self.learnBtn.hidden = NO;
     } else {
-        self.learnLabel.text = [NSString stringWithFormat:SLLocalizedString(@"您已学的课程已超过全球%@的学员"),curriculumStr];
+        self.learnLabel.text = [NSString stringWithFormat:SLLocalizedString(@"您已学的教程已超过全球%@的学员"),curriculumStr];
         self.learnBtn.hidden = YES;
     }
     
     if (levelStr.length == 0 || [levelStr isEqualToString:@"0%"]) {
-        self.examLabel.text = SLLocalizedString(@"您当前暂无考取位阶");
+        self.examLabel.text = SLLocalizedString(@"您当前暂无考取品段");
         self.examBtn.hidden = NO;
     } else {
-        self.examLabel.text = [NSString stringWithFormat:SLLocalizedString(@"您已考的位阶已超过全球%@的学员"),levelStr];
+        self.examLabel.text = [NSString stringWithFormat:SLLocalizedString(@"您已考的品段已超过全球%@的学员"),levelStr];
         self.examBtn.hidden = YES;
     }
     

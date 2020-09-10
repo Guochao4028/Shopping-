@@ -92,6 +92,45 @@
     }];
 }
 
++ (NSString *)downloadRequestWithApi:(NSString *)api
+                          parameters:(id)parameter
+                    downloadSavePath:(NSString *)downloadSavePath
+                            progress:(SLProgressNumBlock)progressBlock
+                             success:(nullable SLSuccessBlock)successBlock
+                             failure:(nullable SLFailureReasonBlock)failureBlock
+                              finish:(SLFinishedBlock)finishBlock {
+    if (!downloadSavePath || downloadSavePath.length == 0){
+        NSString *path = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) firstObject];
+        NSArray *array = [api componentsSeparatedByString:@"/"];
+        downloadSavePath = [path stringByAppendingPathComponent:[NSString stringWithFormat:@"%@", array.lastObject]];
+    }
+    return [XMCenter sendRequest:^(XMRequest *request) {
+        request.url = api;
+        request.requestType = kXMRequestDownload;
+        request.parameters = parameter;
+        request.downloadSavePath = downloadSavePath;
+    } onProgress:^(NSProgress *progress) {
+        if (progress) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (progressBlock) progressBlock(progress.fractionCompleted);
+            });
+        }
+    } onSuccess:^(id responseObject) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (successBlock) successBlock(downloadSavePath);
+        });
+    } onFailure:^(NSError *error) {
+        NSString *errorString = error.localizedDescription;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (failureBlock) failureBlock(errorString);
+        });
+    } onFinished:^(id  _Nullable responseObject, NSError * _Nullable error) {
+        NSString *errorString = error.localizedDescription;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (finishBlock) finishBlock(downloadSavePath,errorString);
+        });
+    }];
+}
 #pragma mark -
 + (void)refreshToken {
     static NSString *refreshTokenURL_identifier = nil;

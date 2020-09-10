@@ -19,7 +19,14 @@
 @end
 
 @implementation ShowBigImageViewController
-
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.placeholderImage = @"";
+    }
+    return self;
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -39,7 +46,7 @@
     [self.footerView addSubview:self.saveButton];
     [self.footerView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.mas_equalTo(0);
-        make.bottom.mas_equalTo(-BottomMargin_X);
+        make.bottom.mas_equalTo(-(BottomMargin_X + 10));
     }];
     
     [self.footerView.subviews mas_distributeViewsAlongAxis:MASAxisTypeHorizontal withFixedSpacing:15 leadSpacing:15 tailSpacing:15];
@@ -136,7 +143,7 @@
 
 - (void)setImageUrl:(NSString *)imageUrl{
     _imageUrl = imageUrl;
-    [self.bigImgView sd_setImageWithURL:[NSURL URLWithString:self.imageUrl] placeholderImage:[UIImage imageNamed:@"default_big"]];
+    [self.bigImgView sd_setImageWithURL:[NSURL URLWithString:self.imageUrl] placeholderImage:[UIImage imageNamed:self.placeholderImage]];
 }
 
 - (UIScrollView *)bigImgScrollView{
@@ -205,6 +212,13 @@
         [_cancelButton addTarget:self action:@selector(cancelHandle) forControlEvents:UIControlEventTouchUpInside];
     }
     return _cancelButton;
+}
+
+-(void)setIsHiddenBottom:(BOOL)isHiddenBottom{
+    _isHiddenBottom = isHiddenBottom;
+    
+    [self.footerView setHidden:isHiddenBottom];
+    
 }
 
 /*

@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface AllSearchViewController : UIViewController
 @property(nonatomic,copy) NSString *tabbarStr;
+@property(nonatomic,assign) BOOL isRite; //是否是法会
 @end
 
 NS_ASSUME_NONNULL_END

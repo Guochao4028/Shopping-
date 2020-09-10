@@ -18,7 +18,6 @@
 #import "SLDatePickerView.h"
 #import "SLStringPickerView.h"
 
-
 #define NUM @"0123456789"
 #define ALPHA @"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 #define ALPHANUM @"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
@@ -26,43 +25,45 @@
 
 @interface RealNameViewController ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate,UICollectionViewDelegate,UICollectionViewDataSource,TZImagePickerControllerDelegate>
 
-@property(nonatomic,strong) UITableView *tableView;
+@property (nonatomic, strong) UITableView *tableView;
 
-@property(nonatomic,strong) UITextField *nameTf;
-@property(nonatomic,strong) UIButton *manBtn;
-@property(nonatomic,strong) UIButton *womanBtn;
+@property (nonatomic, strong) UITextField *nameTf;
+@property (nonatomic, strong) UIButton *manBtn;
+@property (nonatomic, strong) UIButton *womanBtn;
 
-@property(nonatomic,strong) UIButton *changeTypeBtn;
-@property(nonatomic,strong) UIButton *changeTypeIcon;
+@property (nonatomic, strong) UIButton *changeTypeBtn;
+@property (nonatomic, strong) UIButton *changeTypeIcon;
 
-@property(nonatomic,strong) NSString *sexStr;
-@property(nonatomic,strong) UITextField *cardNumber;
-@property(nonatomic,strong) UITextField *dressTf;
-@property(nonatomic,strong) UIButton *birthBtn;
+@property (nonatomic, strong) UIButton *submitBtn;
 
-@property(nonatomic,strong) UICollectionView *collectionView;
-@property (nonatomic,strong) UICollectionViewFlowLayout *layout;
+@property (nonatomic, strong) NSString *sexStr;
+@property (nonatomic, strong) UITextField *cardNumber;
+@property (nonatomic, strong) UITextField *dressTf;
+@property (nonatomic, strong) UIButton *birthBtn;
 
-@property(nonatomic,strong) NSString *positiveStr;//正面照 1
-@property(nonatomic,strong) NSString *counterStr;//反面照 2
-@property(nonatomic,strong) NSString *handsStr;//手持照 3
-@property(nonatomic,strong) NSString *personalStr;//个人身份证照片 4
+@property (nonatomic, strong) UICollectionView *collectionView;
+@property (nonatomic, strong) UICollectionViewFlowLayout *layout;
 
-@property(nonatomic,copy) NSString * typeStr;
-@property(nonatomic,strong) SLStringPickerView * typePickerView;
-@property(nonatomic,strong) SLDatePickerView * birthPickerView;
+@property (nonatomic, strong) NSString *positiveStr;//正面照 1
+@property (nonatomic, strong) NSString *counterStr;//反面照 2
+@property (nonatomic, strong) NSString *handsStr;//手持照 3
+@property (nonatomic, strong) NSString *personalStr;//个人身份证照片 4
+
+@property (nonatomic, copy) NSString * typeStr;
+@property (nonatomic, strong) SLStringPickerView * typePickerView;
+@property (nonatomic, strong) SLDatePickerView * birthPickerView;
 
 
-@property(nonatomic,strong) NSArray * titleArr;
-@property(nonatomic,strong) NSArray * photoArr;
-@property(nonatomic,strong) NSArray * photoTitleArr;
+@property (nonatomic, strong) NSArray * titleArr;
+@property (nonatomic, strong) NSArray * photoArr;
+@property (nonatomic, strong) NSArray * photoTitleArr;
 
-@property(nonatomic,strong) NSString *idcardReason;
+@property (nonatomic, strong) NSString *idcardReason;
 
 
 /// 1：提交  2：修改
 //@property(nonatomic,strong) NSString *category;
-@property(nonatomic,strong) NSString *birthStr;
+@property(nonatomic, strong) NSString *birthStr;
 
 //@property (nonatomic, strong) UITableView * searchTypeTable;
 //@property (nonatomic, strong) UIImageView * searchTypeTableBgView;
@@ -74,11 +75,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.titleLabe.text = SLLocalizedString(@"实名认证");
-    
-
+    self.typeStr = SLLocalizedString(@"护照");
     [IQKeyboardManager sharedManager].shouldResignOnTouchOutside = YES;
     
-    [self getIdcardReason];
+//    [self getIdcardReason];
     [self getShareDetail];
     
     [self layoutView];
@@ -93,26 +93,12 @@
 //    self.tableView.scrollEnabled =NO;
     self.tableView.backgroundColor = [UIColor whiteColor];
     self.tableView.delegate = self;
-    
-    [self.view addSubview:self.tableView];
-    
     self.tableView.tableFooterView = self.collectionView;
     
-//    UIView *view = [[UIView alloc]initWithFrame:CGRectMake(0, SLChange(250), kWidth, SLChange(8))];
-//    view.backgroundColor = RGBA(252, 249, 252, 1);
-//    [self.view addSubview:view];
+    [self.view addSubview:self.tableView];
+    [self.view addSubview:self.submitBtn];
     
-    //    [self.view addSubview:self.collectionView];
-    
-    UIButton *submitBtn = [[UIButton alloc]init];
-
-    submitBtn.backgroundColor = [UIColor hexColor:@"8E2B25"];
-    [submitBtn setTitle:SLLocalizedString(@"提交") forState:(UIControlStateNormal)];
-    [submitBtn setTitleColor:[UIColor whiteColor] forState:(UIControlStateNormal)];
-    submitBtn.titleLabel.font = kMediumFont(16);
-    [submitBtn addTarget:self action:@selector(subAction) forControlEvents:(UIControlEventTouchUpInside)];
-    [self.view addSubview:submitBtn];
-    [submitBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.submitBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(SLChange(40) + kBottomSafeHeight);
         make.left.right.bottom.mas_equalTo(self.view);
     }];
@@ -128,7 +114,6 @@
     [self.rightBtn addTarget:self action:@selector(reasonCheck) forControlEvents:(UIControlEventTouchUpInside)];
 }
 #pragma mark - event
-
 - (void) reasonCheck {
     [SMAlert setConfirmBtBackgroundColor:[UIColor whiteColor]];
     [SMAlert setConfirmBtTitleColor:[UIColor hexColor:@"8E2B25"]];
@@ -182,55 +167,84 @@
 - (void)submitPhoto:(NSData *)fileData IndexPath:(NSIndexPath *)indexPath Cell:(RealNameCollectionCell *)cell
 {
     [ShaolinProgressHUD defaultSingleLoadingWithText:SLLocalizedString(@"正在上传图片")];
-    [[HomeManager sharedInstance] postSubmitPhotoWithFileData:fileData isVedio:NO Success:^(NSURLSessionDataTask *task, id responseObject) {
-        [ShaolinProgressHUD hideSingleProgressHUD];
-        NSDictionary *dic = responseObject;
-        NSLog(@"submitPhoto+++%@", dic);
-        if ([[dic objectForKey:@"code"] isEqualToString:@"200"]) {
-            NSString *str = [NSString stringWithFormat:@"%@",[dic objectForKey:@"data"]];
-            if (indexPath.row == 0) {
-                self.positiveStr = str;
-            }else if (indexPath.row == 1) {
-                self.counterStr = str;
-            }else if (indexPath.row == 2) {
-                self.handsStr = str;
-            }else {
-                self.personalStr = str;
-            }
-//            [cell.bgImage sd_setImageWithURL:[NSURL URLWithString:str]];
-            cell.bgImage.image = [UIImage imageWithData:fileData];
-            
-            //                   [self.headerView.photoView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.licenseImageStr]]];
-        } else {
-            [ShaolinProgressHUD singleTextHud:[dic objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
-        }
-    } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        NSLog(@"%@",error.debugDescription);
+//    [[HomeManager sharedInstance] postSubmitPhotoWithFileData:fileData isVedio:NO Success:^(NSURLSessionDataTask *task, id responseObject) {
+//        [ShaolinProgressHUD hideSingleProgressHUD];
+//        NSDictionary *dic = responseObject;
+//        NSLog(@"submitPhoto+++%@", dic);
+//        if ([[dic objectForKey:@"code"] isEqualToString:@"200"]) {
+//            NSString *str = [NSString stringWithFormat:@"%@",[dic objectForKey:@"data"]];
+//            if (indexPath.row == 0) {
+//                self.positiveStr = str;
+//            }else if (indexPath.row == 1) {
+//                self.counterStr = str;
+//            }else if (indexPath.row == 2) {
+//                self.handsStr = str;
+//            }else {
+//                self.personalStr = str;
+//            }
+////            [cell.bgImage sd_setImageWithURL:[NSURL URLWithString:str]];
+//            cell.bgImage.image = [UIImage imageWithData:fileData];
+//            
+//            //                   [self.headerView.photoView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.licenseImageStr]]];
+//        } else {
+//            [ShaolinProgressHUD singleTextHud:[dic objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
+//        }
+//    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+//        NSLog(@"%@",error.debugDescription);
+//        
+//        [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
+//    }];
+    
+    
+    [[HomeManager sharedInstance]postSubmitPhotoWithFileData:fileData isVedio:NO Success:^(NSDictionary * _Nullable resultDic) {
+    } failure:^(NSString * _Nullable errorReason) {
+    } finish:^(NSDictionary * _Nullable responseObject, NSString * _Nullable errorReason) {
+         [ShaolinProgressHUD hideSingleProgressHUD];
+                NSDictionary *dic = responseObject;
+                NSLog(@"submitPhoto+++%@", dic);
+                if ([[dic objectForKey:@"code"] isEqualToString:@"200"]) {
+                    NSString *str = [NSString stringWithFormat:@"%@",[dic objectForKey:@"data"]];
+                    if (indexPath.row == 0) {
+                        self.positiveStr = str;
+                    }else if (indexPath.row == 1) {
+                        self.counterStr = str;
+                    }else if (indexPath.row == 2) {
+                        self.handsStr = str;
+                    }else {
+                        self.personalStr = str;
+                    }
+        //            [cell.bgImage sd_setImageWithURL:[NSURL URLWithString:str]];
+                    cell.bgImage.image = [UIImage imageWithData:fileData];
+                    
+                    //                   [self.headerView.photoView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.licenseImageStr]]];
+                } else {
+                    [ShaolinProgressHUD singleTextHud:[dic objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
+                }
         
-        [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
     }];
 }
 
 - (void)subAction {
     [self.view endEditing:YES];
-    if (self.nameTf.text.length == 0) {
+    NSArray *titleArray = [self titleArr];
+    if (self.nameTf.text.length == 0 && [titleArray containsObject:SLLocalizedString(@"姓名")]) {
         [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"姓名不能为空") view:self.view afterDelay:TipSeconds];
         return;
     }
-    if (self.nameTf.text.length < 2) {
+    if (self.nameTf.text.length < 2 && [titleArray containsObject:SLLocalizedString(@"姓名")]) {
         [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"姓名长度不能少于2个字") view:self.view afterDelay:TipSeconds];
         return;
     }
-    if (self.sexStr.length ==0) {
+    if (self.sexStr.length == 0 && [titleArray containsObject:SLLocalizedString(@"性别")]) {
         [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"性别不能为空") view:self.view afterDelay:TipSeconds];
         return;
     }
-    if (self.cardNumber.text.length == 0) {
+    if (self.cardNumber.text.length == 0 && ([titleArray containsObject:SLLocalizedString(@"身份证号")] || [titleArray containsObject:SLLocalizedString(@"护照编号")])) {
         NSString *message = [self.typeStr isEqualToString:SLLocalizedString(@"身份证")] ? SLLocalizedString(@"身份证号不能为空") : SLLocalizedString(@"护照编号不能为空");
         [ShaolinProgressHUD singleTextHud:message view:self.view afterDelay:TipSeconds];
         return;
     }
-    if (self.dressTf.text.length == 0) {
+    if (self.dressTf.text.length == 0 && [titleArray containsObject:SLLocalizedString(@"户籍所在地")]) {
         [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请输入户籍所在地") view:self.view afterDelay:TipSeconds];
         return;
     }
@@ -238,7 +252,7 @@
 //        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"户籍所在地不超过60个字") view:self.view afterDelay:TipSeconds];
 //        return;
 //    }
-    if ((IsNilOrNull(self.birthStr) || self.birthStr.length == 0) && [self.typeStr isEqualToString:SLLocalizedString(@"护照")]) {
+    if ((IsNilOrNull(self.birthStr) || self.birthStr.length == 0) && [titleArray containsObject:SLLocalizedString(@"出生日期")]) {
         [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"请选择出生日期")];
         return;
     }
@@ -267,7 +281,7 @@
 //        return;
 //    }
     
-    NSString * typeCode ;
+    NSString * typeCode;
     if ([self.typeStr isEqualToString:SLLocalizedString(@"身份证")]) {
         typeCode = @"1";
 //        if (!(self.cardNumber.text.length == 15 || self.cardNumber.text.length == 18)) {
@@ -389,17 +403,20 @@
 //    [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"加载中")];
     [[MeManager sharedInstance] postShareAppDetailAndBlock:^(id  _Nonnull responseObject, NSString * _Nonnull errorReason) {
         [ShaolinProgressHUD hideSingleProgressHUD];
-        NSDictionary *dataDic = responseObject;
+        if (![ModelTool checkResponseObject:responseObject]){
+            return;
+        }
+        NSDictionary *dataDic = responseObject[DATAS];
         if (IsNilOrNull(dataDic)) {
-            self.typeStr = SLLocalizedString(@"身份证");
+            self.typeStr = SLLocalizedString(@"护照");
         } else {
             NSInteger type = [dataDic[@"type"] integerValue];
-            
+            //TODO:现在这个页面只能进行护照认证，身份证信息不要回显
+            if (type == 1) return;
             NSString * address = dataDic[@"account"];
             NSString * birth = dataDic[@"birthTime"];
 //            birth = [birth componentsSeparatedByString:@" "].firstObject;
-            
-            NSString * gender = [NSString stringWithFormat:@"%d",[dataDic[@"gender"] intValue]];
+            NSString * gender = NotNilAndNull(dataDic[@"gender"]) ? [NSString stringWithFormat:@"%d",[dataDic[@"gender"] intValue]] : @"";
             NSString * name = dataDic[@"name"];
             NSString * idNumber = dataDic[@"idNum"];
             NSString * positiveStr = dataDic[@"positive"];
@@ -439,14 +456,30 @@
 - (void)getIdcardReason{
     WEAKSELF
     [[MeManager sharedInstance] getIdcardReasonBlock:^(id  _Nonnull responseObject, NSString * _Nonnull errorReason) {
-        NSString *idcardReason = (NSString *)responseObject;
-        if (idcardReason && [idcardReason isKindOfClass:[NSString class]] && idcardReason.length){
-            weakSelf.idcardReason = idcardReason;
-            [weakSelf showRightButton];
+        if ([ModelTool checkResponseObject:responseObject]){
+            NSString *idcardReason = responseObject[DATAS];
+            if (idcardReason && [idcardReason isKindOfClass:[NSString class]] && idcardReason.length){
+                weakSelf.idcardReason = idcardReason;
+                [weakSelf showRightButton];
+            }
         }
     }];
 }
 
+- (void)getPersonAuthenticationResult:(NSString *)token bizId:(NSString *)bizId{
+    NSDictionary *params = @{
+        @"token" : token,
+        @"bizId" : bizId,
+    };
+    MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
+    [[MeManager sharedInstance] getPersonAuthenticationResult:params finish:^(id  _Nonnull responseObject, NSString * _Nonnull errorReason) {
+        if ([ModelTool checkResponseObject:responseObject]) {
+            NSString *data = responseObject[DATAS];
+//            [ShaolinProgressHUD singleTextAutoHideHud:data];
+        }
+        [hud hideAnimated:YES];
+    }];
+}
 #pragma mark - tableviewDelegate && dataSource
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -462,14 +495,16 @@
         cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
     }
     
-    cell.textLabel.text = self.titleArr[indexPath.row];
+    NSString *title = self.titleArr[indexPath.row];
+    cell.textLabel.text = title;
     cell.textLabel.font = kMediumFont(15);
     cell.textLabel.textColor = [UIColor colorForHex:@"333333"];
-    if (indexPath.row == 0)
+    
+    if ([title isEqualToString:SLLocalizedString(@"姓名")])
     {
         [cell.contentView addSubview:self.nameTf];
     }
-    else if(indexPath.row == 1)
+    else if([title isEqualToString:SLLocalizedString(@"性别")])
     {
         [cell.contentView addSubview:self.manBtn];
         [cell.contentView addSubview:self.womanBtn];
@@ -484,25 +519,24 @@
         }
     }
     
-    else if (indexPath.row == 2)
+    else if ([title isEqualToString:SLLocalizedString(@"证件类型")])
     {
-        [cell.contentView addSubview:self.changeTypeIcon];
+//        [cell.contentView addSubview:self.changeTypeIcon];
         [cell.contentView addSubview:self.changeTypeBtn];
     }
-    else if (indexPath.row == 3)
+    else if ([title isEqualToString:SLLocalizedString(@"身份证号")] || [title isEqualToString:SLLocalizedString(@"护照编号")])
     {
-        
         NSString * placeholderStr = [self.typeStr isEqualToString:SLLocalizedString(@"身份证")]?SLLocalizedString(@"请填写身份证号码"):SLLocalizedString(@"请填写护照号码");
         
         self.cardNumber.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeholderStr attributes:@{NSForegroundColorAttributeName: [UIColor colorForHex:@"B7B7B7"]}];
         
         [cell.contentView addSubview:self.cardNumber];
     }
-    else if (indexPath.row == 4)
+    else if ([title isEqualToString:SLLocalizedString(@"户籍所在地")])
     {
         [cell.contentView addSubview:self.dressTf];
     }
-    else if (indexPath.row == 5)
+    else if ([title isEqualToString:SLLocalizedString(@"出生日期")])
     {
         [cell.contentView addSubview:self.birthBtn];
 
@@ -581,9 +615,9 @@
 
 -(NSArray *)titleArr {
     if ([self.typeStr isEqualToString:SLLocalizedString(@"身份证")]) {
-        return @[SLLocalizedString(@"姓名"),SLLocalizedString(@"性别"),SLLocalizedString(@"证件类型"),SLLocalizedString(@"身份证号"),SLLocalizedString(@"户籍所在地")];
+        return @[SLLocalizedString(@"姓名")/*,SLLocalizedString(@"性别")*/,SLLocalizedString(@"证件类型"),SLLocalizedString(@"身份证号")/*,SLLocalizedString(@"户籍所在地")*/];
     } else {
-        return @[SLLocalizedString(@"姓名"),SLLocalizedString(@"性别"),SLLocalizedString(@"证件类型"),SLLocalizedString(@"护照编号"),SLLocalizedString(@"户籍所在地"),SLLocalizedString(@"出生日期")];
+        return @[SLLocalizedString(@"姓名"),/*SLLocalizedString(@"性别"),*/SLLocalizedString(@"证件类型"),SLLocalizedString(@"护照编号"),/*SLLocalizedString(@"户籍所在地"),*/SLLocalizedString(@"出生日期")];
     }
 }
 
@@ -643,13 +677,15 @@
 -(UIButton *)changeTypeBtn {
     if (!_changeTypeBtn) {
         _changeTypeBtn = [UIButton new];
-        
-        _changeTypeBtn.frame = CGRectMake(SLChange(110), 5, kWidth - SLChange(110) - 50, 45);
-        [_changeTypeBtn setTitle:SLLocalizedString(@"身份证") forState:UIControlStateNormal];
+        NSInteger height = [self tableView:self.tableView heightForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]];
+        _changeTypeBtn.frame = CGRectMake(SLChange(110), 0, kWidth - SLChange(110) - 50, height);
+        [_changeTypeBtn setTitle:SLLocalizedString(@"护照") forState:UIControlStateNormal];
         [_changeTypeBtn setTitleColor:[UIColor hexColor:@"333333"] forState:UIControlStateNormal];
         _changeTypeBtn.titleLabel.font = kRegular(14);
         _changeTypeBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
         [_changeTypeBtn addTarget:self action:@selector(changeVerType) forControlEvents:UIControlEventTouchUpInside];
+        //TODO:这个页面只进行护照认证
+        _changeTypeBtn.userInteractionEnabled = NO;
     }
     return _changeTypeBtn;;
 }
@@ -736,7 +772,18 @@
         //            _layout.sectionInset = UIEdgeInsetsMake(SLChange(32) ,0 , 0,0);
     }
     return _layout;
-    
+}
+
+-(UIButton *)submitBtn {
+    if (!_submitBtn) {
+        _submitBtn = [[UIButton alloc]init];
+        _submitBtn.backgroundColor = [UIColor hexColor:@"8E2B25"];
+        [_submitBtn setTitle:SLLocalizedString(@"提交") forState:(UIControlStateNormal)];
+        [_submitBtn setTitleColor:[UIColor whiteColor] forState:(UIControlStateNormal)];
+        _submitBtn.titleLabel.font = kMediumFont(16);
+        [_submitBtn addTarget:self action:@selector(subAction) forControlEvents:(UIControlEventTouchUpInside)];
+    }
+    return _submitBtn;
 }
 
 -(UIButton *)birthBtn {
@@ -843,138 +890,138 @@
     }
 }
 
--(BOOL)validateIDCardNumber:(NSString *)value {
-    
-    if ([self.typeStr isEqualToString:SLLocalizedString(@"身份证")] == NO) {
-        
-        if ([value length] > 0) {
-            return YES;
-        }
-        
-        return NO;
-    }
-    
-    
-    value = [value stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    NSInteger length =0;
-    if (!value) {
-        return NO;
-        
-    }else {
-        length = value.length;
-        //不满足15位和18位，即身份证错误
-        if (length !=15 && length !=18) {
-            return NO;
-            
-        }
-        
-    }
-    // 省份代码
-    NSArray *areasArray = @[@"11",@"12", @"13",@"14", @"15",@"21", @"22",@"23", @"31",@"32", @"33",@"34", @"35",@"36", @"37",@"41", @"42",@"43", @"44",@"45", @"46",@"50", @"51",@"52", @"53",@"54", @"61",@"62", @"63",@"64", @"65",@"71", @"81",@"82", @"91"];
-    
-    // 检测省份身份行政区代码
-    NSString *valueStart2 = [value substringToIndex:2];
-    BOOL areaFlag =NO; //标识省份代码是否正确
-    for (NSString *areaCode in areasArray) {
-        if ([areaCode isEqualToString:valueStart2]) {
-            areaFlag =YES;
-            break;
-            
-        }
-        
-    }
-    
-    if (!areaFlag) {
-        return NO;
-        
-    }
-    
-    NSRegularExpression *regularExpression;
-    NSUInteger numberofMatch;
-    
-    int year =0;
-    //分为15位、18位身份证进行校验
-    switch (length) {
-        case 15:
-            //获取年份对应的数字
-            year = [value substringWithRange:NSMakeRange(6,2)].intValue +1900;
-            
-            if (year %4 ==0 || (year %100 ==0 && year %4 ==0)) {
-                //创建正则表达式 NSRegularExpressionCaseInsensitive：不区分字母大小写的模式
-                regularExpression = [[NSRegularExpression alloc]initWithPattern:@"^[1-9][0-9]{5}[0-9]{2}((01|03|05|07|08|10|12)(0[1-9]|[1-2][0-9]|3[0-1])|(04|06|09|11)(0[1-9]|[1-2][0-9]|30)|02(0[1-9]|[1-2][0-9]))[0-9]{3}$"
-                                                                        options:NSRegularExpressionCaseInsensitive error:nil];//测试出生日期的合法性
-                
-            }else {
-                regularExpression = [[NSRegularExpression alloc]initWithPattern:@"^[1-9][0-9]{5}[0-9]{2}((01|03|05|07|08|10|12)(0[1-9]|[1-2][0-9]|3[0-1])|(04|06|09|11)(0[1-9]|[1-2][0-9]|30)|02(0[1-9]|1[0-9]|2[0-8]))[0-9]{3}$"
-                                                                        options:NSRegularExpressionCaseInsensitive error:nil];//测试出生日期的合法性
-                
-            }
-            //使用正则表达式匹配字符串 NSMatchingReportProgress:找到最长的匹配字符串后调用block回调
-            numberofMatch = [regularExpression numberOfMatchesInString:value
-                                                               options:NSMatchingReportProgress
-                                                                 range:NSMakeRange(0,value.length)];
-            if(numberofMatch >0) {
-                return YES;
-                
-            }else {
-                return NO;
-                
-            }
-        case 18:
-            year = [value substringWithRange:NSMakeRange(6,4)].intValue;
-            if (year %4 ==0 || (year %100 ==0 && year %4 ==0)) {
-                regularExpression = [[NSRegularExpression alloc]initWithPattern:@"^((1[1-5])|(2[1-3])|(3[1-7])|(4[1-6])|(5[0-4])|(6[1-5])|71|(8[12])|91)\\d{4}(((19|20)\\d{2}(0[13-9]|1[012])(0[1-9]|[12]\\d|30))|((19|20)\\d{2}(0[13578]|1[02])31)|((19|20)\\d{2}02(0[1-9]|1\\d|2[0-8]))|((19|20)([13579][26]|[2468][048]|0[048])0229))\\d{3}(\\d|X|x)?$" options:NSRegularExpressionCaseInsensitive error:nil];//测试出生日期的合法性
-                
-            }else {
-                regularExpression = [[NSRegularExpression alloc]initWithPattern:@"^((1[1-5])|(2[1-3])|(3[1-7])|(4[1-6])|(5[0-4])|(6[1-5])|71|(8[12])|91)\\d{4}(((19|20)\\d{2}(0[13-9]|1[012])(0[1-9]|[12]\\d|30))|((19|20)\\d{2}(0[13578]|1[02])31)|((19|20)\\d{2}02(0[1-9]|1\\d|2[0-8]))|((19|20)([13579][26]|[2468][048]|0[048])0229))\\d{3}(\\d|X|x)?$" options:NSRegularExpressionCaseInsensitive error:nil];//测试出生日期的合法性
-                
-            }
-            numberofMatch = [regularExpression numberOfMatchesInString:value
-                                                               options:NSMatchingReportProgress
-                                                                 range:NSMakeRange(0, value.length)];
-            
-            
-            if(numberofMatch >0) {
-                //1：校验码的计算方法 身份证号码17位数分别乘以不同的系数。从第一位到第十七位的系数分别为：7－9－10－5－8－4－2－1－6－3－7－9－10－5－8－4－2。将这17位数字和系数相乘的结果相加。
-                int S = [value substringWithRange:NSMakeRange(0,1)].intValue*7 + [value substringWithRange:NSMakeRange(10,1)].intValue *7 + [value substringWithRange:NSMakeRange(1,1)].intValue*9 + [value substringWithRange:NSMakeRange(11,1)].intValue *9 + [value substringWithRange:NSMakeRange(2,1)].intValue*10 + [value substringWithRange:NSMakeRange(12,1)].intValue *10 + [value substringWithRange:NSMakeRange(3,1)].intValue*5 + [value substringWithRange:NSMakeRange(13,1)].intValue *5 + [value substringWithRange:NSMakeRange(4,1)].intValue*8 + [value substringWithRange:NSMakeRange(14,1)].intValue *8 + [value substringWithRange:NSMakeRange(5,1)].intValue*4 + [value substringWithRange:NSMakeRange(15,1)].intValue *4 + [value substringWithRange:NSMakeRange(6,1)].intValue*2 + [value substringWithRange:NSMakeRange(16,1)].intValue *2 + [value substringWithRange:NSMakeRange(7,1)].intValue *1 + [value substringWithRange:NSMakeRange(8,1)].intValue *6 + [value substringWithRange:NSMakeRange(9,1)].intValue *3;
-                //2：用加出来和除以11，看余数是多少？余数只可能有0－1－2－3－4－5－6－7－8－9－10这11个数字
-                int Y = S %11;
-                NSString *M =@"F";
-                NSString *JYM =@"10X98765432";
-                M = [JYM substringWithRange:NSMakeRange(Y,1)];// 3：获取校验位
-                NSString *lastStr = [value substringWithRange:NSMakeRange(17,1)];
-                NSLog(@"%@",M);
-                NSLog(@"%@",[value substringWithRange:NSMakeRange(17,1)]);
-                //4：检测ID的校验位
-                if ([lastStr isEqualToString:@"x"]) {
-                    if ([M isEqualToString:@"X"]) {
-                        return YES;
-                    }else{
-                        return NO;
-                    }
-                    
-                }else{
-                    
-                    if ([M isEqualToString:[value substringWithRange:NSMakeRange(17,1)]]) {
-                        return YES;
-                        
-                    }else {
-                        return NO;
-                        
-                    }
-                    
-                }
-                
-            }else {
-                return NO;
-                
-            }
-        default:
-            return NO;
-            
-    }
-    
-}
+//-(BOOL)validateIDCardNumber:(NSString *)value {
+//
+//    if ([self.typeStr isEqualToString:SLLocalizedString(@"身份证")] == NO) {
+//
+//        if ([value length] > 0) {
+//            return YES;
+//        }
+//
+//        return NO;
+//    }
+//
+//
+//    value = [value stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+//    NSInteger length =0;
+//    if (!value) {
+//        return NO;
+//
+//    }else {
+//        length = value.length;
+//        //不满足15位和18位，即身份证错误
+//        if (length !=15 && length !=18) {
+//            return NO;
+//
+//        }
+//
+//    }
+//    // 省份代码
+//    NSArray *areasArray = @[@"11",@"12", @"13",@"14", @"15",@"21", @"22",@"23", @"31",@"32", @"33",@"34", @"35",@"36", @"37",@"41", @"42",@"43", @"44",@"45", @"46",@"50", @"51",@"52", @"53",@"54", @"61",@"62", @"63",@"64", @"65",@"71", @"81",@"82", @"91"];
+//
+//    // 检测省份身份行政区代码
+//    NSString *valueStart2 = [value substringToIndex:2];
+//    BOOL areaFlag =NO; //标识省份代码是否正确
+//    for (NSString *areaCode in areasArray) {
+//        if ([areaCode isEqualToString:valueStart2]) {
+//            areaFlag =YES;
+//            break;
+//
+//        }
+//
+//    }
+//
+//    if (!areaFlag) {
+//        return NO;
+//
+//    }
+//
+//    NSRegularExpression *regularExpression;
+//    NSUInteger numberofMatch;
+//
+//    int year =0;
+//    //分为15位、18位身份证进行校验
+//    switch (length) {
+//        case 15:
+//            //获取年份对应的数字
+//            year = [value substringWithRange:NSMakeRange(6,2)].intValue +1900;
+//
+//            if (year %4 ==0 || (year %100 ==0 && year %4 ==0)) {
+//                //创建正则表达式 NSRegularExpressionCaseInsensitive：不区分字母大小写的模式
+//                regularExpression = [[NSRegularExpression alloc]initWithPattern:@"^[1-9][0-9]{5}[0-9]{2}((01|03|05|07|08|10|12)(0[1-9]|[1-2][0-9]|3[0-1])|(04|06|09|11)(0[1-9]|[1-2][0-9]|30)|02(0[1-9]|[1-2][0-9]))[0-9]{3}$"
+//                                                                        options:NSRegularExpressionCaseInsensitive error:nil];//测试出生日期的合法性
+//
+//            }else {
+//                regularExpression = [[NSRegularExpression alloc]initWithPattern:@"^[1-9][0-9]{5}[0-9]{2}((01|03|05|07|08|10|12)(0[1-9]|[1-2][0-9]|3[0-1])|(04|06|09|11)(0[1-9]|[1-2][0-9]|30)|02(0[1-9]|1[0-9]|2[0-8]))[0-9]{3}$"
+//                                                                        options:NSRegularExpressionCaseInsensitive error:nil];//测试出生日期的合法性
+//
+//            }
+//            //使用正则表达式匹配字符串 NSMatchingReportProgress:找到最长的匹配字符串后调用block回调
+//            numberofMatch = [regularExpression numberOfMatchesInString:value
+//                                                               options:NSMatchingReportProgress
+//                                                                 range:NSMakeRange(0,value.length)];
+//            if(numberofMatch >0) {
+//                return YES;
+//
+//            }else {
+//                return NO;
+//
+//            }
+//        case 18:
+//            year = [value substringWithRange:NSMakeRange(6,4)].intValue;
+//            if (year %4 ==0 || (year %100 ==0 && year %4 ==0)) {
+//                regularExpression = [[NSRegularExpression alloc]initWithPattern:@"^((1[1-5])|(2[1-3])|(3[1-7])|(4[1-6])|(5[0-4])|(6[1-5])|71|(8[12])|91)\\d{4}(((19|20)\\d{2}(0[13-9]|1[012])(0[1-9]|[12]\\d|30))|((19|20)\\d{2}(0[13578]|1[02])31)|((19|20)\\d{2}02(0[1-9]|1\\d|2[0-8]))|((19|20)([13579][26]|[2468][048]|0[048])0229))\\d{3}(\\d|X|x)?$" options:NSRegularExpressionCaseInsensitive error:nil];//测试出生日期的合法性
+//
+//            }else {
+//                regularExpression = [[NSRegularExpression alloc]initWithPattern:@"^((1[1-5])|(2[1-3])|(3[1-7])|(4[1-6])|(5[0-4])|(6[1-5])|71|(8[12])|91)\\d{4}(((19|20)\\d{2}(0[13-9]|1[012])(0[1-9]|[12]\\d|30))|((19|20)\\d{2}(0[13578]|1[02])31)|((19|20)\\d{2}02(0[1-9]|1\\d|2[0-8]))|((19|20)([13579][26]|[2468][048]|0[048])0229))\\d{3}(\\d|X|x)?$" options:NSRegularExpressionCaseInsensitive error:nil];//测试出生日期的合法性
+//
+//            }
+//            numberofMatch = [regularExpression numberOfMatchesInString:value
+//                                                               options:NSMatchingReportProgress
+//                                                                 range:NSMakeRange(0, value.length)];
+//
+//
+//            if(numberofMatch >0) {
+//                //1：校验码的计算方法 身份证号码17位数分别乘以不同的系数。从第一位到第十七位的系数分别为：7－9－10－5－8－4－2－1－6－3－7－9－10－5－8－4－2。将这17位数字和系数相乘的结果相加。
+//                int S = [value substringWithRange:NSMakeRange(0,1)].intValue*7 + [value substringWithRange:NSMakeRange(10,1)].intValue *7 + [value substringWithRange:NSMakeRange(1,1)].intValue*9 + [value substringWithRange:NSMakeRange(11,1)].intValue *9 + [value substringWithRange:NSMakeRange(2,1)].intValue*10 + [value substringWithRange:NSMakeRange(12,1)].intValue *10 + [value substringWithRange:NSMakeRange(3,1)].intValue*5 + [value substringWithRange:NSMakeRange(13,1)].intValue *5 + [value substringWithRange:NSMakeRange(4,1)].intValue*8 + [value substringWithRange:NSMakeRange(14,1)].intValue *8 + [value substringWithRange:NSMakeRange(5,1)].intValue*4 + [value substringWithRange:NSMakeRange(15,1)].intValue *4 + [value substringWithRange:NSMakeRange(6,1)].intValue*2 + [value substringWithRange:NSMakeRange(16,1)].intValue *2 + [value substringWithRange:NSMakeRange(7,1)].intValue *1 + [value substringWithRange:NSMakeRange(8,1)].intValue *6 + [value substringWithRange:NSMakeRange(9,1)].intValue *3;
+//                //2：用加出来和除以11，看余数是多少？余数只可能有0－1－2－3－4－5－6－7－8－9－10这11个数字
+//                int Y = S %11;
+//                NSString *M =@"F";
+//                NSString *JYM =@"10X98765432";
+//                M = [JYM substringWithRange:NSMakeRange(Y,1)];// 3：获取校验位
+//                NSString *lastStr = [value substringWithRange:NSMakeRange(17,1)];
+//                NSLog(@"%@",M);
+//                NSLog(@"%@",[value substringWithRange:NSMakeRange(17,1)]);
+//                //4：检测ID的校验位
+//                if ([lastStr isEqualToString:@"x"]) {
+//                    if ([M isEqualToString:@"X"]) {
+//                        return YES;
+//                    }else{
+//                        return NO;
+//                    }
+//
+//                }else{
+//
+//                    if ([M isEqualToString:[value substringWithRange:NSMakeRange(17,1)]]) {
+//                        return YES;
+//
+//                    }else {
+//                        return NO;
+//
+//                    }
+//
+//                }
+//
+//            }else {
+//                return NO;
+//
+//            }
+//        default:
+//            return NO;
+//
+//    }
+//
+//}
 /*
  #pragma mark - Navigation
  

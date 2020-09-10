@@ -78,6 +78,7 @@ typedef NS_ENUM(NSInteger, FormViewModelStyle) {
 @end
 
 @interface SimpleModel : NSObject
+@property (nonatomic) BOOL enable;
 @property (nonatomic, copy) NSString *identifier;
 @property (nonatomic, copy) NSString *value;
 @property (nonatomic, copy) NSString *title;

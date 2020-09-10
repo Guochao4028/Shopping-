@@ -375,30 +375,57 @@
     
     NSMutableArray *arr = [NSMutableArray array];
     
-    [[HomeManager sharedInstance] postSubmitPhotoWithFileData:data isVedio:YES Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
-        NSLog(@"%@",responseObject);
-        NSDictionary *dic = responseObject;
-        if ([[dic objectForKey:@"code"] integerValue]== 200) {
-            NSMutableDictionary *dicc= [NSMutableDictionary dictionary];
-            [dicc setValue:@"1" forKey:@"type"];
-            [dicc setValue:@"3" forKey:@"kind"];
-            [dicc setValue:[dic objectForKey:@"data"] forKey:@"route"];
-            [arr addObject:dicc];
-            NSString *stateStr;
-            if ([identifier isEqualToString:SLLocalizedString(@"发布")]) {
-                stateStr = @"2";
-            }else{
-                stateStr = @"1";
-            }
-            [self postTextAndPhoto:self.textField.text Introduction:self.introductionField.text Source:SLLocalizedString(@"原创") Author:@"" Content:@"" Type:@"3" State:stateStr CreateId:@"" CreateName:@"" CreateType:@"2" CoverUrlPlist:arr];
-            //            [self postTextAndPhoto:self.textField.text Source:SLLocalizedString(@"原创") Author:self.introductionField.text Content:@"" Type:@"3" State:@"2" CreateId:@"" CreateName:@"" CreateType:@"2" CoverUrlPlist:arr];
-        }else
-        {
-            [ShaolinProgressHUD hideSingleProgressHUD];
-        }
-    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-        NSLog(@"%@",error);
-        [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
+//    [[HomeManager sharedInstance] postSubmitPhotoWithFileData:data isVedio:YES Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+//        NSLog(@"%@",responseObject);
+//        NSDictionary *dic = responseObject;
+//        if ([[dic objectForKey:@"code"] integerValue]== 200) {
+//            NSMutableDictionary *dicc= [NSMutableDictionary dictionary];
+//            [dicc setValue:@"1" forKey:@"type"];
+//            [dicc setValue:@"3" forKey:@"kind"];
+//            [dicc setValue:[dic objectForKey:@"data"] forKey:@"route"];
+//            [arr addObject:dicc];
+//            NSString *stateStr;
+//            if ([identifier isEqualToString:SLLocalizedString(@"发布")]) {
+//                stateStr = @"2";
+//            }else{
+//                stateStr = @"1";
+//            }
+//            [self postTextAndPhoto:self.textField.text Introduction:self.introductionField.text Source:SLLocalizedString(@"原创") Author:@"" Content:@"" Type:@"3" State:stateStr CreateId:@"" CreateName:@"" CreateType:@"2" CoverUrlPlist:arr];
+//            //            [self postTextAndPhoto:self.textField.text Source:SLLocalizedString(@"原创") Author:self.introductionField.text Content:@"" Type:@"3" State:@"2" CreateId:@"" CreateName:@"" CreateType:@"2" CoverUrlPlist:arr];
+//        }else
+//        {
+//            [ShaolinProgressHUD hideSingleProgressHUD];
+//        }
+//    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+//        NSLog(@"%@",error);
+//        [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
+//    }];
+//
+    
+    [[HomeManager sharedInstance]postSubmitPhotoWithFileData:data isVedio:YES Success:^(NSDictionary * _Nullable resultDic) {
+    } failure:^(NSString * _Nullable errorReason) {
+    } finish:^(NSDictionary * _Nullable responseObject, NSString * _Nullable errorReason) {
+     
+      NSDictionary *dic = responseObject;
+      if ([[dic objectForKey:@"code"] integerValue]== 200) {
+          NSMutableDictionary *dicc= [NSMutableDictionary dictionary];
+          [dicc setValue:@"1" forKey:@"type"];
+          [dicc setValue:@"3" forKey:@"kind"];
+          [dicc setValue:[dic objectForKey:@"data"] forKey:@"route"];
+          [arr addObject:dicc];
+          NSString *stateStr;
+          if ([identifier isEqualToString:SLLocalizedString(@"发布")]) {
+              stateStr = @"2";
+          }else{
+              stateStr = @"1";
+          }
+          [self postTextAndPhoto:self.textField.text Introduction:self.introductionField.text Source:SLLocalizedString(@"原创") Author:@"" Content:@"" Type:@"3" State:stateStr CreateId:@"" CreateName:@"" CreateType:@"2" CoverUrlPlist:arr];
+          //            [self postTextAndPhoto:self.textField.text Source:SLLocalizedString(@"原创") Author:self.introductionField.text Content:@"" Type:@"3" State:@"2" CreateId:@"" CreateName:@"" CreateType:@"2" CoverUrlPlist:arr];
+      }else
+      {
+          [ShaolinProgressHUD hideSingleProgressHUD];
+      }
+        
     }];
 }
 -(void)postTextAndPhoto:(NSString *)title Introduction:(NSString *)introductionStr Source:(NSString *)source Author:(NSString *)author Content:(NSString *)content Type:(NSString *)type State:(NSString *)state CreateId:(NSString *)createId CreateName:(NSString *)name CreateType:(NSString *)createType CoverUrlPlist:(NSMutableArray *)plistArr

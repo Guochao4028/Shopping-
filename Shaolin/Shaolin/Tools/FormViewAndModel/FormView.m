@@ -183,7 +183,14 @@
 
 - (NSDictionary *)getParams{
     NSMutableDictionary *dict = [@{} mutableCopy];
-    
+    for (FormViewModel *model in self.datas){
+        NSString *key = model.identifier;
+        NSString *value = model.value;
+        if (key && value){
+            [dict setObject:value forKey:key];
+        }
+    }
+    /*
     for (FormViewModel *model in self.datas){
         if (model.style == FormViewModelStyle_TitleAndLabel || model.style == FormViewModelStyle_Tips){
             continue;
@@ -198,12 +205,13 @@
             }
         } else {
             NSString *key = model.identifier;
-            NSString *value = value = [self getValueByIdentifier:key];
+            NSString *value = [self getValueByIdentifier:key];
             if (key && value){
                 [dict setObject:value forKey:key];
             }
         }
     }
+    */
     return dict;
 }
 
@@ -309,11 +317,13 @@
         return [self createViewByTitleAndTextView:view model:model];
     } else if (model.style == FormViewModelStyle_TitleAndTextField){
         return [self createViewByTitleAndTextField:view model:model];
-    } else if (model.style == FormViewModelStyle_TitleAndRadio){
+    } else if (model.style == FormViewModelStyle_TitleAndRadio || model.style == FormViewModelStyle_TitleAndCheckbox){
         return [self createViewByTitleAndRadio:view model:model];
-    } else if (model.style == FormViewModelStyle_TitleAndCheckbox) {
-        return [self createViewByTitleAndCheckbox:view model:model];
-    } else if (model.style == FormViewModelStyle_Tips){
+    }
+//    else if (model.style == FormViewModelStyle_TitleAndCheckbox) {
+//        return [self createViewByTitleAndCheckbox:view model:model];
+//    }
+    else if (model.style == FormViewModelStyle_Tips){
         return [self createViewByTips:view model:model];
     } else if (model.style == FormViewModelStyle_Time_Button){
         return [self createViewByTitleAndTime:view model:model];
@@ -323,11 +333,23 @@
     return nil;
 }
 
+- (void)createForcedInputTag:(UILabel *)label model:(FormViewModel *)model{
+    if (!model.forcedInput) return;
+    NSString *text = label.text;
+    if (![text hasPrefix:@"*"]){
+        text = [NSString stringWithFormat:@"*%@", text];
+    }
+    NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:text];
+    [string addAttributes:@{NSForegroundColorAttributeName: [UIColor redColor]} range:NSMakeRange(0, 1)];
+    label.attributedText = string;
+}
+
 - (UIView *)createBackViewByModel:(FormViewModel *)model{
     UIView *view = [[UIView alloc] init];
     view.tag = model.style;
     
     UILabel *title = [self createLabel:model.title];
+    [self createForcedInputTag:title model:model];
     [view addSubview:title];
     
     return view;
@@ -337,6 +359,7 @@
     if (view){
         [view.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
         UILabel *title = [self createLabel:model.title];
+        [self createForcedInputTag:title model:model];
         [view addSubview:title];
     } else {
         view = [self createBackViewByModel:model];
@@ -370,6 +393,7 @@
     if (view){
         [view.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
         UILabel *title = [self createLabel:model.title];
+        [self createForcedInputTag:title model:model];
         [view addSubview:title];
     } else {
         view = [self createBackViewByModel:model];
@@ -403,6 +427,7 @@
     if (view){
         [view.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
         UILabel *title = [self createLabel:model.title];
+        [self createForcedInputTag:title model:model];
         [view addSubview:title];
     } else {
         view = [self createBackViewByModel:model];
@@ -434,6 +459,7 @@
     if (view){
         [view.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
         UILabel *title = [self createLabel:model.title];
+        [self createForcedInputTag:title model:model];
         [view addSubview:title];
     } else {
         view = [self createBackViewByModel:model];
@@ -543,6 +569,7 @@
     if (view){
         [view.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
         UILabel *title = [self createLabel:model.title];
+        [self createForcedInputTag:title model:model];
         [view addSubview:title];
     } else {
         view = [self createBackViewByModel:model];
@@ -550,15 +577,43 @@
     }
     WJMCheckBoxView *checkBoxView = [self createCheckBoxView:model];
     checkBoxView.identifier = model.identifier;
-    [self setDefaultGrayColorAndCornerRadius:checkBoxView];
     [view addSubview:checkBoxView];
     
+    if (model.style == FormViewModelStyle_TitleAndRadio){
+        [self setDefaultGrayColorAndCornerRadius:checkBoxView];
+    }
+    
     WEAKSELF
+    __weak typeof(checkBoxView) weakCheckBoxView = checkBoxView;
     checkBoxView.didSelectItemAtIdentifier = ^(NSString * _Nonnull identifier) {
         FormViewModel *model = [weakSelf getFormViewModelBySimpleModel:identifier];
         if (!model) return;
-        SimpleModel *simpleModel = [weakSelf getSimpleModelByFormModel:model identifier:identifier];
-        model.value = simpleModel.title;
+        NSArray *selectIdeArray = [weakCheckBoxView getSelectCheckBoxBtnIdentifier];
+        model.value = @"";
+        for (NSString *ide in selectIdeArray){
+            SimpleModel *simpleModel = [weakSelf getSimpleModelByFormModel:model identifier:ide];
+            if (model.value.length){
+                model.value = [NSString stringWithFormat:@"%@,%@", model.value, simpleModel.title];
+            } else {
+                model.value = simpleModel.title;
+            }
+        }
+        [weakSelf riteRegistrationFormViewDataChange:model simpleModel:nil];
+        [weakSelf riteRegistrationFormViewChangeFrame];
+    };
+    checkBoxView.didDeselectItemAtIdentifier = ^(NSString * _Nonnull identifier) {
+        FormViewModel *model = [weakSelf getFormViewModelBySimpleModel:identifier];
+        if (!model) return;
+        NSArray *selectIdeArray = [weakCheckBoxView getSelectCheckBoxBtnIdentifier];
+        model.value = @"";
+        for (NSString *ide in selectIdeArray){
+            SimpleModel *simpleModel = [weakSelf getSimpleModelByFormModel:model identifier:ide];
+            if (model.value.length){
+                model.value = [NSString stringWithFormat:@"%@,%@", model.value, simpleModel.title];
+            } else {
+                model.value = simpleModel.title;
+            }
+        }
         [weakSelf riteRegistrationFormViewDataChange:model simpleModel:nil];
         [weakSelf riteRegistrationFormViewChangeFrame];
     };
@@ -603,7 +658,6 @@
     UIView *checkBoxBackView = [[UIView alloc] init];
     checkBoxBackView.clipsToBounds = YES;
     [view addSubview:checkBoxBackView];
-    
     
     WEAKSELF
     WJMCheckBoxView *checkBoxView = [self createCheckBoxView:model];
@@ -750,8 +804,8 @@
 - (UIView *)createViewByTitleAndTime:(UIView *)view model:(FormViewModel *)model{
     if (view){
         [view.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-        
         UILabel *title = [self createLabel:model.title];
+        [self createForcedInputTag:title model:model];
         [view addSubview:title];
     } else {
         view = [self createBackViewByModel:model];
@@ -821,8 +875,8 @@
 - (UIView *)createViewByTitleAndBegingTimeAndEndTime:(UIView *)view model:(FormViewModel *)model{
     if (view){
         [view.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-        
         UILabel *title = [self createLabel:model.title];
+        [self createForcedInputTag:title model:model];
         [view addSubview:title];
     } else {
         view = [self createBackViewByModel:model];
@@ -982,7 +1036,11 @@
         } else {
             make.right.mas_equalTo(-rightPadding);
         }
-        make.height.mas_equalTo(secondVH);
+        if ([secondV isKindOfClass:[WJMCheckBoxView class]]){
+            
+        } else {
+            make.height.mas_equalTo(secondVH);
+        }
         make.bottom.mas_equalTo(-padding);
     }];
 }
@@ -1065,6 +1123,11 @@
         btn.titleLabel.textColor = [UIColor colorForHex:@"333333"];
         btn.titleLabel.normalTextColor = [UIColor colorForHex:@"333333"];
         btn.titleLabel.selectTextColor = [UIColor colorForHex:@"8E2B25"];
+        btn.userInteractionEnabled = simpleModel.enable;
+        if (!simpleModel.enable){
+            btn.titleLabel.textColor = [UIColor colorForHex:@"999999"];
+            btn.titleLabel.normalTextColor = [UIColor colorForHex:@"999999"];
+        }
         [checkBoxBtnArray addObject:btn];
 //        if (i == 0){
 //            selectIde = simpleModel.identifier;
@@ -1072,8 +1135,10 @@
     }
     
     WJMCheckBoxView *checkBoxView = [[WJMCheckBoxView alloc] initCheckboxBtnBtns:checkBoxBtnArray];
+    if (model.style == FormViewModelStyle_TitleAndRadio){
+        checkBoxView.maximumValue = 1;
+    }
 //    checkBoxView.identifier = model.identifier;
-    checkBoxView.maximumValue = 1;
     
 //    if (model.style == FormViewModelStyle_TitleAndRadio){
 //        [checkBoxView selectCheckBoxBtn:selectIde];
@@ -1086,6 +1151,7 @@
     }
    
     UIView *lastV = nil;
+    CGFloat secondVH = [[model.params objectForKey:RiteFormModel_ValueViewH_ParamsKey] floatValue];
     for (int i = 0; i < checkBoxBtnArray.count; i++){
         WJMCheckboxBtn *button = checkBoxBtnArray[i];
         [button mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -1104,6 +1170,7 @@
             } else {
                 make.left.mas_equalTo(lastV.mas_right).mas_offset(16);
             }
+            make.height.mas_equalTo(secondVH);
             make.width.mas_equalTo(checkBoxView.mas_width).multipliedBy(1.0/maxContentCount).offset(-(leftPadding + rightPadding + 16*2)/maxContentCount);
             if (i == checkBoxBtnArray.count - 1){
                 make.bottom.mas_equalTo(0);
@@ -1111,11 +1178,6 @@
         }];
         lastV = button;
     }
-    
-    CGFloat secondVH = [[model.params objectForKey:RiteFormModel_ValueViewH_ParamsKey] floatValue];
-    [checkBoxBtnArray mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.height.mas_equalTo(secondVH);
-    }];
     return checkBoxView;
 }
 

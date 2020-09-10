@@ -11,12 +11,11 @@
 NS_ASSUME_NONNULL_BEGIN
 @class ClassListModel;
 @interface KungfuClassMoreCollectionViewCell : UICollectionViewCell
-@property(nonatomic,strong) UIImageView *imageV;
-@property(nonatomic,strong) UILabel *contentLabel;
-@property(nonatomic,strong) UILabel *nameLabel;
-@property(nonatomic,strong) UILabel *titleLabe;
-@property(nonatomic,strong) UIView *alphaView;
+
+@property (nonatomic, strong) UIImageView * imageV;
+
 @property(nonatomic,strong) ClassListModel *model;
+
 @end
 
 NS_ASSUME_NONNULL_END

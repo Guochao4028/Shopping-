@@ -10,6 +10,15 @@
 #import "KungfuClassMoreCollectionViewCell.h"
 #import "ClassListModel.h"
 
+@interface KungfuClassMoreCollectionViewCell()
+
+
+@property (nonatomic, strong) UILabel * contentLabel;
+@property (nonatomic, strong) UILabel * nameLabel;
+@property (nonatomic, strong) UIView  * alphaView;
+
+@end
+
 @implementation KungfuClassMoreCollectionViewCell
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
@@ -24,41 +33,30 @@
     [self.imageV addSubview:self.alphaView];
     [self.imageV addSubview:self.contentLabel];
     [self.imageV addSubview:self.nameLabel];
-    [self.imageV addSubview:self.titleLabe];
 }
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    /*
-     make.width.mas_equalTo(kWidth-SLChange(32));
-     make.left.mas_equalTo(SLChange(16));
-     make.height.mas_equalTo(SLChange(150));
-     make.top.mas_equalTo(0);
-     */
+
     [self.imageV mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(0);
     }];
+    
     [self.alphaView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(0);
     }];
+    
     [self.contentLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.height.mas_equalTo(SLChange(20));
+        make.height.mas_equalTo(20);
         make.left.right.mas_equalTo(self.nameLabel);
-        make.bottom.mas_equalTo(-SLChange(16));
-        
+        make.bottom.mas_equalTo(-15);
     }];
+    
     [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(SLChange(16));
-        make.right.mas_equalTo(-SLChange(16));
-        make.bottom.mas_equalTo(self.contentLabel.mas_top);
+        make.left.mas_equalTo(15);
+        make.right.mas_equalTo(-3);
+        make.bottom.mas_equalTo(self.contentLabel.mas_top).offset(-3);
     }];
-//    [self.titleLabe mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.width.mas_equalTo(SLChange(112));
-//        make.height.mas_equalTo(SLChange(16));
-//        make.left.mas_equalTo(SLChange(16));
-//        make.top.mas_equalTo(SLChange(12));
-//    }];
-   
 }
 
 - (UIImageView *)imageV {
@@ -86,7 +84,7 @@
         _contentLabel = [[UILabel alloc]init];
         _contentLabel.text = @"";
         _contentLabel.textColor = [UIColor colorForHex:@"FFFFFF"];
-        _contentLabel.font = kRegular(14);
+        _contentLabel.font = kRegular(13);
         _contentLabel.textAlignment = NSTextAlignmentLeft;
     }
     return _contentLabel;
@@ -97,37 +95,21 @@
         _nameLabel = [[UILabel alloc]init];
         _nameLabel.text = @"";
         _nameLabel.textColor = [UIColor colorForHex:@"FFFFFF"];
-        _nameLabel.font = kMediumFont(20);
+        _nameLabel.font = kMediumFont(16);
         _nameLabel.numberOfLines = 2;
         _nameLabel.textAlignment = NSTextAlignmentLeft;
     }
     return _nameLabel;
 }
 
-- (UILabel *)titleLabe {
-    if (!_titleLabe) {
-        _titleLabe = [[UILabel alloc]init];
-        _titleLabe.backgroundColor = [UIColor colorForHex:@"E4E4E4"];
-        _titleLabe.font = kRegular(9);
-        _titleLabe.text = @"";
-        _titleLabe.textColor = [UIColor colorForHex:@"505050"];
-        _titleLabe.layer.cornerRadius = 3;
-        _titleLabe.textAlignment = NSTextAlignmentCenter;
-        _titleLabe.layer.masksToBounds = YES;
-    }
-    return _titleLabe;
-}
-
 - (void)setModel:(ClassListModel *)model{
     _model = model;
     self.nameLabel.text = model.name;
     
-    
     NSString *timeStr = [ModelTool calculatedTimeWith:CalculatedTimeTypeDonotSecond secondStr:model.weight];
     
     self.contentLabel.text = [NSString stringWithFormat:SLLocalizedString(@"%@ · %@ · %@人练过"), model.level_name, timeStr, model.user_num];
-//    self.contentLabel.text = [NSString stringWithFormat:SLLocalizedString(@"%@ · %@分钟"), model.level_name, model.weight];
-    self.titleLabe.text = model.desc2.length == 0 ? SLLocalizedString(@"明星也在学习的功夫") : model.desc2;
+
     [self.imageV sd_setImageWithURL:[NSURL URLWithString:model.cover] placeholderImage:[UIImage imageNamed:@"default_big"]];
 }
 @end

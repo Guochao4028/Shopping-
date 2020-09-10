@@ -53,7 +53,7 @@
     
     if (self.marqueeList.count){
         WengenBannerModel *banner = self.marqueeList.firstObject;
-        self.horizontalMarquee.text = [NSString stringWithFormat:@"%@      ", banner.bannerName];
+        self.horizontalMarquee.text = [NSString stringWithFormat:@"%@      ", banner.content];
     }
 //    self.horizontalMarquee.text = @"观音菩萨成道日活动火热进行中！观音菩萨成道日活动火热进行中！下方登记入口点击登记！      ";
     

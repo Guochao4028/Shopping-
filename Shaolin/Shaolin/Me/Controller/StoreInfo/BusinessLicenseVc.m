@@ -449,30 +449,56 @@
 
 - (void)submitPhoto:(NSData *)fileData Type:(NSString *)type {
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:SLLocalizedString(@"正在上传图片")];
-    [[HomeManager sharedInstance] postSubmitPhotoWithFileData:fileData isVedio:NO Success:^(NSURLSessionDataTask *task, id responseObject) {
-        NSDictionary *dic = responseObject;
-        NSLog(@"submitPhoto+++%@", dic);
-        [hud hideAnimated:YES];
-        if ([[dic objectForKey:@"code"] isEqualToString:@"200"]) {
-            if ([type isEqualToString:@"header"]) {
-                self.licenseImageStr = [NSString stringWithFormat:@"%@",[dic objectForKey:@"data"]];
-                [self.headerView.photoView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.licenseImageStr]]];
-                self.headerView.photoCameraImage.hidden = YES;
-            }else
-            {
-                self.bankImageStr = [NSString stringWithFormat:@"%@",[dic objectForKey:@"data"]];
-                [self.footerView.photoView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.bankImageStr]]];
-                self.footerView.photoCameraImage.hidden = YES;
-            }
-            
-            
-        } else {
-            [ShaolinProgressHUD singleTextHud:[dic objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
-        }
-    } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        NSLog(@"%@",error.debugDescription);
-        [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
-    }];
+//    [[HomeManager sharedInstance] postSubmitPhotoWithFileData:fileData isVedio:NO Success:^(NSURLSessionDataTask *task, id responseObject) {
+//        NSDictionary *dic = responseObject;
+//        NSLog(@"submitPhoto+++%@", dic);
+//        [hud hideAnimated:YES];
+//        if ([[dic objectForKey:@"code"] isEqualToString:@"200"]) {
+//            if ([type isEqualToString:@"header"]) {
+//                self.licenseImageStr = [NSString stringWithFormat:@"%@",[dic objectForKey:@"data"]];
+//                [self.headerView.photoView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.licenseImageStr]]];
+//                self.headerView.photoCameraImage.hidden = YES;
+//            }else
+//            {
+//                self.bankImageStr = [NSString stringWithFormat:@"%@",[dic objectForKey:@"data"]];
+//                [self.footerView.photoView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.bankImageStr]]];
+//                self.footerView.photoCameraImage.hidden = YES;
+//            }
+//            
+//            
+//        } else {
+//            [ShaolinProgressHUD singleTextHud:[dic objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
+//        }
+//    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+//        NSLog(@"%@",error.debugDescription);
+//        [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
+//    }];
+//    
+    
+    [[HomeManager sharedInstance]postSubmitPhotoWithFileData:fileData isVedio:NO Success:^(NSDictionary * _Nullable resultDic) {
+       } failure:^(NSString * _Nullable errorReason) {
+       } finish:^(NSDictionary * _Nullable responseObject, NSString * _Nullable errorReason) {
+           NSDictionary *dic = responseObject;
+                 NSLog(@"submitPhoto+++%@", dic);
+                 [hud hideAnimated:YES];
+                 if ([[dic objectForKey:@"code"] isEqualToString:@"200"]) {
+                     if ([type isEqualToString:@"header"]) {
+                         self.licenseImageStr = [NSString stringWithFormat:@"%@",[dic objectForKey:@"data"]];
+                         [self.headerView.photoView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.licenseImageStr]]];
+                         self.headerView.photoCameraImage.hidden = YES;
+                     }else
+                     {
+                         self.bankImageStr = [NSString stringWithFormat:@"%@",[dic objectForKey:@"data"]];
+                         [self.footerView.photoView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.bankImageStr]]];
+                         self.footerView.photoCameraImage.hidden = YES;
+                     }
+                     
+                     
+                 } else {
+                     [ShaolinProgressHUD singleTextHud:[dic objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
+                 }
+           
+       }];
 }
 - (void)nextAction {
     

@@ -181,6 +181,9 @@
     self.isExamine = [self.model.activityTypeId integerValue] == 4 ? YES :NO;
     
     
+//    self.isExamine = YES;
+    
+    
     if([idCardType isEqualToString:@"2"] == YES){
         
         NSString *passportNumberStr;
@@ -236,6 +239,14 @@
         BOOL isPassportNumber = self.registModel.passportNumber == nil|| [self.registModel.passportNumber length] == 0? YES : !isEditor;
         
         tempArray = @[
+            
+            /**
+            itemType 区分 证书显示名 1 or 性别 2
+            item1Title 标题
+            item2Title 标题
+             */
+            
+            @{@"title":SLLocalizedString(@"证书显示名："), @"type":@"2", @"isEditor":@"1", @"isMust":@"1", @"itemType":@"1", @"item1Title":@"姓名", @"item2Title":@"曾用名"},
             
             @{@"title":SLLocalizedString(@"国      籍："),
               @"type":@"3",
@@ -297,8 +308,10 @@
                        @"content":@"",
                        @"cellHeight": @"50",
                        @"isMust":@"1",@"subArray":shoeNumberArray},
-                 @{@"title":SLLocalizedString(@"练武年限："), @"type":@"1", @"isEditor":@"1", @"isMust":@"1"},
-            @{@"title":SLLocalizedString(@"证书显示名："), @"type":@"2", @"isEditor":@"1", @"isMust":@"1"},
+            
+            @{@"title":SLLocalizedString(@"练武年限："), @"type":@"1", @"isEditor":@"1", @"isMust":@"1"},
+            
+            
         ];
     }else{
         BOOL isIdCloose = self.registModel.idCard == nil? YES :isEditor;
@@ -715,9 +728,12 @@
 -(void)enrollmentRegistrationHeardView:(EnrollmentRegistrationHeardView *)view tapUploadPictures:(BOOL)isTap{
     NSLog(@"%s", __func__);
     TZImagePickerController  *imagePicker=  [[TZImagePickerController alloc]initWithMaxImagesCount:1 delegate:self];
+    imagePicker.showSelectBtn = NO;
+    imagePicker.allowCrop = YES;
     [imagePicker setBarItemTextColor:[UIColor blackColor]];
     imagePicker.sortAscendingByModificationDate = NO;
     imagePicker.allowPickingVideo = NO;
+    
     [imagePicker setBarItemTextColor:[UIColor blackColor]];
     [imagePicker setDidFinishPickingPhotosWithInfosHandle:^(NSArray<UIImage *> *photos, NSArray *assets, BOOL isSelectOriginalPhoto, NSArray<NSDictionary *> *infos) {
         NSLog(@"%@",photos);
@@ -737,7 +753,30 @@
                 UIImage *image = photos[i];
                 NSData *imageData = UIImageJPEGRepresentation(image, 1);
                 
-                [[HomeManager sharedInstance] postSubmitPhotoWithFileData:imageData isVedio:NO Success:^(NSURLSessionDataTask *task, id responseObject) {
+//                [[HomeManager sharedInstance] postSubmitPhotoWithFileData:imageData isVedio:NO Success:^(NSURLSessionDataTask *task, id responseObject) {
+//                    NSDictionary *dic = responseObject;
+//                    if ([[dic objectForKey:@"code"] isEqualToString:@"200"]) {
+//
+//                        self.potoUrl = [dic objectForKey:DATAS];
+//
+//                        [self.tableView reloadData];
+//
+//                    } else {
+//                        [ShaolinProgressHUD singleTextHud:[dic objectForKey:@"msg"] view:WINDOWSVIEW afterDelay:TipSeconds];
+//                    }
+//                    dispatch_semaphore_signal(semaphore);
+//
+//                } failure:^(NSURLSessionDataTask *task, NSError *error) {
+//                    NSLog(@"%@",error.debugDescription);
+//
+//                    [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:WINDOWSVIEW afterDelay:TipSeconds];
+//                    dispatch_semaphore_signal(semaphore);
+//
+//                }];
+                
+                [[HomeManager sharedInstance]postSubmitPhotoWithFileData:imageData isVedio:NO Success:^(NSDictionary * _Nullable resultDic) {
+                } failure:^(NSString * _Nullable errorReason) {
+                } finish:^(NSDictionary * _Nullable responseObject, NSString * _Nullable errorReason) {
                     NSDictionary *dic = responseObject;
                     if ([[dic objectForKey:@"code"] isEqualToString:@"200"]) {
                         
@@ -750,13 +789,9 @@
                     }
                     dispatch_semaphore_signal(semaphore);
                     
-                } failure:^(NSURLSessionDataTask *task, NSError *error) {
-                    NSLog(@"%@",error.debugDescription);
-                    
-                    [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:WINDOWSVIEW afterDelay:TipSeconds];
-                    dispatch_semaphore_signal(semaphore);
-                    
                 }];
+                
+                
                 dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
             }
         });

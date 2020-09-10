@@ -138,7 +138,7 @@
         [alert addAction:cancelAction];
         [self presentViewController:alert animated:YES completion:nil];
     } else {
-        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"没有选择课程") view:self.view afterDelay:TipSeconds];
+        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"没有选择教程") view:self.view afterDelay:TipSeconds];
     }
 }
 
@@ -340,7 +340,7 @@
 }
 
 -(NSAttributedString *)descriptionForEmptyDataSet:(UIScrollView *)scrollView {
-    NSString *text = SLLocalizedString(@"快去收藏喜欢的课程吧");
+    NSString *text = SLLocalizedString(@"快去收藏喜欢的教程吧");
     
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont boldSystemFontOfSize:13.0f],
                                  NSForegroundColorAttributeName: [UIColor hexColor:@"bfbfbf"]};
@@ -396,7 +396,7 @@
 - (LYEmptyView * )emptyView{
     if (!_emptyView){
         WEAKSELF
-        NSString *titleStr = [NSString stringWithFormat:SLLocalizedString(@"暂无课程")];
+        NSString *titleStr = [NSString stringWithFormat:SLLocalizedString(@"暂无教程")];
         _emptyView = [LYEmptyView emptyActionViewWithImageStr:@"categorize_nogoods"
                                                                  titleStr:titleStr
                                                                 detailStr:@""

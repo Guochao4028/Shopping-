@@ -4,7 +4,7 @@
 //
 //  Created by 王精明 on 2020/6/4.
 //  Copyright © 2020 syqaxldy. All rights reserved.
-//  我的 - 我的收藏 - 课程cell
+//  我的 - 我的收藏 - 教程cell
 
 #import <UIKit/UIKit.h>
 

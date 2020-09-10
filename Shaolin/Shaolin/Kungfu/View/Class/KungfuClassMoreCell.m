@@ -59,7 +59,7 @@ static NSString *const collectionCellId = @"KungfuHomemLatestEventsCollectionCel
 ////    NSArray *arr=@[@"kungfu_allClass",@"kungfu_huodong",@"kungfu_kaoshi",@"kungfu_baoming"];
 //
 ////    cell.imageIcon.image = [UIImage imageNamed:arr[indexPath.row]];
-////    NSArray *arrTitle = @[SLLocalizedString(@"全部课程"),SLLocalizedString(@"活动报名"),SLLocalizedString(@"理论考试"),SLLocalizedString(@"报名查询")];
+////    NSArray *arrTitle = @[SLLocalizedString(@"全部教程"),SLLocalizedString(@"活动报名"),SLLocalizedString(@"理论考试"),SLLocalizedString(@"报名查询")];
 ////    cell.nameLabel.text = arrTitle[indexPath.row];
 //
     return cell;
@@ -85,13 +85,13 @@ static NSString *const collectionCellId = @"KungfuHomemLatestEventsCollectionCel
         
         UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
         flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-        flowLayout.sectionInset = UIEdgeInsetsMake(0, SLChange(16), 0, SLChange(16));
-        flowLayout.minimumLineSpacing = SLChange(10);// 根据需要编写
+        flowLayout.sectionInset = UIEdgeInsetsMake(0, 16, 0, 16);
+        flowLayout.minimumLineSpacing = 10;// 根据需要编写
         
-        flowLayout.itemSize = CGSizeMake(SLChange(250), SLChange(130));
+        flowLayout.itemSize = CGSizeMake(150, 150);
         
         
-        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, kWidth, SLChange(130)) collectionViewLayout:flowLayout];
+        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 10, kWidth, 150) collectionViewLayout:flowLayout];
         _collectionView.dataSource = self;
         _collectionView.delegate = self;
         _collectionView.backgroundColor = UIColor.whiteColor;

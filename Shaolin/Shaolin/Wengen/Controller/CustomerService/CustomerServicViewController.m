@@ -55,16 +55,25 @@
     
     [self.inputView setInputWordBlock:^(NSString * _Nonnull word) {
         
-        [[DataManager shareInstance]getAhqList:@{@"question":word} Callback:^(NSArray *result) {
+        [[DataManager shareInstance]getAhqList:@{@"question":word, @"type": weakSelf.servicType} Callback:^(NSArray *result) {
             
             if ([result count] == 1) {
                 CustomerServieListModel *listModel = [result firstObject];
                 [weakSelf sendMessage:listModel.answer messageType:MessageTypeOther
                                     isTimeHidden:YES extensionData:nil isHasMessage:YES];
             }else if([result count] == 0){
-                [weakSelf sendMessage:SLLocalizedString(@"没有找到您的问题，若以下没有您想问的，可以直接在输入框进行提问或者可以转接人工客服为您服务：")
-                        messageType:MessageTypeOther
-                isTimeHidden:YES extensionData:weakSelf.currentProblemArray isHasMessage:NO];
+                
+                if ([weakSelf.currentProblemArray count]) {
+                    [weakSelf sendMessage:SLLocalizedString(@"没有找到您的问题，若以下没有您想问的，可以直接在输入框进行提问或者可以转接人工客服为您服务：")
+                            messageType:MessageTypeOther
+                    isTimeHidden:YES extensionData:weakSelf.currentProblemArray isHasMessage:NO];
+                }else{
+                    [weakSelf sendMessage:SLLocalizedString(@"没有找到您的问题，可以直接在输入框进行提问或者可以转接人工客服为您服务：")
+                            messageType:MessageTypeOther
+                    isTimeHidden:YES extensionData:weakSelf.currentProblemArray isHasMessage:NO];
+                }
+                
+                
             }else{
                 [weakSelf sendMessage:SLLocalizedString(@"您是否遇到以下问题了呢？可点击以下进行查看，若以下没有您想问的，可以直接在输入框进行提问哦：")
                           messageType:MessageTypeOther
@@ -78,14 +87,25 @@
 }
 
 -(void)initData{
+    
     //加载数据  headView上加载数据
-    [[DataManager shareInstance]getAhqList:@{} Callback:^(NSArray *result) {
+    [[DataManager shareInstance]getGuessList:@{@"type": self.servicType} Callback:^(NSArray *result) {
+         self.currentProblemArray = result;
+         [self.tableHeardView setDataArray:result];
         
-        self.currentProblemArray = result;
+        if (![result count]) {
+            [self.tableHeardView setMj_h:83];
+        }
         
-        [self.tableHeardView setDataArray:result];
         
-        [self sendMessage:[NSString stringWithFormat:SLLocalizedString(@"%@！购物遇到问题，输入问题向我提问吧～"), [NSString currentTimeSayHello]] messageType:MessageTypeOther isTimeHidden:NO extensionData:nil isHasMessage:YES];
+        
+       
+        
+       NSInteger servicType = [self.servicType integerValue];
+        
+        NSString *str = servicType == 1? @"购物":@"法会";
+        
+        [self sendMessage:[NSString stringWithFormat:SLLocalizedString(@"%@！%@遇到问题，输入问题向我提问吧～"), [NSString currentTimeSayHello], str] messageType:MessageTypeOther isTimeHidden:NO extensionData:nil isHasMessage:YES];
     }];
 }
 
@@ -188,14 +208,15 @@
 
 -(void)customerServiceMessageTableCell:(CustomerServiceMessageTableCell *)cell tapContactArtificial:(BOOL)isTap{
     
-    NSString *im =  self.storeModel.im;
+    NSString *im =  self.imID;
     if (im.length == 0) {
-        [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"获取店铺信息失败")];
+        [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"客服坐席繁忙")];
         return;
     }
     NSString *im_id = [SLAppInfoModel sharedInstance].iM_id;
     if(im_id.length == 0){
-        [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"获取聊天服务信息失败")];
+//        [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"获取聊天服务信息失败")];
+        [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"客服坐席繁忙")];
         return;
     }
 
@@ -257,4 +278,17 @@
     return _dataArray;
 
 }
+
+-(void)setServicType:(NSString *)servicType{
+    _servicType = servicType;
+}
+
+-(NSString *)servicType{
+    if (_servicType) {
+        return _servicType;
+    }
+    
+    return @"1";
+}
+
 @end

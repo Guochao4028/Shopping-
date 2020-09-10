@@ -10,11 +10,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class RiteModel;
+@class RitePastModel;
 
 @interface RitePastListCell : UITableViewCell
 
-@property (nonatomic, strong) RiteModel * cellModel;
+@property (nonatomic, strong) RitePastModel * cellModel;
 @property (nonatomic, assign) BOOL isFirst;
 
 @end

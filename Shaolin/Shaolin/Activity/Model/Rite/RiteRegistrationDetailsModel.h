@@ -76,7 +76,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, copy)NSString *pujaDetail;
 ///法会名称
 @property(nonatomic, copy)NSString *pujaName;
-///法会类型  1:水路法会 2 普通法会 3 全年佛事 4 建寺安僧
+///法会类型  1:水陆法会 2 普通法会 3 全年佛事 4 建寺安僧
 @property(nonatomic, copy)NSString *pujaType;
 @property(nonatomic, copy)NSString *resultsApplication;
 @property(nonatomic, copy)NSString *signUpCode;
@@ -91,6 +91,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, copy)NSString *zhaizhuName;
 ///斋主需求
 @property(nonatomic, copy)NSString *lordNeeds;
+///牌位图片
+@property(nonatomic, copy)NSString *tabletPicture;
+///佛事日期
+@property(nonatomic, copy)NSString *timeSingUp;
 
 
 @end

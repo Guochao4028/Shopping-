@@ -18,7 +18,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="联系方式：" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eR5-p9-g6I">
-                        <rect key="frame" x="17" y="7" width="90" height="21"/>
+                        <rect key="frame" x="17" y="15" width="90" height="21"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="90" id="Zpi-HO-SCY"/>
                         </constraints>
@@ -27,14 +27,14 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="rite_phone" translatesAutoresizingMaskIntoConstraints="NO" id="X6z-4J-wgX">
-                        <rect key="frame" x="107" y="10" width="15" height="15"/>
+                        <rect key="frame" x="107" y="18" width="15" height="15"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="15" id="2jo-4k-uzy"/>
                             <constraint firstAttribute="height" constant="15" id="Lff-ZH-T5B"/>
                         </constraints>
                     </imageView>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Sp0-wd-73E">
-                        <rect key="frame" x="127" y="7" width="232" height="21"/>
+                        <rect key="frame" x="127" y="15" width="232" height="21"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IMu-v6-n04">
                                 <rect key="frame" x="0.0" y="10.5" width="75" height="0.0"/>
@@ -63,14 +63,14 @@
                         </constraints>
                     </view>
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="rite_phone" translatesAutoresizingMaskIntoConstraints="NO" id="gPa-XM-jJo">
-                        <rect key="frame" x="107" y="45" width="15" height="15"/>
+                        <rect key="frame" x="107" y="53" width="15" height="15"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="15" id="1pp-q5-tte"/>
                             <constraint firstAttribute="height" constant="15" id="Kl1-ID-Zgy"/>
                         </constraints>
                     </imageView>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="N7U-GV-6L6">
-                        <rect key="frame" x="127" y="42" width="232" height="21"/>
+                        <rect key="frame" x="127" y="50" width="232" height="21"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="少林寺客堂：" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nsD-Vm-Aql">
                                 <rect key="frame" x="0.0" y="0.0" width="90" height="21"/>
@@ -105,7 +105,7 @@
                     <constraint firstItem="gPa-XM-jJo" firstAttribute="top" secondItem="X6z-4J-wgX" secondAttribute="bottom" constant="20" id="MOg-hg-BQZ"/>
                     <constraint firstItem="gPa-XM-jJo" firstAttribute="leading" secondItem="X6z-4J-wgX" secondAttribute="leading" id="MZo-DT-ZIf"/>
                     <constraint firstItem="N7U-GV-6L6" firstAttribute="trailing" secondItem="Sp0-wd-73E" secondAttribute="trailing" id="T8Y-KI-Lp8"/>
-                    <constraint firstItem="eR5-p9-g6I" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="7" id="Uia-GG-ZwJ"/>
+                    <constraint firstItem="eR5-p9-g6I" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="15" id="Uia-GG-ZwJ"/>
                     <constraint firstItem="N7U-GV-6L6" firstAttribute="leading" secondItem="Sp0-wd-73E" secondAttribute="leading" id="b86-tu-CVz"/>
                     <constraint firstItem="Sp0-wd-73E" firstAttribute="leading" secondItem="X6z-4J-wgX" secondAttribute="trailing" constant="5" id="c58-sY-QNa"/>
                     <constraint firstItem="eR5-p9-g6I" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="17" id="hXG-sL-Icz"/>
@@ -118,6 +118,7 @@
             <connections>
                 <outlet property="RitePhoneView" destination="N7U-GV-6L6" id="y2q-i2-kwY"/>
                 <outlet property="nameLabel" destination="IMu-v6-n04" id="Nod-Am-anC"/>
+                <outlet property="nameLabelW" destination="526-qj-SPl" id="fGk-GI-gKg"/>
                 <outlet property="phoneLabel" destination="VC3-VP-kKp" id="Yas-b3-qiE"/>
                 <outlet property="puJaContactView" destination="Sp0-wd-73E" id="GL4-g6-64J"/>
                 <outlet property="titleLabel" destination="eR5-p9-g6I" id="7s9-fW-ord"/>

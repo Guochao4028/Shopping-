@@ -62,7 +62,14 @@
     self.orderTypeLabel.text = self.model.orderTypeVo;
     self.payStateLabel.text = self.model.payStateVo;
     self.createTimeLabel.text = self.model.createTime;
-    self.rderCodeLabel.text = self.model.orderCode;
+    
+    NSString *orderCode = self.model.orderCode;
+    NSArray *orderArray = [self.model.orderCode componentsSeparatedByString:@"_"];
+    // TOOD: 多商品合并下单，退款单个商品，界面展示主订单号
+    if (orderArray.count > 1){
+        orderCode = orderArray.firstObject;
+    }
+    self.rderCodeLabel.text = orderCode;
     if (self.model.orderType == 5) {//充值，不显示查看详情按钮
         self.detilsView.hidden = YES;
     } else {

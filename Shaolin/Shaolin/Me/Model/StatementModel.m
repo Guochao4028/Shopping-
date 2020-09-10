@@ -45,7 +45,7 @@
 - (NSString *)showImageName {
     if (self.orderType == 1){//商品
         return @"pin";
-    } else if (self.orderType == 2){//课程
+    } else if (self.orderType == 2){//教程
         return @"ke";
     } else if (self.orderType == 3){//段品质活动
         return @"ke";
@@ -53,6 +53,8 @@
         return @"tui";
     } else if (self.orderType == 5){//充值
         return @"chong";
+    } else if (self.orderType == 6){//功德佛事
+        return @"fo";
     }
     return @"pin";
 }
