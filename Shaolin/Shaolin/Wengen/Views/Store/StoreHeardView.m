@@ -28,6 +28,13 @@
 @property (weak, nonatomic) IBOutlet UIView *starBGView;
 @property (weak, nonatomic) IBOutlet UILabel *countColletLabel;
 
+@property (weak, nonatomic) IBOutlet UIImageView *proprietaryImageView;
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *proprietaryImageViewW;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *proprietaryGayW;
+
+
+
 @end
 
 @implementation StoreHeardView
@@ -88,7 +95,7 @@
     
     NSString *strCount = storeInfoModel.countCollet;
     if (strCount.integerValue <= 0) {
-        strCount = [NSString stringWithFormat:SLLocalizedString(@"0人关注")];
+        strCount = SLLocalizedString(@"0人关注");
     }else if(strCount.integerValue < 10000){
         strCount = [NSString stringWithFormat:SLLocalizedString(@"%@人关注"), strCount];
     }else{
@@ -115,6 +122,20 @@
         self.focusButton.layer.borderWidth = 1;
         self.focusButton.layer.cornerRadius = SLChange(15);
     }
+    
+    
+    BOOL is_self = [storeInfoModel.is_self boolValue];
+    if (is_self) {
+        [self.proprietaryImageView setHidden:NO];
+        self.proprietaryImageViewW.constant = 35;
+        self.proprietaryGayW.constant = 5;
+    }else{
+        [self.proprietaryImageView setHidden:YES];
+        self.proprietaryImageViewW.constant = 0;
+        self.proprietaryGayW.constant = 0;
+    }
+    
+    
 }
 
 

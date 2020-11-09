@@ -274,9 +274,14 @@
     [[KungfuManager sharedInstance]getLevelList:param callbacl:call];
 }
 
-///检查筛查所适用报名的段位
+///检查筛查所适用报名的位阶
 -(void)activityCheckedLevel:(NSDictionary *)param callbacl:(NSObjectCallBack)call{
     [[KungfuManager sharedInstance]activityCheckedLevel:param callbacl:call];
+}
+
+///段品制活动详情
+-(void)activityDetails:(NSDictionary *)param callbacl:(NSObjectCallBack)call{
+    [[KungfuManager sharedInstance]activityDetails:param callbacl:call];
 }
 
 ///提交机构报名信息
@@ -287,6 +292,26 @@
 ///考试凭证
 -(void)checkProof:(NSDictionary *)param callback:(NSDictionaryCallBack)call{
     [[KungfuManager sharedInstance]checkProof:param callback:call];
+}
+
+///商品开发票信息
+-(void)getGoodsInvoice:(NSDictionary *)param Callback:(NSDictionaryCallBack)call{
+    [[WengenManager shareInstance]getGoodsInvoice:param Callback:call];
+}
+
+///换开发票
+-(void)changeInvoice:(NSDictionary *)param Callback:(MessageCallBack)call{
+    [[WengenManager shareInstance]changeInvoice:param Callback:call];
+}
+
+///修改发票信息
+-(void)editInvoice:(NSDictionary *)param Callback:(MessageCallBack)call{
+    [[WengenManager shareInstance]editInvoice:param Callback:call];
+}
+
+///发送邮件
+-(void)sendMail:(NSDictionary *)param Callback:(MessageCallBack)call{
+    [[WengenManager shareInstance]sendMail:param Callback:call];
 }
 
 

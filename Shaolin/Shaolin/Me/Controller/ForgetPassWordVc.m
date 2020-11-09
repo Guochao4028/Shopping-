@@ -8,10 +8,10 @@
 
 #import "ForgetPassWordVc.h"
 #import "MeManager.h"
+#import "LoginManager.h"
 #import "NSString+Tool.h"
 
 @interface ForgetPassWordVc ()<UITextFieldDelegate>
-@property(nonatomic,strong) UIButton *leftBtn;
 @property(nonatomic,strong) UITextField *phoneTf;
 @property(nonatomic,strong) UITextField *codeTf;
 @property(nonatomic,strong) UITextField *passWordTf;
@@ -26,23 +26,13 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    self.navigationController.navigationBar.hidden = YES;
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self layoutView];
+    [self.leftBtn setTitle:[NSString stringWithFormat:@"  %@", SLLocalizedString(@"忘记密码")] forState:(UIControlStateNormal)];
 }
 -(void)layoutView{
-
-    [self.view addSubview:self.leftBtn];
-
-    [self.leftBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(SLChange(18));
-        make.width.mas_equalTo(SLChange(95));
-        make.top.mas_equalTo(StatueBar_Height+SLChange(20));
-        make.height.mas_equalTo(SLChange(16));
-    }];
-    
     UIImageView *image1 = [[UIImageView alloc]init];
     image1.image = [UIImage imageNamed:@"手机"];
     [self.view addSubview:image1];
@@ -50,7 +40,7 @@
         make.width.mas_equalTo(SLChange(16));
          make.height.mas_equalTo(SLChange(21));
         make.left.mas_equalTo(SLChange(19.5));
-         make.top.mas_equalTo(NavBar_Height+SLChange(41));
+         make.top.mas_equalTo(SLChange(41));
     }];
     UIView *view1 = [[UIView alloc]init];
     view1.backgroundColor = [UIColor colorForHex:@"E5E5E5"];
@@ -206,17 +196,7 @@
 - (void)clearAction {
     self.phoneTf.text = @"";
 }
--(UIButton *)leftBtn
-{
-    if (!_leftBtn) {
-        _leftBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
-        [_leftBtn setImage:[UIImage imageNamed:@"left"] forState:(UIControlStateNormal)];
-        [_leftBtn setTitle:SLLocalizedString(@"  忘记密码") forState:(UIControlStateNormal)];
-        [_leftBtn setTitleColor:[UIColor colorForHex:@"121212"] forState:(UIControlStateNormal)];
-        [_leftBtn addTarget:self action:@selector(leftAction) forControlEvents:(UIControlEventTouchUpInside)];
-    }
-    return _leftBtn;
-}
+
 -(UITextField *)phoneTf
 {
     if (!_phoneTf) {
@@ -256,10 +236,10 @@
         _sendBtn.titleLabel.font = kRegular(13);
         _sendBtn.layer.borderWidth = 1;
         _sendBtn.layer.cornerRadius = 4;
-        _sendBtn.layer.borderColor = [UIColor colorForHex:@"8E2B25"].CGColor;
+        _sendBtn.layer.borderColor = kMainYellow.CGColor;
         _sendBtn.layer.masksToBounds = YES;
 //        _sendBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
-        [_sendBtn setTitleColor:[UIColor colorForHex:@"8E2B25"] forState:UIControlStateNormal];
+        [_sendBtn setTitleColor:kMainYellow forState:UIControlStateNormal];
         [_sendBtn addTarget:self action:@selector(tapVerBtnAction:) forControlEvents:UIControlEventTouchUpInside];
        
     }
@@ -319,8 +299,8 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 //设置界面的按钮显示 根据自己需求设置
                 [self.sendBtn setTitle:SLLocalizedString(@"重新获取") forState:UIControlStateNormal];
-                 [self.sendBtn setTitleColor:[UIColor colorForHex:@"8E2B25"] forState:UIControlStateNormal];
-                self.sendBtn.layer.borderColor = [UIColor colorForHex:@"8E2B25"].CGColor;
+                 [self.sendBtn setTitleColor:kMainYellow forState:UIControlStateNormal];
+                self.sendBtn.layer.borderColor = kMainYellow.CGColor;
                 self.sendBtn.userInteractionEnabled = YES;
             });
         } else {
@@ -368,7 +348,7 @@
            [_doneBtn addTarget:self action:@selector(doneAction) forControlEvents:(UIControlEventTouchUpInside)];
            [_doneBtn setTitleColor:[UIColor colorForHex:@"FFFFFF"] forState:(UIControlStateNormal)];
            _doneBtn.titleLabel.font = kRegular(15);
-           _doneBtn.backgroundColor = [UIColor colorForHex:@"8E2B25"];
+           _doneBtn.backgroundColor = kMainYellow;
         _doneBtn.layer.cornerRadius = 4;
         _doneBtn.layer.masksToBounds = YES;
     }

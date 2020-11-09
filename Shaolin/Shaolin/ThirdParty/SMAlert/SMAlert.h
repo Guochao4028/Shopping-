@@ -44,4 +44,13 @@
 + (void)showCustomView:(UIView*)view stroke:(BOOL)isStroke confirmButton:(SMButton*)confirmButton cancleButton:(SMButton*)cancleButton;
 + (void)hide;
 - (void)showImage:(UIImage*)image content:(NSString*)content stroke:(BOOL)isStroke customView:(UIView*)customView confirmButton:(SMButton*)confirmButton cancleButton:(SMButton*)cancleButton;
+
+/// 默认样式提示框，一个按钮
++ (void)showAlertWithInfoString:(NSString *)text confirmButtonTitle:(NSString *)confirmButtonTitle success:(void (^)(void))success;
+/// 默认样式提示框，两个按钮
++ (void)showAlertWithInfoString:(NSString *)text confirmButtonTitle:(NSString *)confirmButtonTitle cancelButtonTitle:(NSString *)cancelButtonTitle success:(void (^)(void))success cancel:(void (^)(void))cancel;
+/// 默认样式提示框，有标题，一个按钮
++ (void)showAlertWithTitle:(NSString *)titleStr message:(NSString *)messageStr confirmButtonTitle:(NSString *)confirmButtonTitle success:(void (^)(void))success;
+/// 默认样式提示框，有标题，两个按钮
++ (void)showAlertWithTitle:(NSString *)titleStr message:(NSString *)messageStr confirmButtonTitle:(NSString *)confirmButtonTitle cancelButtonTitle:(NSString *)cancelButtonTitle success:(void (^)(void))success cancel:(void (^)(void))cancel;
 @end

@@ -112,7 +112,7 @@
            [_nextBtn addTarget:self action:@selector(nextAction) forControlEvents:(UIControlEventTouchUpInside)];
            [_nextBtn setTitleColor:[UIColor colorForHex:@"FFFFFF"] forState:(UIControlStateNormal)];
            _nextBtn.titleLabel.font = kRegular(15);
-           _nextBtn.backgroundColor = [UIColor colorForHex:@"8E2B25"];
+           _nextBtn.backgroundColor = kMainYellow;
         _nextBtn.layer.cornerRadius = 4;
         _nextBtn.layer.masksToBounds = YES;
     }
@@ -139,10 +139,10 @@
         _sendBtn.titleLabel.font = kRegular(13);
         _sendBtn.layer.borderWidth = 1;
         _sendBtn.layer.cornerRadius = 4;
-        _sendBtn.layer.borderColor = [UIColor colorForHex:@"8E2B25"].CGColor;
+        _sendBtn.layer.borderColor = kMainYellow.CGColor;
         _sendBtn.layer.masksToBounds = YES;
 //        _sendBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
-        [_sendBtn setTitleColor:[UIColor colorForHex:@"8E2B25"] forState:UIControlStateNormal];
+        [_sendBtn setTitleColor:kMainYellow forState:UIControlStateNormal];
         [_sendBtn addTarget:self action:@selector(tapVerBtnAction:) forControlEvents:UIControlEventTouchUpInside];
        
     }
@@ -213,8 +213,8 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 //设置界面的按钮显示 根据自己需求设置
                 [self.sendBtn setTitle:SLLocalizedString(@"重新获取") forState:UIControlStateNormal];
-                 [self.sendBtn setTitleColor:[UIColor colorForHex:@"8E2B25"] forState:UIControlStateNormal];
-                self.sendBtn.layer.borderColor = [UIColor colorForHex:@"8E2B25"].CGColor;
+                 [self.sendBtn setTitleColor:kMainYellow forState:UIControlStateNormal];
+                self.sendBtn.layer.borderColor = kMainYellow.CGColor;
                 self.sendBtn.userInteractionEnabled = YES;
             });
         } else {

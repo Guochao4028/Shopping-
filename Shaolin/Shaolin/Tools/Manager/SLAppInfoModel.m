@@ -11,7 +11,6 @@
 #include <sys/utsname.h>
 #import "WengenBannerModel.h"
 #import "FoundModel.h"
-#import "NetworkingHandler.h"
 
 #import "KungfuWebViewController.h"
 #import "FoundDetailsViewController.h"
@@ -19,7 +18,6 @@
 #import "KungfuClassDetailViewController.h"
 #import "ClassifyHomeViewController.h"
 #import "FoundVideoListVc.h"
-#import "RiteRegistrationFormViewController.h"
 #import "RiteSecondLevelListViewController.h"
 #import "NSDate+BRPickerView.h"
 #import "NSDate+LGFDate.h"
@@ -139,7 +137,6 @@ static SLAppInfoModel *currentUser = nil;
                             waitUntilDone:[NSThread isMainThread]];
     }
     
-    [[NetworkingHandler sharedInstance] updateToken];
 }
 
 #pragma mark 数据持久化

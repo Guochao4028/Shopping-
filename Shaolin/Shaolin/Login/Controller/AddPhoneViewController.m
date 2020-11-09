@@ -55,10 +55,14 @@
 @end
 
 @implementation AddPhoneViewController
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    [self reloadNavigationBar];
-    [self reloadInteractivePopGestureRecognizerEnable:NO];
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self hideNavigationBarShadow];
+}
+
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    [self.view endEditing:YES];
 }
 
 - (void)viewDidLoad {
@@ -69,21 +73,6 @@
 }
 
 #pragma mark - UI
-- (void)reloadInteractivePopGestureRecognizerEnable:(BOOL)enable{
-    // 开启返回手势
-    if ([self.navigationController respondsToSelector:@selector(fd_fullscreenPopGestureRecognizer)]) {
-        self.navigationController.fd_fullscreenPopGestureRecognizer.enabled = enable;
-    }
-    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
-        self.navigationController.interactivePopGestureRecognizer.enabled = enable;
-    }
-}
-
-- (void)reloadNavigationBar{
-    self.navigationController.navigationBarHidden = NO;
-    self.navigationController.navigationBar.shadowImage = [UIImage new];
-}
-
 - (void)setUI{
     
     self.view.backgroundColor = UIColor.whiteColor;
@@ -437,7 +426,8 @@
             if (success) success();
         }
     } failure:^(NSString * _Nullable errorReason) {
-        
+        [ShaolinProgressHUD singleTextAutoHideHud:errorReason];
+        if (failure) failure();
     } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
         
     }];
@@ -684,7 +674,7 @@
         [_sendCodeButton setTitle:SLLocalizedString(@"发送验证码") forState:UIControlStateNormal];
         _sendCodeButton.titleLabel.font = kRegular(12);
         _sendCodeButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
-        [_sendCodeButton setTitleColor:[UIColor colorForHex:@"8E2B25"] forState:UIControlStateNormal];
+        [_sendCodeButton setTitleColor:kMainYellow forState:UIControlStateNormal];
         [_sendCodeButton addTarget:self action:@selector(sendCodeButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _sendCodeButton;
@@ -706,8 +696,8 @@
         _finishButton.clipsToBounds = YES;
         _finishButton.enabled = NO;
         [_finishButton setTitle:SLLocalizedString(@"绑定") forState:UIControlStateNormal];
-//        [_finishButton setBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
-        [_finishButton setBackgroundImage:[UIImage lgf_ColorImageWithFillColor:[UIColor colorForHex:@"8E2B25"]] forState:UIControlStateNormal];
+//        [_finishButton setBackgroundColor:kMainYellow];
+        [_finishButton setBackgroundImage:[UIImage lgf_ColorImageWithFillColor:kMainYellow] forState:UIControlStateNormal];
         [_finishButton setBackgroundImage:[UIImage lgf_ColorImageWithFillColor:[UIColor colorForHex:@"BC807D"]] forState:UIControlStateDisabled];
         [_finishButton addTarget:self action:@selector(finishButtonClick:) forControlEvents:(UIControlEventTouchUpInside)];
     }

@@ -22,6 +22,7 @@
 #import "InvoiceQualificationsModel.h"
 
 #import "AddressListModel.h"
+#import "DataManager.h"
 
 
 
@@ -143,7 +144,7 @@
         if ([invoiceType isEqualToString:@"UnSpecial"]) {
             if ([type isEqualToString:@"1"]) {
                 [parma setValue:self.invoiceDic[@"personal"] forKey:@"buy_name"];
-                [parma setValue:@"1" forKey:@"invoice_type"];
+                [parma setValue:@"1" forKey:@"companyOrpersonal"];
             }else{
                 
                 NSString *unitNameStr =  self.invoiceDic[@"unitName"];
@@ -151,7 +152,7 @@
                 
                 [parma setValue:unitNameStr forKey:@"buy_name"];
                 [parma setValue:unitNumberStr forKey:@"duty_num"];
-                [parma setValue:@"2" forKey:@"invoice_type"];
+                [parma setValue:@"2" forKey:@"companyOrpersonal"];
             }
         }else if ([invoiceType isEqualToString:@"Special"]){
             

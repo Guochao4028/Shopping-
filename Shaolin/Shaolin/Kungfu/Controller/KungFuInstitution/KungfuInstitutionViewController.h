@@ -8,11 +8,11 @@
 //
 //  功夫 - 机构列表
 
-#import <UIKit/UIKit.h>
+#import "RootViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface KungfuInstitutionViewController : UIViewController
+@interface KungfuInstitutionViewController : RootViewController
 
 @property (nonatomic, copy) NSString * searchText;
 

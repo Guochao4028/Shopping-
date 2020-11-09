@@ -11,6 +11,10 @@
 
 @interface EnrollmentHeaderView ()
 @property(nonatomic, strong)NSMutableArray *btnArray;
+@property (weak, nonatomic) IBOutlet UILabel *screeningLabel;
+
+
+
 @end
 
 @implementation EnrollmentHeaderView
@@ -55,7 +59,7 @@
         [button setImageEdgeInsets:UIEdgeInsetsMake(0, button.titleLabel.bounds.size.width, 0, -button.titleLabel.bounds.size.width)];
         button.titleLabel.font = kRegular(15);
         [button setTitleColor:[UIColor colorForHex:@"333333"] forState:(UIControlStateNormal)];
-        [button setTitleColor:[UIColor colorForHex:@"8E2B25"] forState:(UIControlStateSelected)];
+        [button setTitleColor:kMainYellow forState:(UIControlStateSelected)];
         [self.btnArray addObject:button];
         
         [self.statusBarView addSubview:button];
@@ -107,6 +111,15 @@
         _btnArray = [NSMutableArray array];
     }
     return _btnArray;
+}
+
+-(void)setIsViewRed:(BOOL)isViewRed{
+    if (isViewRed == YES) {
+        [self.screeningLabel setTextColor:kMainYellow];
+    }else{
+        [self.screeningLabel setTextColor:[UIColor colorForHex:@"333333"]];
+
+    }
 }
 
 @end

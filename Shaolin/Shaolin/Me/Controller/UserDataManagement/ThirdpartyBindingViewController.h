@@ -6,7 +6,7 @@
 //  Copyright © 2020 syqaxldy. All rights reserved.
 //  我的-个人信息管理-三方登录
 
-#import <UIKit/UIKit.h>
+#import "RootViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

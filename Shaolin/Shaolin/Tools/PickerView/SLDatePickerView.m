@@ -67,7 +67,7 @@
         [_chooseBtn addTarget:self action:@selector(chooseAction) forControlEvents:(UIControlEventTouchUpInside)];
         [_chooseBtn setTitleColor:[UIColor colorForHex:@"FFFFFF"] forState:(UIControlStateNormal)];
         _chooseBtn.titleLabel.font = kRegular(15);
-        _chooseBtn.backgroundColor = [UIColor colorForHex:@"8E2B25"];
+        _chooseBtn.backgroundColor = kMainYellow;
         _chooseBtn.layer.cornerRadius = 4;
         _chooseBtn.layer.masksToBounds = YES;
     }

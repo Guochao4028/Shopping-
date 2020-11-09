@@ -44,8 +44,8 @@
 -(void)initUI{
     [self addSubview:self.contentView];
     [self.contentView setFrame:self.bounds];
-    [self.bgView setBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
-    [self setBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+    [self.bgView setBackgroundColor:kMainYellow];
+    [self setBackgroundColor:kMainYellow];
 }
 
 - (IBAction)payHandle:(UIButton *)sender {

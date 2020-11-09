@@ -86,7 +86,7 @@
                        // [skipButton.layer setCornerRadius:5.0];
 //                       [skipButton.layer setCornerRadius:(skipButton.frame.size.height * 0.5)];
 //                       skipButton.layer.borderWidth = 1;
-//                       skipButton.layer.borderColor = [UIColor colorForHex:@"8E2B25"].CGColor;
+//                       skipButton.layer.borderColor = kMainYellow.CGColor;
                        [skipButton addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
                        [imageView addSubview:skipButton];
 //                UIButton *startButton = [[UIButton alloc]initWithFrame:CGRectMake(DDScreenW*0.3, DDScreenH*0.8, DDScreenW*0.4, DDScreenH*0.08)];

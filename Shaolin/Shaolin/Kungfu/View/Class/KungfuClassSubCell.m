@@ -29,8 +29,8 @@
     _isPlaying = isPlaying;
     
     if (isPlaying) {
-        self.classSubTitleLabel.textColor = [UIColor hexColor:@"8E2B25"];
-        self.timeLabel.textColor = [UIColor hexColor:@"8E2B25"];
+        self.classSubTitleLabel.textColor = kMainYellow;
+        self.timeLabel.textColor = kMainYellow;
         self.tryIcon.image = nil;
         
         if (![self.detailModel.buy boolValue] && [self.model.try_watch intValue] == 1) {

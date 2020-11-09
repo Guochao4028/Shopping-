@@ -29,7 +29,7 @@ static NSString * const gifName = @"default_loding";
     self = [super initWithFrame:frame];
     if (self) {
         NSData *gifData = [NSData dataWithContentsOfFile: [[NSBundle mainBundle] pathForResource:gifName ofType:@"gif"]];
-        UIImage *image = [UIImage sd_animatedGIFWithData:gifData];
+        UIImage *image = [UIImage sd_imageWithGIFData:gifData];
         self.translatesAutoresizingMaskIntoConstraints = NO;
         self.image = image;
     }
@@ -83,7 +83,7 @@ static NSString * const gifName = @"default_loding";
 #ifdef UseGif
     //customView默认使用图片的大小，而且无法通过设置frame来修改
     NSData *gifData = [NSData dataWithContentsOfFile: [[NSBundle mainBundle] pathForResource:gifName ofType:@"gif"]];
-    UIImage *image = [UIImage sd_animatedGIFWithData:gifData];
+    UIImage *image = [UIImage sd_imageWithGIFData:gifData];
     hud.customView = [[UIImageView alloc] initWithImage:image];
     
     //如果对gif的大小有要求，可以使用LodingView，在intrinsicContentSize方法中返回需求的大小

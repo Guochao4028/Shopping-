@@ -219,7 +219,7 @@
     if (!_titleLabel){
         _titleLabel = [[UILabel alloc] init];
         _titleLabel.font = kRegular(23);
-        _titleLabel.textColor = [UIColor colorForHex:@"8E2B25"];
+        _titleLabel.textColor = kMainYellow;
         _titleLabel.text = SLLocalizedString(@"发现新版本");
         _titleLabel.textAlignment = NSTextAlignmentCenter;
     }
@@ -230,7 +230,7 @@
     if (!_versionLabel){
         _versionLabel = [[UILabel alloc] init];
         _versionLabel.font = kRegular(20);
-        _versionLabel.textColor = [UIColor colorForHex:@"8E2B25"];
+        _versionLabel.textColor = kMainYellow;
         _versionLabel.textAlignment = NSTextAlignmentCenter;
     }
     return _versionLabel;
@@ -250,7 +250,7 @@
         _upgradeNowBtn.titleLabel.font = kRegular(15);
         _upgradeNowBtn.clipsToBounds = YES;
         [_upgradeNowBtn setTitle:SLLocalizedString(@"立即更新") forState:UIControlStateNormal];
-        [_upgradeNowBtn setBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+        [_upgradeNowBtn setBackgroundColor:kMainYellow];
         [_upgradeNowBtn setTitleColor:[UIColor colorForHex:@"FFFFFF"] forState:UIControlStateNormal];
         [_upgradeNowBtn addTarget:self action:@selector(upgradeNowBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     }

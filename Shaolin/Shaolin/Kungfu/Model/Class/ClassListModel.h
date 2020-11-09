@@ -23,8 +23,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString * desc2;
 @property (nonatomic, copy) NSString * price;
 @property (nonatomic, copy) NSString * old_price;
-
-
+@property (nonatomic, copy) NSString * goods_value;
+@property (nonatomic, copy) NSString * is_buy;
 
 
 //"id": 53,教程id <number>

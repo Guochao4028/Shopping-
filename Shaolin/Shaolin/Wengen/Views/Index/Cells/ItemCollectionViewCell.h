@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class WengenEnterModel;
 @interface ItemCollectionViewCell : UICollectionViewCell
+
+@property (weak, nonatomic) IBOutlet UIImageView *iconImageView;
 @property(nonatomic, strong)WengenEnterModel *model;
 @end
 

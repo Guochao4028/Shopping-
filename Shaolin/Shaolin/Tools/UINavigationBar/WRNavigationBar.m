@@ -14,10 +14,11 @@
 @implementation WRNavigationBar
 
 + (BOOL)isIphoneX {
-    return (CGSizeEqualToSize([UIScreen mainScreen].bounds.size, CGSizeMake(375, 812)) ||
-    CGSizeEqualToSize([UIScreen mainScreen].bounds.size, CGSizeMake(812, 375)) ||
-    CGSizeEqualToSize([UIScreen mainScreen].bounds.size, CGSizeMake(414, 896)) ||
-    CGSizeEqualToSize([UIScreen mainScreen].bounds.size, CGSizeMake(896, 414)));
+//    return (CGSizeEqualToSize([UIScreen mainScreen].bounds.size, CGSizeMake(375, 812)) ||
+//    CGSizeEqualToSize([UIScreen mainScreen].bounds.size, CGSizeMake(812, 375)) ||
+//    CGSizeEqualToSize([UIScreen mainScreen].bounds.size, CGSizeMake(414, 896)) ||
+//    CGSizeEqualToSize([UIScreen mainScreen].bounds.size, CGSizeMake(896, 414)));
+    return kIs_iPhoneX;
 }
 
 
@@ -234,12 +235,18 @@ static char kWRBackgroundImageKey;
     if (self.backgroundView == nil) {
         // add a image(nil color) to _UIBarBackground make it clear
         [self setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-        self.backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.bounds), [WRNavigationBar navBarBottom])];
+        self.backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.bounds), [WRNavigationBar navBarBottom] + 4)];
         self.backgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         // _UIBarBackground is first subView for navigationBar
         [self.subviews.firstObject insertSubview:self.backgroundView atIndex:0];
     }
+    
     self.backgroundView.backgroundColor = color;
+//    self.backgroundColor = UIColor.blueColor;
+//
+//    for (UIView * v in self.subviews) {
+//        v.backgroundColor = UIColor.purpleColor;
+//    }
 }
 
 - (void)wr_keyboardDidShow {
@@ -323,22 +330,22 @@ static char kWRBackgroundImageKey;
 }
 
 #pragma mark - call swizzling methods active 主动调用交换方法
-+ (void)load {
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        SEL needSwizzleSelectors[1] = {
-            @selector(setTitleTextAttributes:)
-        };
-      
-        for (int i = 0; i < 1;  i++) {
-            SEL selector = needSwizzleSelectors[i];
-            NSString *newSelectorStr = [NSString stringWithFormat:@"wr_%@", NSStringFromSelector(selector)];
-            Method originMethod = class_getInstanceMethod(self, selector);
-            Method swizzledMethod = class_getInstanceMethod(self, NSSelectorFromString(newSelectorStr));
-            method_exchangeImplementations(originMethod, swizzledMethod);
-        }
-    });
-}
+//+ (void)load {
+//    static dispatch_once_t onceToken;
+//    dispatch_once(&onceToken, ^{
+//        SEL needSwizzleSelectors[1] = {
+//            @selector(setTitleTextAttributes:)
+//        };
+//      
+//        for (int i = 0; i < 1;  i++) {
+//            SEL selector = needSwizzleSelectors[i];
+//            NSString *newSelectorStr = [NSString stringWithFormat:@"wr_%@", NSStringFromSelector(selector)];
+//            Method originMethod = class_getInstanceMethod(self, selector);
+//            Method swizzledMethod = class_getInstanceMethod(self, NSSelectorFromString(newSelectorStr));
+//            method_exchangeImplementations(originMethod, swizzledMethod);
+//        }
+//    });
+//}
 
 - (void)wr_setTitleTextAttributes:(NSDictionary<NSString *,id> *)titleTextAttributes {
     NSMutableDictionary<NSString *,id> *newTitleTextAttributes = [titleTextAttributes mutableCopy];
@@ -459,25 +466,25 @@ static int wrPushDisplayCount = 0;
 }
 
 #pragma mark - call swizzling methods active 主动调用交换方法
-+ (void)load {
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        SEL needSwizzleSelectors[4] = {
-            NSSelectorFromString(@"_updateInteractiveTransition:"),
-            @selector(popToViewController:animated:),
-            @selector(popToRootViewControllerAnimated:),
-            @selector(pushViewController:animated:)
-        };
-      
-        for (int i = 0; i < 4;  i++) {
-            SEL selector = needSwizzleSelectors[i];
-            NSString *newSelectorStr = [[NSString stringWithFormat:@"wr_%@", NSStringFromSelector(selector)] stringByReplacingOccurrencesOfString:@"__" withString:@"_"];
-            Method originMethod = class_getInstanceMethod(self, selector);
-            Method swizzledMethod = class_getInstanceMethod(self, NSSelectorFromString(newSelectorStr));
-            method_exchangeImplementations(originMethod, swizzledMethod);
-        }
-    });
-}
+//+ (void)load {
+//    static dispatch_once_t onceToken;
+//    dispatch_once(&onceToken, ^{
+//        SEL needSwizzleSelectors[4] = {
+//            NSSelectorFromString(@"_updateInteractiveTransition:"),
+//            @selector(popToViewController:animated:),
+//            @selector(popToRootViewControllerAnimated:),
+//            @selector(pushViewController:animated:)
+//        };
+//
+//        for (int i = 0; i < 4;  i++) {
+//            SEL selector = needSwizzleSelectors[i];
+//            NSString *newSelectorStr = [[NSString stringWithFormat:@"wr_%@", NSStringFromSelector(selector)] stringByReplacingOccurrencesOfString:@"__" withString:@"_"];
+//            Method originMethod = class_getInstanceMethod(self, selector);
+//            Method swizzledMethod = class_getInstanceMethod(self, NSSelectorFromString(newSelectorStr));
+//            method_exchangeImplementations(originMethod, swizzledMethod);
+//        }
+//    });
+//}
 
 - (NSArray<UIViewController *> *)wr_popToViewController:(UIViewController *)viewController animated:(BOOL)animated {
     // pop 的时候直接改变 barTintColor、tintColor
@@ -809,25 +816,25 @@ static char kWRSystemNavBarTitleColorKey;
     objc_setAssociatedObject(self, &kWRCustomNavBarKey, navBar, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-+ (void)load {
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-       SEL needSwizzleSelectors[4] = {
-           @selector(viewWillAppear:),
-           @selector(viewWillDisappear:),
-           @selector(viewDidAppear:),
-           @selector(viewDidDisappear:)
-       };
-        
-       for (int i = 0; i < 4;  i++) {
-           SEL selector = needSwizzleSelectors[i];
-           NSString *newSelectorStr = [NSString stringWithFormat:@"wr_%@", NSStringFromSelector(selector)];
-           Method originMethod = class_getInstanceMethod(self, selector);
-           Method swizzledMethod = class_getInstanceMethod(self, NSSelectorFromString(newSelectorStr));
-           method_exchangeImplementations(originMethod, swizzledMethod);
-       }
-    });
-}
+//+ (void)load {
+//    static dispatch_once_t onceToken;
+//    dispatch_once(&onceToken, ^{
+//       SEL needSwizzleSelectors[4] = {
+//           @selector(viewWillAppear:),
+//           @selector(viewWillDisappear:),
+//           @selector(viewDidAppear:),
+//           @selector(viewDidDisappear:)
+//       };
+//
+//       for (int i = 0; i < 4;  i++) {
+//           SEL selector = needSwizzleSelectors[i];
+//           NSString *newSelectorStr = [NSString stringWithFormat:@"wr_%@", NSStringFromSelector(selector)];
+//           Method originMethod = class_getInstanceMethod(self, selector);
+//           Method swizzledMethod = class_getInstanceMethod(self, NSSelectorFromString(newSelectorStr));
+//           method_exchangeImplementations(originMethod, swizzledMethod);
+//       }
+//    });
+//}
 
 - (void)wr_viewWillAppear:(BOOL)animated {
     if ([self canUpdateNavigationBar]) {

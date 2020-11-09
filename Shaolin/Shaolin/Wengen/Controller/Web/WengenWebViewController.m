@@ -13,7 +13,19 @@
 #import <WebKit/WebKit.h>
 #import <SDWebImageManager.h>
 
-@interface WengenWebViewController ()<WengenNavgationViewDelegate, WKUIDelegate,WKNavigationDelegate, WKScriptMessageHandler>
+#import "ExchangeInvoiceViewController.h"
+
+#import "ModifyInvoiceViewController.h"
+
+#import "SMAlert.h"
+
+#import "OrderH5InvoiceModel.h"
+
+#import "DataManager.h"
+
+#import "NSString+Tool.h"
+
+@interface WengenWebViewController ()<WengenNavgationViewDelegate, WKUIDelegate,WKNavigationDelegate, WKScriptMessageHandler, UITextFieldDelegate>
 
 @property(nonatomic, strong)NSString *titleStr;
 
@@ -26,6 +38,8 @@
 @property(nonatomic, strong)UIProgressView *progressView;
 
 @property(nonatomic, strong)MBProgressHUD *hud;
+
+@property(nonatomic, weak)UITextField *emailTextField;
 
 @end
 
@@ -53,9 +67,8 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-//    [self.navigationController.navigationBar setHidden:YES];
-    
-    
+
+    [self showNavigationBarShadow];
 }
 
 #pragma mark - methods
@@ -144,7 +157,6 @@
     }
     NSString * flagStr = jsonDic[@"flag"];
     NSString * subJsonStr = jsonDic[@"json"];
-
     NSDictionary * subJsonDic = [subJsonStr mj_JSONObject];
     
     if ([flagStr isEqualToString:@"invitation"]) {
@@ -157,8 +169,6 @@
             self.hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
             
             SDWebImageManager *manager = [SDWebImageManager sharedManager];
-            
-           
             
             [manager loadImageWithURL:[NSURL URLWithString:imageUrl] options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
                 
@@ -184,6 +194,158 @@
             }];
             
         }
+    }else if([flagStr isEqualToString:@"editInvoice"]){
+//        editInvoice
+        
+        OrderH5InvoiceModel *h5InvoiceModel = [OrderH5InvoiceModel mj_objectWithKeyValues:subJsonDic];
+        
+        //修改发票
+        ModifyInvoiceViewController *modifyInvoiecVC = [[ModifyInvoiceViewController alloc]init];
+        modifyInvoiecVC.orderSn = h5InvoiceModel.order_id;
+        modifyInvoiecVC.h5InvoiceModel = h5InvoiceModel;
+        [self.navigationController pushViewController:modifyInvoiecVC animated:YES];
+        
+     
+    }else if([flagStr isEqualToString:@"replaceInvoice"]){
+        
+//
+        OrderH5InvoiceModel *h5InvoiceModel = [OrderH5InvoiceModel mj_objectWithKeyValues:subJsonDic];
+        //申请换开
+        ExchangeInvoiceViewController *exchangeInvoiceVC = [[ExchangeInvoiceViewController alloc]init];
+        exchangeInvoiceVC.orderSn = h5InvoiceModel.order_id;
+        exchangeInvoiceVC.h5InvoiceModel = h5InvoiceModel;
+        [self.navigationController pushViewController:exchangeInvoiceVC animated:YES];
+        
+    }else if([flagStr isEqualToString:@"again"]){
+        OrderH5InvoiceModel *h5InvoiceModel = [OrderH5InvoiceModel mj_objectWithKeyValues:subJsonDic];
+        //重新开具发票
+        ModifyInvoiceViewController *modifyInvoiecVC = [[ModifyInvoiceViewController alloc]init];
+        modifyInvoiecVC.orderSn = h5InvoiceModel.order_id;
+        modifyInvoiecVC.h5InvoiceModel = h5InvoiceModel;
+        modifyInvoiecVC.isAgain = YES;
+        [self.navigationController pushViewController:modifyInvoiecVC animated:YES];
+        
+    }else if([flagStr isEqualToString:@"sendEmail"]){
+        //发送邮箱
+        OrderH5InvoiceModel *h5InvoiceModel = [OrderH5InvoiceModel mj_objectWithKeyValues:subJsonDic];
+        NSString *mailStr;
+        if (self.emailTextField) {
+            mailStr = self.emailTextField.text;
+        }
+        
+       
+        
+        [SMAlert setConfirmBtBackgroundColor:kMainYellow];
+        [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
+        [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
+        [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
+        [SMAlert setAlertBackgroundColor:[UIColor colorWithWhite:0 alpha:0.5]];
+        UIView *customView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 300, 132)];
+        UILabel *title = [[UILabel alloc]initWithFrame:CGRectMake((300 - 114)/2, 14, 144, 22)];
+        [title setFont:kMediumFont(15)];
+        [title setTextColor:[UIColor darkGrayColor]];
+        title.text = SLLocalizedString(@"请确认邮箱地址");
+        [title setNumberOfLines:0];
+        [title setTextAlignment:NSTextAlignmentLeft];
+        [customView addSubview:title];
+        
+        UITextField *emailTextField = [[UITextField alloc]initWithFrame:CGRectMake((300 - 215)/2, CGRectGetMaxY(title.frame)+35, 215, 35)];
+        emailTextField.placeholder = @"(用来接收电子发票邮件)";
+        
+        emailTextField.layer.cornerRadius = 35/2;
+        UIView *leftView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 15, 35)];
+        emailTextField.leftViewMode = UITextFieldViewModeAlways;
+        [emailTextField setLeftView:leftView];
+        [emailTextField setBackgroundColor:[UIColor colorForHex:@"EEEEEE"]];
+        emailTextField.font = kRegular(15);
+        [customView addSubview:emailTextField];
+        self.emailTextField = emailTextField;
+        
+        if (mailStr.length) {
+            [emailTextField setText:mailStr];
+        }else{
+            if ([h5InvoiceModel.email length] > 0) {
+                [emailTextField setText:h5InvoiceModel.email];
+            }
+        }
+        
+    
+        
+        [SMAlert showCustomView:customView stroke:YES confirmButton:[SMButton initWithManualAndTitle:SLLocalizedString(@"确定")  clickAction:^{
+            [self.view endEditing:YES];
+                      NSString *emailStr =  self.emailTextField.text;
+                      if ([emailStr length] > 0) {
+                          
+                          if([emailStr validationEmail]){
+                              MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
+                              [[DataManager shareInstance]sendMail:@{@"receiveMail" : emailStr} Callback:^(Message *message) {
+                                  [hud hideAnimated:YES];
+                                  if (message.isSuccess) {
+                                      
+                                      [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"提交成功") view:self.view afterDelay:TipSeconds];
+                                      
+                                  }else{
+                                      [ShaolinProgressHUD singleTextHud:NotNilAndNull(message.reason)?message.reason:@"" view:self.view afterDelay:TipSeconds];
+                                  }
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+    [NSClassFromString(@"SMAlert") performSelector:NSSelectorFromString(@"hide")];
+#pragma clang diagnostic pop
+                                              
+                              }];
+                          }else{
+                              [ShaolinProgressHUD singleTextAutoHideHud:@"请填写正确邮箱"];
+                          }
+                      }else{
+                          [ShaolinProgressHUD singleTextAutoHideHud:@"请填写邮箱"];
+                      }
+                      
+                      
+
+        }] cancleButton:[SMButton initWithTitle:SLLocalizedString(@"取消") clickAction:nil]];
+    }
+    else if([flagStr isEqualToString:@"downinvoice"]){
+        NSString *imageUrl = subJsonDic[@"img_url"];
+        NSLog(@"imageUrl : %@", imageUrl);
+        if (imageUrl) {
+            
+            
+            
+            self.hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
+            
+            SDWebImageManager *manager = [SDWebImageManager sharedManager];
+            
+            [manager loadImageWithURL:[NSURL URLWithString:imageUrl] options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
+                
+            } completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, SDImageCacheType cacheType, BOOL finished, NSURL * _Nullable imageURL) {
+                
+                if (image) {
+                    
+                        
+                        [[PHPhotoLibrary sharedPhotoLibrary]performChanges:^{
+                            [PHAssetChangeRequest creationRequestForAssetFromImage:image];
+                            
+                        } completionHandler:^(BOOL success, NSError * _Nullable error) {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [self.hud hideAnimated:YES];
+                                NSString *successStr = success == YES ? SLLocalizedString(@"保存成功"):SLLocalizedString(@"保存失败");
+                                [ShaolinProgressHUD singleTextAutoHideHud:successStr];
+                            });
+                        }];
+                        
+                   
+                }
+                
+            }];
+        }
+    }
+    
+}
+
+#pragma mark - UITextFieldDelegate
+-(void)textFieldDidEndEditing:(UITextField *)textField{
+    if (textField == self.emailTextField) {
+        
     }
 }
 
@@ -253,10 +415,6 @@
     [self.webView setNavigationDelegate:nil];
     [self.webView setUIDelegate:nil];
     [self.webView.configuration.userContentController removeScriptMessageHandlerForName:@"H5inFormLocal"];
-}
-
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    return UIStatusBarStyleDefault;
 }
 
 @end

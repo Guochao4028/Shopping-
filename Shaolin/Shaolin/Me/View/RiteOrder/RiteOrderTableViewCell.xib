@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -63,7 +63,7 @@
                             <constraint firstItem="44O-Nf-Zo4" firstAttribute="centerY" secondItem="W4D-dJ-ak0" secondAttribute="centerY" id="j7T-FP-7CV"/>
                         </constraints>
                     </view>
-                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="UnW-Ij-exd">
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="UnW-Ij-exd">
                         <rect key="frame" x="16" y="55" width="110" height="110"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="110" id="njR-qL-xdK"/>
@@ -177,7 +177,7 @@
                 <outlet property="stateLabel" destination="84V-lZ-jbg" id="Agp-du-eOI"/>
                 <outlet property="waitingPaymentLabel" destination="44O-Nf-Zo4" id="fCR-rf-5Hg"/>
             </connections>
-            <point key="canvasLocation" x="132" y="101"/>
+            <point key="canvasLocation" x="-58" y="71"/>
         </tableViewCell>
     </objects>
     <resources>

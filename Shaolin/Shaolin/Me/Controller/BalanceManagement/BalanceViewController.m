@@ -15,7 +15,6 @@
 
 @interface BalanceViewController ()<XLPageViewControllerDelegate,XLPageViewControllerDataSrouce>
 
-@property(weak,nonatomic) UIView * navLine;
 @property(nonatomic,strong) XLPageViewController * pageViewController;
 @property(nonatomic,strong)  XLPageViewControllerConfig * config;
 @property (nonatomic, strong) NSArray * enabledTitles;
@@ -26,15 +25,6 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
-    [self wr_setNavBarBarTintColor:[UIColor hexColor:@"FFFFFF"]];
-    [self wr_setNavBarTintColor:[UIColor whiteColor]];
-    [self wr_setNavBarBackgroundAlpha:1];
-    
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
-//    
-//    [self.navLine setBackgroundColor:[UIColor colorWithRed:(19/255.0) green:(8/255.0) blue:(94/255.0) alpha:0.01]];
-//    [self.navLine setAlpha:];
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
@@ -109,18 +99,4 @@
     }
 }
 
-- (UIView *)navLine
-{
-    if (!_navLine) {
-        UIView *backgroundView = [self.navigationController.navigationBar subviews].firstObject;
-        _navLine = backgroundView.subviews.firstObject;
-    }
-    return _navLine;
-}
-
-
-#pragma mark - device
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    return UIStatusBarStyleDefault;
-}
 @end

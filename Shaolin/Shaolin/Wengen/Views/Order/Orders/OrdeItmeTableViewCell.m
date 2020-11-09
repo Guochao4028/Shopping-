@@ -78,6 +78,11 @@
 //再次购买
 @property (weak, nonatomic) IBOutlet UIButton *completeAgainBuyButton;
 
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *completeOperationViewW;
+
+@property (weak, nonatomic) IBOutlet UIView *completeCheckInvoiceView;
+
+
 /****** ACTION ****/
 
 //查看物流 action
@@ -161,8 +166,11 @@
 #pragma mark - methods
 ///更新布局
 -(void)updateLayout:(OrderListModel *)listModel{
+    
+    self.completeOperationViewW.constant = (ScreenWidth - 32);
+    [self.completeCheckInvoiceView setHidden:NO];
    
-    [self.orderNoLabel setText:[NSString stringWithFormat:SLLocalizedString(@"订单单号：%@"), listModel.order_sn]];
+    [self.orderNoLabel setText:[NSString stringWithFormat:SLLocalizedString(@"订单编号：%@"), listModel.order_sn]];
     NSArray *orderStoreArray = listModel.order_goods;
     
     OrderStoreModel *storeModel = [orderStoreArray firstObject];
@@ -233,6 +241,7 @@
     BOOL is_invoice = [goodsModel.is_invoice boolValue];
     NSString *buttonTitle = SLLocalizedString(@"查看发票");
     if (is_invoice == NO) {
+        
         buttonTitle = SLLocalizedString(@"补开发票");
     }
     
@@ -247,8 +256,19 @@
         [self.waitingSendGoodsCheckInvoiceButton setHidden:NO];
         [self.completeCheckInvoiceButton setHidden:NO];
         [self.receivingCheckInvoiceButton setTitle:buttonTitle forState:UIControlStateNormal];
-           [self.waitingSendGoodsCheckInvoiceButton setTitle:buttonTitle forState:UIControlStateNormal];
-           [self.completeCheckInvoiceButton setTitle:buttonTitle forState:UIControlStateNormal];
+        [self.waitingSendGoodsCheckInvoiceButton setTitle:buttonTitle forState:UIControlStateNormal];
+        [self.completeCheckInvoiceButton setTitle:buttonTitle forState:UIControlStateNormal];
+        
+        
+        if ([goodsModel.is_foreign isEqualToString:@"1"] && [buttonTitle isEqualToString:SLLocalizedString(@"补开发票")]) {
+            [self.receivingCheckInvoiceButton setHidden:YES];
+            [self.waitingSendGoodsCheckInvoiceButton setHidden:YES];
+            [self.completeCheckInvoiceButton setHidden:YES];
+            
+            [self.completeCheckInvoiceView setHidden:YES];
+            self.completeOperationViewW.constant = self.completeOperationViewW.constant  - (self.completeOperationViewW.constant  / 4);
+        }
+        
     }
     
    
@@ -350,8 +370,20 @@
     
     if ([title isEqualToString:SLLocalizedString(@"补开发票")]) {
         
-        if ([self.delegate respondsToSelector:@selector(ordeItmeTableViewCell:repairInvoice:)]) {
-            [self.delegate ordeItmeTableViewCell:self repairInvoice:self.listModel];
+        NSArray *orderStoreArray = self.listModel.order_goods;
+        
+        OrderStoreModel *storeModel = [orderStoreArray firstObject];
+        
+        NSArray *orderGoodsArray = storeModel.goods;
+        
+        OrderGoodsModel *goodsModel = [orderGoodsArray firstObject];
+        
+        if ([goodsModel.is_foreign isEqualToString:@"0"]) {
+            if ([self.delegate respondsToSelector:@selector(ordeItmeTableViewCell:repairInvoice:)]) {
+                [self.delegate ordeItmeTableViewCell:self repairInvoice:self.listModel];
+            }
+        }else{
+            [ShaolinProgressHUD singleTextAutoHideHud:@"国外订单暂时不能补开发票"];
         }
         
     }else{

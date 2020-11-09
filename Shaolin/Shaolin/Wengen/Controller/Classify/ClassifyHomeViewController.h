@@ -6,13 +6,13 @@
 //  Copyright © 2020 syqaxldy. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "RootViewController.h"
 
 
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ClassifyHomeViewController : UIViewController
+@interface ClassifyHomeViewController : RootViewController
 
 //标题组
 @property (nonatomic, strong) NSArray *titles;

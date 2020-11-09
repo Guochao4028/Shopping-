@@ -15,6 +15,8 @@
 #import "KungfuManager.h"
 #import "DefinedHost.h"
 
+#import "NSString+Tool.h"
+
 @interface KungfuApplyDetailViewController ()<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate>
 
 @property (nonatomic, strong) UITableView *tableView;
@@ -22,6 +24,9 @@
 @property (nonatomic, strong) ApplyListModel * detailModel;
 
 @property (nonatomic, strong) NSArray * titleList;
+//@property (nonatomic, strong) NSMutableArray * titleList;
+
+
 @property (nonatomic, strong) NSMutableArray * contentList;
 
 @property (nonatomic, strong) UIImageView * headImgv;
@@ -33,8 +38,6 @@
 
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
 }
 
 - (void)viewDidLoad {
@@ -58,27 +61,35 @@
     [self.headImgv mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(16);
         make.right.mas_equalTo(-41);
-        make.size.mas_equalTo(CGSizeMake(100, 100));
+        make.size.mas_equalTo(CGSizeMake(90, 126));
     }];
 }
 
 - (void)activityDetail
 {
-    NSString * url = URL_H5_EventRegistration(self.detailModel.activityId,[SLAppInfoModel sharedInstance].access_token);
+    NSString * url = URL_H5_EventRegistration(self.detailModel.activityCode,[SLAppInfoModel sharedInstance].access_token);
     KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:url type:KfWebView_activityDetail];
     [self.navigationController pushViewController:webVC animated:YES];
 }
 
 
 - (void) requestApplyDetailInfo {
-    MBProgressHUD * hud = [ShaolinProgressHUD defaultLoadingWithText:SLLocalizedString(@"加载中")];
     
-    [[KungfuManager sharedInstance] getApplicationsDetailWithDic:@{@"accuratenumber":self.applyId} AndCallback:^(NSDictionary *result) {
-        
-        self.detailModel = [ApplyListModel mj_objectWithKeyValues:result];
-        
-        [hud hideAnimated:YES];
-    }];
+    if (self.applyId) {
+        MBProgressHUD * hud = [ShaolinProgressHUD defaultLoadingWithText:SLLocalizedString(@"加载中")];
+
+        [[KungfuManager sharedInstance] getApplicationsDetailWithDic:@{@"accuratenumber":self.applyId} AndCallback:^(NSDictionary *result) {
+
+            self.detailModel = [ApplyListModel mj_objectWithKeyValues:result];
+
+            [hud hideAnimated:YES];
+        }];
+    }else{
+//        self.detailModel = self.model;
+        [self setDetailModel:self.model];
+    }
+    
+    
 }
 
 #pragma mark - scrollerViewDelegate
@@ -112,12 +123,22 @@
     
     NSString * titleStr = self.titleList[indexPath.row];
     
+    if (indexPath.row == 0 || indexPath.row == 1 || indexPath.row == 2) {
+        cell.contentRightCon.constant = 132;
+    } else {
+        cell.contentRightCon.constant = 5;
+    }
+    
     if (indexPath.row < self.contentList.count) {
         NSString * contentStr = self.contentList[indexPath.row];
         if (NotNilAndNull(contentStr)) {
-            cell.applyContentLabel.text = [NSString stringWithFormat:@"%@%@",titleStr,contentStr];
+            cell.applyContentLabel.text = [NSString stringWithFormat:@"%@",contentStr];
         }
+        cell.applyTitleLabel.text = titleStr;
     }
+    
+    
+
     
     return cell;
 }
@@ -157,56 +178,253 @@
     
     _detailModel = detailModel;
     
-    [self.contentList addObject:[self getNotNilString:detailModel.realname]];
-    [self.contentList addObject:[self getNotNilString:detailModel.beforeName]];
-    [self.contentList addObject:[self getNotNilString:detailModel.gender]];
-    [self.contentList addObject:[self getNotNilString:detailModel.nationality]];
-    [self.contentList addObject:[self getNotNilString:detailModel.nation]];
-    [self.contentList addObject:[self getNotNilString:detailModel.idCard]];
-    [self.contentList addObject:[self getNotNilString:detailModel.bormtime]];
-    [self.contentList addObject:[self getNotNilString:detailModel.passportNumber]];
-    [self.contentList addObject:[self getNotNilString:detailModel.levelId]];
-    [self.contentList addObject:[self getNotNilString:detailModel.levelName]];
-    [self.contentList addObject:[self getNotNilString:detailModel.education]];
-    [self.contentList addObject:[self getNotNilString:detailModel.title]];
-    [self.contentList addObject:[self getNotNilString:detailModel.post]];
-    [self.contentList addObject:[self getNotNilString:detailModel.mailbox]];
-    [self.contentList addObject:[self getNotNilString:detailModel.wechat]];
-    [self.contentList addObject:[self getNotNilString:detailModel.mailingAddress]];
-    [self.contentList addObject:[self getTimeString:detailModel.writeExamStartTime endTime:detailModel.writeExamEndTime]];
-    [self.contentList addObject:[self getTimeString:detailModel.skillExamStartTime endTime:detailModel.skillExamEndTime]];
-    [self.contentList addObject:[self getNotNilString:detailModel.examaddress]];
+    NSInteger activityTypeIdIngteger = [detailModel.activityTypeId integerValue];
     
-    //身高、体重、鞋码、练武年限
-    [self.contentList addObject:[self getNotNilString:detailModel.height]];
-     [self.contentList addObject:[self getNotNilString:detailModel.weight]];
-    [self.contentList addObject:[self getNotNilString:detailModel.shoeSize]];
-    [self.contentList addObject:[self getNotNilString:detailModel.martialArtsYears]];
-    
-    
-   NSInteger valueType = [detailModel.valueType integerValue];
-    
-    NSString *str;
-    
-    if (valueType == 1 || valueType == 0) {
-        str = @"姓名";
-    }else  if(valueType == 2){
-        str = @"曾用名";
+    if (activityTypeIdIngteger == 4) {
+        // 考试
+        [self examLoadingData:detailModel];
+    }else{
+        //活动
+        [self activityLoadingData:detailModel];
     }
-[self.contentList addObject:[self getNotNilString:[NSString stringWithFormat:@" %@", str]]];
     
-    NSString * headUrl = NotNilAndNull(detailModel.photosurl)?detailModel.photosurl:@"";
+    
+}
+
+//加载考试数据
+-(void)examLoadingData:(ApplyListModel *)detailModel {
+    
+    
+    self.titleList = @[
+        @"姓名："
+        ,@"曾用名："
+        ,@"证书显示名："
+        ,@"国籍："
+        ,@"性别："
+        ,@"出生年月："
+        ,@"身份证号："
+        ,@"护照号："
+        ,@"民族："
+        ,@"学历："
+        ,@"职称："
+        ,@"职务："
+        ,@"现位阶："
+        ,@"申报位阶："
+        ,@"举办机构："
+        ,@"微信："
+        ,@"邮箱："
+        ,@"电话："
+        ,@"通讯地址："
+        ,@"身高(cm)："
+        ,@"体重(kg)："
+        ,@"鞋码(码)："
+        ,@"练武年限(年)："
+        ,@"报名时间："
+        ,@"培训时间："
+        ,@"考试时间："
+        ,@"考试地点："
+        ,@"签到时间："
+    ];
+    
+    //姓名
+    [self.contentList addObject:[self getNotNilString:detailModel.realName]];
+    //曾  用 名：
+    [self.contentList addObject:[self getNotNilString:detailModel.beforeName]];
+    //证书显示名:
+    NSInteger valueType = [self.detailModel.valueType integerValue];
+    NSString *str;
+    if (valueType == 1 || valueType == 0) {
+        str = detailModel.realName;//@"姓名";
+    }else  if(valueType == 2){
+        str = detailModel.beforeName;//@"曾用名";
+    }
+    [self.contentList addObject:[NSString stringWithFormat:@"%@", str]];
+    //国      籍：
+    [self.contentList addObject:[self getNotNilString:detailModel.nationality]];
+    //性      别：
+    [self.contentList addObject:[self getNotNilString:detailModel.gender]];
+    //出生年月：
+    [self.contentList addObject:[self getNotNilString:detailModel.bormtime]];
+    //身份证号：
+    [self.contentList addObject:[self getNotNilString:detailModel.idCard]];
+    
+    //护  照 号：
+    [self.contentList addObject:[self getNotNilString:detailModel.passportNumber]];
+    
+    
+//民      族：
+    [self.contentList addObject:[self getNotNilString:detailModel.nation]];
+    //学      历：
+    [self.contentList addObject:[self getNotNilString:detailModel.education]];
+    //职      称：
+    [self.contentList addObject:[self getNotNilString:detailModel.title]];
+    //职      务：
+    [self.contentList addObject:[self getNotNilString:detailModel.post]];
+    //现位阶：
+    [self.contentList addObject:[self getNotNilString:detailModel.memberLevel]];
+    //申报位阶：
+    [self.contentList addObject:[self getNotNilString:detailModel.levelIds]];
+    //举办机构：
+    [self.contentList addObject:[self getNotNilString:detailModel.mechanismName]];
+    //微      信：
+    [self.contentList addObject:[self getNotNilString:detailModel.wechat]];
+    //邮      箱：
+    [self.contentList addObject:[self getNotNilString:detailModel.mailbox]];
+    //电      话：
+    [self.contentList addObject:[self getNotNilString:detailModel.telephone]];
+    //通讯地址：
+    [self.contentList addObject:[self getNotNilString:detailModel.mailingAddress]];
+//    //护  照 号：
+//    [self.contentList addObject:[self getNotNilString:detailModel.passportNumber]];
+    //身高(cm)：
+    [self.contentList addObject:[self getNotNilString:detailModel.height]];
+    //体重(kg)：
+    [self.contentList addObject:[self getNotNilString:detailModel.weight]];
+    //鞋码(码)
+    [self.contentList addObject:[self getNotNilString:detailModel.shoeSize]];
+    //练武年限(年)：
+    [self.contentList addObject:[self getNotNilString:detailModel.martialArtsYears]];
+    //报名时间：
+//    NSString *createTime = [self getNotNilString:detailModel.createTime];
+//    [self.contentList addObject:[NSString timeStrIntoTimeWithString:createTime andFormatter:@"yyyy-mm-dd"]];
+    [self.contentList addObject:[self getNotNilString:detailModel.createTime]];
+    //培训时间：
+    [self.contentList addObject:[self getNotNilString:detailModel.trainingTime]];
+    //考试时间：
+    [self.contentList addObject:[self getNotNilString:detailModel.skillExamTime]];
+    //考试地点：
+    [self.contentList addObject:[self getNotNilString:detailModel.examAddress]];
+    //签到时间：
+    [self.contentList addObject:[self getNotNilString:detailModel.signInTime]];
+    
+    [self baggingHeadDataAndReloadData:detailModel];
+}
+
+
+//加载活动数据
+-(void)activityLoadingData:(ApplyListModel *)detailModel {
+    
+    
+    self.titleList = @[
+        @"姓名："
+        ,@"曾用名："
+        ,@"国籍："
+        ,@"性别："
+        ,@"出生年月："
+        ,@"身份证号："
+        
+        ,@"护照号："
+        
+        ,@"民族："
+        ,@"学历："
+        ,@"职称："
+        ,@"职务："
+        ,@"现位阶："
+        ,@"申报位阶："
+        ,@"举办机构："
+        ,@"微信："
+        ,@"邮箱："
+        ,@"电话："
+        ,@"通讯地址："
+//        ,@"护照号："
+        ,@"报名时间："
+        ,@"活动时间："
+        ,@"活动地点："
+        ,@"签到时间："
+    ];
+    
+    //姓名
+    [self.contentList addObject:[self getNotNilString:detailModel.realName]];
+    //曾  用 名：
+    [self.contentList addObject:[self getNotNilString:detailModel.beforeName]];
+    //国      籍：
+    [self.contentList addObject:[self getNotNilString:detailModel.nationality]];
+    //性      别：
+    [self.contentList addObject:[self getNotNilString:detailModel.gender]];
+    //出生年月：
+    [self.contentList addObject:[self getNotNilString:detailModel.bormtime]];
+    //身份证号：
+    [self.contentList addObject:[self getNotNilString:detailModel.idCard]];
+    
+    //护  照 号：
+    [self.contentList addObject:[self getNotNilString:detailModel.passportNumber]];
+    
+    
+//民      族：
+    [self.contentList addObject:[self getNotNilString:detailModel.nation]];
+    //学      历：
+    [self.contentList addObject:[self getNotNilString:detailModel.education]];
+    //职      称：
+    [self.contentList addObject:[self getNotNilString:detailModel.title]];
+    //职      务：
+    [self.contentList addObject:[self getNotNilString:detailModel.post]];
+    //现位阶：
+    [self.contentList addObject:[self getNotNilString:detailModel.memberLevel]];
+    //申报位阶：
+    [self.contentList addObject:[self getNotNilString:detailModel.levelIds]];
+    //举办机构：
+    [self.contentList addObject:[self getNotNilString:detailModel.mechanismName]];
+    //微      信：
+    [self.contentList addObject:[self getNotNilString:detailModel.wechat]];
+    //邮      箱：
+    [self.contentList addObject:[self getNotNilString:detailModel.mailbox]];
+    //电      话：
+    [self.contentList addObject:[self getNotNilString:detailModel.telephone]];
+    //通讯地址：
+    [self.contentList addObject:[self getNotNilString:detailModel.mailingAddress]];
+//    //护  照 号：
+//    [self.contentList addObject:[self getNotNilString:detailModel.passportNumber]];
+    //报名时间:
+//    NSString *createTime = [self getNotNilString:detailModel.createTime];
+//    [self.contentList addObject:[NSString timeStrIntoTimeWithString:createTime andFormatter:@"yyyy-mm-dd"]];
+    [self.contentList addObject:[self getNotNilString:detailModel.createTime]];
+    //活动时间：
+    [self.contentList addObject:[self getNotNilString:detailModel.activityStartTime]];
+    //活动地点：
+    [self.contentList addObject:[self getNotNilString:detailModel.examAddress]];
+    //签到时间：
+    [self.contentList addObject:[self getNotNilString:detailModel.signInTime]];
+    
+    
+   
+    [self baggingHeadDataAndReloadData:detailModel];
+    
+}
+
+/// 拼接所有的数据
+/// @param title title table title 的显示
+/// @param dataStr table cell 显示
+-(void)mergeDataWithTitle:(NSString *)title dataStr:(NSString *)dataStr{
+    
+//    if ([self determinesWhetherStringLengthIsValid:dataStr]) {
+//        [self.titleList addObject:title];
+//        [self.contentList addObject:dataStr];
+//    }
+}
+
+//头像数据刷新列表
+-(void)baggingHeadDataAndReloadData:(ApplyListModel *)detailModel{
+    //头像
+    NSString * headUrl = NotNilAndNull(detailModel.photosUrl)?detailModel.photosUrl:@"";
     [self.headImgv sd_setImageWithURL:[NSURL URLWithString:headUrl] placeholderImage:[UIImage imageNamed:@"default_small"]];
     
     self.tableView.hidden = NO;
-    
     [self.tableView reloadData];
+}
+
+//判断字符串长度是否有效
+-(BOOL)determinesWhetherStringLengthIsValid:(NSString *)text{
+    BOOL flag = NO;
+    NSString *temStr = [self getNotNilString:text];
+    if (temStr.length > 0) {
+        flag = YES;
+    }
+    return flag;
 }
 
 -(NSString *)getNotNilString:(NSString *)text {
     return NotNilAndNull(text)?text:@"";
 }
-
 
 -(NSString *)getTimeString:(NSString *)startTime endTime:(NSString *)endTime
 {
@@ -229,37 +447,22 @@
     return result;
 }
 
--(NSArray *)titleList {
-    if (!_titleList) {
-        _titleList = @[
-             @"姓      名："
-            ,@"曾  用 名："
-            ,@"性      别："
-            ,@"国      籍："
-            ,@"民      族："
-            ,@"身份证号："
-            ,@"出生年月："
-            ,@"护  照 号："
-            ,@"现段位编号："
-        ,@"申报段位："
-        ,@"学      历："
-        ,@"职      称："
-        ,@"职      务："
-        ,@"邮      箱："
-        ,@"微      信："
-        ,@"通讯地址："
-        ,@"理论考试时间："
-        ,@"技能考试时间："
-        ,@"考试地点："
-        ,@"身      高："
-        ,@"体      重："
-        ,@"鞋      码："
-        ,@"练武年限："
-        ,@"证书显示名:"];
+//-(NSMutableArray *)titleList {
+//    if (!_titleList) {
+//        _titleList = [NSMutableArray array];
+//    }
+//    return _titleList;
+//}
 
+-(NSArray *)titleList{
+    
+    if (_titleList == nil) {
     }
     return _titleList;
+
 }
+
+
 
 
 -(NSMutableArray *)contentList {
@@ -285,29 +488,24 @@
         _tableFooterView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.view.width, 40)];
         
         UILabel *label = [[UILabel alloc] init];
-        label.frame = CGRectMake(41,10,80,21);
+        label.frame = CGRectMake(31,10,80,21);
         label.text = SLLocalizedString(@"活动详情：");
         label.textColor = [UIColor hexColor:@"333333"];
         label.font = kRegular(15);
         
         [_tableFooterView addSubview:label];
         
-        UIButton * button = [[UIButton alloc] initWithFrame:CGRectMake(label.right, 6, 85, 28)];
+        UIButton * button = [[UIButton alloc] initWithFrame:CGRectMake(130, 6, 85, 28)];
         [button setTitle:SLLocalizedString(@"查看详情") forState:UIControlStateNormal];
-        [button setTitleColor:[UIColor hexColor:@"8E2B25"] forState:UIControlStateNormal];
+        [button setTitleColor:kMainYellow forState:UIControlStateNormal];
         button.titleLabel.font = kRegular(15);
         button.layer.borderWidth = 0.5f;
-        button.layer.borderColor = [UIColor hexColor:@"8E2B25"].CGColor;
+        button.layer.borderColor = kMainYellow.CGColor;
         button.layer.cornerRadius = 14;
         [button addTarget:self action:@selector(activityDetail) forControlEvents:UIControlEventTouchUpInside];
         
         [_tableFooterView addSubview:button];
     }
     return _tableFooterView;
-}
-
-#pragma mark - device
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    return UIStatusBarStyleDefault;
 }
 @end

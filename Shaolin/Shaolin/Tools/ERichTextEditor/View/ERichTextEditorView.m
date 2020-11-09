@@ -210,6 +210,8 @@ static CGFloat const kItemHeight = 47;
 - (void)insertImage:(NSString *)url {
     [self.webView evaluateJavaScript:@"zss_editor.prepareInsert();" completionHandler:nil];
     NSString *trigger = [NSString stringWithFormat:@"zss_editor.e_insertImage(\"%@\"\n\n);", url];
+//    NSString *trigger = [NSString stringWithFormat:@"zss_editor.e_insertImage(\"%@\"<br\\><br\\>);", url];
+    
 //    [self.webView stringByEvaluatingJavaScriptFromString:trigger];
     [self.webView evaluateJavaScript:trigger completionHandler:nil];
 }

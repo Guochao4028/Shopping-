@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -58,17 +60,30 @@
                         <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="K2U-aE-AJJ">
+                        <rect key="frame" x="73.5" y="89.5" width="224" height="0.5"/>
+                        <color key="backgroundColor" red="0.93333333333333335" green="0.93333333333333335" blue="0.93333333333333335" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="0.5" id="eKR-f9-O6D"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
                 </subviews>
                 <constraints>
                     <constraint firstItem="yDJ-9W-gcP" firstAttribute="top" secondItem="aF0-aC-ZyV" secondAttribute="bottom" constant="15" id="09v-id-cus"/>
                     <constraint firstItem="Om1-7r-uK7" firstAttribute="trailing" secondItem="AUd-XI-Ry7" secondAttribute="trailing" id="4CL-Uf-OA2"/>
+                    <constraint firstItem="AUd-XI-Ry7" firstAttribute="trailing" secondItem="K2U-aE-AJJ" secondAttribute="trailing" id="EHT-qF-oAE"/>
                     <constraint firstItem="aF0-aC-ZyV" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="25" id="G8O-el-lDf"/>
                     <constraint firstItem="Om1-7r-uK7" firstAttribute="top" secondItem="AUd-XI-Ry7" secondAttribute="bottom" constant="14.5" id="IAh-tz-juF"/>
+                    <constraint firstAttribute="bottom" secondItem="K2U-aE-AJJ" secondAttribute="bottom" id="Rfz-eq-hpa"/>
                     <constraint firstItem="8wp-YJ-vBC" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="Xv0-fb-Ben"/>
                     <constraint firstAttribute="trailing" secondItem="AUd-XI-Ry7" secondAttribute="trailing" constant="22.5" id="ZI0-00-tAe"/>
                     <constraint firstItem="yDJ-9W-gcP" firstAttribute="leading" secondItem="aF0-aC-ZyV" secondAttribute="leading" id="cog-Os-Xnd"/>
                     <constraint firstItem="8wp-YJ-vBC" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="18.5" id="dBn-RY-atg"/>
                     <constraint firstItem="aF0-aC-ZyV" firstAttribute="leading" secondItem="8wp-YJ-vBC" secondAttribute="trailing" constant="15" id="mKf-rx-QUb"/>
+                    <constraint firstItem="K2U-aE-AJJ" firstAttribute="leading" secondItem="aF0-aC-ZyV" secondAttribute="leading" id="v4t-Vc-tBM"/>
                     <constraint firstItem="AUd-XI-Ry7" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="18" id="wcI-xd-6Gq"/>
                 </constraints>
             </tableViewCellContentView>
@@ -80,7 +95,7 @@
                 <outlet property="payState" destination="Om1-7r-uK7" id="R6x-F2-z4O"/>
                 <outlet property="title" destination="aF0-aC-ZyV" id="Mpn-xn-hGG"/>
             </connections>
-            <point key="canvasLocation" x="64" y="1"/>
+            <point key="canvasLocation" x="214" y="9"/>
         </tableViewCell>
     </objects>
     <resources>

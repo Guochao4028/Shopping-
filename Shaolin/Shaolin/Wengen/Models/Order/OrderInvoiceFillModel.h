@@ -38,6 +38,8 @@ NS_ASSUME_NONNULL_BEGIN
 ///收票电话
 @property(nonatomic, copy)NSString *revice_phone;
 
+@property(nonatomic, copy)NSString *email;
+
 @end
 
 NS_ASSUME_NONNULL_END

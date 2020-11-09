@@ -66,11 +66,7 @@
 
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-    [self wr_setNavBarBarTintColor:[UIColor hexColor:@"8E2B25"]];
-    [self wr_setNavBarTintColor:[UIColor whiteColor]];
-    [self wr_setNavBarBackgroundAlpha:1];
-    
+    [self setNavigationBarRedTintColor];   
 }
 
 - (void)viewDidLoad {
@@ -1079,7 +1075,7 @@
         [_nextBtn setTitle:SLLocalizedString(@"下一步") forState:(UIControlStateNormal)];
         [_nextBtn setTitleColor:[UIColor colorForHex:@"FFFFFF"] forState:(UIControlStateNormal)];
         _nextBtn.titleLabel.font = kRegular(15);
-        _nextBtn.backgroundColor = [UIColor colorForHex:@"8E2B25"];
+        _nextBtn.backgroundColor = kMainYellow;
         _nextBtn.layer.cornerRadius = 4;
         _nextBtn.layer.masksToBounds = YES;
         [_nextBtn handleControlEvent:UIControlEventTouchUpInside block:^(UIButton * _Nonnull button) {

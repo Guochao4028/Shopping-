@@ -89,6 +89,11 @@ NS_ASSUME_NONNULL_BEGIN
 //0未审核 1通过 2没通过
 @property(nonatomic, copy)NSString *order_check;
 
+///发票 是否可补开
+///0国内 1国外
+///国外不可补开发票
+@property(nonatomic, copy)NSString *is_foreign;
+
 
 - (BOOL)isRiteGoodsType;
 @end

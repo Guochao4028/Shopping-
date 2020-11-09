@@ -15,6 +15,7 @@
 
 #import "NSString+Tool.h"
 #import "StoreInformationModel.h"
+#import "MeViewController.h"
 
 @interface StoreThreeViewController ()<UITableViewDataSource,UITableViewDelegate,GCTextFieldDelegate,UITextViewDelegate,TZImagePickerControllerDelegate>
 @property(nonatomic,strong) UITableView *tableView;
@@ -32,6 +33,10 @@
 @end
 
 @implementation StoreThreeViewController
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self setNavigationBarRedTintColor];
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -170,7 +175,7 @@
         [_nextBtn addTarget:self action:@selector(nextAction) forControlEvents:(UIControlEventTouchUpInside)];
         [_nextBtn setTitleColor:[UIColor colorForHex:@"FFFFFF"] forState:(UIControlStateNormal)];
         _nextBtn.titleLabel.font = kRegular(15);
-        _nextBtn.backgroundColor = [UIColor colorForHex:@"8E2B25"];
+        _nextBtn.backgroundColor = kMainYellow;
         _nextBtn.layer.cornerRadius = 4;
         _nextBtn.layer.masksToBounds = YES;
     }

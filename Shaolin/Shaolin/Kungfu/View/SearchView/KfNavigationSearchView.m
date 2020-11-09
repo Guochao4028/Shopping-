@@ -47,9 +47,9 @@
         [self.numberLabel setHidden:YES];
     }
     
-    self.shopCarBtn.hidden = YES;
     self.numberLabel.hidden = YES;
-    self.shopCarIcon.hidden = YES;
+//    self.shopCarBtn.hidden = YES;
+//    self.shopCarIcon.hidden = YES;
 }
 
 -(void)awakeFromNib {

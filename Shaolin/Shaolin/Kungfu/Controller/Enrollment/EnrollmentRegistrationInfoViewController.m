@@ -30,6 +30,7 @@
 
 #import "DegreeNationalDataModel.h"
 
+
 @interface EnrollmentRegistrationInfoViewController ()<UITableViewDelegate, UITableViewDataSource, EnrollmentRegistrationHeardViewDelegate,TZImagePickerControllerDelegate, EnrollmentRegistrationLowerLevelTableCellDelegate,DQBirthDateViewDelegate>
 
 @property(nonatomic, strong)UITableView *tableView;
@@ -47,9 +48,9 @@
 @property (nonatomic, strong) DQBirthDateView *birthView;
 
 
-
-
 @end
+
+
 
 @implementation EnrollmentRegistrationInfoViewController
 
@@ -64,7 +65,6 @@
 
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    self.navigationController.navigationBar.hidden = NO;
 }
 
 - (void) leftAction {
@@ -79,6 +79,7 @@
     [self.view addSubview:self.tableView];
     [self.view addSubview:self.submitButton];
     
+    
 }
 
 -(void)initData{
@@ -87,9 +88,15 @@
     //学历
     [[KungfuManager sharedInstance]getEducationDataCallback:^(NSArray *result) {
         
-        NSMutableDictionary *dic =  self.dataArray [5];
-        [dic setValue:result forKey:@"subArray"];
-        [self.tableView reloadData];
+        for (NSMutableDictionary *dic in self.dataArray) {
+            NSString *title = dic[@"title"];
+            if ([title isEqualToString:SLLocalizedString(@"学历：")]) {
+                [dic setValue:result forKey:@"subArray"];
+                [self.tableView reloadData];
+                break;
+            }
+        }
+       
     }];
     
     //国籍
@@ -109,9 +116,20 @@
         tem.name = SLLocalizedString(@"其他");
         
         [tempArray addObject:tem];
-        NSMutableDictionary *dic =  self.dataArray [4];
-        [dic setValue:tempArray forKey:@"subArray"];
-        [self.tableView reloadData];
+        
+        
+        for (NSMutableDictionary *dic in self.dataArray) {
+            NSString *title = dic[@"title"];
+            if ([title isEqualToString:SLLocalizedString(@"民族：")]) {
+                [dic setValue:result forKey:@"subArray"];
+                [self.tableView reloadData];
+                break;
+            }
+        }
+        
+//        NSMutableDictionary *dic =  self.dataArray [4];
+//        [dic setValue:tempArray forKey:@"subArray"];
+//        [self.tableView reloadData];
     }];
     
     
@@ -135,14 +153,13 @@
     self.registModel = self.model.applications;
     
     
-    
     NSString *idCardType = self.model.idCardType;
-    
-    if ([self.model.idcardGender intValue] == 1) {
-        self.registModel.gender = SLLocalizedString(@"男");
-    }else{
-        self.registModel.gender = SLLocalizedString(@"女");
-    }
+
+//    if ([self.model.idcardGender intValue] == 1) {
+//        self.registModel.gender = SLLocalizedString(@"男");
+//    }else{
+//        self.registModel.gender = SLLocalizedString(@"女");
+//    }
     
     
     /**
@@ -166,15 +183,15 @@
         }
     }
     
-    if (self.model.realname.length > 0) {
-        self.registModel.realname = self.model.realname;
-        self.registModel.bormtime = self.model.birthTime;
+    if (self.model.realName.length > 0) {
+        self.registModel.realName = self.model.realName;
+        self.registModel.birthTime = self.model.birthTime;
     }
     
-    if (IsNilOrNull(self.registModel.realname) || IsNilOrNull(self.registModel.idCard) || IsNilOrNull(self.registModel.bormtime)) {
+    if (IsNilOrNull(self.registModel.realName) || IsNilOrNull(self.registModel.idCard) || IsNilOrNull(self.registModel.birthTime)) {
         SLAppInfoModel *infoModel = [SLAppInfoModel sharedInstance];
-        self.registModel.realname = infoModel.realname;
-        self.registModel.bormtime = infoModel.birthtime;
+        self.registModel.realName = infoModel.realname;
+        self.registModel.birthTime = infoModel.birthtime;
         self.registModel.idCard = infoModel.idcard;
     }
     
@@ -199,10 +216,14 @@
             passportNumberStr = self.registModel.idCard;
         }
         
+        passportNumberStr = self.model.passportNumber;
+        
         self.registModel.passportNumber = passportNumberStr;
         
         self.registModel.idCard = @"";
     }
+    
+    self.registModel.levelName = self.model.levelName;
     
     
     NSArray *tempArray;
@@ -212,10 +233,11 @@
     NSString *addressIsEditor = @"1";
     NSString *addressType = @"3";
     NSString *addressIsSelected = @"0";
-    if ([self.model.address count] == 1) {
-        EnrollmentAddressModel *addressModel = [self.model.address lastObject];
+    if ([self.model.activityAddresses count] == 1) {
+        EnrollmentAddressModel *addressModel = [self.model.activityAddresses lastObject];
+       
         CGFloat labelHeight = [addressModel.addressDetails textSizeWithFont:kRegular(15)
-                                                          constrainedToSize:CGSizeMake(ScreenWidth - 206, CGFLOAT_MAX)
+                                                          constrainedToSize:CGSizeMake(ScreenWidth - 216, CGFLOAT_MAX)
                                                               lineBreakMode:NSLineBreakByWordWrapping].height +1;
         if (labelHeight > 50) {
             cellHeight = [NSString stringWithFormat:@"%f", labelHeight+10.0];
@@ -223,19 +245,29 @@
         addressIsEditor = @"0";
         content = addressModel.addressDetails;
         self.registModel.activityAddressCode = addressModel.enrollmentAddressId;
+        self.registModel.activityAddressId = addressModel.enrollmentAddressId;
         self.registModel.examAddress = addressModel.addressDetails;
         addressIsSelected = @"0";
-        addressType = @"1";
+        addressType = @"4";
+    }
+
+    NSString *declareGradesType = @"3";
+    NSString *declareGradesContent = @"";
+   
+    if ([self.model.button count] == NO && [self.model.levelName length]) {
+        declareGradesType = @"1";
+        declareGradesContent = self.model.levelName;
+        self.model.button = @[];
     }
     
-    
-    
     NSString *nationality = self.registModel.nationality.length == 0 ? @"" : self.registModel.nationality;
+    
+    
     
     if (self.isExamine) {
         
         BOOL isIdCloose = self.registModel.idCard == nil || [self.registModel.idCard length] == 0? YES :isEditor;
-        BOOL isBormtime = self.registModel.bormtime == nil|| [self.registModel.bormtime length] == 0? YES :isEditor;
+        BOOL isBormtime = self.registModel.birthTime == nil|| [self.registModel.birthTime length] == 0? YES :isEditor;
         BOOL isPassportNumber = self.registModel.passportNumber == nil|| [self.registModel.passportNumber length] == 0? YES : !isEditor;
         
         tempArray = @[
@@ -248,7 +280,7 @@
             
             @{@"title":SLLocalizedString(@"证书显示名："), @"type":@"2", @"isEditor":@"1", @"isMust":@"1", @"itemType":@"1", @"item1Title":@"姓名", @"item2Title":@"曾用名"},
             
-            @{@"title":SLLocalizedString(@"国      籍："),
+            @{@"title":SLLocalizedString(@"国籍："),
               @"type":@"3",
               @"isEditor":@"1",
               @"isSelected":@"0",
@@ -258,10 +290,16 @@
             
             
             @{@"title":SLLocalizedString(@"身份证号："), @"type":@"1", @"isEditor":[NSString stringWithFormat:@"%d", isIdCloose], @"hexColor": isIdCloose == YES? @"333333":@"999999"},
-            @{@"title":SLLocalizedString(@"性      别："), @"type":@"2"},
+            
+            
+            @{@"title":SLLocalizedString(@"护照号："), @"type":@"1", @"isEditor":[NSString stringWithFormat:@"%d", isPassportNumber], @"hexColor": isPassportNumber == YES? @"333333":@"999999"},
+            
+            
+            @{@"title":SLLocalizedString(@"性别："), @"type":@"2"},
+            
             @{@"title":SLLocalizedString(@"出生年月："), @"type":@"1", @"isEditor":@"0", @"hexColor": isBormtime == YES? @"333333":@"999999", @"isPoP":[NSString stringWithFormat:@"%d", isBormtime]},
             
-            @{@"title":SLLocalizedString(@"民      族："),
+            @{@"title":SLLocalizedString(@"民族："),
               @"type":@"3",
               @"isEditor":@"1",
               @"isSelected":@"0",
@@ -269,7 +307,7 @@
               @"cellHeight": @"50",
               @"isMust":@"1",@"subArray":@[]},
             
-            @{@"title":SLLocalizedString(@"学      历："),
+            @{@"title":SLLocalizedString(@"学历："),
               @"type":@"3",
               @"isEditor":@"1",
               @"isSelected":@"0",
@@ -280,28 +318,45 @@
               @"subArray":@[]
             },
             
+            @{@"title":SLLocalizedString(@"职称："), @"type":@"1", @"isEditor":@"1"},
             
+            @{@"title":SLLocalizedString(@"职务："), @"type":@"1", @"isEditor":@"1"},
             
+//            @{@"title":SLLocalizedString(@"申报段品阶："),
+//              @"type":declareGradesType,
+//              @"isSelected":@"0",
+//              @"subArray":self.model.button,
+//              @"content":declareGradesContent,
+//              @"cellHeight": @"50",
+//              @"isMust":@"0",
+//              @"isEditor":@"0",
+//              @"textType":@"declareGrades",
+//              @"hexColor":@"999999"
+//            },
             
-            @{@"title":SLLocalizedString(@"职      称："), @"type":@"1", @"isEditor":@"1"},
-            @{@"title":SLLocalizedString(@"职      务："), @"type":@"1", @"isEditor":@"1"},
-            @{@"title":SLLocalizedString(@"申报段品阶："), @"type":@"3", @"isSelected":@"0", @"subArray":self.model.button, @"content":@"",@"cellHeight": @"50", @"isMust":@"1"},
-            @{@"title":SLLocalizedString(@"举办机构："), @"type":@"1", @"isEditor":@"0", @"isMust":@"1", @"isMust":@"1"},
+            @{@"title":SLLocalizedString(@"申报段品阶："),
+              @"type":@"1",
+              @"isMust":@"0",
+              @"isEditor":@"0",
+              @"hexColor":@"999999"
+            },
             
-            @{@"title":SLLocalizedString(@"考试地点："), @"type":addressType, @"isSelected":addressIsSelected, @"subArray":self.model.address ,@"content":content, @"isCalculateHeight" : @"1", @"cellHeight": cellHeight, @"isEditor":addressIsEditor, @"isMust":@"1"},
+            @{@"title":SLLocalizedString(@"举办机构："), @"type":@"1", @"isEditor":@"0", @"isMust":@"0",@"hexColor":@"999999"},
             
-            @{@"title":SLLocalizedString(@"微      信："), @"type":@"1", @"isEditor":@"1"},
-            @{@"title":SLLocalizedString(@"邮      箱："), @"type":@"1", @"isEditor":@"1"},
-            @{@"title":SLLocalizedString(@"手      机："), @"type":@"1", @"isEditor":@"1", @"isMust":@"1"},
+            @{@"title":SLLocalizedString(@"举办地点："), @"type":addressType, @"isSelected":addressIsSelected, @"subArray":self.model.activityAddresses ,@"content":content, @"isCalculateHeight" : @"1", @"cellHeight": cellHeight, @"isEditor":addressIsEditor, @"isMust":@"1", @"textType":@"address"},
+            
+            @{@"title":SLLocalizedString(@"微信："), @"type":@"1", @"isEditor":@"1"},
+            @{@"title":SLLocalizedString(@"邮箱："), @"type":@"1", @"isEditor":@"1"},
+            @{@"title":SLLocalizedString(@"电话："), @"type":@"1", @"isEditor":@"1", @"isMust":@"1"},
             @{@"title":SLLocalizedString(@"通讯地址："), @"type":@"1", @"isEditor":@"1", @"isMust":@"1"},
             
-            @{@"title":SLLocalizedString(@"护  照 号："), @"type":@"1", @"isEditor":[NSString stringWithFormat:@"%d", isPassportNumber], @"hexColor": isPassportNumber == YES? @"333333":@"999999"},
+           
             
-            @{@"title":SLLocalizedString(@"身      高："), @"type":@"1", @"isEditor":@"1", @"isMust":@"1"},
+            @{@"title":SLLocalizedString(@"身高(cm)："), @"type":@"1", @"isEditor":@"1", @"isMust":@"1"},
             
-            @{@"title":SLLocalizedString(@"体      重："), @"type":@"1", @"isEditor":@"1", @"isMust":@"1"},
+            @{@"title":SLLocalizedString(@"体重(kg)："), @"type":@"1", @"isEditor":@"1", @"isMust":@"1"},
        
-            @{@"title":SLLocalizedString(@"鞋      码："),
+            @{@"title":SLLocalizedString(@"鞋码(码)："),
                        @"type":@"3",
                        @"isEditor":@"1",
                        @"isSelected":@"0",
@@ -309,10 +364,11 @@
                        @"cellHeight": @"50",
                        @"isMust":@"1",@"subArray":shoeNumberArray},
             
-            @{@"title":SLLocalizedString(@"练武年限："), @"type":@"1", @"isEditor":@"1", @"isMust":@"1"},
+            @{@"title":SLLocalizedString(@"练武年限(年)："), @"type":@"1", @"isEditor":@"1", @"isMust":@"1"},
             
             
         ];
+        
     }else{
         BOOL isIdCloose = self.registModel.idCard == nil? YES :isEditor;
         BOOL isBormtime = self.registModel.idCard == nil? YES :isEditor;
@@ -320,7 +376,7 @@
         
         tempArray = @[
             
-            @{@"title":SLLocalizedString(@"国      籍："),
+            @{@"title":SLLocalizedString(@"国籍："),
               @"type":@"3",
               @"isEditor":@"1",
               @"isSelected":@"0",
@@ -330,10 +386,14 @@
             
             
             @{@"title":SLLocalizedString(@"身份证号："), @"type":@"1", @"isEditor":[NSString stringWithFormat:@"%d", isIdCloose], @"hexColor": isIdCloose == YES? @"333333":@"999999"},
-            @{@"title":SLLocalizedString(@"性      别："), @"type":@"2"},
+            
+            @{@"title":SLLocalizedString(@"护照号："), @"type":@"1", @"isEditor":[NSString stringWithFormat:@"%d", isPassportNumber], @"hexColor": isPassportNumber == YES? @"333333":@"999999"},
+            
+            
+            @{@"title":SLLocalizedString(@"性别："), @"type":@"2"},
             @{@"title":SLLocalizedString(@"出生年月："), @"type":@"1", @"isEditor":@"0", @"hexColor": isBormtime == YES? @"333333":@"999999",@"isPoP":[NSString stringWithFormat:@"%d", isBormtime]},
             
-            @{@"title":SLLocalizedString(@"民      族："),
+            @{@"title":SLLocalizedString(@"民族："),
               @"type":@"3",
               @"isEditor":@"1",
               @"isSelected":@"0",
@@ -341,7 +401,7 @@
               @"cellHeight": @"50",
               @"isMust":@"1",@"subArray":@[]},
             
-            @{@"title":SLLocalizedString(@"学      历："),
+            @{@"title":SLLocalizedString(@"学历："),
               @"type":@"3",
               @"isEditor":@"1",
               @"isSelected":@"0",
@@ -353,17 +413,28 @@
             },
             
             
-            @{@"title":SLLocalizedString(@"职      称："), @"type":@"1", @"isEditor":@"1"},
-            @{@"title":SLLocalizedString(@"职      务："), @"type":@"1", @"isEditor":@"1"},
-            @{@"title":SLLocalizedString(@"举办机构："), @"type":@"1", @"isEditor":@"0", @"isMust":@"1"},
+            @{@"title":SLLocalizedString(@"职称："), @"type":@"1", @"isEditor":@"1"},
+            @{@"title":SLLocalizedString(@"职务："), @"type":@"1", @"isEditor":@"1"},
             
-            @{@"title":SLLocalizedString(@"举办地点："), @"type":addressType, @"isSelected":addressIsSelected, @"subArray":self.model.address ,@"content":content, @"isCalculateHeight" : @"1", @"cellHeight": cellHeight, @"isEditor":addressIsEditor, @"isMust":@"1"},
             
-            @{@"title":SLLocalizedString(@"微      信："), @"type":@"1", @"isEditor":@"1"},
-            @{@"title":SLLocalizedString(@"邮      箱："), @"type":@"1", @"isEditor":@"1"},
-            @{@"title":SLLocalizedString(@"手      机："), @"type":@"1", @"isEditor":@"1", @"isMust":@"1"},
+            @{@"title":SLLocalizedString(@"申报段品阶："),
+              @"type":@"1",
+              @"isMust":@"0",
+              @"isEditor":@"0",
+              @"hexColor":@"999999"
+            },
+            
+            
+            @{@"title":SLLocalizedString(@"举办机构："), @"type":@"1", @"isEditor":@"0", @"isMust":@"0",@"hexColor":@"999999"},
+            
+            
+            @{@"title":SLLocalizedString(@"举办地点："), @"type":addressType, @"isSelected":addressIsSelected, @"subArray":self.model.activityAddresses ,@"content":content, @"isCalculateHeight" : @"1", @"cellHeight": cellHeight, @"isEditor":addressIsEditor, @"isMust":@"1", @"textType":@"address"},
+            
+            @{@"title":SLLocalizedString(@"微信："), @"type":@"1", @"isEditor":@"1"},
+            @{@"title":SLLocalizedString(@"邮箱："), @"type":@"1", @"isEditor":@"1"},
+            @{@"title":SLLocalizedString(@"电话："), @"type":@"1", @"isEditor":@"1", @"isMust":@"1"},
             @{@"title":SLLocalizedString(@"通讯地址："), @"type":@"1", @"isEditor":@"1", @"isMust":@"1"},
-            @{@"title":SLLocalizedString(@"护  照 号："), @"type":@"1", @"isEditor":@"1",@"isEditor":[NSString stringWithFormat:@"%d", isPassportNumber], @"hexColor": isPassportNumber == YES? @"333333":@"999999"},
+            
         ];
         
         if ([self.model.button count] == 1) {
@@ -380,6 +451,24 @@
         [self.dataArray addObject:temDic];
     }
     
+    
+//    if (self.registModel.gender.length == 0) {
+        for (NSMutableDictionary *dataDic in self.dataArray) {
+            
+            NSString *title = dataDic[@"title"];
+            
+            if ([title isEqualToString:SLLocalizedString(@"性别：")]) {
+                [dataDic setValue:@"1" forKey:@"isEditor"];
+                [dataDic setValue:@"1" forKey:@"isMust"];
+                [dataDic setValue:@"2" forKey:@"itemType"];
+                [dataDic setValue:@"男" forKey:@"item1Title"];
+                [dataDic setValue:@"女" forKey:@"item2Title"];
+                break;
+            }
+            
+        }
+//    }
+    
     [self.tableView reloadData];
     
 }
@@ -388,6 +477,8 @@
 #pragma mark - event
 - (void) submitHandle {
     [self.view endEditing:YES];
+    
+    self.registModel.bormTime = self.registModel.birthTime;
     
     if (self.potoUrl != nil) {
         self.registModel.photosUrl = self.potoUrl;
@@ -398,9 +489,18 @@
     
     NSArray * unRequiredList;
     if (self.isExamine) {
-        unRequiredList  = @[@"beforeName", @"education", @"title", @"post", @"wechat", @"mailbox", @"passportNumber",@"idCard"];
+        
+      NSInteger  valueType =  [self.registModel.valueType integerValue];
+        if (valueType == 2) {
+           //曾名或法名
+            unRequiredList  = @[ @"education", @"title", @"post", @"wechat", @"mailbox", @"passportNumber",@"idCard", @"levelId"];
+        }else{
+            //姓名
+            unRequiredList  = @[@"beforeName", @"education", @"title", @"post", @"wechat", @"mailbox", @"passportNumber",@"idCard", @"levelId"];
+        }
+        
     }else{
-        unRequiredList  = @[@"beforeName", @"education", @"title", @"post", @"wechat", @"mailbox", @"passportNumber",@"idCard", @"height", @"", @"shoeSize", @"martialArtsYears", @"weight"];
+        unRequiredList  = @[@"beforeName", @"education", @"title", @"post", @"wechat", @"mailbox", @"passportNumber",@"idCard", @"height", @"shoeSize", @"martialArtsYears", @"weight", @"levelId",@"valueType"];
     }
     
   
@@ -450,7 +550,7 @@
                 if ([property.name isEqualToString:@"telephone"]) {
                     if (valueStr.length != 11) {
                         modelComplete = NO;
-                        tipMsg = SLLocalizedString(@"请填写正确的手机号码");
+                        tipMsg = SLLocalizedString(@"请填写正确的电话号码");
                         tipsubMsg = @"";
                         *stop = YES;
                     }
@@ -470,7 +570,9 @@
         return;
     }
     
-    [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+    
+    
+    [SMAlert setConfirmBtBackgroundColor:kMainYellow];
     [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
     [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
     [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
@@ -488,22 +590,26 @@
         
         NSDictionary *dic = [self.registModel mj_keyValues];
         
+        NSMutableDictionary *param = [NSMutableDictionary dictionaryWithDictionary:dic];
+        
+        [param setValue:self.chargeType forKey:@"makeUpTestData"];
+        
         MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
         //
-        [[KungfuManager sharedInstance] applicationsSaveWithDic:dic callback:^(Message *message) {
+        [[KungfuManager sharedInstance] applicationsSaveWithDic:param callback:^(Message *message) {
             [hud hideAnimated:YES];
             if (message.isSuccess) {
                 NSLog(@"活动报名成功");
                 CheckstandViewController *checkstandVC = [[CheckstandViewController alloc]init];
                 checkstandVC.isActivity = YES;
-                
+
                 NSDictionary *dic = message.extensionDic;
-                
+
                 checkstandVC.goodsAmountTotal = [NSString stringWithFormat:@"￥%@", dic[@"money"]];
                 checkstandVC.order_no = dic[@"orderCode"];
                 checkstandVC.activityCode = self.activityCode;
                 [self.navigationController pushViewController:checkstandVC animated:YES];
-                
+
             }else  {
                 NSString *text = NotNilAndNull(message.reason)?message.reason:@"";
                 [ShaolinProgressHUD singleTextHud:text view:self.view afterDelay:TipSeconds];
@@ -516,7 +622,7 @@
 }
 
 - (void) showAlertWithInfoString:(NSString *)text isBack:(BOOL)isback{
-    [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+    [SMAlert setConfirmBtBackgroundColor:kMainYellow];
     [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
     [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
     [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
@@ -586,9 +692,12 @@
 -(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     NSMutableDictionary *dic = [self.dataArray objectAtIndex:indexPath.section];
     NSString *type = dic[@"type"];
-    if ([type isEqualToString:@"3"] == NO) {
+    if ([type isEqualToString:@"1"] == YES || [type isEqualToString:@"2"] == YES) {
         
         return 50;
+    }else if ( [type isEqualToString:@"4"] == YES) {
+        CGFloat cellHeight = [dic[@"cellHeight"] floatValue];
+        return cellHeight;
     }else{
         NSString *isSelected = dic[@"isSelected"];
         
@@ -610,7 +719,7 @@
                     if ([title isEqualToString:SLLocalizedString(@"申报段品阶：")] == YES) {
                         int rowNumbr = ceil([subArray count]/3.0);
                         return 32 + (rowNumbr * 30) +((rowNumbr -1)*10);
-                    }else if ([title isEqualToString:SLLocalizedString(@"国      籍：")] == YES){
+                    }else if ([title isEqualToString:SLLocalizedString(@"国籍：")] == YES){
                         return ScreenHeight - NavBar_Height - 44 - 20 - 140 - 61;
                     } else{
                         return 61 * [subArray count];
@@ -632,9 +741,11 @@
     
     UITableViewCell *cell;
     
-    if ([dic[@"type"] isEqualToString:@"3"] == NO) {
-        
-        if ([dic[@"type"] isEqualToString:@"2"] == YES && ([dic[@"title"] isEqualToString:@"性      别："])) {
+    NSInteger type = [dic[@"type"] integerValue];
+    
+    if (type != 3) {
+        NSInteger itemType = [dic[@"itemType"] integerValue];
+        if (type == 2 && ([dic[@"title"] isEqualToString:@"性别："]) && itemType == 0) {
             EnrollmentRegistrationNormalInfoTableViewCell *bannerCell = [tableView  dequeueReusableCellWithIdentifier:@"EnrollmentRegistrationNormalInfoTableViewCell"];
             
             bannerCell.registModel = self.registModel;
@@ -733,6 +844,10 @@
     [imagePicker setBarItemTextColor:[UIColor blackColor]];
     imagePicker.sortAscendingByModificationDate = NO;
     imagePicker.allowPickingVideo = NO;
+    
+    //裁剪高度  一寸照片的宽度比 5：7
+    CGFloat h =(ScreenWidth /5) * 7;
+    imagePicker.cropRect = CGRectMake(0, (ScreenHeight - h) / 2, ScreenWidth, (ScreenWidth /5) * 7);
     
     [imagePicker setBarItemTextColor:[UIColor blackColor]];
     [imagePicker setDidFinishPickingPhotosWithInfosHandle:^(NSArray<UIImage *> *photos, NSArray *assets, BOOL isSelectOriginalPhoto, NSArray<NSDictionary *> *infos) {
@@ -838,12 +953,12 @@
                 [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"不能选择此品阶") view:WINDOWSVIEW afterDelay:TipSeconds];
             }
             
-        }else if ([title isEqualToString:SLLocalizedString(@"国      籍：")] == YES){
+        }else if ([title isEqualToString:SLLocalizedString(@"国籍：")] == YES){
             AddressInfoModel *addressModel = subArray[indexPath.row];
             NSString *cname = addressModel.cname;
             [dic setValue:addressModel.cname forKey:@"content"];
             CGFloat labelHeight = [cname textSizeWithFont:kRegular(15)
-                                        constrainedToSize:CGSizeMake(ScreenWidth - 206, CGFLOAT_MAX)
+                                        constrainedToSize:CGSizeMake(ScreenWidth - 216, CGFLOAT_MAX)
                                             lineBreakMode:NSLineBreakByWordWrapping].height +1;
             
             if (labelHeight > 50) {
@@ -855,13 +970,13 @@
             self.registModel.nationality = cname;
             [self.tableView reloadData];
             
-        }else if([title isEqualToString:SLLocalizedString(@"民      族：")] == YES ||[title isEqualToString:SLLocalizedString(@"学      历：")] == YES) {
+        }else if([title isEqualToString:SLLocalizedString(@"民族：")] == YES ||[title isEqualToString:SLLocalizedString(@"学历：")] == YES) {
             
             DegreeNationalDataModel *dataModel = subArray[indexPath.row];
             NSString *name = dataModel.name;
             [dic setValue:name forKey:@"content"];
             CGFloat labelHeight = [name textSizeWithFont:kRegular(15)
-                                       constrainedToSize:CGSizeMake(ScreenWidth - 206, CGFLOAT_MAX)
+                                       constrainedToSize:CGSizeMake(ScreenWidth - 216, CGFLOAT_MAX)
                                            lineBreakMode:NSLineBreakByWordWrapping].height +1;
             
             if (labelHeight > 50) {
@@ -870,7 +985,7 @@
             
             [dic setValue:@"0" forKey:@"isSelected"];
             
-            if([title isEqualToString:SLLocalizedString(@"民      族：")] ){
+            if([title isEqualToString:SLLocalizedString(@"民族：")] ){
                 if ([name isEqualToString:SLLocalizedString(@"其他")]) {
                     self.registModel.nation = @"";
                     NSDictionary *temDta = @{@"title":@"", @"type":@"1", @"isEditor":@"1", @"isMust":@"1", @"placeholder" : SLLocalizedString(@"请输入其他民族"), @"saveText":SLLocalizedString(@"民族")};
@@ -906,7 +1021,7 @@
             
             
             CGFloat labelHeight = [addressModel.addressDetails textSizeWithFont:kRegular(15)
-                                                              constrainedToSize:CGSizeMake(ScreenWidth - 206, CGFLOAT_MAX)
+                                                              constrainedToSize:CGSizeMake(ScreenWidth - 216, CGFLOAT_MAX)
                                                                   lineBreakMode:NSLineBreakByWordWrapping].height +1;
             
             if (labelHeight > 50) {
@@ -916,6 +1031,7 @@
             
             [dic setValue:@"0" forKey:@"isSelected"];
             self.registModel.activityAddressCode = addressModel.enrollmentAddressId;
+            self.registModel.activityAddressId = addressModel.enrollmentAddressId;
             self.registModel.examAddress = addressModel.addressDetails;
             [self.tableView reloadData];
         }
@@ -929,7 +1045,7 @@
 - (void)clickDQBirthDateViewEnsureBtnActionAgeModel:(DQAgeModel *)ageModel andConstellation:(NSString *)str{
     
     NSString *birthStr = [NSString stringWithFormat:@"%@-%@-%@",ageModel.year,ageModel.month,ageModel.day];
-    self.registModel.bormtime = birthStr;
+    self.registModel.birthTime = birthStr;
     [self.tableView reloadData];
 }
 
@@ -958,12 +1074,12 @@
     if (_submitButton == nil) {
         _submitButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [_submitButton setFrame:CGRectMake(22, ScreenHeight - NavBar_Height - 44 - 20, ScreenWidth - 44, 44)];
-        [_submitButton setBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+        [_submitButton setBackgroundColor:kMainYellow];
         [_submitButton setTitle:SLLocalizedString(@"确定") forState:UIControlStateNormal];
         [_submitButton setTitleColor:[UIColor colorForHex:@"FFFFFF"] forState:UIControlStateNormal];
         [_submitButton.titleLabel setFont:kRegular(16)];
         
-        _submitButton.layer.cornerRadius = 22;
+        _submitButton.layer.cornerRadius = 4;
         [_submitButton addTarget:self action:@selector(submitHandle) forControlEvents:UIControlEventTouchUpInside];
     }
     
@@ -1043,7 +1159,7 @@
         return SLLocalizedString(@"邮箱");
     }
     if ([name isEqualToString:@"telephone"]) {
-        return SLLocalizedString(@"手机");
+        return SLLocalizedString(@"电话");
     }
     if ([name isEqualToString:@"mailingAddress"]) {
         return SLLocalizedString(@"通讯地址");
@@ -1055,6 +1171,11 @@
     if ([name isEqualToString:@"height"]) {
         return @"身高";
     }
+    
+    if ([name isEqualToString:@"weight"]) {
+        return @"体重";
+    }
+    
     if ([name isEqualToString:@"shoeSize"]) {
         return @"鞋码";
     }
@@ -1063,11 +1184,8 @@
         return @"练武年限";
     }
     
-    if ([name isEqualToString:@"weight"]) {
-        return @"体重";
-    }
-    return @"";
     
+    return @"";
     
 }
 
@@ -1086,5 +1204,7 @@
     }
     return _birthView;
 }
+
+
 
 @end

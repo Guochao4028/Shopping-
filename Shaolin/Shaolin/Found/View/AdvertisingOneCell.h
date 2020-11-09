@@ -14,7 +14,7 @@
 
 @property(nonatomic,strong) UILabelLeftTopAlign *titleL; //广告标题
 @property(nonatomic,strong) UIImageView *imageV;//广告图片
-@property(nonatomic,strong) UIView *grayView;
+@property(nonatomic,strong) UIView *bottomView;
 @property(nonatomic,strong) UILabel *adNameLabel;//广告名字
 @property(nonatomic,strong) UILabel *lookLabel;// 浏览人次
 @property(nonatomic,strong) UIButton *lookBtn;//查看详情按钮

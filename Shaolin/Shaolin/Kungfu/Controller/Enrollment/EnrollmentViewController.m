@@ -27,6 +27,9 @@
 #import "KungfuInstitutionViewController.h"
 #import "KungfuSearchViewController.h"
 #import "DefinedHost.h"
+#import "DataManager.h"
+
+#import "SearchHistoryModel.h"
 
 @interface EnrollmentViewController ()<EnrollmentTableViewCellDelegate, GHDropMenuDelegate, WengenBannerTableCellDelegate, UITableViewDelegate, UITableViewDataSource>
 
@@ -51,8 +54,11 @@
 
 @property (nonatomic, copy) NSString * typeString;
 @property (nonatomic, strong) UITableView * searchTypeTable;
+@property (nonatomic, strong) NSArray *searchTypeTableList;
 @property (nonatomic, strong) UIImageView * searchTypeTableBgView;
 @property (nonatomic, strong) NSMutableArray * historyArray;
+
+
 
 @end
 
@@ -63,20 +69,25 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
 
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    [self hideNavigationBarShadow];
     
-    self.navigationController.navigationBar.hidden = YES;
-}
-
--(void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    self.navigationController.navigationBar.hidden = YES;
+    if (NotNilAndNull(self.searchText)) {
+        self.hideNavigationBar = YES;
+    } else {
+        self.hideNavigationBar = NO;
+    }
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     [self initData];
     [self initUI];
+    
+    if (NotNilAndNull(self.searchText)) {
+        self.hideNavigationBar = YES;
+    } else {
+        self.hideNavigationBar = NO;
+    }
 }
 
 
@@ -85,24 +96,40 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     self.view.backgroundColor = UIColor.whiteColor;
     [self.view addSubview:self.tableView];
     
+    
+    
     if (NotNilAndNull(self.searchText)) {
         self.typeString = SLLocalizedString(@"活动");
         [self updateSearchViewUI];
+    } else {
+        [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.left.right.top.mas_equalTo(self.view);
+                make.height.mas_equalTo(ScreenHeight - NavBar_Height - TabbarHeight);
+        }];
     }
+    
+    
 }
 
 - (void)updateSearchViewUI {
     // 有上方searchView时的UI变化
     [self.view addSubview:self.searchView];
     
-    self.searchView.frame = CGRectMake(0, StatueBar_Height, kScreenWidth, NavBar_Height - StatueBar_Height);
+    [self.searchView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.mas_equalTo(self.view);
+        make.top.mas_equalTo(StatueBar_Height);
+        make.height.mas_equalTo(44);
+    }];
+    
     self.searchView.isSearchResult = YES;
     self.searchView.searchTF.text = self.searchText;
-    self.searchView.searchTF.placeholder = SLLocalizedString(@"搜索活动");
     
-    self.tableView.top = self.searchView.bottom + 5;
-    self.tableView.height = self.tableView.height  + 40;
-    
+    [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.mas_equalTo(self.view);
+        make.top.mas_equalTo(StatueBar_Height + 44 + 5);
+        make.height.mas_equalTo(ScreenHeight - NavBar_Height - TabbarHeight + 40);
+    }];
+
     [self.view addSubview:self.searchTypeTableBgView];
     [self.searchTypeTableBgView addSubview:self.searchTypeTable];
 }
@@ -110,7 +137,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
 -(void)initData{
     
     NSArray *dbDataArray =[[ModelTool shareInstance]selectALL:[LevelModel class] tableName:@"level"];
-    
+    self.searchTypeTableList = @[SLLocalizedString(@"教程"),SLLocalizedString(@"活动"),SLLocalizedString(@"机构")];
     if ([dbDataArray count] == 0) {
         //level表里数据不存在。调用接口 装填数据
         [[DataManager shareInstance]getLevelList:@{} callbacl:^(NSDictionary *result) {
@@ -123,16 +150,15 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     [self.headerView setBlockObject:^(NSObject *object) {
         if ([object isKindOfClass:[EnrollmentModel class]] == YES) {
             EnrollmentModel *mode = (EnrollmentModel *) object;
-            weakSelf.currentDic = nil;
-            NSMutableDictionary *param = [NSMutableDictionary dictionary];
-            [param setValue:mode.modelId forKey:@"activityTypeId"];
+            [weakSelf.currentDic setValue:mode.modelId forKey:@"activityTypeId"];
             weakSelf.activityTypeId = mode.modelId;
-            [weakSelf requestActivityList:param];
+            [weakSelf beginRefreshData];
+//            [weakSelf requestActivityList:param];
         }
     }];
     
     [self.headerView setScreenBlock:^(BOOL isTap) {
-        [weakSelf.tableView setContentOffset:CGPointMake(0, 164) animated:YES];
+//        [weakSelf.tableView setContentOffset:CGPointMake(0, 164) animated:YES];
         GHDropMenu *dropMenu = [GHDropMenu creatDropFilterMenuWidthConfiguration:weakSelf.configuration dropMenuTagArrayBlock:^(NSArray * _Nonnull tagArray) {
             [weakSelf getStrWith:tagArray];
         }];
@@ -155,6 +181,14 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     [[DataManager shareInstance] getClassification:@{} callback:^(NSArray *result) {
         weakSelf.headerView.array = [NSMutableArray arrayWithArray:result];
     }];
+}
+
+- (void)beginRefreshData{
+    if (self.dataArray.count){
+        NSIndexPath *topRow = [NSIndexPath indexPathForRow:0 inSection:0];
+        [self.tableView scrollToRowAtIndexPath:topRow atScrollPosition:UITableViewScrollPositionTop animated:YES];
+    }
+    [self.tableView.mj_header beginRefreshing];
 }
 
 - (void)requestActivityList:(NSDictionary *)dic{
@@ -181,6 +215,13 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
 }
 
 - (void)getStrWith: (NSArray *)tagArray {
+    
+    if ([tagArray count] == 0) {
+        
+        [self.headerView setIsViewRed:NO];
+    }else{
+        [self.headerView setIsViewRed:YES];
+    }
     
     NSMutableArray *duanArray = [NSMutableArray array];
     NSMutableArray *pinArray = [NSMutableArray array];
@@ -250,7 +291,11 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     
     self.currentDic = param;
     
-    [self requestActivityList:param];
+    [self beginRefreshData];
+    
+//    [self requestActivityList:param];
+    
+    
     
 }
 
@@ -335,14 +380,14 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     
     [self.searchTypeTable reloadData];
     [UIView animateWithDuration:0.1 animations:^{
-        self.searchTypeTableBgView.frame = CGRectMake(self.searchTypeTableBgView.left, self.searchTypeTableBgView.top, self.searchTypeTableBgView.width, 140);
+        self.searchTypeTableBgView.frame = CGRectMake(self.searchTypeTableBgView.left, self.searchView.bottom - 10, self.searchTypeTableBgView.width, 140);
     }];
 }
 
 
 - (void) hideSearchTypeTable {
     [UIView animateWithDuration:0.1 animations:^{
-        self.searchTypeTableBgView.frame = CGRectMake(self.searchTypeTableBgView.left, self.searchTypeTableBgView.top, self.searchTypeTableBgView.width, 0);
+        self.searchTypeTableBgView.frame = CGRectMake(self.searchTypeTableBgView.left, self.searchView.bottom - 10, self.searchTypeTableBgView.width, 0);
     }];
 }
 
@@ -353,10 +398,22 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     if (searchStr.length == 0) {
         return;
     }
-    if (![self.historyArray containsObject:searchStr]) {
-        [self.historyArray insertObject:searchStr atIndex:0];
-        [NSKeyedArchiver archiveRootObject:self.historyArray toFile:KGoodsHistorySearchPath];
-    }
+//    if (![self.historyArray containsObject:searchStr]) {
+//        [self.historyArray insertObject:searchStr atIndex:0];
+//        [NSKeyedArchiver archiveRootObject:self.historyArray toFile:KGoodsHistorySearchPath];
+//    }
+    
+    
+    NSString *userId = [SLAppInfoModel sharedInstance].id;
+    
+    SearchHistoryModel *historyModel = [[SearchHistoryModel alloc]init];
+    historyModel.userId = userId;
+    historyModel.searchContent = searchStr;
+    historyModel.type = [NSString stringWithFormat:@"%ld", SearchHistoryCourseType];
+    
+    [self.historyArray insertObject:historyModel atIndex:0];
+    
+    [historyModel addSearchWordWithDataArray:_historyArray];
     
     if ([self.typeString isEqualToString:SLLocalizedString(@"教程")]) {
         KungfuClassListViewController *resultVC = [[KungfuClassListViewController alloc]init];
@@ -397,7 +454,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     if (tableView == self.searchTypeTable) {
-        return 3;
+        return self.searchTypeTableList.count;
     } else {
         if (section == 0) {
             return 1;
@@ -421,7 +478,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
         return .001;
     } else {
         if (section == 0) {
-            return 0.01;
+            return 10;
         }else{
             return 0.01;
             
@@ -434,7 +491,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
         return 40;
     } else {
         if (indexPath.section == 0) {
-            return 154;
+            return 157;
         }else{
             return 150;
         }
@@ -447,6 +504,12 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
         [view setBackgroundColor:[UIColor colorForHex:@"F8F8F8"]];
         return view;
     } else {
+        
+        if (section == 0) {
+            UIView *view = [[UIView alloc]init];
+            [view setBackgroundColor:[UIColor colorForHex:@"F8F8F8"]];
+            return view;
+        }
         return [UIView new];
     }
 }
@@ -482,15 +545,14 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
             cell.backgroundColor = UIColor.clearColor;
             cell.contentView.backgroundColor = UIColor.clearColor;
             
-            NSArray * list = @[SLLocalizedString(@"教程"),SLLocalizedString(@"活动"),SLLocalizedString(@"机构")];
-            cell.textLabel.text = list[indexPath.row];
+            cell.textLabel.text = self.searchTypeTableList[indexPath.row];
             cell.textLabel.font = kRegular(12);
             cell.textLabel.textColor = [UIColor hexColor:@"333333"];
             cell.textLabel.backgroundColor = [UIColor clearColor];
             if ([cell.textLabel.text isEqualToString:self.searchView.typeLabel.text]) {
-                cell.textLabel.textColor = [UIColor hexColor:@"8E2B25"];
+                cell.textLabel.textColor = kMainYellow;
             }
-            if (indexPath.row == list.count - 1){
+            if (indexPath.row == self.searchTypeTableList.count - 1){
                 cell.separatorInset = UIEdgeInsetsMake(0,0,0,kScreenWidth);
             } else {
                 cell.separatorInset = UIEdgeInsetsZero;
@@ -522,8 +584,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     [self hideSearchTypeTable];
     
     if (tableView == self.searchTypeTable) {
-        NSArray * list = @[SLLocalizedString(@"教程"),SLLocalizedString(@"活动"),SLLocalizedString(@"机构")];
-        self.typeString = list[indexPath.row];
+        self.typeString = self.searchTypeTableList[indexPath.row];
     } else {
         if (indexPath.section != 0) {
             
@@ -584,6 +645,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
 -(void)setTypeString:(NSString *)typeString {
     _typeString = typeString;
     
+    self.searchView.searchTF.placeholder = [NSString stringWithFormat:@"%@%@", SLLocalizedString(@"搜索"), typeString];
     self.searchView.typeLabel.text = _typeString;
     [self hideSearchTypeTable];
 }
@@ -601,24 +663,14 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
         [_tableView registerNib:[UINib nibWithNibName:@"EnrollmentTableViewCell" bundle:nil] forCellReuseIdentifier:enrollmentIdentifier];
         
         _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-        
-        MJRefreshGifHeader *header = [MJRefreshGifHeader headerWithRefreshingTarget:self refreshingAction:@selector(updata)];
-        header.lastUpdatedTimeLabel.hidden = YES;
-        header.lastUpdatedTimeLabel.hidden = YES;
-        [header setTitle:SLLocalizedString(@"下拉刷新") forState:MJRefreshStateIdle];
-        [header setTitle:SLLocalizedString(@"松手刷新") forState:MJRefreshStatePulling];
-        [header setTitle:SLLocalizedString(@"正在刷新...") forState:MJRefreshStateRefreshing];
-        _tableView.mj_header = header;
-        
-        
-        MJRefreshAutoNormalFooter *footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
-        
-        [footer setTitle:SLLocalizedString(@"加载中 ...") forState:MJRefreshStateRefreshing];
-        
-        [footer setTitle:SLLocalizedString(@"- 已经到底了 -") forState:MJRefreshStateNoMoreData];
-        
-        _tableView.mj_footer = footer;
-        
+        WEAKSELF
+        _tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+            [weakSelf updata];
+        }];;
+        _tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
+               // 上拉加载
+            [weakSelf loadMoreData];
+        }];
     }
     return _tableView;
 }
@@ -763,12 +815,17 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
 -(NSMutableArray *)historyArray
 {
     if (!_historyArray) {
-        _historyArray = [NSKeyedUnarchiver unarchiveObjectWithFile:KGoodsHistorySearchPath];
+//        _historyArray = [NSKeyedUnarchiver unarchiveObjectWithFile:KGoodsHistorySearchPath];
+        
+        _historyArray = [[[ModelTool shareInstance] select:[SearchHistoryModel class] tableName:@"searchHistory" where:[NSString stringWithFormat:@"type = '%ld' AND userId = '%@' ORDER BY id DESC", SearchHistoryCourseType, [SLAppInfoModel sharedInstance].id]] mutableCopy];
+        
         if (!_historyArray) {
             self.historyArray = [NSMutableArray array];
         }
     }
     return _historyArray;
 }
+
+
 
 @end

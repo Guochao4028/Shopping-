@@ -11,11 +11,11 @@
 NS_ASSUME_NONNULL_BEGIN
 @class MeActivityModel;
 @interface MeActivityCollectionViewCell : UICollectionViewCell
-
+@property (nonatomic, copy) NSString *type;
 @property (nonatomic, strong) MeActivityModel *model;
 @property (nonatomic, copy)void (^ showDetailsBlock)(void);
+@property (nonatomic, copy)void (^ showQRCodeBlock)(void);
 
-- (void)testUI;
 @end
 
 NS_ASSUME_NONNULL_END

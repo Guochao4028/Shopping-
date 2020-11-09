@@ -6,7 +6,7 @@
 //  Copyright © 2020 syqaxldy. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "RootViewController.h"
 #import "MePostManagerModel.h"
 #import "SLAssetModel.h"
 

@@ -11,10 +11,9 @@
 #import "AddressListModel.h"
 #import "CreateAddressView.h"
 #import "SMAlert.h"
+#import "DataManager.h"
 
-@interface CreateAddressViewController ()<WengenNavgationViewDelegate, CreateAddressViewDelegate>
-
-@property(nonatomic, strong)WengenNavgationView *navgationView;
+@interface CreateAddressViewController ()<CreateAddressViewDelegate>
 
 @property(nonatomic, strong)CreateAddressView *createAddressView;
 
@@ -28,21 +27,16 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     // Do any additional setup after loading the view.
     [self initUI];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
-    
-    if (self.isHiddenNav) {
-           [self.navigationController.navigationBar setHidden:YES];
-       }
-    
+    [super viewWillAppear:animated];
     if (self.type == AddressModifyType) {
-        
-        [self.navgationView setTitleStr:SLLocalizedString(@"编辑收货地址")];
-        [self.navgationView setRightStr:SLLocalizedString(@"删除")];
-        [self.navgationView rightTarget:self action:@selector(rightAction)];
+        [self.rightBtn setTitle:SLLocalizedString(@"删除") forState:UIControlStateNormal];
+        self.titleLabe.text = SLLocalizedString(@"编辑收货地址");
         [[DataManager shareInstance]getAddressInfo:@{@"id":self.addressId} Callback:^(NSObject *object) {
             
             if ([object isKindOfClass:[AddressListModel class]] == YES) {
@@ -53,29 +47,24 @@
             }
         }];
     }else{
-        [self.navgationView setTitleStr:SLLocalizedString(@"新建收货地址")];
+        self.titleLabe.text = SLLocalizedString(@"新建收货地址");
     }
-     [super viewWillAppear:animated];
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
-    if (self.isHiddenNav) {
-        [self.navigationController.navigationBar setHidden:NO];
-    }
     [super viewWillDisappear:animated];
 }
 
 #pragma mark - methods
 -(void)initUI{
     [self.view setBackgroundColor:[UIColor whiteColor]];
-    [self.view addSubview:self.navgationView];
     [self.view addSubview:self.createAddressView];
 }
 
 #pragma mark - action
 
 -(void)rightAction{
-    [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+    [SMAlert setConfirmBtBackgroundColor:kMainYellow];
     [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
     [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
     [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
@@ -109,8 +98,7 @@
     }] cancleButton:[SMButton initWithTitle:SLLocalizedString(@"取消") clickAction:nil]];
 }
 
-#pragma mark - WengenNavgationViewDelegate
--(void)tapBack{
+-(void)leftAction{
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -160,33 +148,10 @@
     }
 }
 
-#pragma mark - WengenNavgationView
--(WengenNavgationView *)navgationView{
-    
-    if (_navgationView == nil) {
-        //状态栏高度
-        CGFloat barHeight ;
-        /** 判断版本
-         获取状态栏高度
-         */
-        if (@available(iOS 13.0, *)) {
-            barHeight = [[[[[UIApplication sharedApplication] keyWindow] windowScene] statusBarManager] statusBarFrame].size.height;
-        } else {
-            barHeight = [[UIApplication sharedApplication] statusBarFrame].size.height;
-        }
-        _navgationView = [[WengenNavgationView alloc]initWithFrame:CGRectMake(0, barHeight, ScreenWidth, 44)];
-        [_navgationView setDelegate:self];
-    }
-    return _navgationView;
-
-}
-
--(CreateAddressView *)createAddressView{
+- (CreateAddressView *)createAddressView{
     
     if (_createAddressView == nil) {
-        
-        CGFloat y = CGRectGetMaxY(self.navgationView.frame);
-        _createAddressView = [[CreateAddressView alloc]initWithFrame:CGRectMake(0, y, ScreenWidth, ScreenHeight - y)];
+        _createAddressView = [[CreateAddressView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight - NavBar_Height)];
         [_createAddressView setDelegate:self];
     }
     return _createAddressView;

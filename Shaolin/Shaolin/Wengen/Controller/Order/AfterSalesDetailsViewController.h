@@ -6,11 +6,11 @@
 //  Copyright © 2020 syqaxldy. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "RootViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 @class  OrderDetailsModel;
-@interface AfterSalesDetailsViewController : UIViewController
+@interface AfterSalesDetailsViewController : RootViewController
 
 @property(nonatomic, assign)AfterSalesDetailsType type;
 

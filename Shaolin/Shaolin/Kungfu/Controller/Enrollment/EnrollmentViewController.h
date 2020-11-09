@@ -6,11 +6,12 @@
 //  Copyright © 2020 syqaxldy. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "RootViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface EnrollmentViewController : UIViewController
+@interface EnrollmentViewController : RootViewController
+
 
 @property (nonatomic, copy) NSString * searchText;
 

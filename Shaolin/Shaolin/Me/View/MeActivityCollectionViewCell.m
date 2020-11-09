@@ -14,6 +14,9 @@
 @property (nonatomic, strong) UIView *backView;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UILabel *timeLabel;
+@property (nonatomic, strong) UILabel *checkInTimeLabel;
+@property (nonatomic, strong) UIImageView *checkInImage;
+@property (nonatomic, strong) UIButton *checkInButton;
 @property (nonatomic, strong) UILabel *addressLabel;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIView *levelView;
@@ -40,10 +43,36 @@
         NSString *createTime = [NSDate lgf_NeedDateFormat:@"yyyy-MM-dd HH:mm" date:date];
         self.timeLabel.text = [NSString stringWithFormat:SLLocalizedString(@"报名时间：%@"), createTime];// @"12:00-14:30";
     } else {
-        self.timeLabel.text = model.createTime;
+        self.timeLabel.text = [NSString stringWithFormat:SLLocalizedString(@"报名时间：%@"), model.createTime];
     }
-    self.addressLabel.text = [NSString stringWithFormat:SLLocalizedString(@"地址：%@"), model.addressDetails];// SLLocalizedString(@"地址：河南省登封市少林寺");
-    [self.imageView sd_setImageWithURL:[NSURL URLWithString:model.mechanismImage] placeholderImage:[UIImage imageNamed:@"shaolinlogo"]];
+    if ([self isSingUp]){
+        if ([model isCheckIn]){
+            NSDate *checkInDate = [NSDate lgf_NeedDateFormat:@"yyyy-MM-dd HH:mm:ss" date:model.signInTime];
+            if (checkInDate){
+                NSString *checkInTime = [NSDate lgf_NeedDateFormat:@"yyyy-MM-dd HH:mm" date:checkInDate];
+                self.checkInTimeLabel.text = [NSString stringWithFormat:@"%@：%@", SLLocalizedString(@"签到时间"), checkInTime];
+            } else {
+                self.checkInTimeLabel.text = [NSString stringWithFormat:@"%@：%@", SLLocalizedString(@"签到时间"), model.signInTime];
+            }
+        } else {
+            self.checkInTimeLabel.text = @"";
+        }
+        self.checkInButton.hidden = ![model canCheckIn];
+    } else {
+        self.checkInTimeLabel.text = @"";
+        self.checkInImage.image = nil;
+        
+        self.checkInButton.hidden = YES;
+    }
+    if ([model isCheckIn]){
+        self.checkInImage.image = [UIImage imageNamed:@"MeActivityCheckIn"];
+    } else if ([model timeOut]){
+        self.checkInImage.image = [UIImage imageNamed:@"MeActivityNoCheckIn"];
+    } else {
+        self.checkInImage.image = nil;
+    }
+    self.addressLabel.text = [NSString stringWithFormat:SLLocalizedString(@"地址：%@"), model.examAddress];// SLLocalizedString(@"地址：河南省登封市少林寺");
+    [self.imageView sd_setImageWithURL:[NSURL URLWithString:model.mechanismImage] placeholderImage:[UIImage imageNamed:@"default_big"]];
 //    [self reloadLevelView:model.levelIds];//SLLocalizedString(@"1-3段")
     NSLog(@"model.stateName:%@", model.stateName);
     if ([model.stateName isEqualToString:SLLocalizedString(@"已报名")]){
@@ -56,17 +85,21 @@
         self.signUpNumberLabel.attributedText = [self getAttributeString:signUpNumberText colorStr:signUpNumber color:[UIColor colorForHex:@"999999"] font:self.signUpNumberLabel.font];
     }
     //报名时的选择的 位阶
-    self.levelIdLabel.text = [NSString stringWithFormat:SLLocalizedString(@"所属位阶：%@"), model.levelName];
+    self.levelIdLabel.text = [NSString stringWithFormat:SLLocalizedString(@"所属位阶：%@"), model.intervalName];
 }
 #pragma mark - operation
 - (void)showDetailsButtonClick:(UIButton *)button{
     if (self.showDetailsBlock) self.showDetailsBlock();
 }
 
+- (void)checkInButtonClick:(UIButton *)button{
+    if (self.showQRCodeBlock) self.showQRCodeBlock();
+}
+
 - (void)reloadLevelView:(NSString *)levelRange{
     [self.levelView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     UILabel *levelLabel = [self createLabel];
-    levelLabel.text = SLLocalizedString(@"段位\n品阶");
+    levelLabel.text = SLLocalizedString(@"位阶\n品阶");
     levelLabel.font = kRegular(10);
     levelLabel.textColor = [UIColor colorForHex:@"999999"];
     levelLabel.textAlignment = NSTextAlignmentCenter;
@@ -85,64 +118,33 @@
     [self.levelView addSubview:levelLabel];
     [self.levelView addSubview:levelRangeLabel];
     
-    [levelLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(SLChange(5));
+    [levelLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(5);
         make.centerY.mas_equalTo(levelRangeLabel);
     }];
-    [levelRangeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    [levelRangeLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(levelLabel.mas_right).mas_offset(5);
         make.top.bottom.mas_equalTo(0);
-        make.right.mas_equalTo(SLChange(-5));
+        make.right.mas_equalTo(-5);
     }];
 }
 #pragma mark - UI
-- (void)testUI{
-    NSString *name = SLLocalizedString(@"少林寺小龙武院举办考试活动");
-    NSString *title = @"";
-    do {
-        title = [title stringByAppendingString:name];
-    } while (arc4random()%2);
-    
-    self.titleLabel.text = title;
-    self.timeLabel.text = [NSString stringWithFormat:SLLocalizedString(@"报名时间：2020-03-05 09:20")];
-    
-    NSString *address = SLLocalizedString(@"地址：河南省登封市少林寺");
-    NSString *addressStr = @"";
-    do {
-        addressStr = [addressStr stringByAppendingString:address];
-    } while (arc4random()%2);
-    NSLog(@"title:%@, addressStr:%@", title, addressStr);
-    
-    self.addressLabel.text = addressStr;
-    [self.imageView sd_setImageWithURL:[NSURL URLWithString:@"https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1142166796,2385197542&fm=26&gp=0.jpg"] placeholderImage:[UIImage imageNamed:@"shaolinlogo"]];
-    
-//    [self reloadLevelView:@"1-3"];
-    self.levelIdLabel.text = SLLocalizedString(@"所属位阶：1段");
-    
-    if (arc4random()%2){
-        NSString *signUpNumber = SLLocalizedString(@"已结束");
-        NSString *signUpNumberText = SLLocalizedString(@"已结束");
-        self.signUpNumberLabel.attributedText = [self getAttributeString:signUpNumberText colorStr:signUpNumber color:[UIColor colorForHex:@"999999"] font:self.signUpNumberLabel.font];
-    } else {
-        NSString *signUpNumber = @"256";
-        NSString *signUpNumberText = [NSString stringWithFormat:SLLocalizedString(@"已报名 %@ 人"), signUpNumber];
-        self.signUpNumberLabel.attributedText = [self getAttributeString:signUpNumberText colorStr:signUpNumber color:[UIColor redColor] font:self.signUpNumberLabel.font];
-    }
-}
-
 - (void)setUI{
-    self.layer.shadowColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.16].CGColor;
+    self.backView.layer.shadowColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.16].CGColor;
     //阴影偏移
-    self.layer.shadowOffset = CGSizeMake(0, 1);
+    self.backView.layer.shadowOffset = CGSizeMake(0, 1);
     // 阴影透明度，默认0
-    self.layer.shadowOpacity = 1;
+    self.backView.layer.shadowOpacity = 1;
     // 阴影半径，默认3
-    self.layer.shadowRadius = 10;
+    self.backView.layer.shadowRadius = 10;
     
     [self.contentView addSubview:self.backView];
     [self.backView addSubview:self.titleLabel];
     [self.backView addSubview:self.timeLabel];
+    [self.backView addSubview:self.checkInTimeLabel];
     [self.backView addSubview:self.addressLabel];
+    [self.backView addSubview:self.checkInImage];
+    [self.backView addSubview:self.checkInButton];
     [self.backView addSubview:self.imageView];
     [self.imageView addSubview:self.levelView];
     [self.backView addSubview:self.showDetailsButton];
@@ -152,58 +154,86 @@
 
 - (void)layoutSubviews{
     [super layoutSubviews];
-    [self.backView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.mas_equalTo(0);
+    [self.backView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.bottom.mas_equalTo(0);
+        make.left.mas_equalTo(15);
+        make.right.mas_equalTo(-15);
     }];
-    CGFloat leftPadding = SLChange(14.5), rightPadding = leftPadding, topPadding = SLChange(13);
-    CGFloat imageViewTopPadding = SLChange(8), imageViewHeight = SLChange(113), levelViewBottomPadding = SLChange(15);
-    CGSize levelViewSize = CGSizeMake(SLChange(65), SLChange(35));
-    CGSize showDetailsButtonSize = CGSizeMake(SLChange(71), SLChange(25));
-    [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    CGFloat leftPadding = 14.5, rightPadding = leftPadding, topPadding = 13;
+    CGFloat imageViewTopPadding = 8, imageViewHeight = 113, levelViewBottomPadding = 15;
+    CGSize levelViewSize = CGSizeMake(65, 35);
+    CGSize showDetailsButtonSize = CGSizeMake(71, 25);
+    [self.titleLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(leftPadding);
         make.right.mas_equalTo(-rightPadding);
         make.top.mas_equalTo(topPadding);
     }];
-    [self.addressLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    
+    [self.addressLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.mas_equalTo(self.titleLabel);
-        make.top.mas_equalTo(self.titleLabel.mas_bottom).mas_offset(SLChange(11));
+        make.top.mas_equalTo(self.titleLabel.mas_bottom).mas_offset(11);
     }];
-    [self.levelIdLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(self.titleLabel);
-//        make.right.mas_equalTo(self.timeLabel.left).mas_equalTo(-SLChange(5));
-        make.top.mas_equalTo(self.addressLabel.mas_bottom).mas_offset(topPadding);
-        make.height.mas_equalTo(SLChange(12.5));
+    
+    [self.timeLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.mas_equalTo(self.addressLabel);
+        make.top.mas_equalTo(self.addressLabel.mas_bottom).mas_offset(14);
+        make.height.mas_equalTo(12.5);
     }];
-    [self.timeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(self.levelIdLabel.mas_right).mas_offset(SLChange(5));
+    [self.checkInTimeLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.mas_equalTo(self.timeLabel);
+        if ([self.model isCheckIn] && [self isSingUp]){
+            make.top.mas_equalTo(self.timeLabel.mas_bottom).mas_offset(14);
+        } else {
+            make.top.mas_equalTo(self.timeLabel.mas_bottom);
+        }
+    }];
+    [self.levelIdLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.mas_equalTo(self.timeLabel);
+        make.top.mas_equalTo(self.checkInTimeLabel.mas_bottom).mas_offset(12);
+    }];
+    [self.checkInImage mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.mas_equalTo(self.titleLabel);
-        make.centerY.mas_equalTo(self.levelIdLabel);
-        make.height.mas_equalTo(SLChange(12.5));
+        make.bottom.mas_equalTo(self.levelIdLabel.mas_top).mas_offset(-5);
+        make.size.mas_equalTo(CGSizeMake(35, 33.5));
     }];
-
-    [self.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+    
+    [self.imageView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.mas_equalTo(self.titleLabel);
-        make.top.mas_equalTo(self.timeLabel.mas_bottom).mas_offset(imageViewTopPadding);
+        make.top.mas_equalTo(self.levelIdLabel.mas_bottom).mas_offset(imageViewTopPadding);
         make.height.mas_equalTo(imageViewHeight);
     }];
-    [self.levelView mas_makeConstraints:^(MASConstraintMaker *make) {
+    
+    
+    [self.levelView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.mas_equalTo(0);
         make.bottom.mas_equalTo(-levelViewBottomPadding);
         make.height.mas_equalTo(0);
     }];
-    [self.showDetailsButton mas_makeConstraints:^(MASConstraintMaker *make) {
+    
+    [self.checkInButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.right.mas_equalTo(self.showDetailsButton.mas_left).mas_offset(-10);
+        make.centerY.mas_equalTo(self.showDetailsButton);
+        make.size.mas_equalTo(showDetailsButtonSize);
+    }];
+    
+    [self.showDetailsButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.mas_equalTo(self.titleLabel);
         make.top.mas_equalTo(self.imageView.mas_bottom).mas_offset(topPadding);
         make.size.mas_equalTo(showDetailsButtonSize);
     }];
-    [self.signUpNumberLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    
+    [self.signUpNumberLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(self.titleLabel);
         make.centerY.mas_equalTo(self.showDetailsButton);
-        make.height.mas_equalTo(SLChange(12.5));
-        make.bottom.mas_equalTo(-SLChange(19));
+        make.height.mas_equalTo(12.5);
+        make.bottom.mas_equalTo(-19);
     }];
+    
     //设置timeLabel有更高的拉伸抗性
     [self.timeLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+    [self.checkInTimeLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+    
+    self.checkInButton.layer.cornerRadius = showDetailsButtonSize.height/2;
     self.showDetailsButton.layer.cornerRadius = showDetailsButtonSize.height/2;
     CGFloat cornerRadii = levelViewSize.height/2;
     CGRect maskFrame = CGRectMake(0, 0, levelViewSize.width, levelViewSize.height);
@@ -214,10 +244,13 @@
     self.levelView.layer.mask = maskLayer;
 }
 
+- (BOOL)isSingUp{
+    return [self.type isEqualToString:@"signUp"];
+}
+#pragma mark - getter
 - (UIView *)backView{
     if (!_backView){
         _backView = [[UIView alloc] init];
-        _backView.layer.masksToBounds = YES;
         _backView.layer.cornerRadius = 18;
         _backView.backgroundColor = [UIColor whiteColor];
     }
@@ -235,7 +268,7 @@
     if (!_titleLabel){
         _titleLabel = [self createLabel];
         _titleLabel.numberOfLines = 2;
-        _titleLabel.preferredMaxLayoutWidth = CGRectGetWidth(self.frame) - SLChange(14)*2;
+        _titleLabel.preferredMaxLayoutWidth = CGRectGetWidth(self.frame) - 14*2;
         _titleLabel.font = kRegular(15);
     }
     return _titleLabel;
@@ -253,7 +286,7 @@
     if (!_addressLabel){
         _addressLabel = [self createLabel];
         _addressLabel.numberOfLines = 2;
-        _addressLabel.preferredMaxLayoutWidth = CGRectGetWidth(self.frame) - SLChange(14)*2;
+        _addressLabel.preferredMaxLayoutWidth = CGRectGetWidth(self.frame) - 14*2;
         _addressLabel.textColor = [UIColor colorForHex:@"999999"];
     }
     return _addressLabel;
@@ -262,9 +295,26 @@
 - (UILabel *)levelIdLabel{
     if (!_levelIdLabel){
         _levelIdLabel = [self createLabel];
+        _levelIdLabel.numberOfLines = 2;
         _levelIdLabel.textColor = [UIColor colorForHex:@"333333"];
     }
     return _levelIdLabel;
+}
+
+- (UILabel *)checkInTimeLabel{
+    if (!_checkInTimeLabel){
+        _checkInTimeLabel = [self createLabel];
+        _checkInTimeLabel.textColor = [UIColor colorForHex:@"999999"];
+    }
+    return _checkInTimeLabel;
+}
+
+- (UIImageView *)checkInImage{
+    if (!_checkInImage){
+        _checkInImage = [[UIImageView alloc] init];
+        _checkInImage.contentMode = UIViewContentModeScaleAspectFill;
+    }
+    return _checkInImage;
 }
 
 - (UIImageView *)imageView{
@@ -286,15 +336,29 @@
     return _levelView;
 }
 
+- (UIButton *)checkInButton{
+    if (!_checkInButton){
+        _checkInButton = [[UIButton alloc] init];
+        _checkInButton.layer.shadowColor = [UIColor colorForHex:@"333333"].CGColor;
+        _checkInButton.layer.shadowOpacity = 0.3f;
+        _checkInButton.layer.shadowRadius = 1;
+        _checkInButton.layer.shadowOffset = CGSizeMake(0, 3);
+        
+        _checkInButton.titleLabel.font = kRegular(15);
+        [_checkInButton setBackgroundColor:[UIColor whiteColor]];
+        [_checkInButton setTitleColor:kMainYellow forState:UIControlStateNormal];
+        [_checkInButton setTitle:SLLocalizedString(@"签到") forState:UIControlStateNormal];
+        [_checkInButton addTarget:self action:@selector(checkInButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _checkInButton;
+}
+
 - (UIButton *)showDetailsButton{
     if (!_showDetailsButton){
         _showDetailsButton = [[UIButton alloc] init];
-        _showDetailsButton.layer.masksToBounds = YES;
-        _showDetailsButton.layer.borderColor = [UIColor colorForHex:@"E63032"].CGColor;
-        _showDetailsButton.layer.borderWidth = 1;
-        
-        _showDetailsButton.titleLabel.font = kRegular(15);
-        [_showDetailsButton setTitleColor:[UIColor colorForHex:@"E63032"] forState:UIControlStateNormal];
+        _showDetailsButton.titleLabel.font = kRegular(13);
+        [_showDetailsButton setBackgroundColor:kMainYellow];
+        [_showDetailsButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [_showDetailsButton setTitle:SLLocalizedString(@"查看详情") forState:UIControlStateNormal];
         [_showDetailsButton addTarget:self action:@selector(showDetailsButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     }

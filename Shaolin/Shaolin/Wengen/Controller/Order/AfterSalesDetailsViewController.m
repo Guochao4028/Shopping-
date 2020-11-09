@@ -21,7 +21,7 @@
 #import "AfterSalesApplyReasonTableCell.h"
 
 #import "HomeManager.h"
-
+#import "DataManager.h"
 #import "SMAlert.h"
 
 #import "GoodsStoreInfoModel.h"
@@ -49,6 +49,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.hideNavigationBar = YES;
     [self initData];
     [self initUI];
     
@@ -56,7 +57,6 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    self.navigationController.navigationBar.hidden = YES;
 }
 
 -(void)initData{
@@ -103,7 +103,7 @@
 #pragma mark - action
 -(void)comittAction{
     
-    [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+    [SMAlert setConfirmBtBackgroundColor:kMainYellow];
     [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
     [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
     [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];

@@ -9,13 +9,13 @@
 //
 //  成绩查询详情
 
-
+#import "RootViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface KfScoreDetailViewController : RootViewController
-/**准考证号*/
-@property (nonatomic, copy) NSString *accuratenumber;
+/**成绩id*/
+@property (nonatomic, copy) NSString *scoreId;
 @end
 
 NS_ASSUME_NONNULL_END

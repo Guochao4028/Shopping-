@@ -6,13 +6,13 @@
 //  Copyright © 2020 syqaxldy. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "RootViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 
 
-@interface CheckstandViewController : UIViewController
+@interface CheckstandViewController : RootViewController
 
 @property(nonatomic, copy)NSString *goodsAmountTotal;
 
@@ -29,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// yes 是从报名进入
 @property (nonatomic, assign) BOOL isSignUp;
 /// 活动编号 用于凭证支付
-@property(nonatomic, copy)NSString *activityCode;
+@property(nonatomic, copy, nullable)NSString *activityCode;
 
 /// 支付后成功回调
 /// 参数 订单号

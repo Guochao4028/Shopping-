@@ -36,6 +36,10 @@
 @end
 
 @implementation MyRiteCollectViewController
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self setNavigationBarRedTintColor];
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -44,6 +48,11 @@
     self.pageSize = 10;
     self.dataArray = [@[] mutableCopy];
     [self.view addSubview:self.infoTable];
+    
+    [self.infoTable mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.top.mas_equalTo(self.view);
+        make.bottom.mas_equalTo(-kBottomSafeHeight);
+    }];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -213,7 +222,7 @@
 
 - (UITableView *)infoTable {
     if (!_infoTable) {
-        _infoTable = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, kWidth, kHeight - kNavBarHeight - kStatusBarHeight) style:(UITableViewStylePlain)];
+        _infoTable = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, kWidth, kHeight - kNavBarHeight - kStatusBarHeight - kBottomSafeHeight) style:(UITableViewStylePlain)];
         _infoTable.delegate = self;
         _infoTable.dataSource = self;
         _infoTable.backgroundColor = UIColor.whiteColor;

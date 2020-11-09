@@ -56,17 +56,11 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
-    [self wr_setNavBarBarTintColor:[UIColor hexColor:@"8E2B25"]];
-    [self wr_setNavBarTintColor:[UIColor whiteColor]];
-    [self wr_setNavBarBackgroundAlpha:1];
-    //    self.navigationController.navigationBar.barTintColor = RGBA(132, 50, 42, 1);
-    //    self.navigationController.navigationBar.hidden = NO;
+    [self setNavigationBarRedTintColor];
 }
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    //     self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -88,6 +82,7 @@
     [self.view addSubview:self.tableView];
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(self.view);
+        make.bottom.mas_equalTo(-kBottomSafeHeight);
     }];
     
     [self registerCell];
@@ -252,6 +247,10 @@
 #pragma mark - 右侧编辑
 -(void)rightAction:(UIButton *)button
 {
+    if (self.dataArray.count == 0){
+        [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"暂无可编辑内容")];
+        return;
+    }
     button.selected = !button.selected;
     if (button.selected) {
         //点击编辑的时候清空删除数组

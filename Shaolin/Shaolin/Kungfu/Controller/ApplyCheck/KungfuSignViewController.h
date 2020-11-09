@@ -8,11 +8,11 @@
 //
 //  功夫 - 报名查询
 
-#import <UIKit/UIKit.h>
+#import "RootViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface KungfuSignViewController : UIViewController
+@interface KungfuSignViewController : RootViewController
 
 @end
 

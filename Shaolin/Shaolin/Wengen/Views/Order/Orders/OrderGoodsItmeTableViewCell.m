@@ -207,6 +207,17 @@
             [self.operationButtonView setHidden:NO];
             [self.afterSalesButton setHidden:YES];
             [self.addCartButton setHidden:NO];
+            
+            if ([status isEqualToString:@"2"] == YES) {
+                if (model.isUnified) {
+                    [self.afterSalesButton setHidden:YES];
+                }else{
+                    [self.afterSalesButton setHidden:NO];
+                }
+            }
+            
+            
+            
         }else{
             [self.operationButtonView setHidden:NO];
             [self.afterSalesButton setHidden:NO];
@@ -240,9 +251,9 @@
                 } else {
                     [self.confirmGoodsButton setTitle:SLLocalizedString(@"确认收货") forState:UIControlStateNormal];
                     
-                    [self.confirmGoodsButton setTitleColor:[UIColor colorForHex:@"8E2B25"] forState:UIControlStateNormal];
+                    [self.confirmGoodsButton setTitleColor:kMainYellow forState:UIControlStateNormal];
                     
-                    [self modifiedButton:self.confirmGoodsButton borderColor:[UIColor colorForHex:@"8E2B25"] cornerRadius:15];
+                    [self modifiedButton:self.confirmGoodsButton borderColor:kMainYellow cornerRadius:15];
                 }
                 
             }else{

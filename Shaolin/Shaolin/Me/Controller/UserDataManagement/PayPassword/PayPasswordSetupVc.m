@@ -9,7 +9,7 @@
 #import "PayPasswordSetupVc.h"
 #import "PayPasswordSetupSuccessVc.h"
 #import "MeManager.h"
-
+#import "LoginManager.h"
 #import "PayPasswordSetupView.h"
 
 @interface PayPasswordSetupVc ()
@@ -43,18 +43,18 @@
     [self.view addSubview:self.setupView];
     
     [self.setupView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(SLChange(8));
+        make.top.mas_equalTo(8);
         make.left.right.mas_equalTo(self.view);
-        make.height.mas_equalTo(SLChange(190));
+        make.height.mas_equalTo(190);
     }];
     
     [self.view addSubview:self.submitBtn];
     
     [self.submitBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.setupView.mas_bottom).offset(SLChange(25));
-        make.height.mas_equalTo(SLChange(37));
-        make.left.mas_equalTo(self.view.mas_left).offset(SLChange(18));
-        make.right.mas_equalTo(self.view.mas_right).offset(SLChange(-18));
+        make.top.mas_equalTo(self.setupView.mas_bottom).offset(25);
+        make.height.mas_equalTo(37);
+        make.left.mas_equalTo(self.view.mas_left).offset(18);
+        make.right.mas_equalTo(self.view.mas_right).offset(-18);
     }];
 }
 
@@ -190,7 +190,7 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.setupView.sendPinBtn.userInteractionEnabled = YES;
                 [self.setupView.sendPinBtn setTitle:SLLocalizedString(@"获取验证码") forState:UIControlStateNormal];
-                [self.setupView.sendPinBtn setTitleColor:[UIColor hexColor:@"8E2B25"] forState:UIControlStateNormal];
+                [self.setupView.sendPinBtn setTitleColor:kMainYellow forState:UIControlStateNormal];
             });
         }else {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -221,7 +221,8 @@
 -(UIButton *)submitBtn {
     if (!_submitBtn) {
         _submitBtn = [UIButton new];
-        _submitBtn.backgroundColor = [UIColor hexColor:@"8E2B25"];
+        _submitBtn.backgroundColor = kMainYellow;
+        _submitBtn.titleLabel.font = kRegular(14);
         _submitBtn.layer.cornerRadius = 4.0f;
         [_submitBtn setTitle:SLLocalizedString(@"确定") forState:UIControlStateNormal];
         [_submitBtn addTarget:self action:@selector(submitHandle) forControlEvents:UIControlEventTouchUpInside];

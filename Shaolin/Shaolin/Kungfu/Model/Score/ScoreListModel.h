@@ -11,11 +11,12 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ScoreListModel : NSObject
-@property (nonatomic, copy) NSString * levelname;
-@property (nonatomic, copy) NSString * signuptime;
-@property (nonatomic, copy) NSString * starttime;
+@property (nonatomic, copy) NSString * scoreId;
+@property (nonatomic, copy) NSString * levelName;
+@property (nonatomic, copy) NSString * signupTime;
+@property (nonatomic, copy) NSString * startTime;
 @property (nonatomic, copy) NSString * result;
-@property (nonatomic, copy) NSString * accuratenumber;
+@property (nonatomic, copy) NSString * skillsScore; // 考试开始时间
 /*
  "accuratenumber": "2005141518012532",--准考证号
  "activityId": "",
@@ -26,7 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
  "id": null,
  "idCard": "",
  "levelid": null,
- "levelname": "一段", --段位名称
+ "levelname": "一段", --位阶名称
  "memberId": "",
  "name": "",
  "result": "1", --考试结果 0不通过 1通过

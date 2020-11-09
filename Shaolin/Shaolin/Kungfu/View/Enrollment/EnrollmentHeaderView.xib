@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -28,9 +29,9 @@
                         </label>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Gs7-hD-kG1">
                             <rect key="frame" x="0.0" y="0.0" width="324" height="44"/>
-                            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         </view>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tRO-gm-dBa">
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tRO-gm-dBa">
                             <rect key="frame" x="324" y="0.0" width="90" height="44"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="90" id="gvy-Yc-Jh6"/>
@@ -40,7 +41,7 @@
                             </connections>
                         </button>
                     </subviews>
-                    <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <constraints>
                         <constraint firstItem="BgS-O3-kOK" firstAttribute="centerY" secondItem="Pmc-7i-tpa" secondAttribute="centerY" id="5jX-OV-161"/>
                         <constraint firstAttribute="bottom" secondItem="tRO-gm-dBa" secondAttribute="bottom" id="8dr-gd-TGN"/>
@@ -56,6 +57,7 @@
                     </constraints>
                 </view>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="pmt-HC-wyM"/>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="Pmc-7i-tpa" firstAttribute="bottom" secondItem="pmt-HC-wyM" secondAttribute="bottom" id="J54-ps-GdW"/>
@@ -67,8 +69,8 @@
                 <constraint firstItem="Pmc-7i-tpa" firstAttribute="bottom" secondItem="pmt-HC-wyM" secondAttribute="bottom" id="wD7-JI-Mf4"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="pmt-HC-wyM"/>
             <connections>
+                <outlet property="screeningLabel" destination="deH-iD-jtc" id="aLq-V0-GjO"/>
                 <outlet property="statusBarView" destination="Gs7-hD-kG1" id="4pW-W8-bvD"/>
             </connections>
             <point key="canvasLocation" x="2.8985507246376816" y="-48.883928571428569"/>
@@ -76,5 +78,8 @@
     </objects>
     <resources>
         <image name="kungfu_shaixuan" width="15" height="14.5"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
     </resources>
 </document>

@@ -21,8 +21,6 @@
 
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
 }
 
 - (void)viewDidLoad {
@@ -177,10 +175,6 @@
     }
 }
 
-#pragma mark - device
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    return UIStatusBarStyleDefault;
-}
 /*
  #pragma mark - Navigation
  

@@ -37,7 +37,6 @@
 @property(nonatomic,strong) UITextField *sigNameTf;//签名
 @property(nonatomic,strong) SLDatePickerView * birthPickerView;
 @property(nonatomic,strong) SLStringPickerView * sexPickerView;
-@property(weak,nonatomic) UIView * navLine;//导航栏横线
 @property(nonatomic,strong) UIButton *caseBtn;//保存
 
 @property(nonatomic,strong) UIImageView *iconImage;
@@ -63,9 +62,6 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    //    self.navigationController.navigationBar.hidden = YES;
-    self.navLine.hidden = YES;
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
 }
 
 - (void)viewDidLoad {
@@ -184,6 +180,7 @@
     if (cell == nil) {
         cell = [[PersonDataCell alloc]initWithStyle:(UITableViewCellStyleDefault) reuseIdentifier:identifierStr];
     }
+    cell.lineView.hidden = NO;
     if (indexPath.section == 0) {
         NSArray *arr = @[SLLocalizedString(@"昵称"),SLLocalizedString(@"性别"),SLLocalizedString(@"生日"),SLLocalizedString(@"邮箱")];
         cell.titleLabe.text = arr[indexPath.row];
@@ -200,11 +197,13 @@
         if (indexPath.row == 3) {
             
             [cell.contentView addSubview:self.emailTf];
+            cell.lineView.hidden = YES;
         }
     }else
     {
         NSArray *arr = @[SLLocalizedString(@"签名")];
         cell.titleLabe.text = arr[indexPath.row];
+        cell.lineView.hidden = YES;
         [cell.contentView addSubview:self.sigNameTf];
         
     }
@@ -247,14 +246,7 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
 }
-- (UIView *)navLine
-{
-    if (!_navLine) {
-        UIView *backgroundView = [self.navigationController.navigationBar subviews].firstObject;
-        _navLine = backgroundView.subviews.firstObject;
-    }
-    return _navLine;
-}
+
 -(UIImageView *)headerImage
 {
     if (!_headerImage) {
@@ -349,7 +341,7 @@
     if (authStatus == AVAuthorizationStatusRestricted) {
         
     }else if (authStatus == AVAuthorizationStatusDenied) {
-        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:SLLocalizedString(@"温馨提示") message:SLLocalizedString(@"请在设置中允许访问相册功能") preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:SLLocalizedString(@"温馨提示") message:SLLocalizedString(@"请在设置中允许访问相机功能") preferredStyle:UIAlertControllerStyleAlert];
         
         UIAlertAction *cancelBtn = [UIAlertAction actionWithTitle:SLLocalizedString(@"取消") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         }];
@@ -431,8 +423,18 @@
     
     TZImagePickerController  *imagePicker=  [[TZImagePickerController alloc] initWithMaxImagesCount:1 delegate:self];
     //允许选择图片、视频和gif
-    imagePicker.allowPickingVideo = NO;
+    
+    imagePicker.showSelectBtn = NO;
+    imagePicker.allowCrop = YES;
     [imagePicker setBarItemTextColor:[UIColor blackColor]];
+    imagePicker.sortAscendingByModificationDate = NO;
+    imagePicker.allowPickingVideo = NO;
+    
+    //裁剪高度  一寸照片的宽度比 5：7
+    CGFloat h =(ScreenWidth /5) * 7;
+    imagePicker.cropRect = CGRectMake(0, (ScreenHeight - h) / 2, ScreenWidth, (ScreenWidth /5) * 7);
+    
+    
  
     [imagePicker setDidFinishPickingPhotosWithInfosHandle:^(NSArray<UIImage *> *photos, NSArray *assets, BOOL isSelectOriginalPhoto, NSArray<NSDictionary *> *infos) {
         NSLog(@"%@",photos);
@@ -561,7 +563,7 @@
 - (void)birthdayAction:(UIButton *)button {
     [self.view endEditing:YES];
     
-    self.birthPickerView.selectValue = self.birthdayStr;
+    self.birthPickerView.selectValue = self.birthdayStr.length ? self.birthdayStr : @"1990-01-01";
     
     [self.birthPickerView show];
     
@@ -583,7 +585,7 @@
         [_caseBtn addTarget:self action:@selector(caseAction) forControlEvents:(UIControlEventTouchUpInside)];
         [_caseBtn setTitleColor:[UIColor colorForHex:@"FFFFFF"] forState:(UIControlStateNormal)];
         _caseBtn.titleLabel.font = kRegular(15);
-        _caseBtn.backgroundColor = [UIColor colorForHex:@"8E2B25"];
+        _caseBtn.backgroundColor = kMainYellow;
         _caseBtn.layer.cornerRadius = 4;
         _caseBtn.layer.masksToBounds = YES;
     }
@@ -722,6 +724,7 @@
         _birthPickerView.title = SLLocalizedString(@"选择日期");
         _birthPickerView.maxDate = [NSDate date];
         
+
         _birthPickerView.isAutoSelect = NO;
         _birthPickerView.resultBlock = ^(NSDate *selectDate, NSString *selectValue) {
             
@@ -826,7 +829,7 @@
 //        _pickerBottomLeftBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, kScreenHeight - 50 - kBottomSafeHeight - NavBar_Height, kScreenWidth/2, 50)];
 //        _pickerBottomLeftBtn.hidden = YES;
 //        _pickerBottomLeftBtn.backgroundColor = [UIColor hexColor:@"DDBFBD"];
-//        [_pickerBottomLeftBtn setTitleColor:WENGEN_RED forState:UIControlStateNormal];
+//        [_pickerBottomLeftBtn setTitleColor:kMainYellow forState:UIControlStateNormal];
 //        _pickerBottomLeftBtn.titleLabel.font = kRegular(16);
 //        [_pickerBottomLeftBtn setTitle:SLLocalizedString(@"重置") forState:UIControlStateNormal];
 //        [_pickerBottomLeftBtn addTarget:self action:@selector(bottomLeftBtnHandle) forControlEvents:UIControlEventTouchUpInside];
@@ -839,7 +842,7 @@
         _pickerBottomRightBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, kScreenHeight - 50 - kBottomSafeHeight - NavBar_Height, kScreenWidth, 50)];
         
         _pickerBottomRightBtn.hidden = YES;
-        _pickerBottomRightBtn.backgroundColor = WENGEN_RED;
+        _pickerBottomRightBtn.backgroundColor = kMainYellow;
         [_pickerBottomRightBtn setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
         _pickerBottomRightBtn.titleLabel.font = kRegular(16);
         [_pickerBottomRightBtn setTitle:SLLocalizedString(@"确定") forState:UIControlStateNormal];
@@ -889,10 +892,4 @@
     }
     return newimage;
 }
-
-#pragma mark - device
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    return UIStatusBarStyleDefault;
-}
-
 @end

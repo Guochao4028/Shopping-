@@ -436,7 +436,7 @@ static NSString *const kDefaultAddressTableCellIdentifier = @"DefaultAddressTabl
         
         [_saveButton setFrame:CGRectMake(x, y, 250, 40)];
         _saveButton.layer.cornerRadius = SLChange(18);
-        [_saveButton setBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+        [_saveButton setBackgroundColor:kMainYellow];
         [_saveButton setTitle:SLLocalizedString(@"保存") forState:UIControlStateNormal];
         [_saveButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         

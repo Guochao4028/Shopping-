@@ -14,6 +14,7 @@
 #import "OrderRefundInfoModel.h"
 #import "OrderHomePageViewController.h"
 #import "LogisticsViewController.h"
+#import "DataManager.h"
 
 static NSString *const goodsCellId = @"ReturnGoodsCell";
 static NSString *const inputCellId = @"ReturnGoodsInputCell";
@@ -244,7 +245,7 @@ static NSString *const inputCellId = @"ReturnGoodsInputCell";
     if (!_submitBtn) {
         _submitBtn = [UIButton new];
         [_submitBtn setTitle:SLLocalizedString(@"提交") forState:UIControlStateNormal];
-        [_submitBtn setBackgroundImage:[UIImage yy_imageWithColor:[UIColor hexColor:@"8E2B25"]] forState:UIControlStateNormal];
+        [_submitBtn setBackgroundImage:[UIImage yy_imageWithColor:kMainYellow] forState:UIControlStateNormal];
         [_submitBtn addTarget:self action:@selector(submitHandle) forControlEvents:UIControlEventTouchUpInside];
     }
     return _submitBtn;

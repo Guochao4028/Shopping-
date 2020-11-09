@@ -25,7 +25,7 @@
 #import "OrderRefundInfoModel.h"
 
 #import "ReturnGoodsDetailVc.h"
-
+#import "DataManager.h"
 #import "SMAlert.h"
 #import "EMChatViewController.h"
 
@@ -51,13 +51,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.hideNavigationBar = YES;
     [self initData];
     [self initUI];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    self.navigationController.navigationBar.hidden = YES;
 }
 
 -(void)initData{
@@ -119,7 +119,7 @@
 -(void)applyCancelAction{
     
     
-    [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+    [SMAlert setConfirmBtBackgroundColor:kMainYellow];
     [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
     [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
     [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
@@ -332,7 +332,7 @@
     
     if (_bgView == nil) {
         _bgView = [[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(self.navgationView.frame), ScreenWidth, 135)];
-        [_bgView setBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+        [_bgView setBackgroundColor:kMainYellow];
     }
     return _bgView;
 

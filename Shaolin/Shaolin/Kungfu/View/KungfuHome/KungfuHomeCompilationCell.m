@@ -122,7 +122,7 @@ static NSString *const moreCellId = @"tableCell";
         return 45;
     }
     
-    return 83;
+    return 94;
 }
 
 
@@ -164,7 +164,7 @@ static NSString *const moreCellId = @"tableCell";
 //        self.moreBtn.hidden = YES;
     }
     
-    self.classTableView.frame = CGRectMake(0, 10, self.whiteBgView.width, classCount * 83 + moreHeight);
+    self.classTableView.frame = CGRectMake(0, 10, self.whiteBgView.width, classCount * 94 + moreHeight);
 
     
     [self.classTableView reloadData];

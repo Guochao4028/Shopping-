@@ -359,7 +359,7 @@
 //        _logisticsTableView.contentSize=CGSizeMake(self.view.frame.size.width, self.view.frame.size.height*2);
         
         _logisticsTableView.sectionIndexColor = [UIColor colorForHex:@"999999"];//[UIColor colorWithRed:0.10 green:0.68 blue:0.94 alpha:1.0];
-//        _logisticsTableView.sectionIndexTrackingBackgroundColor = [UIColor colorForHex:@"8E2B25"];
+//        _logisticsTableView.sectionIndexTrackingBackgroundColor = kMainYellow;
         
         _logisticsTableView.sectionIndexBackgroundColor = [UIColor clearColor];
         [_logisticsTableView registerClass:[LogisticsCell class] forCellReuseIdentifier:@"cellID"];

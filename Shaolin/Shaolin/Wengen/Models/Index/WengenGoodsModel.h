@@ -26,6 +26,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, copy)NSString *img_url;
 @property(nonatomic, copy)NSString *is_discount;
 
+///是否自营 1，自营 0非自营
+@property(nonatomic, copy)NSString *is_self;
+
 /*
 "club_id" = 3;
                desc = "\U6d4b\U8bd5\U5546\U54c13\U7b80\U4ecb";

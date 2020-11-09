@@ -23,25 +23,32 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.titleLabe.text = @"";
-    if ([[self.params objectForKey:@"idCard_type"] isEqualToString:@"1"]){
+    NSString *idCardType = [self getIdCardType];
+    if ([idCardType isEqualToString:@"1"]){
         self.titleLabe.text = SLLocalizedString(@"身份证认证");
-    } else if ([[self.params objectForKey:@"idCard_type"] isEqualToString:@"2"]){
+    } else if ([idCardType isEqualToString:@"2"]){
         self.titleLabe.text = SLLocalizedString(@"护照认证");
     }
     [self setUI];
+    [self reloadView];
     // Do any additional setup after loading the view.
 }
 
 - (void)setParams:(NSDictionary *)params{
     _params = params;
+    [self reloadView];
+}
+
+- (void)reloadView{
     if (_collectionView){
         [self.collectionView reloadData];
     }
-    if (!params || ![params objectForKey:@"realname"] || ![params objectForKey:@"idcard"] || ![params objectForKey:@"idCard_type"]) return;
-    
-    NSString *realName = [NSString nameDataMasking:[self.params objectForKey:@"realname"]];
-    NSString *idCardType = [self.params objectForKey:@"idCard_type"];
-    NSString *idCard = [NSString idCardDataMasking:[self.params objectForKey:@"idcard"]];
+    NSString *idCardType = [self getIdCardType];
+    NSString *idCard = [self getIdcard];
+    NSString *realName = [self getRealname];
+    if (!realName.length || !idCard.length || !idCardType.length) return;
+    realName = [NSString nameDataMasking:realName];
+    idCard = [NSString idCardDataMasking:idCard];
     NSString *idCardText = @"";
     if ([idCardType isEqualToString:@"1"]){
         idCardText = SLLocalizedString(@"身份证号码");
@@ -51,7 +58,6 @@
     self.realNameLabel.text = [NSString stringWithFormat:@"%@：%@", SLLocalizedString(@"真实姓名"), realName];
     self.idCardLabel.text = [NSString stringWithFormat:@"%@：%@", idCardText, idCard];
 }
-
 #pragma mark - UI
 - (void)setUI{
 //    [self.view addSubview:self.collectionView];
@@ -118,57 +124,83 @@
 
 #pragma mark - UICollectionView Delegate && dataSource
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    if (self.params)
+    NSInteger verifiedState = [[self getVerifiedState] integerValue];
+    if (verifiedState == 1)//0未认证 1已认证 2认证中 3认证失败
         return 2;
     return 0;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:NSStringFromClass([UICollectionViewCell class]) forIndexPath:indexPath];
-    if (self.params){
-        NSInteger firstViewTag = 100, secondViewTag = firstViewTag+1, lineTag = secondViewTag+1;
-        UILabel *firstLabel = [cell viewWithTag:firstViewTag];
-        UILabel *secondLabel = [cell viewWithTag:secondViewTag];
-        if (!firstLabel) {
-            firstLabel = [self createLabel:cell tag:firstViewTag];
-            firstLabel.textColor = [UIColor colorForHex:@"999999"];
-            [firstLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.left.mas_equalTo(16);
-                make.width.mas_equalTo(90);
-                make.centerY.mas_equalTo(cell);
-            }];
-        }
-        if (!secondLabel) {
-            secondLabel = [self createLabel:cell tag:secondViewTag];
-            [secondLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.left.mas_equalTo(firstLabel.mas_right).mas_equalTo(5);
-                make.centerY.mas_equalTo(cell);
-            }];
-        }
-        if (indexPath.row == 0){
-            NSString *realName = [NSString nameDataMasking:[self.params objectForKey:@"realname"]];
-            firstLabel.text = [NSString stringWithFormat:@"%@：", SLLocalizedString(@"姓名")];
-            secondLabel.text = realName;
-            
-        } else if (indexPath.row == 1){
-            NSString *idCardType = [self.params objectForKey:@"idCard_type"];
-            NSString *idCard = [NSString idCardDataMasking:[self.params objectForKey:@"idcard"]];
-            NSString *idCardText = @"";
-            if ([idCardType isEqualToString:@"1"]){
-                idCardText = [NSString stringWithFormat:@"%@：", SLLocalizedString(@"身份证号码")];
-            } else {
-                idCardText = [NSString stringWithFormat:@"%@：", SLLocalizedString(@"护照号码")];
-            }
-            firstLabel.text = idCardText;
-            secondLabel.text = idCard;
-        }
-        UIView *line = [cell viewWithTag:lineTag];
-        if (!line) line = [self lineView:cell tag:lineTag];
+    NSInteger firstViewTag = 100, secondViewTag = firstViewTag+1, lineTag = secondViewTag+1;
+    UILabel *firstLabel = [cell viewWithTag:firstViewTag];
+    UILabel *secondLabel = [cell viewWithTag:secondViewTag];
+    if (!firstLabel) {
+        firstLabel = [self createLabel:cell tag:firstViewTag];
+        firstLabel.textColor = [UIColor colorForHex:@"999999"];
+        [firstLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(16);
+            make.width.mas_equalTo(90);
+            make.centerY.mas_equalTo(cell);
+        }];
     }
+    if (!secondLabel) {
+        secondLabel = [self createLabel:cell tag:secondViewTag];
+        [secondLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(firstLabel.mas_right).mas_equalTo(5);
+            make.centerY.mas_equalTo(cell);
+        }];
+    }
+    if (indexPath.row == 0){
+        NSString *realName = [NSString nameDataMasking:[self getRealname]];
+        firstLabel.text = [NSString stringWithFormat:@"%@：", SLLocalizedString(@"姓名")];
+        secondLabel.text = realName;
+        
+    } else if (indexPath.row == 1){
+        NSString *idCardType = [self getIdCardType];
+        NSString *idCard = [NSString idCardDataMasking:[self getIdcard]];
+        NSString *idCardText = @"";
+        if ([idCardType isEqualToString:@"1"]){
+            idCardText = [NSString stringWithFormat:@"%@：", SLLocalizedString(@"身份证号")];
+        } else {
+            idCardText = [NSString stringWithFormat:@"%@：", SLLocalizedString(@"护照号码")];
+        }
+        firstLabel.text = idCardText;
+        secondLabel.text = idCard;
+    }
+    UIView *line = [cell viewWithTag:lineTag];
+    if (!line) line = [self lineView:cell tag:lineTag];
     return cell;
 }
 
-#pragma mark -
+#pragma mark - getter
+- (NSString *)getVerifiedState{
+    if (self.params && NotNilAndNull([self.params objectForKey:@"verifiedState"])){
+        return [self.params objectForKey:@"verifiedState"];
+    }
+    return  [SLAppInfoModel sharedInstance].verifiedState;
+}
+
+- (NSString *)getIdCardType{
+    if (self.params && NotNilAndNull([self.params objectForKey:@"idCard_type"])){
+        return [self.params objectForKey:@"idCard_type"];
+    }
+    return  [SLAppInfoModel sharedInstance].idCard_type;
+}
+
+- (NSString *)getIdcard{
+    if (self.params && NotNilAndNull([self.params objectForKey:@"idcard"])){
+        return [self.params objectForKey:@"idcard"];
+    }
+    return  [SLAppInfoModel sharedInstance].idcard;
+}
+
+- (NSString *)getRealname{
+    if (self.params && NotNilAndNull([self.params objectForKey:@"realname"])){
+        return [self.params objectForKey:@"realname"];
+    }
+    return  [SLAppInfoModel sharedInstance].realname;
+}
 
 - (UICollectionView *)collectionView{
     if (!_collectionView){
@@ -223,7 +255,7 @@
     if (!_tipsLabel){
         _tipsLabel = [self createLabel:nil tag:-1];
         _tipsLabel.font = kRegular(15);
-        _tipsLabel.textColor = [UIColor colorForHex:@"8E2B25"];
+        _tipsLabel.textColor = kMainYellow;
         _tipsLabel.textAlignment = NSTextAlignmentCenter;
         _tipsLabel.text = [NSString stringWithFormat:@"*%@", SLLocalizedString(@"实名认证后不可修改")];
     }

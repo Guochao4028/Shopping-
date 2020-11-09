@@ -16,7 +16,6 @@
 #import "ShoppingCartViewController.h"
 #import "EMChatViewController.h"
 
-#import "WengenNavgationView.h"
 #import "KungfuOrderDetailFooterView.h"
 #import "KungfuOrderDetailHeaderView.h"
 #import "OrderGoodsItmeFooterTabelVeiw.h"
@@ -34,8 +33,10 @@
 #import "DefinedHost.h"
 #import "KungfuManager.h"
 #import "OrderInvoiceFillOpenViewController.h"
+#import "DataManager.h"
+#import "OrderFillCourseViewController.h"
 
-@interface KungfuOrderDetailViewController ()<WengenNavgationViewDelegate, UITableViewDelegate, UITableViewDataSource>
+@interface KungfuOrderDetailViewController ()<UITableViewDelegate, UITableViewDataSource>
 
 @property(nonatomic, strong) UIView *navgationView;
 @property(nonatomic, strong) UIView *redView;
@@ -59,17 +60,12 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-
-    self.navigationController.navigationBar.hidden = YES;
-    
+    [self setNavigationBarRedTintColor];
     [self initData];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
-    self.navigationController.navigationBar.hidden = YES;
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
@@ -80,7 +76,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    self.hideNavigationBar = YES;
     [self initUI];
 //    [self initData];
 }
@@ -192,7 +188,19 @@
             if ([self.detailsModel.type intValue] == 3) {
                 //活动
                 [[KungfuManager sharedInstance] getUserInfoWithOrderCode:self.orderId callback:^(NSDictionary *result) {
-                    NSString * realName = result[@"realname"];
+                    if (IsNilOrNull(result)) {
+                        [self.headerView setDetailsModel:self.detailsModel];
+                        return;
+                    }
+                    
+                    NSString * realName;
+                    
+                    if (result[@"realname"] == nil) {
+                        realName = result[@"realName"];
+                    }else{
+                        realName = result[@"realname"];
+                    }
+                     
                     NSString * telephone = result[@"telephone"];
                     
                     self.detailsModel.order_user_realName = realName;
@@ -220,10 +228,23 @@
 // 去支付
 -(void)payOrder{
     
+    [[ModelTool shareInstance]setIsOrderListNeedRefreshed:YES];
+    
+    NSInteger type = [self.detailsModel.type intValue];
+   
+    BOOL isCourse = YES;
+    
     CheckstandViewController *checkstandVC = [[CheckstandViewController alloc]init];
     checkstandVC.goodsAmountTotal = [NSString stringWithFormat:@"￥%@", self.orderPrice];
     checkstandVC.order_no = self.detailsModel.order_sn;
-    checkstandVC.isCourse = YES;
+    
+    if (type == OrderDetailsTutorialType) {
+        isCourse = YES;
+    }else if(type == OrderDetailsActivityType){
+        isCourse = NO;
+    }
+    
+    checkstandVC.isCourse = isCourse;
     checkstandVC.isOrderState = YES;
     [self.navigationController pushViewController:checkstandVC animated:YES];
 }
@@ -238,7 +259,7 @@
 
 // 删除订单
 - (void)deleteOrder {
-    [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+    [SMAlert setConfirmBtBackgroundColor:kMainYellow];
     [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
     [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
     [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
@@ -251,6 +272,9 @@
     [title setTextAlignment:NSTextAlignmentCenter];
     [customView addSubview:title];
     [SMAlert showCustomView:customView stroke:YES confirmButton:[SMButton initWithTitle:SLLocalizedString(@"确定") clickAction:^{
+        
+        [[ModelTool shareInstance]setIsOrderListNeedRefreshed:YES];
+        
         MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
         [[DataManager shareInstance]delOrder:@{@"id":self.detailsModel.order_sn} Callback:^(Message *message) {
             [hud hideAnimated:YES];
@@ -278,6 +302,9 @@
 
         [[DataManager shareInstance]cancelOrder:@{@"order_id":self.detailsModel.order_sn, @"cancel":cause} Callback:^(Message *message) {
             if (message.isSuccess) {
+                
+                [[ModelTool shareInstance]setIsOrderListNeedRefreshed:YES];
+                
                 [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"提交成功，正在为您取消订单") view:self.view afterDelay:TipSeconds];
                 [self.navigationController popViewControllerAnimated:YES];
             }else{
@@ -295,18 +322,28 @@
     
     NSString *urlStr = URL_H5_InvoiceDetail(self.detailsModel.order_sn, appInfoModel.access_token);
     
-    WengenWebViewController *webVC = [[WengenWebViewController alloc] initWithUrl:urlStr title:SLLocalizedString(@"查看发票")];
+    WengenWebViewController *webVC = [[WengenWebViewController alloc] initWithUrl:urlStr title:SLLocalizedString(@"发票详情")];
     [self.navigationController pushViewController:webVC animated:YES];
 }
 
 // 再次购买
 - (void)buyAgain {
-    MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
-    [ModelTool processPurchasLogicAgain:self.dataArray callBack:^(Message *message) {
-        [hud hideAnimated:YES];
-        ShoppingCartViewController *shoppomgCartVC = [[ShoppingCartViewController alloc]init];
-        [self.navigationController pushViewController:shoppomgCartVC animated:YES];
-    }];
+//    MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
+//    [ModelTool processPurchasLogicAgain:self.dataArray callBack:^(Message *message) {
+//        [hud hideAnimated:YES];
+//        ShoppingCartViewController *shoppomgCartVC = [[ShoppingCartViewController alloc]init];
+//        [self.navigationController pushViewController:shoppomgCartVC animated:YES];
+//    }];
+    
+    
+    
+    NSArray *goodsArray =  [ModelTool courseDealsProcessPurchasLogicAgain:self.dataArray];
+    //跳转到填写订单页面
+    OrderFillCourseViewController *orderFillVC = [[OrderFillCourseViewController alloc] init];
+    orderFillVC.dataArray = goodsArray;
+    [self.navigationController pushViewController:orderFillVC animated:YES];
+    
+    
 }
 
 //播放视频
@@ -328,7 +365,7 @@
 
 // 补开发票
 - (void)repairInvoice{
-    
+    [[ModelTool shareInstance]setIsOrderListNeedRefreshed:YES];
     OrderInvoiceFillOpenViewController * fillOpenVC= [[OrderInvoiceFillOpenViewController alloc]init];
        fillOpenVC.orderSn = self.detailsModel.order_sn;
        fillOpenVC.orderTotalSn = self.orderId;
@@ -477,7 +514,7 @@
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    UIColor *color = [UIColor hexColor:@"8E2B25"];
+    UIColor *color = kMainYellow;
     CGFloat offsetY = scrollView.contentOffset.y;
     
     if ((offsetY) > 64) {
@@ -489,7 +526,7 @@
         [self.navgationView setBackgroundColor:color];
         [self.redView setBackgroundColor:color];
         [self.backButton setImage:[UIImage imageNamed:@"baiL"] forState:UIControlStateNormal];
-        [self.titleLabel setTextColor:[UIColor hexColor:@"8E2B25"]];
+        [self.titleLabel setTextColor:kMainYellow];
     }
 }
 
@@ -524,7 +561,7 @@
             barHeight = [[UIApplication sharedApplication] statusBarFrame].size.height;
         }
         _navgationView = [[UIView alloc]initWithFrame:CGRectMake(0, barHeight, ScreenWidth, 40)];
-        [_navgationView setBackgroundColor:[UIColor hexColor:@"8E2B25"]];
+        [_navgationView setBackgroundColor:kMainYellow];
         [_navgationView addSubview:self.backButton];
         [self.backButton addTarget:self action:@selector(back) forControlEvents:UIControlEventTouchUpInside];
         
@@ -549,7 +586,7 @@
         _titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(x, 0, 100, 40)];
         [_titleLabel setFont:kMediumFont(17)];
         [_titleLabel setText:SLLocalizedString(@"订单详情")];
-        [_titleLabel setTextColor:[UIColor hexColor:@"8E2B25"]];
+        [_titleLabel setTextColor:kMainYellow];
         [_titleLabel setTextAlignment:NSTextAlignmentCenter];
         
     }
@@ -569,7 +606,7 @@
         
         [_tableView setDelegate:self];
         [_tableView setDataSource:self];
-        _tableView.backgroundColor = [UIColor hexColor:@"ffffff"];
+        _tableView.backgroundColor = [UIColor hexColor:@"fafafa"];
         _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         
         [_tableView registerNib:[UINib nibWithNibName:NSStringFromClass([KungfuOrderGoodsCell class])bundle:nil] forCellReuseIdentifier:@"KungfuOrderGoodsCell"];
@@ -661,13 +698,8 @@
 -(UIView *)redView {
     if (!_redView) {
         _redView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kWidth, kHeight/2)];
-        _redView.backgroundColor = [UIColor hexColor:@"8E2B25"];
+        _redView.backgroundColor = kMainYellow;
     }
     return _redView;
-}
-
-#pragma mark - device
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    return UIStatusBarStyleLightContent;
 }
 @end

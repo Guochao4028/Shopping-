@@ -10,10 +10,10 @@
 #import "TQStarRatingView.h"
 #import "GoodsStoreInfoModel.h"
 #import "UIImage+ImageDarken.h"
-#import "StoreCertificateInformationViewController.h"
 
 #import "WengenWebViewController.h"
 #import "DefinedHost.h"
+#import "DataManager.h"
 
 @interface StoreDetailsViewController ()
 
@@ -48,22 +48,28 @@
 @property (weak, nonatomic) IBOutlet UIView *infoBgView;
 @property (weak, nonatomic) IBOutlet UIButton *lookBtn;
 
+
+@property (weak, nonatomic) IBOutlet UIImageView *proprietaryImageView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *proprietaryImageViewW;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *proprietaryGayW;
+
+
 @end
 
 @implementation StoreDetailsViewController
 
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self.navigationController setNavigationBarHidden:YES animated:NO];
+    [self setNavigationBarClearTintColorWhiteStyle];
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-    [self.navigationController setNavigationBarHidden:NO animated:NO];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.titleLabe.text = SLLocalizedString(@"店铺详情");
     // Do any additional setup after loading the view from its nib.
     [self initData];
     [self initUI];
@@ -76,6 +82,17 @@
     [[DataManager shareInstance]getStoreInfo:@{@"id":self.storeId} Callback:^(NSObject *object) {
         [hud hideAnimated:YES];
         self.storeInfoModel = (GoodsStoreInfoModel *)object;
+        
+        BOOL is_self = [self.storeInfoModel.is_self boolValue];
+        if (is_self) {
+            [self.proprietaryImageView setHidden:NO];
+            self.proprietaryImageViewW.constant = 35;
+            self.proprietaryGayW.constant = 5;
+        }else{
+            [self.proprietaryImageView setHidden:YES];
+            self.proprietaryImageViewW.constant = 0;
+            self.proprietaryGayW.constant = 0;
+        }
     }];
 }
 
@@ -118,6 +135,8 @@
            self.focusButton.layer.cornerRadius = SLChange(15);
            [self.focusButton setTitleColor:[UIColor colorForHex:@"FFFFFF"] forState:UIControlStateNormal];
        }
+    
+    
 }
 
 -(void)cornerRadius:(UIView *)view radius:(CGFloat)cout{
@@ -152,11 +171,8 @@
     NSString *urlStr = URL_H5_ShopInfo(self.storeId, appInfoModel.access_token);
     
     WengenWebViewController *webVC = [[WengenWebViewController alloc]initWithUrl:urlStr title:SLLocalizedString(@"证照信息")];
+    webVC.navigationBarStyle = NavigationBarClearTintColor_blackStyle;
     [self.navigationController pushViewController:webVC animated:YES];
-    
-//    StoreCertificateInformationViewController *infoVC = [[StoreCertificateInformationViewController alloc]init];
-//    infoVC.storeId = self.storeId;
-//    [self.navigationController pushViewController:infoVC animated:YES];
 }
 
 - (IBAction)focusAction:(UIButton *)sender {

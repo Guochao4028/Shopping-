@@ -170,14 +170,29 @@ NS_ASSUME_NONNULL_BEGIN
 -(void)getLevelList:(NSDictionary *)param callbacl:(NSDictionaryCallBack)call;
 
 
-///检查筛查所适用报名的段位
+///检查筛查所适用报名的位阶
 -(void)activityCheckedLevel:(NSDictionary *)param callbacl:(NSObjectCallBack)call;
+
+///段品制活动详情
+-(void)activityDetails:(NSDictionary *)param callbacl:(NSObjectCallBack)call;
 
 ///提交机构报名信息
 -(void)mechanismSignUpWithDic:(NSDictionary *)dic callback:(MessageCallBack)call;
 
 ///考试凭证
 -(void)checkProof:(NSDictionary *)param callback:(NSDictionaryCallBack)call;
+
+///商品开发票信息
+-(void)getGoodsInvoice:(NSDictionary *)param Callback:(NSDictionaryCallBack)call;
+
+///换开发票
+-(void)changeInvoice:(NSDictionary *)param Callback:(MessageCallBack)call;
+
+///修改发票信息
+-(void)editInvoice:(NSDictionary *)param Callback:(MessageCallBack)call;
+
+///发送邮件
+-(void)sendMail:(NSDictionary *)param Callback:(MessageCallBack)call;
 
 
 

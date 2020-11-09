@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface KungfuHomeModuleCell : UITableViewCell
 
+@property(nonatomic, copy)NSString *messageNum;
+
 
 //@property (nonatomic, copy) void(^ examHandle)(void);
 

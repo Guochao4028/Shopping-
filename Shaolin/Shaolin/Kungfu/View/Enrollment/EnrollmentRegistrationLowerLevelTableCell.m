@@ -52,9 +52,9 @@
            
            if ([title isEqualToString:SLLocalizedString(@"申报段品阶：")] == YES) {
                [cell setDataModel:[self.dataArray objectAtIndex:indexPath.row]];
-           }else if([title isEqualToString:SLLocalizedString(@"国      籍：")] == YES) {
+           }else if([title isEqualToString:SLLocalizedString(@"国籍：")] == YES) {
                [cell setAddressInfoModel:[self.dataArray objectAtIndex:indexPath.row]];
-           }else if([title isEqualToString:SLLocalizedString(@"民      族：")] == YES ||[title isEqualToString:SLLocalizedString(@"学      历：")] == YES) {
+           }else if([title isEqualToString:SLLocalizedString(@"民族：")] == YES ||[title isEqualToString:SLLocalizedString(@"学历：")] == YES) {
                [cell setDataInfoModel:[self.dataArray objectAtIndex:indexPath.row]];
            }else{
                [cell setAddressModel:[self.dataArray objectAtIndex:indexPath.row]];
@@ -95,7 +95,7 @@
     _model = model;
     NSString *title = model[@"title"];
     self.dataArray = model[@"subArray"];
-    if ([title isEqualToString:SLLocalizedString(@"国      籍：")] == YES){
+    if ([title isEqualToString:SLLocalizedString(@"国籍：")] == YES){
         [self.collectionView setScrollEnabled:YES];
     }else{
         [self.collectionView setScrollEnabled:NO];

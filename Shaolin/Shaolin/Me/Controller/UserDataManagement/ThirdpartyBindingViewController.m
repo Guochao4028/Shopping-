@@ -278,7 +278,7 @@
         successButton.layer.borderWidth = 0.5;
         successButton.layer.borderColor = [UIColor colorForHex:@"979797"].CGColor;
         successButton.titleLabel.font = kRegular(15);
-        [successButton setBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+        [successButton setBackgroundColor:kMainYellow];
         [successButton setTitle:successStr forState:UIControlStateNormal];
         [successButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [successButton handleControlEvent:UIControlEventTouchUpInside block:^(UIButton * _Nonnull button) {
@@ -522,7 +522,7 @@
         _changePhoneButton = [[UIButton alloc] init];
         _changePhoneButton.clipsToBounds = YES;
         _changePhoneButton.titleLabel.font = kRegular(15);
-        _changePhoneButton.backgroundColor = [UIColor colorForHex:@"8E2B25"];
+        _changePhoneButton.backgroundColor = kMainYellow;
         [_changePhoneButton setTitle:SLLocalizedString(@"更换手机号") forState:UIControlStateNormal];
         [_changePhoneButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         

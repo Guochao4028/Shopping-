@@ -643,7 +643,7 @@
         textMaxCount = self.titleTextMaxCount;
         if (textCount > textMaxCount){
             self.titleTipsLabel.text = [NSString stringWithFormat:SLLocalizedString(@"标题字数不可超过%ld个字"), textMaxCount];
-            self.titleTipsLabel.textColor = [UIColor colorForHex:@"8E2B25"];
+            self.titleTipsLabel.textColor = kMainYellow;
         } else {
             self.titleTipsLabel.text = @"";
         }
@@ -652,7 +652,7 @@
         textMaxCount = self.introductionTextMaxCount;
         if (textCount > textMaxCount){
             self.introductionTipsLabel.text = [NSString stringWithFormat:SLLocalizedString(@"简介字数不可超过%ld个字"), textMaxCount];
-            self.introductionTipsLabel.textColor = [UIColor colorForHex:@"8E2B25"];
+            self.introductionTipsLabel.textColor = kMainYellow;
         } else {
             self.introductionTipsLabel.text = @"";
         }

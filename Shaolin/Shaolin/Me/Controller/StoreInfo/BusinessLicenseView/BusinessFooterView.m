@@ -118,7 +118,7 @@
            [_nextBtn addTarget:self action:@selector(nextAction) forControlEvents:(UIControlEventTouchUpInside)];
            [_nextBtn setTitleColor:[UIColor colorForHex:@"FFFFFF"] forState:(UIControlStateNormal)];
            _nextBtn.titleLabel.font = kRegular(15);
-           _nextBtn.backgroundColor = [UIColor colorForHex:@"8E2B25"];
+           _nextBtn.backgroundColor = kMainYellow;
         _nextBtn.layer.cornerRadius = 4;
         _nextBtn.layer.masksToBounds = YES;
     }

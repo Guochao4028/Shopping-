@@ -13,6 +13,9 @@
 + (NSDictionary *)mj_replacedKeyFromPropertyName{
     return @{
              @"applyId" : @"id",
+             @"realName" : @[@"realName", @"realname"],
+             @"photosUrl" : @[@"photosUrl", @"photosurl"],
+             @"examAddress" : @[@"examAddress", @"examaddress"],
              };
 }
 

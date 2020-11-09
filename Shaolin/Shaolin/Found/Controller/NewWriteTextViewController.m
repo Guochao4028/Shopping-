@@ -64,8 +64,6 @@ static CGFloat kFooterHeight = 47.f;
     [self.view addSubview:self.introductionTipsLabel];
     self.view.backgroundColor = [UIColor whiteColor];
     
-    self.edgesForExtendedLayout = UIRectEdgeNone;
-    self.automaticallyAdjustsScrollViewInsets = NO;
     self.viewLine1 = [[UIView alloc] initWithFrame:CGRectMake(0,SLChange(70), kWidth, 1)];
     self.viewLine1.backgroundColor = [UIColor colorForHex:@"E5E5E5"];
     [self.view addSubview:self.viewLine1];
@@ -395,7 +393,7 @@ static CGFloat kFooterHeight = 47.f;
             self.titleTipsLabel.textColor = [UIColor colorForHex:@"999999"];
         } else if (textCount > textMaxCount){
             self.titleTipsLabel.text = [NSString stringWithFormat:SLLocalizedString(@"标题字数不可超过%ld个字"), textMaxCount];
-            self.titleTipsLabel.textColor = [UIColor colorForHex:@"8E2B25"];
+            self.titleTipsLabel.textColor = kMainYellow;
         } else {
             self.titleTipsLabel.text = @"";
         }
@@ -407,7 +405,7 @@ static CGFloat kFooterHeight = 47.f;
             self.introductionTipsLabel.textColor = [UIColor colorForHex:@"999999"];
         } else if (textCount > textMaxCount){
             self.introductionTipsLabel.text = [NSString stringWithFormat:SLLocalizedString(@"简介字数不可超过%ld个字"), textMaxCount];
-            self.introductionTipsLabel.textColor = [UIColor colorForHex:@"8E2B25"];
+            self.introductionTipsLabel.textColor = kMainYellow;
         } else {
             self.introductionTipsLabel.text = @"";
         }

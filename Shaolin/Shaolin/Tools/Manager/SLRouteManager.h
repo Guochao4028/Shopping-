@@ -29,18 +29,31 @@ typedef NS_ENUM(NSInteger, SLRouteRealNameAuthenticationState) {
 @interface SLRouteManager : NSObject
 @property (nonatomic) SLRouteType type;
 @property (nonatomic, strong) SLRouteModel *model;
-@property (nonatomic, strong) UIViewController *viewCollection;
+///可为空，如果为空，获取Window当前显示的视图控制器ViewController
+@property (nonatomic, strong) UIViewController *viewController;
+///可为空，如果为空，获取Window当前显示的视图控制器NavigationController
 @property (nonatomic, strong) UINavigationController *navigationController;
 - (void)startRoute;
 
-+ (void)shaolinRouteByPush:(UINavigationController *)navigationController model:(SLRouteModel *)model;
-+ (void)shaolinRouteByPresent:(UIViewController *)viewCollection model:(SLRouteModel *)model;
++ (void)shaolinRouteByPush:(UINavigationController *_Nullable)navigationController model:(SLRouteModel *)model;
++ (void)shaolinRouteByPresent:(UIViewController *_Nullable)viewController model:(SLRouteModel *)model;
+
+///获取Window当前显示的视图控制器ViewController
++ (UIViewController *)findCurrentShowingViewController;
+///获取Window当前显示的视图控制器NavigationController
++ (UINavigationController *)findCurrentShowingNavigationController;
+/**
+ *  获取Window当前显示的视图控制器ViewController
+ *  @param vc   从哪个界面开始分析
+ *  @return 当前显示的视图控制器ViewController
+ */
++ (UIViewController *)findCurrentShowingViewControllerFrom:(UIViewController *)vc;
 
 #pragma mark -
-/**进入少林师傅祝福语页面*/
+///进入少林师傅祝福语页面
 + (void)pushRiteBlessingViewController:(UINavigationController *)navigationController orderCode:(NSString *)orderCode;
-/**返回实名认证状态，如果navigationController不为空，在未认证和认证失败状态下会进入RealNameViewController进行实名认证*/
-+ (SLRouteRealNameAuthenticationState)pushRealNameAuthenticationState:(UINavigationController *)navigationController showAlert:(BOOL)showAlert;
+///返回实名认证状态，在未认证和认证失败状态下会进入RealNameViewController进行实名认证，showAlert如果为YES则显示弹框，否则直接进入实名认证页面
++ (void)pushRealNameAuthenticationState:(UINavigationController *)navigationController showAlert:(BOOL)showAlert isReloadData:(BOOL)isReloadData finish:(void (^_Nullable)(SLRouteRealNameAuthenticationState state))finish;
 @end
 
 

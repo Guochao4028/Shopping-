@@ -21,6 +21,13 @@
 @property (weak, nonatomic) IBOutlet UIView *bgView;
 
 
+@property (weak, nonatomic) IBOutlet UIImageView *proprietaryImageView;
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *proprietaryImageViewW;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *proprietaryGayW;
+
+
+
 @end
 
 @implementation WengenGoodsCollectionCell
@@ -30,6 +37,10 @@
     // Initialization code
     [self.bgView.layer setMasksToBounds:YES];
     [self.bgView.layer setCornerRadius:10];
+    
+    [self.proprietaryImageView setHidden:YES];
+    self.proprietaryImageViewW.constant = 0;
+    self.proprietaryGayW.constant = 0;
     
 }
 
@@ -79,6 +90,17 @@
 
     self.priceLabel.attributedText = attrStr;
     
+    
+    BOOL is_self = [model.is_self boolValue];
+    if (is_self) {
+        [self.proprietaryImageView setHidden:NO];
+        self.proprietaryImageViewW.constant = 35;
+        self.proprietaryGayW.constant = 5;
+    }else{
+        [self.proprietaryImageView setHidden:YES];
+        self.proprietaryImageViewW.constant = 0;
+        self.proprietaryGayW.constant = 0;
+    }
     
 }
 

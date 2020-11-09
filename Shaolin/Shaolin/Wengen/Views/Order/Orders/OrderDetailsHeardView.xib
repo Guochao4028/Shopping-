@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -160,7 +161,7 @@
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
-                    <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <constraints>
                         <constraint firstItem="Cpy-rE-5B7" firstAttribute="leading" secondItem="lX4-rt-Dzo" secondAttribute="trailing" constant="16" id="2Vx-8x-JUo"/>
                         <constraint firstItem="Cpy-rE-5B7" firstAttribute="centerY" secondItem="lX4-rt-Dzo" secondAttribute="centerY" id="8pH-O6-bdb"/>
@@ -180,6 +181,7 @@
                     </constraints>
                 </view>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <color key="backgroundColor" red="0.55686274509803924" green="0.16862745098039217" blue="0.14509803921568626" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="qzM-3I-PqS" firstAttribute="top" secondItem="nVL-iE-1EV" secondAttribute="top" id="EQo-Rt-qht"/>
@@ -198,7 +200,6 @@
                 <constraint firstItem="8Zd-ug-xiO" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="uNj-qr-Ifq"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <point key="canvasLocation" x="44.927536231884062" y="-178.125"/>
         </view>
         <view contentMode="scaleToFill" id="aba-7R-EP7" userLabel="CancelView">
@@ -291,7 +292,7 @@
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
-                    <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="95" id="0ab-Oy-C7G"/>
                         <constraint firstItem="QPJ-GJ-nrS" firstAttribute="leading" secondItem="ekv-B3-97a" secondAttribute="trailing" constant="26" id="4O9-vf-eTX"/>
@@ -311,6 +312,7 @@
                     </constraints>
                 </view>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="sRr-Xk-ads"/>
             <color key="backgroundColor" red="0.5568627451" green="0.16862745100000001" blue="0.1450980392" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="sRr-Xk-ads" firstAttribute="trailing" secondItem="ZqE-CX-Lrb" secondAttribute="trailing" id="6fT-G0-S7p"/>
@@ -322,7 +324,6 @@
                 <constraint firstItem="ZqE-CX-Lrb" firstAttribute="top" secondItem="e0c-lx-I08" secondAttribute="bottom" constant="15" id="uRT-T9-1Wj"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="sRr-Xk-ads"/>
             <point key="canvasLocation" x="44.927536231884062" y="50.892857142857139"/>
         </view>
         <view contentMode="scaleToFill" id="rlo-Pr-yaO" userLabel="NormalView">
@@ -330,7 +331,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="G2A-9w-W97">
-                    <rect key="frame" x="155" y="0.0" width="104" height="25"/>
+                    <rect key="frame" x="173.5" y="0.0" width="67" height="25"/>
                     <subviews>
                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="warning-circle" translatesAutoresizingMaskIntoConstraints="NO" id="Tq5-4N-1JM">
                             <rect key="frame" x="0.0" y="2.5" width="20" height="20"/>
@@ -348,8 +349,8 @@
                     </subviews>
                     <constraints>
                         <constraint firstAttribute="height" constant="25" id="E6c-VF-0OD"/>
-                        <constraint firstAttribute="width" constant="104" id="FmC-kW-tIi"/>
                         <constraint firstItem="Tq5-4N-1JM" firstAttribute="centerY" secondItem="G2A-9w-W97" secondAttribute="centerY" id="VvJ-Ak-SPb"/>
+                        <constraint firstAttribute="trailing" secondItem="lq2-Wo-LuY" secondAttribute="trailing" id="YXk-qO-qVE"/>
                         <constraint firstItem="Tq5-4N-1JM" firstAttribute="leading" secondItem="G2A-9w-W97" secondAttribute="leading" id="g13-aU-f76"/>
                         <constraint firstItem="lq2-Wo-LuY" firstAttribute="centerY" secondItem="G2A-9w-W97" secondAttribute="centerY" id="kiS-Wm-fJV"/>
                         <constraint firstItem="lq2-Wo-LuY" firstAttribute="leading" secondItem="Tq5-4N-1JM" secondAttribute="trailing" constant="10.5" id="mqR-6n-Me5"/>
@@ -432,7 +433,7 @@
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
-                    <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <constraints>
                         <constraint firstAttribute="bottom" secondItem="Bqg-8M-bCj" secondAttribute="bottom" constant="12" id="3UG-cd-dzd"/>
                         <constraint firstItem="rW3-AO-uZb" firstAttribute="leading" secondItem="0Cb-Rh-OTs" secondAttribute="leading" constant="16" id="70Y-FX-XEm"/>
@@ -448,6 +449,7 @@
                     </constraints>
                 </view>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="ikV-oB-24E"/>
             <color key="backgroundColor" red="0.5568627451" green="0.16862745100000001" blue="0.1450980392" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="gtF-aC-iTM" firstAttribute="leading" secondItem="ikV-oB-24E" secondAttribute="leading" id="1ez-q1-3yf"/>
@@ -464,7 +466,6 @@
                 <constraint firstItem="ikV-oB-24E" firstAttribute="trailing" secondItem="vlR-2T-MIB" secondAttribute="trailing" id="soC-d0-OR9"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="ikV-oB-24E"/>
             <point key="canvasLocation" x="308.69565217391306" y="641.85267857142856"/>
         </view>
     </objects>
@@ -475,5 +476,8 @@
         <image name="payButtonBG" width="125" height="40"/>
         <image name="positioning" width="12" height="15"/>
         <image name="warning-circle" width="20" height="20.5"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
     </resources>
 </document>

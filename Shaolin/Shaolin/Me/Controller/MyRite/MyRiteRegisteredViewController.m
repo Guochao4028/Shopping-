@@ -28,6 +28,10 @@ static NSString *const riteCellId = @"MyRiteRegisteredCell";
 @end
 
 @implementation MyRiteRegisteredViewController
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self setNavigationBarRedTintColor];
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -35,6 +39,11 @@ static NSString *const riteCellId = @"MyRiteRegisteredCell";
     self.pageSize = 10;
     self.pageNum = 1;
     [self.view addSubview:self.infoTable];
+    
+    [self.infoTable mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.top.mas_equalTo(self.view);
+        make.bottom.mas_equalTo(-kBottomSafeHeight);
+    }];
     
     [self loadData];
 }

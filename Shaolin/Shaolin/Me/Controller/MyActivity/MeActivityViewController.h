@@ -6,7 +6,7 @@
 //  Copyright © 2020 syqaxldy. All rights reserved.
 //  我的 - 我的活动
 
-
+#import "RootViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

@@ -28,6 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, copy)NSString *club_id;
 @property(nonatomic, copy)NSString *type;
 @property(nonatomic, strong)NSArray *attr;
+@property(nonatomic, strong)NSArray *attr_str;
 @property(nonatomic, copy)NSString *goods_sn;
 @property(nonatomic, copy)NSString *shopping_fee;
 @property(nonatomic, copy)NSString *star;
@@ -43,6 +44,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, strong)NSArray *goods_value;
 ///商品规格参数是否展开
 @property(nonatomic, assign)BOOL isGoodsSpecificationSpread;
+
+
+///是否自营 1，自营 0非自营
+@property(nonatomic, copy)NSString *is_self;
 
 @end
 

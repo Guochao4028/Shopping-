@@ -422,7 +422,7 @@
         _sendCodeButton.clipsToBounds = YES;
         _sendCodeButton.titleLabel.font = kRegular(12);
         [_sendCodeButton setTitle:SLLocalizedString(@"发送验证码") forState:UIControlStateNormal];
-        [_sendCodeButton setBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+        [_sendCodeButton setBackgroundColor:kMainYellow];
         [_sendCodeButton addTarget:self action:@selector(sendCodeButtonClick:) forControlEvents:UIControlEventTouchUpInside];
         
     }
@@ -435,7 +435,7 @@
         _finishButton.clipsToBounds = YES;
         _finishButton.titleLabel.font = kRegular(17);
         [_finishButton setTitle:SLLocalizedString(@"提交") forState:UIControlStateNormal];
-        [_finishButton setBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+        [_finishButton setBackgroundColor:kMainYellow];
         [_finishButton addTarget:self action:@selector(finishButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _finishButton;

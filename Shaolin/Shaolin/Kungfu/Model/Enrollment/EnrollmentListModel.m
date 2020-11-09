@@ -20,6 +20,6 @@
 
 
 + (NSDictionary *)mj_objectClassInArray{
-    return @{@"address" : @"EnrollmentAddressModel"};
+    return @{@"activityAddresses" : @"EnrollmentAddressModel"};
 }
 @end

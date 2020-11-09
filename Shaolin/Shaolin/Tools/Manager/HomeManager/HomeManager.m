@@ -7,7 +7,7 @@
 //
 
 #import "HomeManager.h"
-#import "NetworkingHandler.h"
+
 #import "AFNetworking.h"
 #import "DefinedURLs.h"
 #import "DefinedHost.h"

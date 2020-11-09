@@ -17,7 +17,8 @@
  */
 typedef NS_ENUM(NSInteger, XLPageTitleViewStyle) {
     XLPageTitleViewStyleBasic = 0,
-    XLPageTitleViewStyleSegmented = 1
+    XLPageTitleViewStyleSegmented = 1,
+    XLPageTitleViewStylePictureAndText = 2,
 };
 
 /**

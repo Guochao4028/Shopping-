@@ -15,6 +15,7 @@
 #import "OrderListModel.h"
 
 #import "StoreViewController.h"
+#import "DataManager.h"
 
 @interface ConfirmGoodsSuccessViewController ()<WengenNavgationViewDelegate, ConfirmSuccessViewDelegate>
 
@@ -26,12 +27,11 @@
 
 @implementation ConfirmGoodsSuccessViewController
 - (void)viewWillAppear:(BOOL)animated {
-    
-    self.navigationController.navigationBar.hidden = YES;
+    [super viewWillAppear:animated];
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    self.hideNavigationBar = YES;
     [self initUI];
     [self initData];
     

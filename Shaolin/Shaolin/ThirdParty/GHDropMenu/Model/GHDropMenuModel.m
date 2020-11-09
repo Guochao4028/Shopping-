@@ -22,15 +22,9 @@
     NSArray *duanArray = [[ModelTool shareInstance] select:[LevelModel class] tableName:@"level" where:@"levelType = 1"];
     
     NSMutableArray *duanRow = [NSMutableArray array];
-    for (NSInteger index = 0 ; index < duanArray.count; index++) {
+    
+    for (LevelModel *model in duanArray) {
         GHDropMenuModel *dropMenuModel = [[GHDropMenuModel alloc]init];
-        
-        NSDictionary *dic = [duanArray objectAtIndex:index];
-        
-        LevelModel *model = [LevelModel mj_objectWithKeyValues:dic];
-        
-        model.levelId = dic[@"levelId"];
-        
         dropMenuModel.tagName = model.name;
         dropMenuModel.model = model;
         dropMenuModel.isMultiple = YES;
@@ -39,18 +33,30 @@
         [duanRow addObject:dropMenuModel];
     }
     
+//    for (NSInteger index = 0 ; index < duanArray.count; index++) {
+//        GHDropMenuModel *dropMenuModel = [[GHDropMenuModel alloc]init];
+//
+//        NSDictionary *dic = [duanArray objectAtIndex:index];
+//
+//        LevelModel *model = [LevelModel mj_objectWithKeyValues:dic];
+//
+//        model.levelId = dic[@"levelId"];
+//
+//        dropMenuModel.tagName = model.name;
+//        dropMenuModel.model = model;
+//        dropMenuModel.isMultiple = YES;
+//        dropMenuModel.levelType = @"1";
+//        dropMenuModel.optionSeletedColor = [UIColor colorForHex:@"BE0000"];
+//        [duanRow addObject:dropMenuModel];
+//    }
+    
     
     
     NSArray *pinArray = [[ModelTool shareInstance] select:[LevelModel class] tableName:@"level" where:@"levelType = 3"];
     NSMutableArray *pinRow = [NSMutableArray array];
-    for (NSInteger index = 0 ; index < pinArray.count; index++) {
+    
+    for (LevelModel *model in pinArray) {
         GHDropMenuModel *dropMenuModel = [[GHDropMenuModel alloc]init];
-        
-        NSDictionary *dic = [pinArray objectAtIndex:index];
-        
-        LevelModel *model = [LevelModel mj_objectWithKeyValues:dic];
-        model.levelId = dic[@"levelId"];
-        
         dropMenuModel.tagName = model.name;
         dropMenuModel.model = model;
         dropMenuModel.isMultiple = YES;
@@ -59,14 +65,29 @@
         [pinRow addObject:dropMenuModel];
     }
     
+    
+//    for (NSInteger index = 0 ; index < pinArray.count; index++) {
+//        GHDropMenuModel *dropMenuModel = [[GHDropMenuModel alloc]init];
+//
+//        NSDictionary *dic = [pinArray objectAtIndex:index];
+//
+//        LevelModel *model = [LevelModel mj_objectWithKeyValues:dic];
+//        model.levelId = dic[@"levelId"];
+//
+//        dropMenuModel.tagName = model.name;
+//        dropMenuModel.model = model;
+//        dropMenuModel.isMultiple = YES;
+//        dropMenuModel.levelType = @"3";
+//        dropMenuModel.optionSeletedColor = [UIColor colorForHex:@"BE0000"];
+//        [pinRow addObject:dropMenuModel];
+//    }
+    
     NSArray *pinjieArray = [[ModelTool shareInstance] select:[LevelModel class] tableName:@"level" where:@"levelType = 2"];
     NSMutableArray *pinjieRow = [NSMutableArray array];
-    for (NSInteger index = 0 ; index < pinjieArray.count; index++) {
+    
+    
+    for (LevelModel *model in pinjieArray) {
         GHDropMenuModel *dropMenuModel = [[GHDropMenuModel alloc]init];
-        NSDictionary *dic = [pinjieArray objectAtIndex:index];
-        
-        LevelModel *model = [LevelModel mj_objectWithKeyValues:dic];
-        model.levelId = dic[@"levelId"];
         dropMenuModel.isMultiple = YES;
         dropMenuModel.tagName = model.name;
         dropMenuModel.model = model;
@@ -76,6 +97,23 @@
         
         [pinjieRow addObject:dropMenuModel];
     }
+    
+    
+//    for (NSInteger index = 0 ; index < pinjieArray.count; index++) {
+//        GHDropMenuModel *dropMenuModel = [[GHDropMenuModel alloc]init];
+//        NSDictionary *dic = [pinjieArray objectAtIndex:index];
+//        
+//        LevelModel *model = [LevelModel mj_objectWithKeyValues:dic];
+//        model.levelId = dic[@"levelId"];
+//        dropMenuModel.isMultiple = YES;
+//        dropMenuModel.tagName = model.name;
+//        dropMenuModel.model = model;
+//         dropMenuModel.levelType = @"2";
+//        dropMenuModel.optionSeletedColor = [UIColor colorForHex:@"BE0000"];
+//        //               dropMenuModel.tagName = [qwe by_ObjectAtIndex:index];
+//        
+//        [pinjieRow addObject:dropMenuModel];
+//    }
     
     NSArray *statusArray = @[SLLocalizedString(@"未开始"), SLLocalizedString(@"进行中"), SLLocalizedString(@"已结束")];
     NSMutableArray *statusRow = [NSMutableArray array];

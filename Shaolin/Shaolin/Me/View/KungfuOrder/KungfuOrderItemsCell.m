@@ -129,7 +129,7 @@
 ///更新布局
 -(void)updateLayout:(OrderListModel *)listModel{
    
-    [self.orderNoLabel setText:[NSString stringWithFormat:SLLocalizedString(@"订单单号：%@"), listModel.order_car_sn]];
+    [self.orderNoLabel setText:[NSString stringWithFormat:SLLocalizedString(@"订单编号：%@"), listModel.order_car_sn]];
     NSArray *orderStoreArray = listModel.order_goods;
     
     OrderStoreModel *storeModel = [orderStoreArray firstObject];

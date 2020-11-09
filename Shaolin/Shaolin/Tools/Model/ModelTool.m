@@ -23,6 +23,7 @@
 #import <objc/runtime.h>
 
 #import "MeManager.h"
+#import "DataManager.h"
 
 #import "OrderGoodsModel.h"
 
@@ -72,8 +73,19 @@
 +(void)processingAddressData:(NSString *)filePath{
     
     NSString *content = [[NSString alloc] initWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];
-    
+
     NSArray *array = [self jsonStringToKeyValues:content];
+    
+    if ([array count] == 0) {
+        
+        NSString *bundleFilePath =[[NSBundle mainBundle] pathForResource:@"area_list" ofType:@"txt"];
+        
+        NSString *bundleFileContent = [[NSString alloc] initWithContentsOfFile:bundleFilePath encoding:NSUTF8StringEncoding error:nil];
+        
+        array = [self jsonStringToKeyValues:bundleFileContent];
+        
+    }
+    
     
     NSArray *modelArray  = [AddressInfoModel mj_objectArrayWithKeyValuesArray:array];
     
@@ -165,7 +177,7 @@
     return responseJSON;
 }
 
-+(void)getUserData {
++(void)getUserData:(void (^_Nullable)(void))finish{
 //    MBProgressHUD *hud = [XXAlertViewfillLoadingWithText:nil view:nil];
     [[MeManager sharedInstance] getUserDataSuccess:^(id  _Nonnull responseObject) {
         NSDictionary *dic = responseObject;
@@ -180,6 +192,7 @@
             [[SLAppInfoModel sharedInstance] saveCurrentUserData];
         }
     } failure:nil finish:^(id  _Nonnull responseObject, NSString * _Nonnull errorReason) {
+        if (finish) finish();
         //        [hud hideAnimated: YES];
     }];
 }
@@ -357,6 +370,45 @@ numericalValidationType:(NumericalValidationType)type
        });
 }
 
+///课程处理再次购买逻辑
++(NSArray *)courseDealsProcessPurchasLogicAgain:(NSArray *)itemArray{
+    NSMutableArray *modelMutabelArray = [NSMutableArray array];
+    NSMutableArray *saveGoodsArray = [NSMutableArray array];
+    NSMutableDictionary *tam = [NSMutableDictionary dictionary];
+    /**
+     整理数据  itemArray所有的数据
+     把 整理好的数据 放入 goodsArray
+     */
+    NSMutableArray *goodsArray = [NSMutableArray array];
+    for (OrderStoreModel *storeModel in itemArray) {
+        for (OrderDetailsModel *item in storeModel.goods) {
+            [goodsArray addObject:item];
+        }
+    }
+    
+    for (OrderDetailsModel *goodsItem in goodsArray) {
+        ShoppingCartGoodsModel *cartGoodModel = [[ShoppingCartGoodsModel alloc]init];
+        cartGoodModel.name = goodsItem.goods_name;
+        cartGoodModel.desc = goodsItem.desc;
+        cartGoodModel.img_data = goodsItem.goods_image;
+        cartGoodModel.price = goodsItem.money;
+        cartGoodModel.current_price = goodsItem.money;
+        cartGoodModel.stock = @"1";
+        cartGoodModel.store_type = @"1";
+        cartGoodModel.num = goodsItem.num;
+        cartGoodModel.goods_id = goodsItem.goods_id;
+        
+        [saveGoodsArray addObject:cartGoodModel];
+    }
+    
+   [tam setValue:saveGoodsArray forKey:@"goods"];
+   
+   [modelMutabelArray addObject:tam];
+    
+    return modelMutabelArray;
+}
+
+
 /// 拼装订单数据
 +(NSArray *)assembleData:(NSArray *)dataArray{
     
@@ -367,6 +419,7 @@ numericalValidationType:(NumericalValidationType)type
            OrderStoreModel *storeModel = [[OrderStoreModel alloc]init];
            storeModel.storeId = model.club_id;
            storeModel.name = model.club_name;
+           storeModel.is_self = model.is_self;
            int flag = 1;
            
            for (OrderStoreModel *storeItem in storeArray) {
@@ -520,12 +573,23 @@ numericalValidationType:(NumericalValidationType)type
         OrderGoodsModel *goodsModel = [storeModel.goods firstObject];
         NSInteger goods_type = [goodsModel.goods_type integerValue];
         CGFloat cellHight = 225;
+        
         ///1：实物，2：教程，3：报名，5:法事佛事类型-法会，6:法事佛事类型-佛事， 7:法事佛事类型-建寺供僧 8:普通法会 4:交流会
         if (goods_type == 2 || goods_type == 3 || goods_type == 4) {
             if (statusInteger == 6 || statusInteger == 7) {
                 cellHight = 180;
             }
         }
+        
+        if (goods_type == 1) {
+            if([goodsModel.status isEqualToString:@"2"] && [goodsModel.is_invoice isEqualToString:@"0"]){
+                
+                if ([goodsModel.is_foreign isEqualToString:@"1"]) {
+                    cellHight = 225 - 30;
+                }
+            }
+        }
+        
         listModel.cellHight = cellHight;
         [tem addObject:listModel];
     }
@@ -567,25 +631,43 @@ numericalValidationType:(NumericalValidationType)type
 }
 
 
++(UIWindow *)lastWindow{
+    NSEnumerator *frontToBackWindows = [UIApplication.sharedApplication.windows reverseObjectEnumerator];
+    for (UIWindow *window in frontToBackWindows) {
+        BOOL windowOnMainScreen = window.screen == UIScreen.mainScreen;
+        BOOL windowIsVisible = !window.hidden && window.alpha > 0;
+        BOOL windowLevelSupported = (window.windowLevel >= UIWindowLevelNormal && window.windowLevel <= UIWindowLevelNormal);
+        if(windowOnMainScreen && windowIsVisible && windowLevelSupported) {
+            return window;
+        }
+    }
+    return nil;
+}
+
+
 /// 创建数据库
 -(void)createBatabase{
-    NSString *sql =  @"\
-    CREATE TABLE level('id' INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL , 'classification' VARCHAR(255), 'levelId' VARCHAR(30), 'createTime' VARCHAR(255), 'fid' VARCHAR(255), 'name' VARCHAR(255), 'number' VARCHAR(255), 'type' VARCHAR(255), 'value' VARCHAR(255), 'levelType' VARCHAR(255));\
-    ";
+    
+   NSArray *sqlStringsArray = @[
+       @"CREATE TABLE level('id' INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL , 'classification' VARCHAR(255), 'levelId' VARCHAR(30), 'createTime' VARCHAR(255), 'fid' VARCHAR(255), 'name' VARCHAR(255), 'number' VARCHAR(255), 'type' VARCHAR(255), 'value' VARCHAR(255), 'levelType' VARCHAR(255));",
+       @"CREATE TABLE searchHistory('id' INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL , 'userId' VARCHAR(255), 'type' VARCHAR(30), 'searchContent' VARCHAR(255));",
+   ];
+    
+    NSArray *tableNames = @[@"level", @"searchHistory"];
+    
+    
     NSFileManager * fileManager = [NSFileManager defaultManager];
        NSString *doc = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
        self.dbPath = [doc stringByAppendingPathComponent:@"User.sqlite"];
     if ([fileManager fileExistsAtPath:self.dbPath] == NO) {
            FMDatabase * db = [FMDatabase databaseWithPath:self.dbPath];
            if ([db open]) {
-               
-               BOOL res = [db executeUpdate:sql];
-               if (res == YES) {
-                   NSLog(@"创建数据表成功");
-               }else{
-                   NSLog(@"创建数据库失败");
+               for (NSString *sql in sqlStringsArray) {
+                   BOOL res = [db executeUpdate:sql];
+                   if (res == NO) {
+                       NSLog(@"创建数据表成功");
+                   }
                }
-               
                [db close];
            } else {
                NSLog(@"创建数据库失败");
@@ -593,26 +675,31 @@ numericalValidationType:(NumericalValidationType)type
     }else{
         //检查数据库有是否有想要创建的数据表
         
+        NSLog(@"self.dbPath : %@", self.dbPath);
+        
         FMDatabase *db = [FMDatabase databaseWithPath:self.dbPath];
         
         if ([db open]) {
-            
-            NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", @"level" ];
-            
-            FMResultSet *rs = [db executeQuery:existsSql];
-            
-            if ([rs next]) {
-                NSInteger count = [rs intForColumn:@"countNum"];
+            int i = 0;
+            for (NSString *tableName in tableNames) {
+                NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", tableName ];
                 
-                if (count == 1) {
-                    NSLog(@"存在");
-                }else{
+                FMResultSet *rs = [db executeQuery:existsSql];
+                
+                if ([rs next]) {
+                    NSInteger count = [rs intForColumn:@"countNum"];
                     
-                    BOOL res = [db executeUpdate:sql];
-                    if (res == YES) {
-                        NSLog(@"创建数据表成功");
+                    if (count == 1) {
+                        NSLog(@"存在");
+                    }else{
+                        NSString *sql = sqlStringsArray[i];
+                        BOOL res = [db executeUpdate:sql];
+                        if (res == NO) {
+                            NSLog(@"创建数据表成功");
+                        }
                     }
                 }
+                i++;
             }
             [db close];
         }
@@ -739,7 +826,9 @@ numericalValidationType:(NumericalValidationType)type
     
     [set close];
     [db close];
-    return [allArray copy];
+    NSArray *dataArray = [[model class] mj_objectArrayWithKeyValuesArray:allArray];
+//    return [allArray copy];
+    return dataArray;
 }
 
 ///查询所有
@@ -764,6 +853,17 @@ numericalValidationType:(NumericalValidationType)type
     [set close];
     [db close];
     return [allArray copy];
+}
+
+- (BOOL)deleteTableName:(NSString*)tbName where:(NSString*)str{
+    FMDatabase *db = [FMDatabase databaseWithPath:self.dbPath];
+    NSString *sql = [NSString stringWithFormat:@"delete from %@ where %@",tbName,str];
+    NSLog(@"删除数据 : %@",sql);
+    [db open];
+    BOOL result = [db executeUpdate:sql];
+    [db close];
+    NSLog(@"更新数据:%@",result ? @"成功":@"失败");
+    return result;
 }
 
 #pragma mark - 单例构造

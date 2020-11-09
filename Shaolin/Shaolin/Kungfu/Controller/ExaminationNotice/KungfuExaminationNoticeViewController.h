@@ -6,7 +6,7 @@
 //  Copyright © 2020 syqaxldy. All rights reserved.
 //  考试通知
 
-
+#import "RootViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

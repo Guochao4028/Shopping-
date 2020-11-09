@@ -39,8 +39,8 @@
      *  删除之前存在的subView
      */
 //    totalHeight = 0;
-    NSMutableArray * tagLabels = [NSMutableArray new];
-    CGFloat minFont  = 100;
+//    NSMutableArray * tagLabels = [NSMutableArray new];
+//    CGFloat minFont  = 100;
     for (UIView *view in self.subviews) {
         [view removeFromSuperview];
     }

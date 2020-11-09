@@ -29,6 +29,11 @@
 
 @implementation MeCollectionTextVc
 
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self setNavigationBarRedTintColor];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
      _isInsertEdit = NO;
@@ -45,7 +50,8 @@
     
     [self.view addSubview:self.tableView];
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
-              make.edges.equalTo(self.view);
+        make.left.right.top.mas_equalTo(self.view);
+        make.bottom.mas_equalTo(-kBottomSafeHeight);
     }];
      
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(selectEditCell) name:@"collectionEditTextSelect" object:nil];
@@ -364,6 +370,7 @@
                     if ([model.state isEqualToString:@"6"]) {
                         if ([model.kind isEqualToString:@"1"] || [model.kind isEqualToString:@"2"]) {
                             FoundDetailsViewController *vC = [[FoundDetailsViewController alloc]init];
+                            vC.hideNavigationBar = YES;
                             vC.idStr = model.id;
                             vC.tabbarStr =tabbarSt;
                             vC.typeStr = model.type;
@@ -380,6 +387,7 @@
                     if ([model.state isEqualToString:@"2"]) {
                         if ([model.kind isEqualToString:@"1"] || [model.kind isEqualToString:@"2"]) {
                                 FoundDetailsViewController *vC = [[FoundDetailsViewController alloc]init];
+                                vC.hideNavigationBar = YES;
                                 vC.idStr = model.id;
                                 vC.tabbarStr =tabbarSt;
                                 vC.typeStr = model.type;

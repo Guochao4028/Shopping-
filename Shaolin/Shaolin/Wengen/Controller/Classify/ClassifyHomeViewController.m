@@ -45,14 +45,13 @@
 
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    self.navigationController.navigationBar.hidden = YES;
 }
 
 -(void)initUI{
     [self.view setBackgroundColor:[UIColor whiteColor]];
-    [self.view addSubview:self.searchView];
+//    [self.view addSubview:self.searchView];
     
-    CGFloat y = CGRectGetMaxY(self.searchView.frame);
+    CGFloat y = 0;//CGRectGetMaxY(self.searchView.frame);
     
     self.pageViewController.view.frame = CGRectMake(0, y, ScreenWidth, ScreenHeight - y);
     
@@ -142,6 +141,17 @@
     return _searchView;
 }
 
+- (UIView *)titleCenterView{
+    return self.searchView;
+}
+
+- (UIButton *)leftBtn{
+    return nil;
+}
+
+- (UIButton *)rightBtn{
+    return nil;
+}
 
 -(XLPageViewController *)pageViewController{
     
@@ -161,7 +171,7 @@
         //标题间距
         _config.titleSpace = SLChange(20);
         //标题选中颜色
-        _config.titleSelectedColor = [UIColor colorForHex:@"8E2B25"];
+        _config.titleSelectedColor = kMainYellow;
         //标题选中字体
         _config.titleSelectedFont = kMediumFont(15);
         //标题正常颜色
@@ -171,7 +181,7 @@
         //隐藏动画线条
         _config.shadowLineHidden = NO;
         //分割线颜色
-        _config.shadowLineColor = [UIColor colorForHex:@"8E2B25"];
+        _config.shadowLineColor = kMainYellow;
         //标题居中显示
         _config.titleViewAlignment = XLPageTitleViewAlignmentCenter;
         

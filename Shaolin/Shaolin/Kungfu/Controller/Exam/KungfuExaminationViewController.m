@@ -22,7 +22,7 @@
 #import "InstitutionModel.h"
 #import "WengenBannerModel.h"
 #import "DefinedHost.h"
-
+#import "DataManager.h"
 @interface KungfuExaminationViewController ()<UITableViewDelegate,UITableViewDataSource,SDCycleScrollViewDelegate,UICollectionViewDelegate,UICollectionViewDataSource>
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) UICollectionViewFlowLayout *layout;
@@ -194,7 +194,7 @@
 }
 
 - (void) showAlertWithInfoString:(NSString *)text{
-    [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+    [SMAlert setConfirmBtBackgroundColor:kMainYellow];
     [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
     [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
     [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
@@ -286,6 +286,7 @@
             [self.navigationController pushViewController:vc animated:YES];
         }else if (indexPath.row == 5) {
             KfCertificateCheckViewController * vc = [KfCertificateCheckViewController new];
+            vc.navigationBarWhiteTintColor = @(YES);
             vc.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:vc animated:YES];
         }

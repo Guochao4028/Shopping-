@@ -6,12 +6,10 @@
 //  Copyright © 2020 syqaxldy. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 #import "RootViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-//@interface WengenWebViewController : UIViewController
 @interface WengenWebViewController : RootViewController
 
 -(instancetype)initWithUrl:(NSString*)url title:(NSString*)title;

@@ -6,10 +6,10 @@
 //  Copyright © 2020 syqaxldy. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "RootViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
-@interface MeClassListViewController : UIViewController
+@interface MeClassListViewController : RootViewController
 //@property (nonatomic, copy) void(^ cellSelectBlock)(NSObject *model);
 @property (nonatomic) NSInteger identifier;
 @property (nonatomic, copy) NSString *currentTitle;

@@ -8,11 +8,11 @@
 //
 //  功夫 - 容器
 
-#import <UIKit/UIKit.h>
+#import "RootViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface KungfuViewController : UIViewController
+@interface KungfuViewController : RootViewController
 
 @end
 

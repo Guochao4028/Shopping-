@@ -13,6 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface KungfuHomemLatestEventsCollectionCell : UICollectionViewCell
 
 @property (nonatomic, strong) EnrollmentListModel * cellModel;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *imgLeftCon;
 
 @end
 

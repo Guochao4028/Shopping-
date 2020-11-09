@@ -8,6 +8,7 @@
 
 #import "SLForgetAndRegistView.h"
 #import "MeManager.h"
+#import "LoginManager.h"
 #import "NSString+Tool.h"
 
 @interface SLForgetAndRegistView()<UITextFieldDelegate>
@@ -212,7 +213,7 @@
     if (!_titleLabe) {
         _titleLabe = [[UILabel alloc]init];
         _titleLabe.textAlignment = NSTextAlignmentCenter;
-        _titleLabe.textColor = [UIColor colorForHex:@"8E2B25"];
+        _titleLabe.textColor = kMainYellow;
         _titleLabe.font = kRegular(18);
     }
     return _titleLabe;
@@ -280,7 +281,7 @@
         [_sendBtn setTitle:SLLocalizedString(@"发送验证码") forState:UIControlStateNormal];
         _sendBtn.titleLabel.font = kRegular(12);
         _sendBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
-        [_sendBtn setTitleColor:[UIColor colorForHex:@"8E2B25"] forState:UIControlStateNormal];
+        [_sendBtn setTitleColor:kMainYellow forState:UIControlStateNormal];
         [_sendBtn addTarget:self action:@selector(tapVerBtnAction:) forControlEvents:UIControlEventTouchUpInside];
        
     }
@@ -520,7 +521,7 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 //设置界面的按钮显示 根据自己需求设置
                 [self.sendBtn setTitle:SLLocalizedString(@"重新获取") forState:UIControlStateNormal];
-                 [self.sendBtn setTitleColor:[UIColor colorForHex:@"8E2B25"] forState:UIControlStateNormal];
+                 [self.sendBtn setTitleColor:kMainYellow forState:UIControlStateNormal];
                 self.sendBtn.userInteractionEnabled = YES;
             });
         } else {

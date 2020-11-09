@@ -11,23 +11,20 @@
 
 /////////////////////////////////////////////////////////////////////////////////
 
-// 判断是否iPhone X
-#define IS_iPhoneX ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1125, 2436), [[UIScreen mainScreen] currentMode].size) : NO)
-
 // status bar height.
-#define STATUS_BAR_HEIGHT (IS_iPhoneX ? 44.f : 20.f)
+#define STATUS_BAR_HEIGHT (IS_iphoneX ? 44.f : 20.f)
 
 // Navigation bar height.
 #define NAVIGATION_BAR_HEIGHT 44.f
 
 // Status bar & navigation bar height.
-#define STATUS_AND_NAVIGATION_HEIGHT (IS_iPhoneX ? 88.f : 64.f)
+#define STATUS_AND_NAVIGATION_HEIGHT (IS_iphoneX ? 88.f : 64.f)
 
 // Tabbar height.
-#define TAB_BAR_HEIGHT (IS_iPhoneX ? (49.f + 34.f) : 49.f)
+#define TAB_BAR_HEIGHT (IS_iphoneX ? (49.f + 34.f) : 49.f)
 
 // Tabbar safe bottom margin.
-#define TAB_BAR_SAFE_BOTTOM_MARGIN (IS_iPhoneX ? 34.f : 0.f)
+#define TAB_BAR_SAFE_BOTTOM_MARGIN (IS_iphoneX ? 34.f : 0.f)
 
 /////////////////////////////////////////////////////////////////////////////////
 ///  获取屏幕宽度

@@ -7,6 +7,9 @@
 //
 
 #import "SLSearchView.h"
+
+#import "SearchHistoryModel.h"
+
 @interface SLSearchView()
 
 @property (nonatomic, strong) UITableView *tableView;
@@ -25,22 +28,49 @@
         self.hotArray = hotArr;
         [self addSubview:self.searchHistoryView];
         [self addSubview:self.hotSearchView];
-        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(clearHistory) name:@"ClearHistory" object:nil];
+        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(clearHistory:) name:@"ClearHistory" object:nil];
        
     }
     return self;
 }
 
-- (void)clearHistory {
+- (void)clearHistory:(NSNotification *)notification{
+    
+    NSDictionary *userInfo = notification.userInfo;
+    
        [self.searchHistoryView removeFromSuperview];
        self.searchHistoryView = [self setNoHistoryView];
        [_historyArray removeAllObjects];
-       [NSKeyedArchiver archiveRootObject:_historyArray toFile:KHistorySearchPath];
+//       [NSKeyedArchiver archiveRootObject:_historyArray toFile:KHistorySearchPath];
+    
+    NSString *tabbarStr = userInfo[@"tabbarStr"];
+    BOOL isRite = [userInfo[@"isRite"] boolValue];
+    
+    SearchHistoryType type;
+    if ([tabbarStr isEqualToString:@"Activity"]) {
+        if (isRite) {
+            type = SearchHistoryRiteClassroomType;
+        }else{
+            type = SearchHistoryRiteCharityType;
+        }
+    }else if([tabbarStr isEqualToString:@"Found"]){
+        type = SearchHistoryArticleType;
+    }else{
+        type = 0;
+    }
+    
+    NSString *userId = [SLAppInfoModel sharedInstance].id;
+    [[ModelTool shareInstance]deleteTableName:@"searchHistory" where:[NSString stringWithFormat:@"userId = '%@' AND type = '%ld' ", userId, type]];
+    
+    
+    
        [self addSubview:self.searchHistoryView];
        CGRect frame = _hotSearchView.frame;
        frame.origin.y = CGRectGetHeight(_searchHistoryView.frame);
        _hotSearchView.frame = frame;
 }
+
+
 - (UIView *)hotSearchView
 {
     if (!_hotSearchView) {
@@ -105,7 +135,15 @@
     CGFloat y = SLChange(15) + SLChange(40);
     CGFloat letfWidth = SLChange(15);
     for (int i = 0; i < textArr.count; i++) {
-        NSString *text = [self subTextString:textArr[i] len:6];
+        NSString *text;
+        
+        if ([title isEqualToString:SLLocalizedString(@"搜索历史")]) {
+            text = [self subModelTextString:textArr[i] len:6];
+        }else{
+            text = [self subTextString:textArr[i] len:6];
+        }
+        
+        
         CGFloat width = [self getWidthWithStr:text] + SLChange(35);
         if (letfWidth + width + SLChange(15) > kWidth) {
             if (y >= SLChange(130) && [title isEqualToString:SLLocalizedString(@"搜索历史")]) {
@@ -138,7 +176,7 @@
     if(str.length<=len)return str;
     int count=0;
     NSMutableString *sb = [NSMutableString string];
-    
+
     for (int i=0; i<str.length; i++) {
         NSRange range = NSMakeRange(i, 1) ;
         NSString *aStr = [str substringWithRange:range];
@@ -146,10 +184,28 @@
         [sb appendString:aStr];
         if(count >= len*2) {
             return (i==str.length-1)?[sb copy]:[NSString stringWithFormat:@"%@...",[sb copy]];
-            
+
         }
     }
     return str;
+}
+
+-(NSString*)subModelTextString:(SearchHistoryModel*)model len:(NSInteger)len{
+    NSString *searchContent = model.searchContent;
+    if (searchContent.length<=len) return searchContent;
+    int count=0;
+    NSMutableString *sb = [NSMutableString string];
+    for (int i=0; i<searchContent.length; i++) {
+        NSRange range = NSMakeRange(i, 1) ;
+        NSString *aStr = [searchContent substringWithRange:range];
+        count += [aStr lengthOfBytesUsingEncoding:NSUTF8StringEncoding]>1?2:1;
+        [sb appendString:aStr];
+        if(count >= len*2) {
+            return (i==searchContent.length-1)?[sb copy]:[NSString stringWithFormat:@"%@...",[sb copy]];
+
+        }
+    }
+    return searchContent;
 }
 
 - (UIView *)setNoHistoryView
@@ -251,10 +307,12 @@
 
 - (void)removeTestDataWithTextArr:(NSMutableArray *)testArr index:(int)index
 {
-    NSRange range = {index, testArr.count - index - 1};
-    [testArr removeObjectsInRange:range];
-    [NSKeyedArchiver archiveRootObject:testArr toFile:KHistorySearchPath];
+//    NSRange range = {index, testArr.count - index - 1};
+//    [testArr removeObjectsInRange:range];
+//    [NSKeyedArchiver archiveRootObject:testArr toFile:KHistorySearchPath];
+    
 }
+
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.

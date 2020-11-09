@@ -80,6 +80,10 @@
 
 #import "RiteOrderDetailViewController.h"
 #import  "SLRouteManager.h"
+#import "DataManager.h"
+
+#import "ModifyInvoiceViewController.h"
+#import "ExchangeInvoiceViewController.h"
 
 @interface OrderViewController ()<UITableViewDelegate, UITableViewDataSource, OrdeItmeTableViewCellDelegate, OrdeMoreItmeTableViewCellDelegate, OrderAfterSalesItmeTableViewCellDelegate, RiteOrderTableViewCellDelegate>
 
@@ -101,18 +105,24 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self initUI];
+    [self initData];
     
 }
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self initData];
+    
+    
+    if([[ModelTool shareInstance]isOrderListNeedRefreshed]){
+        [[ModelTool shareInstance]setIsOrderListNeedRefreshed:NO];
+        [self initData];
+    }
+    
 }
 
 #pragma mark - methods
 
 -(void)initUI{
-    [self.navigationController.navigationBar setHidden:YES];
     [self.view addSubview:self.tableView];
     //    [self.view addSubview:self.emptyView];
 }
@@ -245,50 +255,55 @@
     
     NSString *urlStr = URL_H5_InvoiceDetail(model.order_sn, appInfoModel.access_token);
     
-    WengenWebViewController *webVC = [[WengenWebViewController alloc]initWithUrl:urlStr title:SLLocalizedString(@"查看发票")];
+    WengenWebViewController *webVC = [[WengenWebViewController alloc]initWithUrl:urlStr title:SLLocalizedString(@"发票详情")];
     [self.navigationController pushViewController:webVC animated:YES];
 }
 
 // block 补开发票
 - (void) repairInvoiceWithModel:(OrderListModel *)model {
-    OrderInvoiceFillOpenViewController * fillOpenVC= [[OrderInvoiceFillOpenViewController alloc]init];
-    fillOpenVC.orderSn = model.order_sn;
-    fillOpenVC.orderTotalSn = model.order_car_sn;
-    [self.navigationController pushViewController:fillOpenVC animated:YES];
+//    OrderInvoiceFillOpenViewController * fillOpenVC= [[OrderInvoiceFillOpenViewController alloc]init];
+//    fillOpenVC.orderSn = model.order_sn;
+//    fillOpenVC.orderTotalSn = model.order_car_sn;
+//    [self.navigationController pushViewController:fillOpenVC animated:YES];
+    
+    [self jumpOrderInvoiceFillOpenViewController:model];
+
 }
 
 // block 去支付
 - (void) payOrderWithModel:(OrderListModel *)model {
     
-    NSArray *orderStoreArray = model.order_goods;
+    [self orderPay:model];
     
-    OrderStoreModel *storeModel = [orderStoreArray firstObject];
-    
-    NSArray *orderGoodsArray = storeModel.goods;
-    
-    OrderGoodsModel *goodsModel = [orderGoodsArray firstObject];
-    
-    NSString *goods_type = goodsModel.goods_type;
-    
-    CheckstandViewController *checkstandVC = [[CheckstandViewController alloc]init];
-    
-    checkstandVC.isOrderState = YES;
-    
-    checkstandVC.activityCode = nil;
-    
-    if ([goods_type isEqualToString:@"3"]) {
-        checkstandVC.activityCode = goodsModel.cate_id;
-    }
-    
-    if ([goods_type isEqualToString:@"2"]) {
-        
-        checkstandVC.isCourse = YES;
-    }
-    
-    checkstandVC.goodsAmountTotal = [NSString stringWithFormat:@"￥%@", model.order_car_money];
-    checkstandVC.order_no = model.order_car_sn;
-    
-    [self.navigationController pushViewController:checkstandVC animated:YES];
+//    NSArray *orderStoreArray = model.order_goods;
+//
+//    OrderStoreModel *storeModel = [orderStoreArray firstObject];
+//
+//    NSArray *orderGoodsArray = storeModel.goods;
+//
+//    OrderGoodsModel *goodsModel = [orderGoodsArray firstObject];
+//
+//    NSString *goods_type = goodsModel.goods_type;
+//
+//    CheckstandViewController *checkstandVC = [[CheckstandViewController alloc]init];
+//
+//    checkstandVC.isOrderState = YES;
+//
+//    checkstandVC.activityCode = nil;
+//
+//    if ([goods_type isEqualToString:@"3"]) {
+//        checkstandVC.activityCode = goodsModel.cate_id;
+//    }
+//
+//    if ([goods_type isEqualToString:@"2"]) {
+//
+//        checkstandVC.isCourse = YES;
+//    }
+//
+//    checkstandVC.goodsAmountTotal = [NSString stringWithFormat:@"￥%@", model.order_car_money];
+//    checkstandVC.order_no = model.order_car_sn;
+//
+//    [self.navigationController pushViewController:checkstandVC animated:YES];
 }
 
 #pragma mark - UITableViewDelegate && UITableViewDataSource
@@ -315,10 +330,13 @@
     
     if (self.dataArray.count > 0) {
         if (self.isOrder == YES) {
-             OrderListModel *model =  self.dataArray[indexPath.row];
+            // 订单
+            OrderListModel *model =  self.dataArray[indexPath.row];
 
             return  model.cellHight;
         }else{
+            //售后
+            
             OrderListModel *model =  self.dataArray[indexPath.row];
             CGFloat instructionsH = 0;
             
@@ -381,6 +399,8 @@
         
     }else{
         OrderListModel *model =  self.dataArray[indexPath.row];
+        
+        model.tableViewIndexPath = indexPath;
         
         NSString *num_type = model.num_type;
         
@@ -814,7 +834,7 @@
 }
 
 - (void) deleteOrderWithModel:(OrderListModel *)model {
-    [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+    [SMAlert setConfirmBtBackgroundColor:kMainYellow];
     [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
     [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
     [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
@@ -854,33 +874,35 @@
 //去支付
 -(void)ordeItmeTableViewCell:(OrdeItmeTableViewCell *)cell pay:(OrderListModel *)model{
     
-    NSArray *orderStoreArray = model.order_goods;
+    [self orderPay:model];
     
-    OrderStoreModel *storeModel = [orderStoreArray firstObject];
-    
-    NSArray *orderGoodsArray = storeModel.goods;
-    
-    OrderGoodsModel *goodsModel = [orderGoodsArray firstObject];
-    
-    NSString *goods_type = goodsModel.goods_type;
-    
-    CheckstandViewController *checkstandVC = [[CheckstandViewController alloc]init];
-    
-    checkstandVC.activityCode = nil;
-    checkstandVC.isOrderState = YES;
-    
-    if ([goods_type isEqualToString:@"3"]) {
-        checkstandVC.activityCode = goodsModel.cate_id;
-    }
-    
-    if ([goods_type isEqualToString:@"2"]) {
-        checkstandVC.isCourse = YES;
-    }
-    
-    checkstandVC.goodsAmountTotal = [NSString stringWithFormat:@"￥%@", model.order_car_money];
-    checkstandVC.order_no = model.order_car_sn;
-    
-    [self.navigationController pushViewController:checkstandVC animated:YES];
+//    NSArray *orderStoreArray = model.order_goods;
+//
+//    OrderStoreModel *storeModel = [orderStoreArray firstObject];
+//
+//    NSArray *orderGoodsArray = storeModel.goods;
+//
+//    OrderGoodsModel *goodsModel = [orderGoodsArray firstObject];
+//
+//    NSString *goods_type = goodsModel.goods_type;
+//
+//    CheckstandViewController *checkstandVC = [[CheckstandViewController alloc]init];
+//
+//    checkstandVC.activityCode = nil;
+//    checkstandVC.isOrderState = YES;
+//
+//    if ([goods_type isEqualToString:@"3"]) {
+//        checkstandVC.activityCode = goodsModel.cate_id;
+//    }
+//
+//    if ([goods_type isEqualToString:@"2"]) {
+//        checkstandVC.isCourse = YES;
+//    }
+//
+//    checkstandVC.goodsAmountTotal = [NSString stringWithFormat:@"￥%@", model.order_car_money];
+//    checkstandVC.order_no = model.order_car_sn;
+//
+//    [self.navigationController pushViewController:checkstandVC animated:YES];
 }
 
 // 查看物流
@@ -909,6 +931,8 @@
 //确认收货
 -(void)ordeItmeTableViewCell:(OrdeItmeTableViewCell *)cell confirmReceipt:(OrderListModel *)model{
     
+    
+    
     NSArray *orderStoreArray = model.order_goods;
     
     OrderStoreModel *storeModel = [orderStoreArray firstObject];
@@ -917,7 +941,7 @@
     
     OrderGoodsModel *goodsModel = [orderGoodsArray firstObject];
     
-    [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+    [SMAlert setConfirmBtBackgroundColor:kMainYellow];
     [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
     [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
     [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
@@ -932,6 +956,9 @@
     [SMAlert showCustomView:customView stroke:YES confirmButton:[SMButton initWithTitle:SLLocalizedString(@"已收货") clickAction:^{
         [[DataManager shareInstance]confirmReceipt:@{@"id":goodsModel.order_no} Callback:^(Message *message) {
             if (message.isSuccess) {
+                
+                [[ModelTool shareInstance]setIsOrderListNeedRefreshed:YES];
+                
                 ConfirmGoodsViewController *confirmGoods = [[ConfirmGoodsViewController alloc] initWithNibName:@"ConfirmGoodsViewController" bundle:nil];
                 confirmGoods.order_sn = model.order_car_sn;
                 confirmGoods.isConfirmGoods = NO;
@@ -979,7 +1006,11 @@
 
 //待评星
 -(void)ordeItmeTableViewCell:(OrdeItmeTableViewCell *)cell reviewStar:(OrderListModel *)model{
+
     
+    [[ModelTool shareInstance]setIsOrderListNeedRefreshed:YES];
+
+
     ConfirmGoodsViewController *confirmGoods = [[ConfirmGoodsViewController alloc] initWithNibName:@"ConfirmGoodsViewController" bundle:nil];
     confirmGoods.order_sn = model.order_car_sn;
     confirmGoods.isConfirmGoods = YES;
@@ -995,17 +1026,21 @@
     
     NSString *urlStr = URL_H5_InvoiceDetail(model.order_sn, appInfoModel.access_token);
     
-    WengenWebViewController *webVC = [[WengenWebViewController alloc]initWithUrl:urlStr title:SLLocalizedString(@"查看发票")];
+    WengenWebViewController *webVC = [[WengenWebViewController alloc]initWithUrl:urlStr title:SLLocalizedString(@"发票详情")];
     [self.navigationController pushViewController:webVC animated:YES];
     
 }
 
 //补开发票
 -(void)ordeItmeTableViewCell:(OrdeItmeTableViewCell *)cell repairInvoice:(OrderListModel *)model{
-    OrderInvoiceFillOpenViewController * fillOpenVC= [[OrderInvoiceFillOpenViewController alloc]init];
-    fillOpenVC.orderSn = model.order_sn;
-    fillOpenVC.orderTotalSn = model.order_car_sn;
-    [self.navigationController pushViewController:fillOpenVC animated:YES];
+    
+    
+    [self jumpOrderInvoiceFillOpenViewController:model];
+
+//    OrderInvoiceFillOpenViewController * fillOpenVC= [[OrderInvoiceFillOpenViewController alloc]init];
+//    fillOpenVC.orderSn = model.order_sn;
+//    fillOpenVC.orderTotalSn = model.order_car_sn;
+//    [self.navigationController pushViewController:fillOpenVC animated:YES];
 }
 
 #pragma mark - OrdeMoreItmeTableViewCellDelegate
@@ -1059,7 +1094,7 @@
 //删除订单
 -(void)ordeMoreItmeTableViewCell:(OrdeMoreItmeTableViewCell *)cell delOrder:(OrderListModel *)model{
     
-    [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+    [SMAlert setConfirmBtBackgroundColor:kMainYellow];
     [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
     [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
     [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
@@ -1130,33 +1165,8 @@
         return;
     }
     
-    
-    
-    OrderStoreModel *storeModel = [orderStoreArray firstObject];
-    
-    NSArray *orderGoodsArray = storeModel.goods;
-    
-    OrderGoodsModel *goodsModel = [orderGoodsArray firstObject];
-    
-    NSString *goods_type = goodsModel.goods_type;
-    
-    
-    CheckstandViewController *checkstandVC = [[CheckstandViewController alloc]init];
-    checkstandVC.activityCode = nil;
-    checkstandVC.isOrderState = YES;
-    
-    if ([goods_type isEqualToString:@"3"]) {
-        checkstandVC.activityCode = goodsModel.cate_id;
-    }
-    
-    if ([goods_type isEqualToString:@"2"]) {
-        checkstandVC.isCourse = YES;
-    }
-    
-    checkstandVC.goodsAmountTotal = [NSString stringWithFormat:@"￥%@", model.order_car_money];
-    checkstandVC.order_no = model.order_car_sn;
-    
-    [self.navigationController pushViewController:checkstandVC animated:YES];
+    // 支付
+    [self orderPay:model];
     
     
     //    CheckstandViewController *checkstandVC = [[CheckstandViewController alloc]init];
@@ -1185,7 +1195,7 @@
 //确认收货
 -(void)ordeMoreItmeTableViewCell:(OrdeMoreItmeTableViewCell *)cell confirmReceipt:(OrderListModel *)model{
     
-    [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+    [SMAlert setConfirmBtBackgroundColor:kMainYellow];
     [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
     [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
     [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
@@ -1210,6 +1220,8 @@
         
         [[DataManager shareInstance]confirmReceipt:@{@"id": orderIdsStr} Callback:^(Message *message) {
             if (message.isSuccess) {
+                
+                [[ModelTool shareInstance]setIsOrderListNeedRefreshed:YES];
                 ConfirmGoodsViewController *confirmGoods = [[ConfirmGoodsViewController alloc] initWithNibName:@"ConfirmGoodsViewController" bundle:nil];
                 confirmGoods.order_sn = model.order_car_sn;
                 confirmGoods.isConfirmGoods = NO;
@@ -1229,6 +1241,9 @@
 //待评星
 -(void)ordeMoreItmeTableViewCell:(OrdeMoreItmeTableViewCell *)cell reviewStar:(OrderListModel *)model{
     
+
+    [[ModelTool shareInstance]setIsOrderListNeedRefreshed:YES];
+
     ConfirmGoodsViewController *confirmGoods = [[ConfirmGoodsViewController alloc] initWithNibName:@"ConfirmGoodsViewController" bundle:nil];
     confirmGoods.order_sn = model.order_car_sn;
     confirmGoods.isConfirmGoods = YES;
@@ -1243,17 +1258,19 @@
     
     NSString *urlStr = URL_H5_InvoiceDetail(model.order_sn, appInfoModel.access_token);
     
-    WengenWebViewController *webVC = [[WengenWebViewController alloc]initWithUrl:urlStr title:SLLocalizedString(@"查看发票")];
+    WengenWebViewController *webVC = [[WengenWebViewController alloc]initWithUrl:urlStr title:SLLocalizedString(@"发票详情")];
     [self.navigationController pushViewController:webVC animated:YES];
     
 }
 
 //补开发票
 -(void)ordeMoreItmeTableViewCell:(OrdeMoreItmeTableViewCell *)cell repairInvoice:(nonnull OrderListModel *)model{
-    OrderInvoiceFillOpenViewController * fillOpenVC= [[OrderInvoiceFillOpenViewController alloc]init];
-       fillOpenVC.orderSn = model.order_sn;
-       fillOpenVC.orderTotalSn = model.order_car_sn;
-       [self.navigationController pushViewController:fillOpenVC animated:YES];
+//    OrderInvoiceFillOpenViewController * fillOpenVC= [[OrderInvoiceFillOpenViewController alloc]init];
+//       fillOpenVC.orderSn = model.order_sn;
+//       fillOpenVC.orderTotalSn = model.order_car_sn;
+//       [self.navigationController pushViewController:fillOpenVC animated:YES];
+    [self jumpOrderInvoiceFillOpenViewController:model];
+
 }
 
 -(void)ordeMoreItmeTableViewCell:(OrdeMoreItmeTableViewCell *)cell tapCell:(OrderListModel *)model{
@@ -1320,7 +1337,7 @@
 //撤销申请
 -(void)orderAfterSalesItmeTableViewCell:(OrderAfterSalesItmeTableViewCell *)cell cancelApplication:(OrderListModel *)model{
     
-    [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+    [SMAlert setConfirmBtBackgroundColor:kMainYellow];
     [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
     [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
     [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
@@ -1358,7 +1375,7 @@
 
 //删除申请
 -(void)orderAfterSalesItmeTableViewCell:(OrderAfterSalesItmeTableViewCell *)cell deleteApplication:(OrderListModel *)model{
-    [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+    [SMAlert setConfirmBtBackgroundColor:kMainYellow];
     [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
     [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
     [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
@@ -1402,7 +1419,7 @@
 #pragma mark - RiteOrderTableViewCellDelegate
 //法事 删除订单
 -(void)riteOrderTableViewCell:(RiteOrderTableViewCell *)cell delOrder:(OrderListModel *)model{
-    [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+    [SMAlert setConfirmBtBackgroundColor:kMainYellow];
     [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
     [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
     [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
@@ -1451,10 +1468,11 @@
 
 //法事 补开发票
 -(void)riteOrderTableViewCell:(RiteOrderTableViewCell *)cell repairInvoice:(OrderListModel *)model{
-    OrderInvoiceFillOpenViewController * fillOpenVC= [[OrderInvoiceFillOpenViewController alloc]init];
-    fillOpenVC.orderSn = model.order_sn;
-    fillOpenVC.orderTotalSn = model.order_car_sn;
-    [self.navigationController pushViewController:fillOpenVC animated:YES];
+//    OrderInvoiceFillOpenViewController * fillOpenVC= [[OrderInvoiceFillOpenViewController alloc]init];
+//    fillOpenVC.orderSn = model.order_sn;
+//    fillOpenVC.orderTotalSn = model.order_car_sn;
+//    [self.navigationController pushViewController:fillOpenVC animated:YES];
+    [self jumpOrderInvoiceFillOpenViewController:model];
 }
 
 //法事 去支付
@@ -1488,38 +1506,40 @@
         return;
     }
     
+    [self orderPay:model];
     
     
-    OrderStoreModel *storeModel = [orderStoreArray firstObject];
-    
-    NSArray *orderGoodsArray = storeModel.goods;
-    
-    OrderGoodsModel *goodsModel = [orderGoodsArray firstObject];
-    
-    NSString *goods_type = goodsModel.goods_type;
-    
-    
-    CheckstandViewController *checkstandVC = [[CheckstandViewController alloc]init];
-    
-    if ([goods_type isEqualToString:@"3"]) {
-        checkstandVC.activityCode = goodsModel.cate_id;
-    }
-    
-    if ([goods_type isEqualToString:@"2"]) {
-        checkstandVC.isCourse = YES;
-    }
-    
-    checkstandVC.isOrderState = YES;
-    checkstandVC.goodsAmountTotal = [NSString stringWithFormat:@"￥%@", model.order_car_money];
-    checkstandVC.order_no = model.order_car_sn;
-    
-    //TODO:法会订单支付成功后展示祝福语
-    if ([goodsModel isRiteGoodsType]){
-        checkstandVC.paySuccessfulBlock = ^(NSString * _Nonnull orderCode) {
-            [SLRouteManager pushRiteBlessingViewController:self.navigationController orderCode:orderCode];
-        };
-    }
-    [self.navigationController pushViewController:checkstandVC animated:YES];
+//
+//    OrderStoreModel *storeModel = [orderStoreArray firstObject];
+//
+//    NSArray *orderGoodsArray = storeModel.goods;
+//
+//    OrderGoodsModel *goodsModel = [orderGoodsArray firstObject];
+//
+//    NSString *goods_type = goodsModel.goods_type;
+//
+//
+//    CheckstandViewController *checkstandVC = [[CheckstandViewController alloc]init];
+//
+//    if ([goods_type isEqualToString:@"3"]) {
+//        checkstandVC.activityCode = goodsModel.cate_id;
+//    }
+//
+//    if ([goods_type isEqualToString:@"2"]) {
+//        checkstandVC.isCourse = YES;
+//    }
+//
+//    checkstandVC.isOrderState = YES;
+//    checkstandVC.goodsAmountTotal = [NSString stringWithFormat:@"￥%@", model.order_car_money];
+//    checkstandVC.order_no = model.order_car_sn;
+//
+//    //TODO:法会订单支付成功后展示祝福语
+//    if ([goodsModel isRiteGoodsType]){
+//        checkstandVC.paySuccessfulBlock = ^(NSString * _Nonnull orderCode) {
+//            [SLRouteManager pushRiteBlessingViewController:self.navigationController orderCode:orderCode];
+//        };
+//    }
+//    [self.navigationController pushViewController:checkstandVC animated:YES];
     
 }
 
@@ -1529,6 +1549,133 @@
     [riteRegistrationDetailsVC setOrderCode:model.order_car_sn];
     [self.navigationController pushViewController:riteRegistrationDetailsVC animated:YES];
 }
+
+#pragma mark - 支付
+-(void)orderPay:(OrderListModel *)model{
+    /**
+     查看当前订单的状态，状态不是已取消的才能去支付
+     如果是已取消 就刷新列表
+     */
+    MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
+       [[DataManager shareInstance]getOrderInfo:@{@"order_id":model.order_car_sn} Callback:^(NSObject *object) {
+           [hud hideAnimated:YES];
+           
+           NSArray *goodsArray = (NSArray *)object;
+           
+           OrderDetailsModel *goodsOrderDetailModel= [goodsArray lastObject];
+           
+           NSInteger status = [goodsOrderDetailModel.status integerValue];
+           
+           if (status == OrderStatusCancelType || status == OrderStatusTimeoutType) {
+               NSIndexPath *indexPath = model.tableViewIndexPath;
+               // 当前订单的状态 不可支付
+               [ShaolinProgressHUD singleTextAutoHideHud:@"当前订单的状态,不可支付"];
+               
+               NSString *statusStr =  [NSString stringWithFormat:@"%ld", status];
+               
+               model.status = statusStr;
+             
+               for (OrderStoreModel *storeModel in model.order_goods) {
+                   for (OrderGoodsModel *goodsModel in storeModel.goods) {
+                       goodsModel.status = statusStr;
+                   }
+               }
+               
+            [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:(UITableViewRowAnimationNone)];
+    
+               return;
+           }else{
+               //可支付
+               [self goToPay:model];
+           }
+       }];
+    
+}
+/**
+ 跳转的收银台 支付
+ */
+-(void)goToPay:(OrderListModel *)model{
+    NSArray *orderStoreArray = model.order_goods;
+    OrderStoreModel *storeModel = [orderStoreArray firstObject];
+    
+    NSArray *orderGoodsArray = storeModel.goods;
+    
+    OrderGoodsModel *goodsModel = [orderGoodsArray firstObject];
+    
+    NSString *goods_type = goodsModel.goods_type;
+    
+    CheckstandViewController *checkstandVC = [[CheckstandViewController alloc]init];
+    checkstandVC.activityCode = nil;
+    checkstandVC.isOrderState = YES;
+    
+    if ([goods_type isEqualToString:@"3"]) {
+        checkstandVC.activityCode = goodsModel.cate_id;
+    }
+    
+    if ([goods_type isEqualToString:@"2"]) {
+        checkstandVC.isCourse = YES;
+    }
+    
+    checkstandVC.goodsAmountTotal = [NSString stringWithFormat:@"￥%@", model.order_car_money];
+    checkstandVC.order_no = model.order_car_sn;
+    
+    
+    //TODO:法会订单支付成功后展示祝福语
+    if ([goodsModel isRiteGoodsType]){
+        checkstandVC.paySuccessfulBlock = ^(NSString * _Nonnull orderCode) {
+            [SLRouteManager pushRiteBlessingViewController:self.navigationController orderCode:orderCode];
+        };
+    }
+    
+    [self.navigationController pushViewController:checkstandVC animated:YES];
+}
+
+#pragma mark - 补开发票 跳转页面
+
+-(void)jumpOrderInvoiceFillOpenViewController:(OrderListModel *)model{
+    
+    [[ModelTool shareInstance]setIsOrderListNeedRefreshed:YES];
+    
+    NSMutableArray *allStroeIdArray = [NSMutableArray array];
+    for (OrderStoreModel *storeModel in model.order_goods) {
+        [allStroeIdArray addObject:storeModel.storeId];
+    }
+    NSString *allStroeIdStr = [allStroeIdArray componentsJoinedByString:@","];
+
+    NSArray *orderStoreArray = model.order_goods;
+    OrderStoreModel *storeModel = [orderStoreArray firstObject];
+
+    NSArray *orderGoodsArray = storeModel.goods;
+
+    OrderGoodsModel *goodsModel = [orderGoodsArray firstObject];
+
+    NSString *goods_type = goodsModel.goods_type;
+
+    OrderInvoiceFillOpenViewController * fillOpenVC= [[OrderInvoiceFillOpenViewController alloc]init];
+    if ([goods_type isEqualToString:@"1"]) {
+        fillOpenVC.isCheckInvoice = YES;
+    }
+
+    fillOpenVC.orderSn = model.order_sn;
+    fillOpenVC.orderTotalSn = model.order_car_sn;
+    fillOpenVC.allStroeIdStr= allStroeIdStr;
+    [self.navigationController pushViewController:fillOpenVC animated:YES];
+    
+    
+    
+//    ExchangeInvoiceViewController *vc = [ExchangeInvoiceViewController new];
+//    vc.orderSn = model.order_sn;
+//    [self.navigationController pushViewController:vc animated:YES];
+//    
+//    ModifyInvoiceViewController *vc = [ModifyInvoiceViewController new];
+//    vc.orderSn = model.order_sn;
+//    [self.navigationController pushViewController:vc animated:YES];
+    
+}
+
+
+
+
 
 
 #pragma mark - getter / setter
@@ -1598,11 +1745,19 @@
     
     if (_emptyView == nil) {
         _emptyView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, 400)];
-        UILabel *title = [[UILabel alloc]initWithFrame:CGRectMake((ScreenWidth - 120)/2, 117.5, 120, 21)];
+        
+        UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake((ScreenWidth - 85)/2, 117, 85, 80)];
+        [imageView setImage:[UIImage imageNamed:@"categorize_nogoods"]];
+        
+        [_emptyView addSubview:imageView];
+        
+        
+        UILabel *title = [[UILabel alloc]initWithFrame:CGRectMake((ScreenWidth - 120)/2, CGRectGetMaxY(imageView.frame) + 20, 120, 21)];
         [title setFont:kMediumFont(15)];
         [title setTextColor:[UIColor colorForHex:@"999999"]];
         [title setText:SLLocalizedString(@"您还没有相关订单")];
         [_emptyView addSubview:title];
+        
         
         //        [_emptyView setHidden:YES];
     }

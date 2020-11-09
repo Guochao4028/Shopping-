@@ -16,7 +16,7 @@
 #import "ShoppingCartGoodsModel.h"
 #import "GoodsInfoModel.h"
 #import "ShoppingCartNumberCountView.h"
-
+#import "DataManager.h"
 #import "GoodsAttrBasisModel.h"
 
 @interface GoodsSpecificationView ()<UITextFieldDelegate, GoodsSpecificationTypeViewDelegate, UITableViewDelegate, UITableViewDataSource>
@@ -187,6 +187,20 @@
     
     
     [dic setValue:self.model.goodsSpecificationId forKey:@"attr_id"];
+    
+    NSMutableArray *joiningArray = [NSMutableArray array];
+       for (int i = 0; i < [self.titleArray count]; i++) {
+           
+           NSString *str = [NSString stringWithFormat:@"%@：%@",self.titleArray[i], self.namesArray[i]];
+           [joiningArray addObject:str];
+       }
+       
+       NSString *namesStr= [joiningArray componentsJoinedByString:@","];
+    
+    [dic setValue:namesStr forKey:@"attr_name"];;
+
+    
+    
     
     if (self.currentPrice != nil) {
         [dic setValue:self.currentPrice forKey:@"currentPrice"];
@@ -402,7 +416,8 @@
     //取出所有的规格
     NSArray *attr = [model.attr firstObject];
     //解析所有规格商品信息
-     self.goodsStoreInfoModelArray = [GoodsSpecificationModel mj_objectArrayWithKeyValuesArray:[model.attr lastObject]];
+
+     self.goodsStoreInfoModelArray = [GoodsSpecificationModel mj_objectArrayWithKeyValuesArray:model.attr_str];
     
     
 //    for (GoodsSpecificationModel *infoModel in self.goodsStoreInfoModelArray) {
@@ -482,22 +497,25 @@
         }
         
         if (self.goods_attr_id == nil) {
-            NSString *idsStr= [self.idsArray componentsJoinedByString:@","];
-               
-               for (GoodsSpecificationModel *specificationModel in self.goodsStoreInfoModelArray) {
-                   if([idsStr isEqualToString: specificationModel.attr_value_id_str]==YES){
-                       self.currentSpecificationModel = specificationModel;
-                       break;
-                   }
-               }
             
-            model.goodsSpecificationId = self.currentSpecificationModel.specificationId;
+            NSString *idsStr= [self.idsArray componentsJoinedByString:@","];
+            
+            for (GoodsSpecificationModel *specificationModel in self.goodsStoreInfoModelArray) {
+                if([idsStr isEqualToString: specificationModel.attr_value_id_str]==YES){
+                    self.currentSpecificationModel = specificationModel;
+                    break;
+                }
+                
+            }
+                model.goodsSpecificationId = self.currentSpecificationModel.specificationId;
+                _model.goodsSpecificationId = self.currentSpecificationModel.specificationId;
+           
         }else{
             
             for (GoodsSpecificationModel *specificationModel in self.goodsStoreInfoModelArray) {
                 if([self.goods_attr_id isEqualToString: specificationModel.specificationId]==YES){
                     self.currentSpecificationModel = specificationModel;
-                    self.model.goodsSpecificationId = specificationModel.specificationId;
+                    _model.goodsSpecificationId = specificationModel.specificationId;
                     break;
                 }
             }
@@ -543,6 +561,8 @@
     
     [self.viewsDataArray addObject:self.buyCountView];
     [self.tabelView reloadData];
+    
+    
     
 }
 

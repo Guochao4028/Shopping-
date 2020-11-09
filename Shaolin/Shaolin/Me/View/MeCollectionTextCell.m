@@ -27,10 +27,11 @@
 - (void)setModel:(FoundModel *)model {
     _model = model;
     if (model.coverurlList.count < 1) {
-        self.imageV.image = [UIImage imageNamed:@"shaolinlogo"];
+        self.imageV.image = [UIImage imageNamed:@"default_small"];
        }else
        {
-           [self.imageV sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",model.coverurlList[0][@"route"]]]];
+            [self.imageV sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",model.coverurlList[0][@"route"]]] placeholderImage:[UIImage imageNamed:@"default_small"]];
+
        }
     NSString *str = model.abstracts;//[self filterHTML:model.content];
     self.abstractsLabel.text = [NSString stringWithFormat:@"%@",str];

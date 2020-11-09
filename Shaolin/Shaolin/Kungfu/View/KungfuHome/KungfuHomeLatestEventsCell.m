@@ -54,6 +54,13 @@ static NSString *const collectionCellId = @"KungfuHomemLatestEventsCollectionCel
     EnrollmentListModel * model = self.hotActivityList[indexPath.row];
     cell.cellModel = model;
     
+    if (indexPath.row == 0) {
+        cell.imgLeftCon.constant = 16;
+    } else {
+        cell.imgLeftCon.constant = 10;
+    }
+    
+    
     return cell;
 }
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -92,7 +99,7 @@ static NSString *const collectionCellId = @"KungfuHomemLatestEventsCollectionCel
         flowLayout.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0);
         flowLayout.minimumLineSpacing = 0;// 根据需要编写
         
-        flowLayout.itemSize = CGSizeMake(SLChange(215), 190);
+        flowLayout.itemSize = CGSizeMake(212, 190);
         
         
         _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, kWidth,190) collectionViewLayout:flowLayout];

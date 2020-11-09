@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic , copy) NSString              * examPaperCode;
 @property (nonatomic , copy) NSString              * questionId;
 @property (nonatomic , copy) NSString              * levelId;
-///段位名称
+///位阶名称
 @property (nonatomic , copy) NSString              * levelName;
 ///考题编号
 @property (nonatomic , copy) NSString              * questionCode;

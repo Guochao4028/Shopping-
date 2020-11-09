@@ -46,6 +46,7 @@
         make.bottom.mas_equalTo(self.phoneLabel.mas_top).offset(-SLChange(3));
     }];
 }
+
 -(UIImageView *)imageV
 {
     if (!_imageV) {

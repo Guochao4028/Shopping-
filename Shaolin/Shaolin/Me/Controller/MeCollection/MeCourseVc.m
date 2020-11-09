@@ -32,7 +32,10 @@
 
 @implementation MeCourseVc
 
-
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self setNavigationBarRedTintColor];
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -46,7 +49,7 @@
     [self.bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(self.tableView.mas_bottom);
         make.left.right.mas_equalTo(0);
-        make.bottom.mas_equalTo(0);;
+        make.bottom.mas_equalTo(-kBottomSafeHeight);;
         make.height.mas_equalTo(0);
     }];
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -240,7 +243,7 @@
         [weakSelf.tableView setEditing:NO animated:YES];
         [weakSelf reloadCollectionView];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"NormalCollectionButton" object:nil];
-        [weakSelf.tableView.mj_header beginRefreshing];
+        [weakSelf update];
     });
 }
 #pragma mark - tableView Delegate
@@ -268,11 +271,11 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return SLChange(122);
+    return 140;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return SLChange(10);
+    return 10;
 }
 
 //- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {

@@ -10,7 +10,7 @@
 #import "WengenEnterModel.h"
 
 @interface ItemCollectionViewCell ()
-@property (weak, nonatomic) IBOutlet UIImageView *iconImageView;
+
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 
 @end
@@ -29,7 +29,7 @@
     
     [self.nameLabel setText:model.name];
     
-    [self.iconImageView sd_setImageWithURL:[NSURL URLWithString:model.imageUrl] placeholderImage:[UIImage imageNamed:@"default_small"]];
+//    [self.iconImageView sd_setImageWithURL:[NSURL URLWithString:model.imageUrl] placeholderImage:[UIImage imageNamed:@"default_small"]];
 }
 
 @end

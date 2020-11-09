@@ -26,6 +26,11 @@ typedef void (^EnrollmentHeaderViewScreeningBack) (BOOL isTap);
 @property(nonatomic, copy) NSString *curTitle;
 
 - (void)selectTitle:(NSString *)title;
+//筛选颜色开关
+//yes 红色
+//no 黑色
+@property(nonatomic, assign)BOOL isViewRed;
+
 @end
 
 NS_ASSUME_NONNULL_END

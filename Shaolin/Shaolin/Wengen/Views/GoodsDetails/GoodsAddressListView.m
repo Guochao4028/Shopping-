@@ -119,8 +119,8 @@ static NSString *const kGoodsAddressListTableCellIdentifier = @"GoodsAddressList
     
     if (_contentView == nil) {
         CGFloat heigth = 500 + TabBarButtom_H;
-        CGFloat y = ScreenHeight - heigth;
-        _contentView = [[UIView alloc]initWithFrame:CGRectMake(0, y, ScreenWidth, heigth)];
+        CGFloat y = self.height - heigth;
+        _contentView = [[UIView alloc]initWithFrame:CGRectMake(0, y, self.width, heigth)];
         [_contentView setBackgroundColor:[UIColor whiteColor]];
         
         _contentView.layer.cornerRadius = SLChange(12);
@@ -132,7 +132,7 @@ static NSString *const kGoodsAddressListTableCellIdentifier = @"GoodsAddressList
 -(UILabel *)titleLabel{
     
     if (_titleLabel == nil) {
-        CGFloat x = (ScreenWidth - 51)/2;
+        CGFloat x = (self.width - 51)/2;
         
         _titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(x, 15, 51, 24)];
         
@@ -147,7 +147,7 @@ static NSString *const kGoodsAddressListTableCellIdentifier = @"GoodsAddressList
     
     if (_closeButton == nil) {
         
-        CGFloat x = ScreenWidth - 50;
+        CGFloat x = self.width - 50;
         
         _closeButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [_closeButton setFrame:CGRectMake(x, 0, 50, 50)];
@@ -164,7 +164,7 @@ static NSString *const kGoodsAddressListTableCellIdentifier = @"GoodsAddressList
         
         CGFloat y = CGRectGetMaxY(self.closeButton.frame);
         CGFloat heigth = CGRectGetHeight(self.contentView.bounds) - 70 - y;
-        _tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, y, ScreenWidth, heigth)];
+        _tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, y, self.width, heigth)];
         
         [_tableView setDelegate:self];
         [_tableView setDataSource:self];
@@ -187,9 +187,9 @@ static NSString *const kGoodsAddressListTableCellIdentifier = @"GoodsAddressList
     if (_addressButton == nil) {
         _addressButton = [UIButton buttonWithType:UIButtonTypeCustom];
         CGFloat y = CGRectGetMaxY(self.tableView.frame);
-        CGFloat x = (ScreenWidth - 250)/2;
+        CGFloat x = (self.width - 250)/2;
         [_addressButton setFrame:CGRectMake(x, y, 250, 40)];
-        [_addressButton setBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+        [_addressButton setBackgroundColor:kMainYellow];
         [_addressButton setTitle:SLLocalizedString(@"新增收货地址") forState:UIControlStateNormal];
         [_addressButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         

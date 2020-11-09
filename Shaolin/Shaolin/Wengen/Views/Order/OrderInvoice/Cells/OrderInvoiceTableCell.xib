@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17126"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -38,11 +38,24 @@
                             <constraint firstAttribute="width" constant="13" id="aUu-Zc-EFp"/>
                         </constraints>
                     </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kaj-fx-k2a">
+                        <rect key="frame" x="91" y="50.5" width="229" height="0.5"/>
+                        <color key="backgroundColor" red="0.89803921568627454" green="0.89803921568627454" blue="0.89803921568627454" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="0.5" id="IUJ-ZZ-YYP"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
                 </subviews>
                 <constraints>
+                    <constraint firstAttribute="bottom" secondItem="kaj-fx-k2a" secondAttribute="bottom" id="8Sa-vG-MSs"/>
+                    <constraint firstAttribute="trailing" secondItem="kaj-fx-k2a" secondAttribute="trailing" id="9b1-A8-aEB"/>
                     <constraint firstItem="A66-d3-tK5" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="F5V-kd-1xS"/>
                     <constraint firstItem="YJP-Oo-7ua" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="FCY-0S-bWi"/>
                     <constraint firstItem="yTo-hi-AxB" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="LVM-5n-FLf"/>
+                    <constraint firstItem="kaj-fx-k2a" firstAttribute="leading" secondItem="yTo-hi-AxB" secondAttribute="leading" id="VzQ-ji-meM"/>
                     <constraint firstAttribute="trailing" secondItem="A66-d3-tK5" secondAttribute="trailing" constant="16" id="Y61-Li-uQS"/>
                     <constraint firstItem="yTo-hi-AxB" firstAttribute="leading" secondItem="YJP-Oo-7ua" secondAttribute="trailing" constant="15" id="gI2-J6-yMX"/>
                     <constraint firstItem="A66-d3-tK5" firstAttribute="leading" secondItem="yTo-hi-AxB" secondAttribute="trailing" constant="5" id="jVz-yD-aRC"/>

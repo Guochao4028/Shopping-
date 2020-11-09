@@ -8,10 +8,8 @@
 //
 //  被拒绝的视频点击编辑后的界面
 
-#import <UIKit/UIKit.h>
+#import "RootViewController.h"
 #import "MePostManagerModel.h"
-
-
 
 @interface DraftEditVideoViewController : RootViewController
 @property(nonatomic,strong) MePostManagerModel *model;

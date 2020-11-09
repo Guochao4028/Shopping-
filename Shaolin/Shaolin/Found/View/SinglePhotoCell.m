@@ -35,7 +35,7 @@
     //        make.top.mas_equalTo(SLChange(18));
     //    }];
     
-    f.cellHeight =  SLChange(116);
+    f.cellHeight = SLChange(105);
     self.titleL.text = [NSString stringWithFormat:@"%@",f.title];
     NSString *urlStr;
     if (f.coverurlList.count < 1) {
@@ -91,17 +91,13 @@
 {
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     [self.contentView addSubview:self.titleL];
-    [self.contentView addSubview:self.detailsLabel];
+//    [self.contentView addSubview:self.detailsLabel];
     [self.contentView addSubview:self.imageV];
     [self.imageV addSubview:self.plaayerBtn];
     [self.contentView addSubview:self.nameLabel];
     //    [self.contentView addSubview:self.lookLabel];
     //
     //    [self.contentView addSubview:self.timeLabel];
-}
--(void)layoutSubviews
-{
-    [super layoutSubviews];
     
     if ([self.model.kind isEqualToString:@"3"]) {
         self.detailsLabel.hidden = NO;
@@ -110,50 +106,50 @@
     }
     
     [self.titleL mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(SLChange(16));
-        make.right.mas_equalTo(self.imageV.mas_left).mas_offset(-SLChange(16));
-        make.top.mas_equalTo(SLChange(14));
+        make.left.mas_equalTo(10);
+        make.right.mas_equalTo(self.imageV.mas_left).mas_offset(-7);
+        make.top.mas_equalTo(15);
     }];
     
     [self.imageV mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.mas_equalTo(SLChange(109));
-        make.right.mas_equalTo(-SLChange(16));
-        make.height.mas_equalTo(SLChange(84));
+        make.right.mas_equalTo(-10);
         make.top.mas_equalTo(self.titleL);
+        make.size.mas_equalTo(CGSizeMake(109, 75));
+        make.bottom.mas_equalTo(-15);
     }];
     
-    [self.detailsLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.right.mas_equalTo(self.titleL);
-        make.height.mas_equalTo(SLChange(15));
-        make.top.mas_equalTo(self.titleL.mas_bottom).mas_offset(3);
-    }];
+//    [self.detailsLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.right.mas_equalTo(self.titleL);
+//        make.height.mas_equalTo(SLChange(15));
+//        make.top.mas_equalTo(self.titleL.mas_bottom).mas_offset(3);
+//    }];
     
     
     [self.plaayerBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.centerY.mas_equalTo(self.imageV);
-        make.size.mas_equalTo(SLChange(29));
+        make.size.mas_equalTo(CGSizeMake(29, 29));
     }];
     
     [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(self.titleL);
 //        make.top.mas_equalTo(self.detailsLabel.mas_bottom).offset(5);
         make.right.mas_equalTo(self.imageV.mas_left);
-        make.height.mas_equalTo(SLChange(17));
+        make.height.mas_equalTo(17);
         make.bottom.mas_equalTo(self.imageV);
 //        make.bottom.mas_equalTo(self.contentView).mas_equalTo(-18);
     }];
-    //    [self.lookLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-    //              make.left.mas_equalTo(self.nameLabel.mas_right).offset(SLChange(10));
-    //              make.centerY.mas_equalTo(self.nameLabel);
-    //              make.width.mas_equalTo(SLChange(70));
-    //              make.height.mas_equalTo(SLChange(16.5));
-    //          }];
-    //    [self.timeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-    //        make.left.mas_equalTo(self.lookLabel.mas_right).offset(SLChange(10));
-    //        make.centerY.mas_equalTo(self.nameLabel);
-    //        make.width.mas_equalTo(SLChange(52));
-    //        make.height.mas_equalTo(SLChange(16.5));
-    //    }];
+//    [self.lookLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+//              make.left.mas_equalTo(self.nameLabel.mas_right).offset(SLChange(10));
+//              make.centerY.mas_equalTo(self.nameLabel);
+//              make.width.mas_equalTo(SLChange(70));
+//              make.height.mas_equalTo(SLChange(16.5));
+//          }];
+//    [self.timeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.mas_equalTo(self.lookLabel.mas_right).offset(SLChange(10));
+//        make.centerY.mas_equalTo(self.nameLabel);
+//        make.width.mas_equalTo(SLChange(52));
+//        make.height.mas_equalTo(SLChange(16.5));
+//    }];
 }
 
 - (UIImage *)getShowImage{
@@ -185,6 +181,7 @@
     if (!_imageV) {
         _imageV = [[UIImageView alloc]init];
         _imageV.backgroundColor = [UIColor clearColor];
+        _imageV.layer.cornerRadius = 4;
         _imageV.userInteractionEnabled = YES;
         _imageV.clipsToBounds = YES;
         _imageV.contentMode = UIViewContentModeScaleAspectFill;

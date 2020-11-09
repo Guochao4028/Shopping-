@@ -52,7 +52,7 @@
 
 -(SDCycleScrollView *)bannerView{
     if (_bannerView == nil) {
-        _bannerView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(16, 12, ScreenWidth - 32, (130)) delegate:self placeholderImage:[UIImage imageNamed:@"default_banner"]];
+        _bannerView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(16, 12, ScreenWidth - 32, 145) delegate:self placeholderImage:[UIImage imageNamed:@"default_banner"]];
         _bannerView.layer.masksToBounds = YES;
         _bannerView.layer.cornerRadius = 4;
         _bannerView.hidesForSinglePage = YES;
@@ -79,6 +79,7 @@
     }    
     
     self.bannerView.imageURLStringsGroup = temList;
+//    self.bannerView.localizationImageNamesGroup = @[@"new_Rite_img"];
 }
 
 @end

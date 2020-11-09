@@ -14,7 +14,7 @@ typedef void(^PersonDataClick)(NSDictionary *dic);
 @property(nonatomic,strong) NSDictionary *dicData;
 @property (nonatomic , copy) void (^itemDidClick)(NSInteger index);
 @property (nonatomic , copy) PersonDataClick personDataClick;
-@property(nonatomic,strong) NSString *balanceStr;
+@property(nonatomic,strong) NSNumber *balanceNumber;
 @end
 
 NS_ASSUME_NONNULL_END

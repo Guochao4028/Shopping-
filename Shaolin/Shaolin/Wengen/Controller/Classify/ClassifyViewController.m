@@ -25,6 +25,8 @@
 
 #import "SearchViewController.h"
 
+#import "DataManager.h"
+
 @interface ClassifyViewController ()<WengenSearchViewDelegate, ClassifyMenuViewDelegate, ClassifyGoodsListViewDelegate>
 
 ////top 搜索栏
@@ -60,6 +62,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+//    self.hideNavigationBar = YES;
     [self initUI];
     
     [self initData];

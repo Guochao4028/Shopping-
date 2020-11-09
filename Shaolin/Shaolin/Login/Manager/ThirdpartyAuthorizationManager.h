@@ -39,7 +39,7 @@ typedef NS_ENUM(NSInteger, ThirdpartyAuthorizationMessageCode) {
 /**根据ThirdpartyType，拉起第三方登录*/
 - (void)loginByThirdpartyType:(NSString *)thirdpartyType;
 /**根据ThirdpartyType，拉起第三方分享*/
-- (void)sharedByThirdpartyType:(NSString *)thirdpartyType sharedModel:(SharedModel *)sharedModel;
+- (void)sharedByThirdpartyType:(NSString *)thirdpartyType sharedModel:(SharedModel *)sharedModel completion:(void (^ __nullable)(void))completion;
 @end
 
 // 可直接拉起本应用的URL链接

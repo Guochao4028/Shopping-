@@ -45,9 +45,9 @@
     [self.imageV addSubview:self.numLabel];
     [self.imageV addSubview:self.addLabel];
     [self.imageV mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.mas_equalTo(SLChange(109));
-        make.height.mas_equalTo(SLChange(76));
-        make.top.left.mas_equalTo(0);
+//        make.width.mas_equalTo(SLChange(109));
+//        make.height.mas_equalTo(SLChange(76));
+        make.top.left.right.bottom.mas_equalTo(0);
     }];
     [self.numLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.width.mas_equalTo(SLChange(53));
@@ -66,6 +66,7 @@
 {
     if (!_imageV) {
         _imageV = [[UIImageView alloc]init];
+        _imageV.layer.cornerRadius = 4;
         _imageV.backgroundColor = [UIColor clearColor];
         _imageV.clipsToBounds = YES;
         _imageV.contentMode = UIViewContentModeScaleAspectFill;

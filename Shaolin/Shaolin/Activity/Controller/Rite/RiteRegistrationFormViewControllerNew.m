@@ -37,13 +37,11 @@
 
 @implementation RiteRegistrationFormViewControllerNew
 - (void)viewWillAppear:(BOOL)animated{
-    self.navigationController.navigationBar.hidden = NO;
+    [super viewWillAppear:animated];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    self.navigationController.fd_fullscreenPopGestureRecognizer.enabled = YES;
 
     [self.view addSubview:self.formBackImageView];
     [self.formBackImageView addSubview:self.formLotusImageView];
@@ -429,7 +427,7 @@
 - (void)signUpClick:(UIButton *)button{
     NSLog(@"RiteRegistrationFormViewController 点击报名按钮");
     [self.view endEditing:YES];
-//    [self pushRiteBlessingViewController:@""];
+//    [self pushRiteBlessingViewController:@"20201009897593891"];
     if (![self.formView checkoutForcedInput]) return;
 
     WEAKSELF
@@ -444,7 +442,7 @@
     [vc.saveButton setTitle:@"确定" forState:UIControlStateNormal];
     [vc.cancelButton setTitle:@"取消" forState:UIControlStateNormal];
     
-    vc.saveButton.backgroundColor = [UIColor hexColor:@"8E2B25"];
+    vc.saveButton.backgroundColor = kMainYellow;
     vc.cancelButton.backgroundColor = [UIColor hexColor:@"DAAA2E"];
     
     vc.imageUrl = imageURL;
@@ -592,7 +590,7 @@
 
 #pragma mark - getter
 - (void) showAlertWithInfoString:(NSString *)text success:(void (^ __nullable)(void))success{
-    [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+    [SMAlert setConfirmBtBackgroundColor:kMainYellow];
     [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
     [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
     [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
@@ -611,10 +609,11 @@
 }
 
 - (UIImageView *)formBackImageView{
-   if (!_formBackImageView){
+    if (!_formBackImageView){
         _formBackImageView = [[UIImageView alloc] init];
+        _formBackImageView.clipsToBounds = YES;
         _formBackImageView.contentMode = UIViewContentModeScaleAspectFill;
-       _formBackImageView.image = [UIImage imageNamed:@"riteFormBackImage"];
+        _formBackImageView.image = [UIImage imageNamed:@"riteFormBackImage"];
     }
     return _formBackImageView;
 }
@@ -665,7 +664,7 @@
         [button setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.9]];
         [button addTarget:self action:@selector(signUpClick:) forControlEvents:UIControlEventTouchUpInside];
         [button setTitle:SLLocalizedString(@"提交") forState:UIControlStateNormal];
-        [button setTitleColor:[UIColor colorForHex:@"8E2B25"] forState:UIControlStateNormal];
+        [button setTitleColor:kMainYellow forState:UIControlStateNormal];
         button.titleLabel.font = kRegular(17);
         button.layer.cornerRadius = 22;
         button.clipsToBounds = YES;

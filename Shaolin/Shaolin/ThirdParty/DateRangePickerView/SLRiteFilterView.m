@@ -134,7 +134,7 @@ static NSString * const typeCellId = @"SLRiteFilterTypeCell";
     cell.typeLabel.text = list[indexPath.row];
     
     if ([cell.typeLabel.text isEqualToString:self.typeName]) {
-        cell.typeLabel.textColor = WENGEN_RED;
+        cell.typeLabel.textColor = kMainYellow;
         cell.typeLabel.font = kMediumFont(16);
         cell.chooseIcon.hidden = NO;
     } else {

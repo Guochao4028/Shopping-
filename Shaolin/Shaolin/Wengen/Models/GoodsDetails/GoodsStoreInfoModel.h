@@ -26,6 +26,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, copy)NSString * phone;
 @property(nonatomic, copy)NSString * im;
 
+///是否自营 1，自营 0非自营
+@property(nonatomic, copy)NSString * is_self;
+
 
 
 @end

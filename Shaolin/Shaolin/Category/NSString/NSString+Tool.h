@@ -30,6 +30,12 @@ NS_ASSUME_NONNULL_BEGIN
  */
 +(NSInteger)timeSwitchTimestamp:(NSString *)formatTime andFormatter:(NSString *)format;
 
+/**
+ 时间 转化成 时间
+ 2020-09-29 10:27:48 => 2020-09-29
+*/
++(NSString *)timeStrIntoTimeWithString:(NSString *)formatTime andFormatter:(NSString *)format;
+
 ///时间戳变为格式时间
 + (NSString *)convertStrToTime:(NSInteger)time;
 

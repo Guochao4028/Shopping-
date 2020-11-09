@@ -26,6 +26,10 @@ static NSString *const riteCellId = @"MyRiteRegisteredCell";
 @end
 
 @implementation MyRiteFinishedViewController
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self setNavigationBarRedTintColor];
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];

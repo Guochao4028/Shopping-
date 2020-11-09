@@ -43,7 +43,6 @@
 
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
 }
 
 - (void)viewDidLoad {
@@ -426,10 +425,10 @@
         [button setTitle:SLLocalizedString(@"查看详情") forState:UIControlStateNormal];
         
         
-        [button setTitleColor:[UIColor hexColor:@"8E2B25"] forState:UIControlStateNormal];
+        [button setTitleColor:kMainYellow forState:UIControlStateNormal];
         button.titleLabel.font = kRegular(15);
         button.layer.borderWidth = 0.5f;
-        button.layer.borderColor = [UIColor hexColor:@"8E2B25"].CGColor;
+        button.layer.borderColor = kMainYellow.CGColor;
         button.layer.cornerRadius = 14;
         [button addTarget:self action:@selector(activityDetail) forControlEvents:UIControlEventTouchUpInside];
         
@@ -439,10 +438,4 @@
     }
     return _tableFooterView;
 }
-
-#pragma mark - device
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    return UIStatusBarStyleDefault;
-}
-
 @end

@@ -34,7 +34,6 @@
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     self.contentView.model = self.model;
-    self.navigationController.navigationBar.hidden = NO;
 }
 
 - (void)initUI{
@@ -109,7 +108,7 @@
         if (orderType == 5) {
             //充值
         }else{
-            //订单类型1 商品 2 教程 3 段品质活动 4 退款 5 充值 6 法会
+            //订单类型1 商品 2 教程 3 段品制活动 4 退款 5 充值 6 法会
             if (orderType == 1 || (orderType == 4 && isOrderDetails)) {
                 OrderDetailsViewController *orderDetailsVC = [[OrderDetailsViewController alloc]init];
                 orderDetailsVC.orderDetailsType = OrderDetailsHeardNormalType;

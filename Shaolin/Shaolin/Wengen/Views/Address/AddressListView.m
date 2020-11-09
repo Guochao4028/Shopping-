@@ -138,7 +138,7 @@ static NSString *const kAddressListTableViewCellIdentifier = @"AddressListTableV
        
        [_createButton setFrame:CGRectMake(x, y, 250, 40)];
        _createButton.layer.cornerRadius = SLChange(18);
-       [_createButton setBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+       [_createButton setBackgroundColor:kMainYellow];
        [_createButton setTitle:SLLocalizedString(@"新建收货地址") forState:UIControlStateNormal];
        [_createButton setImage:[UIImage imageNamed:@"baiJia"] forState:UIControlStateNormal];
        [_createButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];

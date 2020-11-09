@@ -7,10 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "SLNetworking.h"
 /**
  url文件，所有的url都在里面
  */
-#import "DefinedURLs.h"
+//#import "DefinedURLs.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface WengenManager : NSObject
@@ -163,6 +164,17 @@ NS_ASSUME_NONNULL_BEGIN
 ///(文创 商城) ahq 猜你想问 列表
 -(void)getGuessList:(NSDictionary *)param Callback:(NSArrayCallBack)call;
 
+///商品开发票信息
+-(void)getGoodsInvoice:(NSDictionary *)param Callback:(NSDictionaryCallBack)call;
+
+///换开发票
+-(void)changeInvoice:(NSDictionary *)param Callback:(MessageCallBack)call;
+
+///修改发票信息
+-(void)editInvoice:(NSDictionary *)param Callback:(MessageCallBack)call;
+
+///发送邮件
+-(void)sendMail:(NSDictionary *)param Callback:(MessageCallBack)call;
 
 +(instancetype)shareInstance;
 

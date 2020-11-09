@@ -6,11 +6,11 @@
 //  Copyright © 2020 syqaxldy. All rights reserved.
 //  文章详情
 
-#import <UIKit/UIKit.h>
+#import "RootViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface FoundDetailsViewController : UIViewController
+@interface FoundDetailsViewController : RootViewController
 @property(nonatomic,strong) NSString *idStr;
 @property(nonatomic,strong) NSString *stateStr;
 @property(nonatomic,copy) NSString *tabbarStr;

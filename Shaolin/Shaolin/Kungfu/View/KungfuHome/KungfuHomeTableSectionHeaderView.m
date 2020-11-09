@@ -36,6 +36,9 @@
     _arrowHidden = arrowHidden;
     
     self.arrowIcon.hidden = arrowHidden;
+    
+    self.pointImgv.hidden = arrowHidden;
+    self.lineImgv.hidden = arrowHidden;
 }
 
 @end

@@ -19,7 +19,7 @@
 #import "SMAlert.h"
 
 #import "MeManager.h"
-
+#import "DataManager.h"
 #import "PayPasswordSetupVc.h"
 #import "ShoppingCartViewController.h"
 #import "BalanceManagementVc.h"
@@ -32,8 +32,6 @@
 static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableViewCell";
 
 @interface CheckstandViewController ()<WengenNavgationViewDelegate, UITableViewDelegate, UITableViewDataSource>
-
-@property(nonatomic, strong)WengenNavgationView *navgationView;
 
 @property(nonatomic, strong)UILabel *priceLabel;
 
@@ -64,6 +62,8 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.titleLabe.text = SLLocalizedString(@"收银台");
+    self.disableRightGesture = YES;
     // Do any additional setup after loading the view.
     [self initData];
     [self initUI];
@@ -71,33 +71,16 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    self.navigationController.navigationBar.hidden = YES;
-    
-    self.navigationController.fd_fullscreenPopGestureRecognizer.enabled = NO;
-    
-    // 禁用返回手势
-    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
-        self.navigationController.interactivePopGestureRecognizer.enabled = NO;
-        
-    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    
-    self.navigationController.fd_fullscreenPopGestureRecognizer.enabled = YES;
-    
-    // 开启返回手势
-    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
-        self.navigationController.interactivePopGestureRecognizer.enabled = YES;
-    }
 }
 
 #pragma mark - methods
 -(void)initUI{
     
     [self.view setBackgroundColor:[UIColor whiteColor]];
-    [self.view addSubview:self.navgationView];
     [self.view addSubview:self.priceLabel];
     [self.view addSubview:self.tableView];
     [self.view addSubview:self.payButton];
@@ -176,37 +159,37 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
             [self reloadPayButton:j];
             [self.tableView reloadData];
             
-            //根据活动编号查询是否有符合该段位且该机构的 考试凭证
-            if (self.activityCode && self.activityCode.length){
+            //根据活动编号查询是否有符合该位阶且该机构的 考试凭证
+//            if (self.activityCode && self.activityCode.length){
              
 
                 
-                [[DataManager shareInstance]checkProof:@{@"activityCode":self.activityCode} callback:^(NSDictionary *result) {
-                    NSDictionary *dic ;
-                    NSInteger selectLoction;
-                    if (IsNilOrNull(result)) {
-                        dic = @{@"title":SLLocalizedString(@"暂无凭证"), @"isSelected":@"0", @"icon":@"unCredentialsun", @"isEditor":@"0"};
-                        selectLoction = j;
-                    }else{
-                        
-                        [self.dataArray removeAllObjects];
-                        
-                        self.examProofCode = result[@"examProofCode"];
-                        dic = @{@"title":[NSString stringWithFormat:SLLocalizedString(@"使用凭证(%@)"), result[@"levelName"]], @"isSelected":@"1", @"icon":@"Credentialsun", @"isEditor":@"1"};
-                        
-                        selectLoction = self.dataArray.count-1;
-                    }
-                    
-                    
-                    NSMutableDictionary *temDic = [NSMutableDictionary dictionaryWithDictionary:dic];
-                    [self.dataArray addObject:temDic];
-                    
-                    
-                    [self reloadPayButton:selectLoction];
-                    [self.tableView reloadData];
-                    
-                }];
-            }
+//                [[DataManager shareInstance]checkProof:@{@"activityCode":self.activityCode} callback:^(NSDictionary *result) {
+//                    NSDictionary *dic ;
+//                    NSInteger selectLoction;
+//                    if (IsNilOrNull(result)) {
+//                        dic = @{@"title":SLLocalizedString(@"暂无凭证"), @"isSelected":@"0", @"icon":@"unCredentialsun", @"isEditor":@"0"};
+//                        selectLoction = j;
+//                    }else{
+//
+//                        [self.dataArray removeAllObjects];
+//
+//                        self.examProofCode = result[@"examProofCode"];
+//                        dic = @{@"title":[NSString stringWithFormat:SLLocalizedString(@"使用凭证(%@)"), result[@"levelName"]], @"isSelected":@"1", @"icon":@"Credentialsun", @"isEditor":@"1"};
+//
+//                        selectLoction = self.dataArray.count-1;
+//                    }
+//
+//
+//                    NSMutableDictionary *temDic = [NSMutableDictionary dictionaryWithDictionary:dic];
+//                    [self.dataArray addObject:temDic];
+//
+//
+//                    [self reloadPayButton:selectLoction];
+//                    [self.tableView reloadData];
+//
+//                }];
+//            }
         }];
     }
 }
@@ -261,7 +244,7 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
             NSString *amountTotal = [self.goodsAmountTotal substringFromIndex:1];
             if (self.accountBalance.integerValue < amountTotal.integerValue) {
                 
-                [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+                [SMAlert setConfirmBtBackgroundColor:kMainYellow];
                 [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
                 [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
                 [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
@@ -296,20 +279,19 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
             
             PayView *pay = [[PayView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
             [pay setPriceStr:[self.priceLabel text]];
-            [self.view addSubview:pay];
+            [[ShaolinProgressHUD frontWindow] addSubview:pay];
             
             [pay setInputPassword:^(NSString * _Nonnull password) {
                 
                 NSLog(@"password : %@", password);
                 
                 [[DataManager shareInstance]payPasswordCheck:@{@"payPassword":password} Callback:^(Message *message) {
-                    
+                    [pay gone];
                     if (message.isSuccess) {
                         [[DataManager shareInstance]orderPay:@{@"ordercode" :self.order_no, @"orderMoney": [self.goodsAmountTotal substringFromIndex:1], @"payType":@"3"} Callback:^(Message *message) {
                             
                             if (self.paySuccessfulBlock) {
                                 self.paySuccessfulBlock(self.order_no);
-                                [pay gone];
                                 return;
                             }
                             
@@ -318,7 +300,6 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
                         }];
                         
                     }else{
-                        [pay gone];
                         [ShaolinProgressHUD singleTextHud:message.reason view:self.view afterDelay:TipSeconds];
                     }
                     
@@ -347,7 +328,7 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
             NSString *amountTotal = [self.goodsAmountTotal substringFromIndex:1];
             if (self.iosMoney.integerValue < amountTotal.integerValue) {
                 
-                [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+                [SMAlert setConfirmBtBackgroundColor:kMainYellow];
                 [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
                 [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
                 [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
@@ -381,14 +362,14 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
             PayView *pay = [[PayView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
             [pay setPriceStr:[self.priceLabel text]];
             [pay setSubtitleStr:SLLocalizedString(@"虚拟币支付")];
-            [self.view addSubview:pay];
+            [[ShaolinProgressHUD frontWindow] addSubview:pay];
             
             [pay setInputPassword:^(NSString * _Nonnull password) {
                 
                 NSLog(@"password : %@", password);
                 
                 [[DataManager shareInstance]payPasswordCheck:@{@"payPassword":password} Callback:^(Message *message) {
-                    
+                    [pay gone];
                     if (message.isSuccess) {
                         [[DataManager shareInstance]orderPay:@{@"ordercode" :self.order_no, @"orderMoney": [self.goodsAmountTotal substringFromIndex:1], @"payType":@"4"} Callback:^(Message *message) {
                             
@@ -396,7 +377,6 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
                             [self.navigationController pushViewController:paySuccessVC animated:YES];
                         }];
                     }else{
-                        [pay gone];
                         [ShaolinProgressHUD singleTextHud:message.reason view:self.view afterDelay:TipSeconds];
                     }
                 }];
@@ -413,9 +393,9 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
 
 #pragma mark - WengenNavgationViewDelegate
 //返回按钮
--(void)tapBack{
+-(void)leftAction{
     
-    [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+    [SMAlert setConfirmBtBackgroundColor:kMainYellow];
     [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
     [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
     [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
@@ -489,9 +469,18 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
                 [self.navigationController popToRootViewControllerAnimated:YES];
             }
         }else{
-            
-            OrderHomePageViewController *orderVC = [[OrderHomePageViewController alloc]init];
-            [self.navigationController pushViewController:orderVC animated:YES];
+
+//
+//            OrderHomePageViewController *orderVC = [[OrderHomePageViewController alloc]init];
+//            [self.navigationController pushViewController:orderVC animated:YES];
+//
+        NSMutableArray *temp = [NSMutableArray arrayWithArray:[self.navigationController viewControllers]];
+        [temp removeLastObject];
+        self.navigationController.viewControllers = temp;
+        UIViewController *vc = [temp lastObject];
+        OrderHomePageViewController *orderVC = [[OrderHomePageViewController alloc]init];
+        [self.navigationController pushViewController:orderVC animated:YES];
+        [vc.navigationController pushViewController:orderVC animated:YES];
             
             
         }
@@ -607,32 +596,10 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
 
 
 #pragma mark - getter / setter
-
--(WengenNavgationView *)navgationView{
-    
-    if (_navgationView == nil) {
-        //状态栏高度
-        CGFloat barHeight ;
-        /** 判断版本
-         获取状态栏高度
-         */
-        if (@available(iOS 13.0, *)) {
-            barHeight = [[[[[UIApplication sharedApplication] keyWindow] windowScene] statusBarManager] statusBarFrame].size.height;
-        } else {
-            barHeight = [[UIApplication sharedApplication] statusBarFrame].size.height;
-        }
-        _navgationView = [[WengenNavgationView alloc]initWithFrame:CGRectMake(0, barHeight, ScreenWidth, 44)];
-        [_navgationView setTitleStr:SLLocalizedString(@"收银台")];
-        [_navgationView setDelegate:self];
-    }
-    return _navgationView;
-    
-}
-
 -(UILabel *)priceLabel{
     
     if (_priceLabel == nil) {
-        CGFloat y = CGRectGetMaxY(self.navgationView.frame)+30;
+        CGFloat y = 30;
         _priceLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, y, ScreenWidth, 35)];
         [_priceLabel setTextColor:[UIColor colorForHex:@"BE0B1F"]];
         [_priceLabel setTextAlignment:NSTextAlignmentCenter];
@@ -664,10 +631,9 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
         _payButton = [UIButton buttonWithType:UIButtonTypeCustom];
         CGFloat x = (ScreenWidth - 250)/2;
         //        CGFloat y = ScreenHeight - 40 - 10 - 20 - 100;
-        CGFloat y = ScreenHeight - 40 - 10 - 20;
-        
+        CGFloat y = ScreenHeight - NavBar_Height - 40 - 10 - 20;
         [_payButton setFrame:CGRectMake(x, y, 250, 40)];
-        [_payButton setBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+        [_payButton setBackgroundColor:kMainYellow];
         _payButton.layer.cornerRadius = SLChange(20);
         [_payButton.titleLabel setFont:kMediumFont(15)];
         NSString *titleStr = [NSString stringWithFormat:SLLocalizedString(@"微信支付%@"), self.goodsAmountTotal];

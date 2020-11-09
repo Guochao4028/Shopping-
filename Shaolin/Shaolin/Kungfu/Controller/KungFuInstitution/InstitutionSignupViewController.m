@@ -14,6 +14,7 @@
 
 #import "InstitutionSignupSuccessfulViewController.h"
 
+#import "DataManager.h"
 
 @interface InstitutionSignupViewController ()<UITableViewDelegate, UITableViewDataSource>
 
@@ -64,6 +65,8 @@
      item1Title 标题
      item2Title 标题
      */
+    
+    
     self.dataArray = @[
         @{@"title":SLLocalizedString(@"姓      名："), @"type":@"1", @"isEditor":@"1"},
         @{@"title":SLLocalizedString(@"性      别："), @"type":@"2", @"itemType":@"2", @"item1Title":@"男", @"item2Title":@"女", @"isEditor":@"1"},
@@ -83,9 +86,9 @@
     
     [self.view endEditing:YES];
     
-    NSString *realname = self.registModel.realname;
+    NSString *realname = self.registModel.realName;
     NSString *gender = self.registModel.gender;
-    NSString *bormtime = self.registModel.bormtime;
+    NSString *bormtime = self.registModel.birthTime;
     NSString *telephone = self.registModel.telephone;
     NSString *mailingAddress = self.registModel.mailingAddress;
     
@@ -220,8 +223,8 @@
     if (_submitButton == nil) {
         _submitButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [_submitButton setFrame:CGRectMake(22, ScreenHeight - NavBar_Height - 44 - 20, ScreenWidth - 44, 44)];
-        [_submitButton setBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
-        [_submitButton setTitle:SLLocalizedString(@"提交") forState:UIControlStateNormal];
+        [_submitButton setBackgroundColor:kMainYellow];
+        [_submitButton setTitle:SLLocalizedString(@"确定") forState:UIControlStateNormal];
         [_submitButton setTitleColor:[UIColor colorForHex:@"FFFFFF"] forState:UIControlStateNormal];
         [_submitButton.titleLabel setFont:kRegular(16)];
         _submitButton.layer.cornerRadius = 22;

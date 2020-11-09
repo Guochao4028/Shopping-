@@ -6,7 +6,7 @@
 //  Copyright © 2017 dxstudio. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "RootViewController.h"
 
 //带加载、刷新的Controller(包含UITableView)
 @interface EMRefreshViewController : RootViewController<UITableViewDelegate, UITableViewDataSource>

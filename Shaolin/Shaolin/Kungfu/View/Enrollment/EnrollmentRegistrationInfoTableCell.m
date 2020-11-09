@@ -19,6 +19,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *normalTitleLabel;
 @property (weak, nonatomic) IBOutlet GCTextField *normalInputTextField;
 @property (weak, nonatomic) IBOutlet UILabel *normalFocusLabel;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *normalInputTextFieldH;
 
 /** 单选  （选择 性别 男 女 ）*/
 @property (weak, nonatomic) IBOutlet UIView *radioView;
@@ -46,6 +47,14 @@
 
 @property (weak, nonatomic) IBOutlet UIImageView *dropDownContentImageView;
 
+
+/** 不可输入  （标题 加 label） */
+@property (weak, nonatomic) IBOutlet UIView *notEnterView;
+@property (weak, nonatomic) IBOutlet UILabel *notEnterTitleLabel;
+@property (weak, nonatomic) IBOutlet UILabel *notEnterContentLabel;
+@property (weak, nonatomic) IBOutlet UILabel *notEnterFocusLabel;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *notEnterContentLabelH;
+
 @end
 
 @implementation EnrollmentRegistrationInfoTableCell
@@ -60,6 +69,7 @@
     [self decorationView:self.radioView];
     [self decorationView:self.dropDownView];
     [self decorationView:self.normalView];
+    [self decorationView:self.notEnterView];
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
     [self.normalInputTextField setDelegate:self];
@@ -170,9 +180,6 @@
     }else{
         [self.registModel setGender:@"男"];
     }
-    
-    
-
 }
 
 -(void)radio2TapSelected:(UITapGestureRecognizer *)sender{
@@ -180,8 +187,6 @@
     [self.radio2ImageView setImage:[UIImage imageNamed:@"exam_choose"]];
     [self.radio1ImageView setImage:[UIImage imageNamed:@"exam_unChoose"]];
 
-    
-    
     NSString *itemType = self.model[@"itemType"];
     
     NSInteger itemTypeInteger = [itemType integerValue];
@@ -191,8 +196,6 @@
     }else{
         [self.registModel setGender:@"女"];
     }
-
-    
 }
 
 #pragma mark - UITextFieldDelegate
@@ -292,45 +295,45 @@
         self.registModel.idCard = textField.text;
     }
     if ([title isEqualToString:SLLocalizedString(@"出生年月：")]||[title isEqualToString:SLLocalizedString(@"年     龄：")]) {
-        self.registModel.bormtime = textField.text;
+        self.registModel.birthTime = textField.text;
     }
-    if ([title isEqualToString:SLLocalizedString(@"民      族：")]) {
+    if ([title isEqualToString:SLLocalizedString(@"民族：")]) {
         self.registModel.nation = textField.text;
     }
-    if ([title isEqualToString:SLLocalizedString(@"学      历：")]) {
+    if ([title isEqualToString:SLLocalizedString(@"学历：")]) {
         self.registModel.education = textField.text;
     }
-    if ([title isEqualToString:SLLocalizedString(@"职      称：")]) {
+    if ([title isEqualToString:SLLocalizedString(@"职称：")]) {
         self.registModel.title = textField.text;
     }
-    if ([title isEqualToString:SLLocalizedString(@"职      务：")]) {
+    if ([title isEqualToString:SLLocalizedString(@"职务：")]) {
         self.registModel.post = textField.text;
     }
-    if ([title isEqualToString:SLLocalizedString(@"微      信：")]) {
+    if ([title isEqualToString:SLLocalizedString(@"微信：")]) {
         self.registModel.wechat = textField.text;
     }
-    if ([title isEqualToString:SLLocalizedString(@"邮      箱：")]) {
+    if ([title isEqualToString:SLLocalizedString(@"邮箱：")]) {
         self.registModel.mailbox = textField.text;
     }
-    if ([title isEqualToString:SLLocalizedString(@"手      机：")]||[title isEqualToString:SLLocalizedString(@"联系方式：")]) {
+    if ([title isEqualToString:SLLocalizedString(@"电话：")]||[title isEqualToString:SLLocalizedString(@"联系方式：")]) {
         self.registModel.telephone = textField.text;
     }
     if ([title isEqualToString:SLLocalizedString(@"通讯地址：")]) {
         self.registModel.mailingAddress = textField.text;
     }
-    if ([title isEqualToString:SLLocalizedString(@"护  照 号：")]) {
+    if ([title isEqualToString:SLLocalizedString(@"护照号：")]) {
         self.registModel.passportNumber = textField.text;
     }
     if ([title isEqualToString:SLLocalizedString(@"姓名：")]) {
-        self.registModel.realname = textField.text;
+        self.registModel.realName = textField.text;
     }
 
     if ([title isEqualToString:@"姓      名："]) {
-        self.registModel.realname = textField.text;
+        self.registModel.realName = textField.text;
     }
     
     if ([title isEqualToString:@"年      龄："]) {
-        self.registModel.bormtime = textField.text;
+        self.registModel.birthTime = textField.text;
     }
     
     if ([title isEqualToString:@"联系方式："]) {
@@ -339,11 +342,11 @@
     }
     
     
-    if ([title isEqualToString:@"身      高："]) {
+    if ([title isEqualToString:@"身高(cm)："]) {
         self.registModel.height = textField.text;
     }
     
-    if ([title isEqualToString:@"练武年限："]) {
+    if ([title isEqualToString:@"练武年限(年)："]) {
         self.registModel.martialArtsYears = textField.text;
     }
     
@@ -356,7 +359,7 @@
         }
     }
     
-    if ([title isEqualToString:@"体      重："]) {
+    if ([title isEqualToString:@"体重(kg)："]) {
         self.registModel.weight = textField.text;
     }
     
@@ -371,6 +374,9 @@
     NSString *type = model[@"type"];
     
     BOOL isEditor = [model[@"isEditor"] boolValue];
+    
+    [self.notEnterView setHidden:YES];
+
     
     if([type isEqualToString:@"1"] == YES){
         [self.normalView setHidden:NO];
@@ -419,6 +425,32 @@
         
         [self.dropDownContentLabel setText:content];
         
+    }else if ([type isEqualToString:@"4"] == YES){
+       
+//        @property (weak, nonatomic) IBOutlet NSLayoutConstraint *notEnterContentLabelH;
+        
+
+        
+        [self.notEnterView setHidden:NO];
+        [self.normalView setHidden:YES];
+        [self.dropDownView setHidden:YES];
+        [self.radioView setHidden:YES];
+        [self.notEnterTitleLabel setText:model[@"title"]];
+        
+        
+        if (isEditor == NO && model[@"subArray"]) {
+            [self.notEnterContentLabel setText:model[@"content"]];
+            
+            
+        }
+        
+      
+        NSString *hexColor = [model objectForKey:@"hexColor"];
+        if (hexColor && hexColor.length){
+            self.notEnterTitleLabel.textColor = [UIColor colorForHex:hexColor];
+            self.notEnterContentLabel.textColor = [UIColor colorForHex:hexColor];
+        }
+        
     }
     
     BOOL isMust = [model[@"isMust"] boolValue];
@@ -430,6 +462,9 @@
     if (model[@"placeholder"]) {
         [self.normalInputTextField setPlaceholder:model[@"placeholder"]];
     }
+    
+    [self.radio1ImageView setImage:[UIImage imageNamed:@"exam_unChoose"]];
+    [self.radio2ImageView setImage:[UIImage imageNamed:@"exam_unChoose"]];
     
 }
 
@@ -448,15 +483,17 @@
         //        self.normalInputTextField.maxLength = 18;
         //        self.normalInputTextField.inputType = TextInputTypeLetterOrNum;
     }
-    if ([title isEqualToString:SLLocalizedString(@"姓      名：")]) {
-        textFieldStr =  self.registModel.realname;
+    
+    
+    if ([title isEqualToString:SLLocalizedString(@"姓名：")]||[title isEqualToString:SLLocalizedString(@"姓      名：")]) {
+        textFieldStr =  self.registModel.realName;
         
         //        self.normalInputTextField.inputType = TextInputTypeNormal;
     }
     
-    if ([title isEqualToString:SLLocalizedString(@"年      龄：")]) {
+    if ([title isEqualToString:SLLocalizedString(@"年龄：")]||[title isEqualToString:SLLocalizedString(@"年      龄：")]) {
         
-        textFieldStr =  self.registModel.bormtime;
+        textFieldStr =  self.registModel.birthTime;
         self.normalInputTextField.inputType = CCCheckeNumber;
     }
     
@@ -466,9 +503,9 @@
     }
     
     if ([title isEqualToString:SLLocalizedString(@"出生年月：")]) {
-        textFieldStr = self.registModel.bormtime;
+        textFieldStr = self.registModel.birthTime;
     }
-    if ([title isEqualToString:SLLocalizedString(@"民      族：")]) {
+    if ([title isEqualToString:SLLocalizedString(@"民族：")]) {
         textFieldStr = self.registModel.nation;
         
         [self.dropDownContentLabel setText:textFieldStr];
@@ -476,31 +513,31 @@
         //        self.normalInputTextField.inputType = TextInputTypeChineseOrLetter;
     }
     
-    if ([title isEqualToString:SLLocalizedString(@"学      历：")]) {
+    if ([title isEqualToString:SLLocalizedString(@"学历：")]) {
         textFieldStr = self.registModel.education;
         [self.dropDownContentLabel setText:textFieldStr];
     }
     
-    if ([title isEqualToString:SLLocalizedString(@"职      称：")]) {
+    if ([title isEqualToString:SLLocalizedString(@"职称：")]) {
         textFieldStr = self.registModel.title;
         //        self.normalInputTextField.inputType = TextInputTypeChineseOrLetter;
     }
-    if ([title isEqualToString:SLLocalizedString(@"职      务：")]) {
+    if ([title isEqualToString:SLLocalizedString(@"职务：")]) {
         textFieldStr = self.registModel.post;
         //        self.normalInputTextField.inputType = TextInputTypeChineseOrLetter;
     }
-    if ([title isEqualToString:SLLocalizedString(@"微      信：")]){
+    if ([title isEqualToString:SLLocalizedString(@"微信：")]){
         
         textFieldStr = self.registModel.wechat;
         self.normalInputTextField.inputType = CCCheckStrongTypeWinXin;
     }
-    if ([title isEqualToString:SLLocalizedString(@"邮      箱：")]) {
+    if ([title isEqualToString:SLLocalizedString(@"邮箱：")]) {
         
         textFieldStr = self.registModel.mailbox;
         
         self.normalInputTextField.inputType = CCCheckEmail;
     }
-    if ([title isEqualToString:SLLocalizedString(@"手      机：")]) {
+    if ([title isEqualToString:SLLocalizedString(@"电话：")]) {
         
         textFieldStr = self.registModel.telephone;
         self.normalInputTextField.inputType = CCCheckPhone;
@@ -509,34 +546,37 @@
     if ([title isEqualToString:SLLocalizedString(@"通讯地址：")]) {
         textFieldStr = self.registModel.mailingAddress;
     }
-    if ([title isEqualToString:SLLocalizedString(@"护  照 号：")]) {
+    if ([title isEqualToString:SLLocalizedString(@"护照号：")]) {
         //        self.normalInputTextField.inputType = TextInputTypeLetterOrNum;
         
         textFieldStr = self.registModel.passportNumber;
         //        self.normalInputTextField.inputType = TextInputTypeLetterOrNum;
     }
     
+    if ([title isEqualToString:SLLocalizedString(@"申报段品阶：")]) {
+        
+        textFieldStr = self.registModel.levelName;
+        
+    }
     
     
-    if ([title isEqualToString:SLLocalizedString(@"身      高：")]) {
+    if ([title isEqualToString:SLLocalizedString(@"身高(cm)：")]) {
         textFieldStr = self.registModel.height;
         self.normalInputTextField.inputType = CCCheckeNumber;
     }
     
-
-    
-    if ([title isEqualToString:@"体      重："]) {
+    if ([title isEqualToString:@"体重(kg)："]) {
         textFieldStr = self.registModel.weight;
         self.normalInputTextField.inputType = CCCheckeNumber;
     }
     
-    if ([title isEqualToString:@"练武年限："]) {
+    if ([title isEqualToString:@"练武年限(年)："]) {
 
         textFieldStr = self.registModel.martialArtsYears;
         self.normalInputTextField.inputType = CCCheckeNumber;
     }
     
-    if ([title isEqualToString:SLLocalizedString(@"鞋      码：")]) {
+    if ([title isEqualToString:SLLocalizedString(@"鞋码(码)：")]) {
         textFieldStr = self.registModel.shoeSize;
         
         [self.dropDownContentLabel setText:textFieldStr];
@@ -547,7 +587,18 @@
     
     
     if (isEditor == NO && self.model[@"subArray"]) {
-        [self.normalInputTextField setText:self.registModel.examAddress];
+        
+        NSString *textType = self.model[@"textType"];
+        
+        NSString *content = self.model[@"content"];
+        
+        if ([textType isEqualToString:@"declareGrades"]) {
+            
+            [self.normalInputTextField setText:content];
+        }else if ([textType isEqualToString:@"address"]){
+            [self.normalInputTextField setText:self.registModel.examAddress];
+        }
+        
     }
     
     
@@ -565,7 +616,6 @@
     //        }
     //    }
     
-    
     if ([title isEqualToString:SLLocalizedString(@"证书显示名：")]) {
         //valueType 姓名 1 曾名或法名  2
         NSInteger valueType = [self.registModel.valueType integerValue];
@@ -578,9 +628,25 @@
             [self.radio2ImageView setImage:[UIImage imageNamed:@"exam_choose"]];
             self.registModel.valueType = @"2";
         }
-    }else if ([title isEqualToString:SLLocalizedString(@"性      别：")]){
-        [self.radio1ImageView setImage:[UIImage imageNamed:@"exam_unChoose"]];
-        [self.radio2ImageView setImage:[UIImage imageNamed:@"exam_unChoose"]];
+    }else if ([title isEqualToString:SLLocalizedString(@"性别：")] || [title isEqualToString:SLLocalizedString(@"性      别：")]){
+        
+        if (registModel.gender.length == 0) {
+            self.registModel.gender = SLLocalizedString(@"男");
+            [self.radio1ImageView setImage:[UIImage imageNamed:@"exam_choose"]];
+            [self.radio2ImageView setImage:[UIImage imageNamed:@"exam_unChoose"]];
+        }else{
+            if([self.registModel.gender isEqualToString:SLLocalizedString(@"男")]){
+                [self.radio1ImageView setImage:[UIImage imageNamed:@"exam_choose"]];
+                [self.radio2ImageView setImage:[UIImage imageNamed:@"exam_unChoose"]];
+            }else if([self.registModel.gender isEqualToString:SLLocalizedString(@"女")]){
+                [self.radio1ImageView setImage:[UIImage imageNamed:@"exam_unChoose"]];
+                [self.radio2ImageView setImage:[UIImage imageNamed:@"exam_choose"]];
+            }else{
+                [self.radio1ImageView setImage:[UIImage imageNamed:@"exam_unChoose"]];
+                [self.radio2ImageView setImage:[UIImage imageNamed:@"exam_unChoose"]];
+            }
+        }
+       
     }
     
     

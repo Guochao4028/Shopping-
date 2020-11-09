@@ -10,9 +10,7 @@
 #import <WebKit/WebKit.h>
 
 #import "EnrollmentRegistrationInfoViewController.h"
-#import "RealNameViewController.h"
 #import "RiteSecondLevelListViewController.h"
-#import "RiteRegistrationFormViewController.h"
 #import "InstitutionSignupViewController.h"
 #import "RitePastListViewController.h"
 #import "CustomerServicViewController.h"
@@ -21,7 +19,11 @@
 #import "SMAlert.h"
 #import "SharedModel.h"
 #import "SLShareView.h"
+#import "SLRouteManager.h"
 #import "ActivityManager.h"
+#import "DataManager.h"
+
+#import "EnrollmentPopoverView.h"
 
 @interface HtmlJsonModel : NSObject
 
@@ -90,8 +92,6 @@
 -(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
-    self.navigationController.fd_fullscreenPopGestureRecognizer.enabled = NO;
     self.titleLabe.text = self.titleStr;
     if (self.webType == KfWebView_rite) {
         self.likeBtn.hidden = NO;
@@ -128,17 +128,14 @@
 
 -(void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-    
-    self.navigationController.fd_fullscreenPopGestureRecognizer.enabled = YES;
     if (!self.navigationController || self.navigationController.viewControllers.count == 1) {
         
-        [self wr_setNavBarBackgroundAlpha:0];
+//        [self wr_setNavBarBackgroundAlpha:0];
         [self.webView.configuration.userContentController removeScriptMessageHandlerForName:@"H5inFormLocal"];
     }
 }
 
 - (void)dealloc{
-    
     [self.hud hideAnimated:YES];
     [self.likeBtn removeFromSuperview];
     [self.likeLabel removeFromSuperview];
@@ -219,7 +216,17 @@
     [self.webView.scrollView setShowsHorizontalScrollIndicator:NO];
 }
 #pragma mark - event
+- (void)leftAction{
+    if (self.leftActionBlock && self.leftActionBlock()){
+        return;
+    }
+    [super leftAction];
+}
+
 - (void)backHandle {
+    if (self.leftActionBlock && self.leftActionBlock()){
+        return;
+    }
     if (self.navigationController.topViewController == self) {
         [self.navigationController popViewControllerAnimated:YES];
     } else {
@@ -287,7 +294,7 @@
     
     if ([self.jsonModel.praisesState intValue] != 0) {
         [self.likeBtn setSelected:YES];
-        self.likeLabel.textColor = WENGEN_RED;
+        self.likeLabel.textColor = kMainYellow;
 //        self.likeLabel.hidden = NO;
     } else {
         self.likeLabel.textColor = [UIColor colorForHex:@"333333"];
@@ -296,7 +303,7 @@
     if ([self.jsonModel.collectionsState intValue] != 0) {
         [self.collectBtn setSelected:YES];
 //        self.collectLabel.hidden = NO;
-        self.collectLabel.textColor = WENGEN_RED;
+        self.collectLabel.textColor = kMainYellow;
     } else {
         self.collectLabel.textColor = [UIColor colorForHex:@"333333"];
     }
@@ -491,16 +498,12 @@
         return;
     }
     
-    if ([subJsonDic.allKeys containsObject:@"isAuthentication"]) {
-        // 实名认证状态 0：未认证 1：已认证 2：审核中
-        NSString * isAuthenticationStr = [NSString stringWithFormat:@"%@",subJsonDic[@"isAuthentication"]];
-        if ([isAuthenticationStr isEqualToString:@"0"] || [isAuthenticationStr isEqualToString:@"3"]) {
-            RealNameViewController *realNameVC = [[RealNameViewController alloc]init];
-            [self.navigationController pushViewController:realNameVC animated:YES];
-            return;
-        }
-        if ([isAuthenticationStr isEqualToString:@"2"]) {
-            [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"实名认证正在审核中，请耐心等待") view:self.view afterDelay:TipSeconds];
+    if ([subJsonDic.allKeys containsObject:@"isAuthentication"] && self.webType != KfWebView_mechanismDetail) {
+        //将isAuthentication value转为字符串
+        NSString *isAuthentication = [NSString stringWithFormat:@"%@", [subJsonDic objectForKey:@"isAuthentication"]];
+        //isAuthentication值为1的时候是实名认证通过，0未认证，1已认证，2认证中，3认证失败
+        if (![isAuthentication isEqualToString:@"1"]){
+            [SLRouteManager pushRealNameAuthenticationState:self.navigationController showAlert:YES isReloadData:YES finish:nil];
             return;
         }
     }
@@ -509,23 +512,26 @@
     }
     if (self.webType == KfWebView_activityDetail) {
         // 是活动详情
-        NSString * activityCode = [NSString stringWithFormat:@"%@",subJsonDic[@"activityCode"]];
+        [self eventDetails:subJsonDic andFlagStr:flagStr];
         
-        [[DataManager shareInstance] activityCheckedLevel:@{
-            @"activityCode":activityCode
-        } callbacl:^(NSObject *object) {
-            if ([object isKindOfClass:[Message class]] == YES) {
-                Message *message = (Message *)object;
-                [ShaolinProgressHUD singleTextHud:message.reason view:WINDOWSVIEW afterDelay:TipSeconds];
-            }else{
-                EnrollmentRegistrationInfoViewController * vc = [EnrollmentRegistrationInfoViewController new];
-                vc.flag = flagStr;
-                vc.activityCode = activityCode;
-                vc.model = (EnrollmentListModel *)object;
-                
-                [self.navigationController pushViewController:vc animated:YES];
-            }
-        }];
+//        NSString * activityCode = [NSString stringWithFormat:@"%@",subJsonDic[@"activityCode"]];
+//
+//
+//        [[DataManager shareInstance] activityCheckedLevel:@{
+//            @"activityCode":activityCode
+//        } callbacl:^(NSObject *object) {
+//            if ([object isKindOfClass:[Message class]] == YES) {
+//                Message *message = (Message *)object;
+//                [ShaolinProgressHUD singleTextHud:message.reason view:WINDOWSVIEW afterDelay:TipSeconds];
+//            }else{
+//                EnrollmentRegistrationInfoViewController * vc = [EnrollmentRegistrationInfoViewController new];
+//                vc.flag = flagStr;
+//                vc.activityCode = activityCode;
+//                vc.model = (EnrollmentListModel *)object;
+//
+//                [self.navigationController pushViewController:vc animated:YES];
+//            }
+//        }];
     }
     
     if (self.webType == KfWebView_mechanismDetail) {
@@ -574,6 +580,150 @@
             [self.navigationController pushViewController:vc animated:YES];
         }
     }
+}
+
+#pragma mark - 活动详情
+
+/// 活动详情 处理
+/// @param dataDic NSDictionary jsonDic h5传过了的数据
+/// @param flagStr 标识 透传 不做处理
+-(void)eventDetails:(NSDictionary *)dataDic andFlagStr:(NSString *)flagStr{
+    //活动id
+    NSString * activityCode = [NSString stringWithFormat:@"%@",dataDic[@"activityCode"]];
+    //是否显示补考弹窗
+    BOOL isMakeUpExam = [dataDic[@"makeUpExam"] boolValue];
+    
+    
+    if(isMakeUpExam == YES){
+        //弹窗，选择报名费， 考试费
+        [self jumpDirectlyPoperPage:dataDic andFlagStr:flagStr];
+        
+    }else{
+        //不显示弹窗，直接跳转
+        [self jumpDirectlyFormPage:activityCode andFlagStr:flagStr];
+    }
+    
+    
+    
+//    [[DataManager shareInstance]activityDetails:@{
+//            @"activityCode":activityCode
+//        } callbacl:^(NSObject *object) {
+//        if ([object isKindOfClass:[Message class]] == YES) {
+//            Message *message = (Message *)object;
+//            [ShaolinProgressHUD singleTextHud:message.reason view:WINDOWSVIEW afterDelay:TipSeconds];
+//        }else{
+//
+//            NSMutableDictionary *packetDic = [NSMutableDictionary dictionary];
+//            [packetDic setValue:flagStr forKey:@"flagStr"];
+//            [packetDic setValue:object forKey:@"model"];
+//            [packetDic setValue:activityCode forKey:@"activityCode"];
+//
+//            if(isMakeUpExam == YES){
+//
+//                WEAKSELF
+//                EnrollmentPopoverView *popoverView = [[EnrollmentPopoverView alloc]initWithFrame:(CGRectMake(0, 0, ScreenWidth, ScreenHeight))];
+//
+//                [popoverView setIsApplySelect:isSignUpButton];
+//                NSDictionary *pricePackage = @{@"applyMoney":dataDic[@"applyMoney"], @"makeUpMoney":dataDic[@"makeUpMoney"]};
+//
+//                [popoverView setPricePackage:pricePackage];
+//
+//                [popoverView setSubmitBlock:^(NSString * _Nonnull selectType) {
+//                    [packetDic setValue:selectType forKey:@"chargeType"];
+//                    [weakSelf jumpEnrollmentRegistrationInfoPage:packetDic];
+//                }];
+//
+//                UIWindow *window =[[UIApplication sharedApplication]keyWindow];
+//                [window addSubview:popoverView];
+//
+//
+//            }else{
+//                //不显示弹窗，直接跳转
+//                [packetDic setValue:[NSString stringWithFormat:@"%ld", KungfuApplyExpenseSignUpType] forKey:@"chargeType"];
+//                [self jumpEnrollmentRegistrationInfoPage:packetDic];
+//            }
+//        }
+//
+//    }];
+    
+}
+
+///跳转弹窗页 选择 报名费， 考试费
+-(void)jumpDirectlyPoperPage:(NSDictionary *)dataDic andFlagStr:(NSString *)flagStr{
+    //在补考弹窗报名费是否可以点击
+    BOOL isSignUpButton = [dataDic[@"signUpButton"] boolValue];
+    //活动id
+    NSString * activityCode = [NSString stringWithFormat:@"%@",dataDic[@"activityCode"]];
+    
+    WEAKSELF
+    EnrollmentPopoverView *popoverView = [[EnrollmentPopoverView alloc]initWithFrame:(CGRectMake(0, 0, ScreenWidth, ScreenHeight))];
+
+    [popoverView setIsApplySelect:isSignUpButton];
+    NSDictionary *pricePackage = @{@"applyMoney":dataDic[@"applyMoney"], @"makeUpMoney":dataDic[@"makeUpMoney"], @"repairNum":dataDic[@"repairNum"]};
+
+    [popoverView setPricePackage:pricePackage];
+
+    [popoverView setSubmitBlock:^(NSString * _Nonnull selectType) {
+        
+        [[DataManager shareInstance]activityDetails:@{
+                @"activityCode":activityCode,
+                @"makeUpTestData":selectType
+            } callbacl:^(NSObject *object) {
+            if ([object isKindOfClass:[Message class]] == YES) {
+                Message *message = (Message *)object;
+                [ShaolinProgressHUD singleTextHud:message.reason view:WINDOWSVIEW afterDelay:TipSeconds];
+            }else{
+    
+                NSMutableDictionary *packetDic = [NSMutableDictionary dictionary];
+                [packetDic setValue:flagStr forKey:@"flagStr"];
+                [packetDic setValue:object forKey:@"model"];
+                [packetDic setValue:activityCode forKey:@"activityCode"];
+                //不显示弹窗，直接跳转
+                [packetDic setValue:selectType forKey:@"chargeType"];
+                
+                [weakSelf jumpEnrollmentRegistrationInfoPage:packetDic];
+            }
+        }];
+    }];
+
+    UIWindow *window =[[UIApplication sharedApplication]keyWindow];
+    [window addSubview:popoverView];
+    
+}
+
+
+///直接跳转到表单页
+-(void)jumpDirectlyFormPage:(NSString *)activityCode andFlagStr:(NSString *)flagStr{
+        [[DataManager shareInstance]activityDetails:@{
+                @"activityCode":activityCode,
+                @"makeUpTestData":@"0"
+            } callbacl:^(NSObject *object) {
+            if ([object isKindOfClass:[Message class]] == YES) {
+                Message *message = (Message *)object;
+                [ShaolinProgressHUD singleTextHud:message.reason view:WINDOWSVIEW afterDelay:TipSeconds];
+            }else{
+    
+                NSMutableDictionary *packetDic = [NSMutableDictionary dictionary];
+                [packetDic setValue:flagStr forKey:@"flagStr"];
+                [packetDic setValue:object forKey:@"model"];
+                [packetDic setValue:activityCode forKey:@"activityCode"];
+    
+                //不显示弹窗，直接跳转
+                [packetDic setValue:[NSString stringWithFormat:@"%ld", KungfuApplyExpenseSignUpType] forKey:@"chargeType"];
+                [self jumpEnrollmentRegistrationInfoPage:packetDic];
+            }
+    
+        }];
+    
+}
+
+/// 跳转 活动报名表单
+/// @param dataPacketDic 数据包：flagStr，activityCode，model
+-(void)jumpEnrollmentRegistrationInfoPage:(NSDictionary *)dataPacketDic{
+    SLRouteModel *model = [[SLRouteModel alloc] init];
+    model.vcClass = NSClassFromString(@"EnrollmentRegistrationInfoViewController");
+    model.params = dataPacketDic;
+    [SLRouteManager shaolinRouteByPush:self.navigationController model:model];
 }
 
 #pragma mark - getter / setter
@@ -690,8 +840,4 @@
     return _jsonModel;
 }
 
-#pragma mark - device
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    return UIStatusBarStyleDefault;
-}
 @end

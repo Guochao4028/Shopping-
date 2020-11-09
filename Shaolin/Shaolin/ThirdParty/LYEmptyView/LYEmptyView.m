@@ -315,8 +315,8 @@
     self.actionButton.titleLabel.font = font;
     self.actionButton.backgroundColor = backGColor;
     if (self.actionBtnBackGroundGradientColors) [self addGradientWithView:self.actionButton gradientColors:self.actionBtnBackGroundGradientColors];
-    [self.actionButton setTitleColor:[UIColor colorForHex:@"8E2B25"] forState:UIControlStateNormal];
-    self.actionButton.layer.borderColor = [UIColor colorForHex:@"8E2B25"].CGColor;
+    [self.actionButton setTitleColor:kMainYellow forState:UIControlStateNormal];
+    self.actionButton.layer.borderColor = kMainYellow.CGColor;
     self.actionButton.layer.borderWidth = 0.5;
     self.actionButton.layer.cornerRadius = 16;
     

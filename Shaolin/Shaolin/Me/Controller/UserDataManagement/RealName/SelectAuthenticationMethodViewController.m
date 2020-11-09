@@ -34,6 +34,7 @@
     [self getIdcardReason];
     
     [RPSDK setup];
+    [self reloadView];
     // Do any additional setup after loading the view.
 }
 
@@ -68,10 +69,26 @@
     [self.authenticationMethodCollectionView lgf_CornerRadius:UIRectCornerTopLeft | UIRectCornerTopRight cornerRadii:12.5];
 }
 
+- (void)setParams:(NSDictionary *)params{
+    _params = params;
+    [self reloadView];
+}
+
+- (void)reloadView{
+    if (_authenticationMethodCollectionView){
+        [self.authenticationMethodCollectionView reloadData];
+    }
+    for (UIViewController *v in self.navigationController.viewControllers){
+        if ([v isKindOfClass:[RealNameSuccessViewController class]]){
+            [(RealNameSuccessViewController *)v setParams:self.params];
+        }
+    }
+}
+
 - (void)showRightButton{
     self.rightBtn.frame = CGRectMake(0, 0, 90, 20);
     [self.rightBtn setTitle:SLLocalizedString(@"拒绝理由") forState:UIControlStateNormal];
-    [self.rightBtn setTitleColor:[UIColor hexColor:@"8E2B25"] forState:UIControlStateNormal];
+    [self.rightBtn setTitleColor:kMainYellow forState:UIControlStateNormal];
     self.rightBtn.titleLabel.font = kRegular(15);
     [self.rightBtn setImage:[UIImage imageNamed:@"realName_Reason"] forState:(UIControlStateNormal)];
     [self.rightBtn horizontalCenterTitleAndImage];
@@ -167,30 +184,27 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     SelectAuthenticationMethodCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:NSStringFromClass([SelectAuthenticationMethodCollectionViewCell class]) forIndexPath:indexPath];
     cell.cellStyle = [self.methodDatas[indexPath.row] intValue];
-    if (self.params){
-        NSInteger verifiedState = [[self.params objectForKey:@"verifiedState"] integerValue];
-        NSString *verifiedStateStr = @"";
-        switch (verifiedState) {
-            case 1:
-                verifiedStateStr = SLLocalizedString(@"已认证");
-                break;
-            case 2:
-                verifiedStateStr = SLLocalizedString(@"认证中");
-                break;
-            case 3:
-                verifiedStateStr = SLLocalizedString(@"认证失败");
-                break;
-            default:
-                break;
-        }
-        cell.verifiedStateLabel.text = verifiedStateStr;
-        if ([[self.params objectForKey:@"idCard_type"] isEqualToString:@"1"] && [self.methodDatas[indexPath.row] intValue] == Authentication_Person){
-            cell.verifiedStateLabel.hidden = NO;
-        } else if ([[self.params objectForKey:@"idCard_type"] isEqualToString:@"2"] && [self.methodDatas[indexPath.row] intValue] == Authentication_Passport){
-            cell.verifiedStateLabel.hidden = NO;
-        } else {
-            cell.verifiedStateLabel.hidden = YES;
-        }
+    NSInteger verifiedState = [[self getVerifiedState] integerValue];
+    NSString *verifiedStateStr = @"";
+    switch (verifiedState) {
+        case 1:
+            verifiedStateStr = SLLocalizedString(@"已认证");
+            break;
+        case 2:
+            verifiedStateStr = SLLocalizedString(@"认证中");
+            break;
+        case 3:
+            verifiedStateStr = SLLocalizedString(@"认证失败");
+            break;
+        default:
+            break;
+    }
+    cell.verifiedStateLabel.text = verifiedStateStr;
+    NSString *idCardType = [self getIdCardType];
+    if ([idCardType isEqualToString:@"1"] && [self.methodDatas[indexPath.row] intValue] == Authentication_Person){
+        cell.verifiedStateLabel.hidden = NO;
+    } else if ([idCardType isEqualToString:@"2"] && [self.methodDatas[indexPath.row] intValue] == Authentication_Passport){
+        cell.verifiedStateLabel.hidden = NO;
     } else {
         cell.verifiedStateLabel.hidden = YES;
     }
@@ -198,14 +212,15 @@
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    NSInteger verifiedState = [[self.params objectForKey:@"verifiedState"] integerValue];
+    NSInteger verifiedState = [[self getVerifiedState] integerValue];
+    NSString *idCardType = [self getIdCardType];
     if ([self.methodDatas[indexPath.row] intValue] == Authentication_Person){ //身份证认证
         if (verifiedState == 0 || verifiedState == 3){ // 0未认证，3认证失败
             [self startPersonAuthentication];
         } else if (verifiedState == 2){//2 认证中
             
         } else {
-            if ([[self.params objectForKey:@"idCard_type"] isEqualToString:@"2"]){//护照认证
+            if ([idCardType isEqualToString:@"2"]){//护照认证
                 [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"您已使用护照认证")];
             } else {
                 [self pushRealNameSuccessViewController];
@@ -217,7 +232,7 @@
         } else if (verifiedState == 2){
             
         } else {
-            if ([[self.params objectForKey:@"idCard_type"] isEqualToString:@"1"]){ //身份证认证
+            if ([idCardType isEqualToString:@"1"]){ //身份证认证
                 [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"您已使用身份证认证")];
             } else {
                 [self pushRealNameSuccessViewController];
@@ -226,22 +241,24 @@
     }
 }
 
-#pragma mark - setter、getter
-- (void)setParams:(NSDictionary *)params{
-    _params = params;
-    if (_authenticationMethodCollectionView){
-        [self.authenticationMethodCollectionView reloadData];
+#pragma mark - getter
+- (NSString *)getIdCardType{
+    if (self.params && NotNilAndNull([self.params objectForKey:@"idCard_type"])){
+        return [self.params objectForKey:@"idCard_type"];
     }
-    for (UIViewController *v in self.navigationController.viewControllers){
-        if ([v isKindOfClass:[RealNameSuccessViewController class]]){
-            [(RealNameSuccessViewController *)v setParams:params];
-        }
+    return  [SLAppInfoModel sharedInstance].idCard_type;
+}
+
+- (NSString *)getVerifiedState{
+    if (self.params && NotNilAndNull([self.params objectForKey:@"verifiedState"])){
+        return [self.params objectForKey:@"verifiedState"];
     }
+    return  [SLAppInfoModel sharedInstance].verifiedState;
 }
 
 - (void)showAlert{
     [SMAlert setConfirmBtBackgroundColor:[UIColor whiteColor]];
-    [SMAlert setConfirmBtTitleColor:[UIColor hexColor:@"8E2B25"]];
+    [SMAlert setConfirmBtTitleColor:kMainYellow];
     [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
     [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
     [SMAlert setAlertBackgroundColor:[UIColor colorWithWhite:0 alpha:0.5]];

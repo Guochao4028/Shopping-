@@ -29,6 +29,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self.view addSubview:self.formBackImageView];
+    self.view.clipsToBounds = YES;
     [self initPageViewController];
     
     [self buildData];
@@ -54,10 +55,8 @@
     }];
 }
 
-- (void)viewDidAppear:(BOOL)animated{
-    [super viewDidAppear:animated];
-    [self.navigationController.navigationBar setBackgroundImage:[[UIImage alloc] init] forBarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
-    [self.navigationController.navigationBar setShadowImage:[UIImage new]];
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
 }
 
 - (void)initPageViewController {
@@ -68,7 +67,7 @@
     config.titleSelectedColor = [UIColor colorForHex:@"FFFFFF"];
     
     config.backgroundNormalColor = [UIColor colorForHex:@"FAFAFA"];
-    config.backgroundSelectedColor = [UIColor lgf_GradientFromColor:[UIColor colorForHex:@"C1564C"] toColor:[UIColor colorForHex:@"8E2B25"] height:50];//[UIColor colorForHex:@"8E2B25"];
+    config.backgroundSelectedColor = [UIColor lgf_GradientFromColor:[UIColor colorForHex:@"C1564C"] toColor:kMainYellow height:50];//kMainYellow;
     config.titleViewInset = UIEdgeInsetsMake(0, 0, 0, 0);
     config.shadowLineColor = [UIColor whiteColor];
     config.shadowLineWidth = 20;
@@ -106,13 +105,13 @@
             if (self.datas.count){
                 self.config.titleWidth = CGRectGetWidth(self.view.frame)/self.datas.count;
                 if (self.datas.count > 1){
-                    self.config.backgroundSelectedColor = [UIColor lgf_GradientFromColor:[UIColor colorForHex:@"C1564C"] toColor:[UIColor colorForHex:@"8E2B25"] height:50];
+                    self.config.backgroundSelectedColor = [UIColor lgf_GradientFromColor:[UIColor colorForHex:@"C1564C"] toColor:kMainYellow height:50];
                     self.config.titleSelectedColor = [UIColor colorForHex:@"FFFFFF"];
                     self.config.shadowLineColor = [UIColor whiteColor];
                 } else {
                     self.config.backgroundSelectedColor = [UIColor colorForHex:@"FAFAFA"];
-                    self.config.titleSelectedColor = [UIColor colorForHex:@"8E2B25"];
-                    self.config.shadowLineColor = [UIColor colorForHex:@"8E2B25"];
+                    self.config.titleSelectedColor = kMainYellow;
+                    self.config.shadowLineColor = kMainYellow;
                 }
             } else {
                 self.config.titleWidth = 0;
@@ -171,10 +170,11 @@
 */
 
 - (UIImageView *)formBackImageView{
-   if (!_formBackImageView){
+    if (!_formBackImageView){
         _formBackImageView = [[UIImageView alloc] init];
+        _formBackImageView.clipsToBounds = YES;
         _formBackImageView.contentMode = UIViewContentModeScaleAspectFill;
-       _formBackImageView.image = [UIImage imageNamed:@"riteFormBackImage"];
+        _formBackImageView.image = [UIImage imageNamed:@"riteFormBackImage"];
     }
     return _formBackImageView;
 }

@@ -11,7 +11,7 @@
 #import "MeClassListViewControllerCell.h"
 #import "MeClassListModel.h"
 #import "KungfuClassDetailViewController.h"
-
+#import "DefinedURLs.h"
 // TODO: 启动测试数据
 //#define MECLASS_TEST
 /*
@@ -46,6 +46,11 @@ static NSString *const MeClassVCSubDatas = @"MeClassVCSubDatas";
 @end
 
 @implementation MeClassListViewController
+
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self setNavigationBarRedTintColor];
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -95,8 +100,9 @@ static NSString *const MeClassVCSubDatas = @"MeClassVCSubDatas";
 - (void)setUI{
     [self.view addSubview:self.tableView];
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.right.bottom.mas_equalTo(0);
+        make.left.right.mas_equalTo(0);
         make.top.mas_equalTo(SLChange(14));
+        make.bottom.mas_equalTo(-kBottomSafeHeight);
     }];
 }
 
@@ -156,7 +162,7 @@ static NSString *const MeClassVCSubDatas = @"MeClassVCSubDatas";
 }
 
 - (BOOL)isCourseBuyHistory{
-    return [self.currentTitle isEqualToString:SLLocalizedString(@"已购视频")];
+    return [self.currentTitle isEqualToString:SLLocalizedString(@"已购教程")];
 }
 
 - (void)requestData:(void (^)(NSArray *meClassListArray))finish{
@@ -255,7 +261,8 @@ static NSString *const MeClassVCSubDatas = @"MeClassVCSubDatas";
 #pragma mark - tableCollectionView Delegate & DataSource
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
 //    return self.collectionViewData.count;
-    return 1;
+//    return 1;
+    return self.tableViewDataArray.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -264,8 +271,8 @@ static NSString *const MeClassVCSubDatas = @"MeClassVCSubDatas";
 //       if ([datas isKindOfClass:[NSArray class]]){
 //           return datas.count;
 //       }
-//    return 0;
-    return self.tableViewDataArray.count;
+    return 1;
+//    return self.tableViewDataArray.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -274,7 +281,7 @@ static NSString *const MeClassVCSubDatas = @"MeClassVCSubDatas";
         cell = [[MeClassListViewControllerCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:MeClassListViewCollectionCellIdentifier];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
-    MeClassListModel *model = self.tableViewDataArray[indexPath.row];
+    MeClassListModel *model = self.tableViewDataArray[indexPath.section];
     cell.model = model;
 //    if (self.collectionViewData.count > indexPath.section){
 //        NSDictionary *dict = self.collectionViewData[indexPath.section];
@@ -294,7 +301,7 @@ static NSString *const MeClassVCSubDatas = @"MeClassVCSubDatas";
 #ifdef MECLASS_TEST
     vc.classId = @"53";
 #endif
-    MeClassListModel *model = self.tableViewDataArray[indexPath.row];
+    MeClassListModel *model = self.tableViewDataArray[indexPath.section];
     vc.classId = model.classId;
     if (!vc.classId) return ;
     vc.hidesBottomBarWhenPushed = YES;
@@ -302,16 +309,16 @@ static NSString *const MeClassVCSubDatas = @"MeClassVCSubDatas";
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 0;//SLChange(24.5);//SLLocalizedString(@"此前一周"), SLLocalizedString(@"更早") 所在的headerView
+    return 10;//SLChange(24.5);//SLLocalizedString(@"此前一周"), SLLocalizedString(@"更早") 所在的headerView
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return SLChange(80);
+    return 130;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    UIView *view = [[UIView alloc]init];
-    view.backgroundColor = [UIColor whiteColor];
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidth, 10)];
+    view.backgroundColor = [UIColor hexColor:@"FAFAFA"];
     
     UILabel *titleLabel = [[UILabel alloc] init];
     titleLabel.textAlignment = NSTextAlignmentLeft;

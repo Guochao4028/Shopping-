@@ -60,13 +60,10 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.player.viewControllerDisappear = NO;
-    self.navigationController.navigationBar.hidden = NO;
 }
 
 -(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
-    self.navigationController.navigationBar.hidden = NO;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

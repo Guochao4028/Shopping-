@@ -49,7 +49,7 @@ NS_ASSUME_NONNULL_BEGIN
  data.incomeMoney           收入
  data.expenditureMoney      支出
  data.time                  时间
- data.value.orderType       订单类型1 商品 2 教程 3 段品质活动 4 退款 5 充值 6 法会
+ data.value.orderType       订单类型1 商品 2 教程 3 段品制活动 4 退款 5 充值 6 法会
  data.value.detailTime
  data.value.thirdOrderCode  三方单号
  data.value.isMonth         交易时间

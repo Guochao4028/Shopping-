@@ -34,11 +34,7 @@
 
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-    [self wr_setNavBarBarTintColor:[UIColor hexColor:@"8E2B25"]];
-    [self wr_setNavBarTintColor:[UIColor whiteColor]];
-    [self wr_setNavBarBackgroundAlpha:1];
-    
+    [self setNavigationBarRedTintColor];
 }
 
 - (void)viewDidLoad {
@@ -124,7 +120,7 @@
     self.lookBtn = [[UIButton alloc]initWithFrame:CGRectMake(kWidth/2-SLChange(45), SLChange(90), SLChange(90), SLChange(16.5))];
      [self.lookBtn setImage:[UIImage imageNamed:@"问号"] forState:(UIControlStateNormal)];
     [self.lookBtn setTitle:SLLocalizedString(@"查看拒绝原因 ") forState:(UIControlStateNormal)];
-    [self.lookBtn setTitleColor:[UIColor colorForHex:@"8E2B25"] forState:(UIControlStateNormal)];
+    [self.lookBtn setTitleColor:kMainYellow forState:(UIControlStateNormal)];
     [self.lookBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, -self.lookBtn.imageView.image.size.width, 0, self.lookBtn.imageView.image.size.width)];
     [self.lookBtn setImageEdgeInsets:UIEdgeInsetsMake(0, self.lookBtn.titleLabel.bounds.size.width, 0, -self.lookBtn.titleLabel.bounds.size.width)];
     self.lookBtn.titleLabel.font = kRegular(12);
@@ -407,7 +403,7 @@
            [_nextBtn addTarget:self action:@selector(nextAction) forControlEvents:(UIControlEventTouchUpInside)];
            [_nextBtn setTitleColor:[UIColor colorForHex:@"FFFFFF"] forState:(UIControlStateNormal)];
            _nextBtn.titleLabel.font = kRegular(15);
-           _nextBtn.backgroundColor = [UIColor colorForHex:@"8E2B25"];
+           _nextBtn.backgroundColor = kMainYellow;
         _nextBtn.layer.cornerRadius = 4;
         _nextBtn.layer.masksToBounds = YES;
     }

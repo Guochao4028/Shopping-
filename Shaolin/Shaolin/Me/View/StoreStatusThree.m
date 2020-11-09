@@ -64,7 +64,7 @@
         [_sendBtn setTitle:SLLocalizedString(@"好的") forState:(UIControlStateNormal)];
         [_sendBtn setTitleColor:[UIColor colorForHex:@"FFFFFF"] forState:(UIControlStateNormal)];
         _sendBtn.titleLabel.font = kRegular(15);
-        _sendBtn.backgroundColor = [UIColor colorForHex:@"8E2B25"];
+        _sendBtn.backgroundColor = kMainYellow;
         _sendBtn.layer.cornerRadius = SLChange(20);
         _sendBtn.layer.masksToBounds = YES;
         [_sendBtn addTarget:self action:@selector(nextAction) forControlEvents:(UIControlEventTouchUpInside)];

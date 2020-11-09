@@ -107,7 +107,7 @@
 - (void)showRightButton{
     self.rightBtn.frame = CGRectMake(0, 0, 90, 20);
     [self.rightBtn setTitle:SLLocalizedString(@"拒绝理由") forState:UIControlStateNormal];
-    [self.rightBtn setTitleColor:[UIColor hexColor:@"8E2B25"] forState:UIControlStateNormal];
+    [self.rightBtn setTitleColor:kMainYellow forState:UIControlStateNormal];
     self.rightBtn.titleLabel.font = kRegular(15);
     [self.rightBtn setImage:[UIImage imageNamed:@"realName_Reason"] forState:(UIControlStateNormal)];
     [self.rightBtn horizontalCenterTitleAndImage];
@@ -116,7 +116,7 @@
 #pragma mark - event
 - (void) reasonCheck {
     [SMAlert setConfirmBtBackgroundColor:[UIColor whiteColor]];
-    [SMAlert setConfirmBtTitleColor:[UIColor hexColor:@"8E2B25"]];
+    [SMAlert setConfirmBtTitleColor:kMainYellow];
     [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
     [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
     [SMAlert setAlertBackgroundColor:[UIColor colorWithWhite:0 alpha:0.5]];
@@ -320,15 +320,18 @@
 - (void) chooseBirth {
     [self.view endEditing:YES];
     
-
-    self.birthPickerView.selectValue = self.birthStr;
+    NSString *birthStr = self.birthStr;
+    if (!birthStr || birthStr.length == 0){
+        birthStr = @"1990-01-01";
+    }
+    self.birthPickerView.selectValue = birthStr;
     [self.birthPickerView show];
 }
 
 - (UIView *) showChangeAlert
 {
     // 切换证件类型时，如果底部4张图片有值，要给弹窗提示
-    [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+    [SMAlert setConfirmBtBackgroundColor:kMainYellow];
     [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
     [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
     [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
@@ -359,9 +362,9 @@
 }
 
 - (void)nameTFChanged:(UITextField *)textField {
-//    if (textField.text.length > 80){
-//        textField.text = [textField.text substringToIndex:80];
-//    }
+    if (textField.text.length > 20){
+        textField.text = [textField.text substringToIndex:20];
+    }
 }
 
 - (void)addressTFChanged:(UITextField *)textField {
@@ -777,7 +780,7 @@
 -(UIButton *)submitBtn {
     if (!_submitBtn) {
         _submitBtn = [[UIButton alloc]init];
-        _submitBtn.backgroundColor = [UIColor hexColor:@"8E2B25"];
+        _submitBtn.backgroundColor = kMainYellow;
         [_submitBtn setTitle:SLLocalizedString(@"提交") forState:(UIControlStateNormal)];
         [_submitBtn setTitleColor:[UIColor whiteColor] forState:(UIControlStateNormal)];
         _submitBtn.titleLabel.font = kMediumFont(16);

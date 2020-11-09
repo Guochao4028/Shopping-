@@ -7,7 +7,7 @@
 //
 
 #import "RiteOrderDetailViewController.h"
-#import "WengenNavgationView.h"
+
 #import "WengenGoodsModel.h"
 #import "OrderDetailsModel.h"
 #import "OrderStoreModel.h"
@@ -32,12 +32,13 @@
 #import "OrderGoodsItmeFooterTabelVeiw.h"
 
 #import "ActivityManager.h"
+#import "DataManager.h"
 
 #import "CustomerServicViewController.h"
 
 
 
-@interface RiteOrderDetailViewController ()<WengenNavgationViewDelegate, UITableViewDelegate, UITableViewDataSource, RiteOrderDetailFooterViewDelegate>
+@interface RiteOrderDetailViewController ()< UITableViewDelegate, UITableViewDataSource, RiteOrderDetailFooterViewDelegate>
 @property(nonatomic, strong) UIView *navgationView;
 @property(nonatomic, strong) UIView *redView;
 @property(nonatomic, strong) UIButton *backButton;
@@ -59,17 +60,12 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-
-    self.navigationController.navigationBar.hidden = YES;
-    
+    [self setStatusBarWhiteTextColor];
     [self initData];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
-    self.navigationController.navigationBar.hidden = YES;
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
@@ -80,7 +76,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    self.hideNavigationBar = YES;
     [self initUI];
 //    [self initData];
 }
@@ -227,7 +223,7 @@
 
 // 去支付
 -(void)payOrder{
-    
+    [[ModelTool shareInstance]setIsOrderListNeedRefreshed:YES];
     CheckstandViewController *checkstandVC = [[CheckstandViewController alloc]init];
     checkstandVC.goodsAmountTotal = [NSString stringWithFormat:@"￥%@", self.orderPrice];
     checkstandVC.isOrderState = YES;
@@ -250,7 +246,7 @@
 
 // 删除订单
 - (void)deleteOrder {
-    [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+    [SMAlert setConfirmBtBackgroundColor:kMainYellow];
     [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
     [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
     [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
@@ -259,7 +255,7 @@
     UILabel *title = [[UILabel alloc]initWithFrame:customView.bounds];
     [title setFont:[UIFont systemFontOfSize:15]];
     [title setTextColor:[UIColor darkGrayColor]];
-    title.text = @"您是否要删除此订单?";
+    title.text = @"您是否要删除此报名?";
     [title setTextAlignment:NSTextAlignmentCenter];
     [customView addSubview:title];
     [SMAlert showCustomView:customView stroke:YES confirmButton:[SMButton initWithTitle:@"确定" clickAction:^{
@@ -267,6 +263,9 @@
         [[DataManager shareInstance]delOrder:@{@"id":self.detailsModel.order_sn} Callback:^(Message *message) {
             [hud hideAnimated:YES];
             if (message.isSuccess) {
+                
+                [[ModelTool shareInstance]setIsOrderListNeedRefreshed:YES];
+                
                 [ShaolinProgressHUD singleTextHud:@"删除成功" view:self.view afterDelay:TipSeconds];
                 [self.navigationController popViewControllerAnimated:YES];
 
@@ -291,6 +290,9 @@
 
         [[DataManager shareInstance]cancelOrder:@{@"order_id":self.detailsModel.order_sn, @"cancel":cause} Callback:^(Message *message) {
             if (message.isSuccess) {
+                
+                [[ModelTool shareInstance]setIsOrderListNeedRefreshed:YES];
+                
                 [ShaolinProgressHUD singleTextHud:@"提交成功，正在为您取消订单" view:self.view afterDelay:TipSeconds];
                 [self.navigationController popViewControllerAnimated:YES];
             }else{
@@ -314,6 +316,10 @@
 
 // 补开发票
 - (void)repairInvoice{
+    [[ModelTool shareInstance]setIsOrderListNeedRefreshed:YES];
+    
+    
+    
     
     OrderInvoiceFillOpenViewController * fillOpenVC= [[OrderInvoiceFillOpenViewController alloc]init];
        fillOpenVC.orderSn = self.detailsModel.order_sn;
@@ -467,7 +473,7 @@
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    UIColor *color = [UIColor hexColor:@"8E2B25"];
+    UIColor *color = kMainYellow;
     CGFloat offsetY = scrollView.contentOffset.y;
     
     if ((offsetY) > 64) {
@@ -479,7 +485,7 @@
         [self.navgationView setBackgroundColor:color];
         [self.redView setBackgroundColor:color];
         [self.backButton setImage:[UIImage imageNamed:@"baiL"] forState:UIControlStateNormal];
-        [self.titleLabel setTextColor:[UIColor hexColor:@"8E2B25"]];
+        [self.titleLabel setTextColor:kMainYellow];
     }
 }
 
@@ -514,7 +520,7 @@
             barHeight = [[UIApplication sharedApplication] statusBarFrame].size.height;
         }
         _navgationView = [[UIView alloc]initWithFrame:CGRectMake(0, barHeight, ScreenWidth, 40)];
-        [_navgationView setBackgroundColor:[UIColor hexColor:@"8E2B25"]];
+        [_navgationView setBackgroundColor:kMainYellow];
         [_navgationView addSubview:self.backButton];
         [self.backButton addTarget:self action:@selector(back) forControlEvents:UIControlEventTouchUpInside];
         
@@ -539,7 +545,7 @@
         _titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(x, 0, 100, 40)];
         [_titleLabel setFont:kMediumFont(17)];
         [_titleLabel setText:@"订单详情"];
-        [_titleLabel setTextColor:[UIColor hexColor:@"8E2B25"]];
+        [_titleLabel setTextColor:kMainYellow];
         [_titleLabel setTextAlignment:NSTextAlignmentCenter];
         
     }
@@ -559,7 +565,7 @@
         
         [_tableView setDelegate:self];
         [_tableView setDataSource:self];
-        _tableView.backgroundColor = [UIColor hexColor:@"ffffff"];
+        _tableView.backgroundColor = [UIColor hexColor:@"fafafa"];
         _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         
         
@@ -607,7 +613,6 @@
 }
 
 -(RiteOrderDetailFooterView *)footerView{
-    WEAKSELF
     if (_footerView == nil) {
         _footerView = [[RiteOrderDetailFooterView alloc]initWithFrame:CGRectMake(0, self.view.height - 49 - kBottomSafeHeight, kWidth, 49)];
         [_footerView setDelegate:self];
@@ -632,15 +637,9 @@
 -(UIView *)redView {
     if (!_redView) {
         _redView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kWidth, kHeight/2)];
-        _redView.backgroundColor = [UIColor hexColor:@"8E2B25"];
+        _redView.backgroundColor = kMainYellow;
     }
     return _redView;
 }
-
-#pragma mark - device
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    return UIStatusBarStyleLightContent;
-}
-
 
 @end

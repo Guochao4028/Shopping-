@@ -7,10 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "SLNetworking.h"
 /**
  url文件，所有的url都在里面
  */
-#import "DefinedURLs.h"
+//#import "DefinedURLs.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ActivityManager : NSObject

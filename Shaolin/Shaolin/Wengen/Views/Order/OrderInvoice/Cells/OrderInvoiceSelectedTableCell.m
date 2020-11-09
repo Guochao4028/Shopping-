@@ -30,6 +30,7 @@
 -(void)setModel:(NSDictionary *)model{
     _model = model;
     NSString *isSelectStr = model[@"isSelect"];
+    NSString *title = model[@"title"];
        BOOL isSelect = [isSelectStr boolValue];
        if (isSelect == YES) {
            [self.selectedImageVeiw setImage:[UIImage imageNamed:@"xuan"]];
@@ -37,7 +38,39 @@
            [self.selectedImageVeiw setImage:[UIImage imageNamed:@"weixuan"]];
        }
        
-       [self.titleLabel setText:model[@"title"]];
+       [self.titleLabel setText:title];
+    
+    if(model[@"is_electronic"] != nil || model[@"is_VAT"] != nil){
+        BOOL is_electronic = [model[@"is_electronic"] boolValue];
+        BOOL is_VAT = [model[@"is_VAT"] boolValue];
+        
+//        if ([title isEqualToString:SLLocalizedString(@"电子发票")]) {
+//            if (is_electronic == NO) {
+//                [self.titleLabel setTextColor:[UIColor colorForHex:@"999999"]];
+//            }
+//        }
+//        if ([title isEqualToString:SLLocalizedString(@"增值税专用发票")]) {
+//            if (is_VAT == NO) {
+//                [self.titleLabel setTextColor:[UIColor colorForHex:@"999999"]];
+//            }
+//        }
+        
+        
+        if ([title isEqualToString:SLLocalizedString(@"纸质发票")]) {
+            if (is_electronic == NO) {
+                [self.titleLabel setTextColor:[UIColor colorForHex:@"999999"]];
+            }
+        }
+        if ([title isEqualToString:SLLocalizedString(@"增值税专用发票")]) {
+            if (is_VAT == NO) {
+                [self.titleLabel setTextColor:[UIColor colorForHex:@"999999"]];
+            }
+        }
+        
+        
+    }
+    
+    
     
 }
 

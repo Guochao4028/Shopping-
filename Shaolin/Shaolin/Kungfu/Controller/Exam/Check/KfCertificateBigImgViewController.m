@@ -143,7 +143,8 @@
 
 -(UIView *)footerView {
     if (!_footerView) {
-        _footerView = [[UIView alloc] initWithFrame:CGRectMake(0, kScreenHeight - 50 - NavBar_Height, kScreenWidth - 32, 50)];
+        CGFloat footerH = 50 + BottomMargin_X;
+        _footerView = [[UIView alloc] initWithFrame:CGRectMake(0, kScreenHeight - NavBar_Height - footerH, kScreenWidth, footerH)];
         _footerView.backgroundColor = UIColor.whiteColor;
         [_footerView addSubview:self.footerViewLine];
         [_footerView addSubview:self.submitBtn];
@@ -153,7 +154,7 @@
 
 -(UIView *)footerViewLine {
     if (!_footerViewLine) {
-        _footerViewLine = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kWidth, 0.5)];
+        _footerViewLine = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidth, 0.5)];
         _footerViewLine.backgroundColor = [UIColor hexColor:@"E5E5E5"];
     }
     return _footerViewLine;
@@ -163,7 +164,7 @@
     if (!_submitBtn) {
         _submitBtn = [[UIButton alloc] initWithFrame:CGRectMake(63, 5, kScreenWidth - 126, 40)];
         _submitBtn.layer.cornerRadius = 20;
-        _submitBtn.backgroundColor = [UIColor hexColor:@"8E2B25"];
+        _submitBtn.backgroundColor = kMainYellow;
         [_submitBtn setTitle:SLLocalizedString(@"保存证书") forState:UIControlStateNormal];
         _submitBtn.titleLabel.textColor = UIColor.whiteColor;
         _submitBtn.titleLabel.font = [UIFont systemFontOfSize:14];

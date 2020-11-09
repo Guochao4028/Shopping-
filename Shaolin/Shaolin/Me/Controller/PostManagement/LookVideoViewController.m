@@ -27,7 +27,7 @@
 #import "DefinedHost.h"
 
 @interface LookVideoViewController ()
-@property(nonatomic,strong) UIButton *leftBtn;
+@property(nonatomic,strong) UIButton *backButton;
 @property (nonatomic, strong) ZFPlayerController *player;
 @property (nonatomic, strong) UIImageView *containerView;
 @property (nonatomic, strong) SLPlayerControlView *controlView;
@@ -39,7 +39,6 @@
 @property(nonatomic,strong) UIButton *bgPlayBtn;
 @property (nonatomic,strong) UIImageView *headerImage; //头像
 @property (nonatomic,strong) UILabel *nameLabel;//姓名
-@property (nonatomic,strong) UILabel *titleLabe;//标题
 @property (nonatomic,strong) UILabel *abstractsLabel;//简介
 @property(nonatomic,strong) UIButton *praiseBtn; //点赞
 @property(nonatomic,strong) UIButton *shareBnt;//分享
@@ -72,15 +71,16 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.hideNavigationBar = YES;
     self.view.backgroundColor = [UIColor blackColor];
     UIView *viewLine = [[UIView alloc]initWithFrame:CGRectMake(0, NavBar_Height, kWidth, 1)];
     viewLine.backgroundColor =RGBA(36, 36, 36, 1);
     [self.view addSubview:viewLine];
-    self.leftBtn = [[UIButton alloc]initWithFrame:CGRectMake(SLChange(16), StatueBar_Height + 3, 30, 30)];
+    self.backButton = [[UIButton alloc]initWithFrame:CGRectMake(SLChange(16), StatueBar_Height + 3, 30, 30)];
     
-    [self.leftBtn setImage:[UIImage imageNamed:@"video_left"] forState:(UIControlStateNormal)];
+    [self.backButton setImage:[UIImage imageNamed:@"video_left"] forState:(UIControlStateNormal)];
     
-    [self.leftBtn addTarget:self action:@selector(leftAction) forControlEvents:(UIControlEventTouchUpInside)];
+    [self.backButton addTarget:self action:@selector(leftAction) forControlEvents:(UIControlEventTouchUpInside)];
     
     [self.view addSubview:self.containerView];
     
@@ -97,7 +97,7 @@
     [self.view addSubview:self.shareBnt];
     [self.view addSubview:self.collectionBtn];
     [self.view addSubview:self.praiseBtn];
-    [self.view addSubview:self.leftBtn];
+    [self.view addSubview:self.backButton];
     [self setUI];
     if ([self.model.state isEqualToString:@"6"]) {
         
@@ -316,7 +316,6 @@
 }
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    self.navigationController.navigationBar.hidden = YES;
     self.player.viewControllerDisappear = NO;
 }
 
@@ -327,8 +326,6 @@
 
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
-    
-    
     
     CGFloat x = 0;
     CGFloat y = NavBar_Height+SLChange(81);

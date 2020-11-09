@@ -123,7 +123,7 @@
 {
     self.titleEdgeInsets = UIEdgeInsetsMake(0.0, - self.titleLabel.frame.origin.x, 0.0, self.titleLabel.frame.origin.x);
 
-    self.imageEdgeInsets = UIEdgeInsetsMake(0.0, - (self.imageView.frame.origin.x- self.titleLabel.frame.size.width-10), 0.0,(self.imageView.frame.origin.x- self.titleLabel.frame.size.width-10));
+    self.imageEdgeInsets = UIEdgeInsetsMake(0.0, - (self.imageView.frame.origin.x- self.titleLabel.frame.size.width-10)+10, 0.0,(self.imageView.frame.origin.x- self.titleLabel.frame.size.width-10));
 
 }
 

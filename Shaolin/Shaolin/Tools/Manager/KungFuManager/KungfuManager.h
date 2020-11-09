@@ -7,10 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "SLNetworking.h"
 /**
  url文件，所有的url都在里面
  */
-#import "DefinedURLs.h"
+//#import "DefinedURLs.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface KungfuManager : NSObject
@@ -39,6 +40,8 @@ NS_ASSUME_NONNULL_BEGIN
              failure:(SLFailureReasonBlock)failure
               finish:(SLFinishedResultBlock)finish;
 
+///科目列表
+- (void)getSubjectList:(NSDictionary *)params success:(SLSuccessDicBlock)success failure:(SLFailureReasonBlock)failure finish:(SLFinishedResultBlock)finish;
 
 /// 活动分类
 -(void)getClassification:(NSDictionary *)param callback:(NSArrayCallBack)call;
@@ -50,8 +53,11 @@ NS_ASSUME_NONNULL_BEGIN
 -(void)getLevelList:(NSDictionary *)param callbacl:(NSDictionaryCallBack)call;
 
 
-///检查筛查所适用报名的段位
+///检查筛查所适用报名的位阶
 -(void)activityCheckedLevel:(NSDictionary *)param callbacl:(NSObjectCallBack)call;
+
+///段品制活动详情
+-(void)activityDetails:(NSDictionary *)param callbacl:(NSObjectCallBack)call;
 
 
 ///热门教程
@@ -67,9 +73,9 @@ NS_ASSUME_NONNULL_BEGIN
 ///成绩列表查询
 -(void)getScoreList:(NSDictionary *)params callback:(NSArrayCallBack)call;
 ////成绩详情查询
--(void)getScoreDetailWithParams:(NSDictionary *)params callbacl:(NSObjectCallBack)call;
+-(void)getScoreDetailWithParams:(NSDictionary *)params callbacl:(MessageCallBack)call;
 ///教程列表查询
--(void)getClassWithDic:(NSDictionary *)dic ListAndCallback:(NSArrayCallBack)call;
+-(void)getClassWithDic:(NSDictionary *)dic success:(SLSuccessDicBlock)success failure:(SLFailureReasonBlock)failure finish:(SLFinishedResultBlock)finish;
 ///获取机构列表
 -(void)getInstitutionListWithDic:(NSDictionary *)dic ListAndCallback:(NSArrayCallBack)call;
 ///收藏教程
@@ -80,7 +86,9 @@ NS_ASSUME_NONNULL_BEGIN
 -(void)applicationsSaveWithDic:(NSDictionary *)dic callback:(MessageCallBack)call;
 
 ///获取我的报名信息列表
--(void)getMyapplicationsAndCallback:(NSArrayCallBack)call;
+//-(void)getMyapplicationsAndCallback:(NSArrayCallBack)call;
+-(void)getMyapplicationsWithParameters:(NSDictionary *)parameter AndCallback:(NSArrayCallBack)call;
+
 ///考试通知
 -(void)getExaminationNoticeListWithDic:(NSDictionary *)dic callback:(NSDictionaryCallBack)call;
 ///搜索报名信息
@@ -95,7 +103,10 @@ NS_ASSUME_NONNULL_BEGIN
 -(void)getSaveExaminationWithDic:(NSDictionary *)dic callback:(MessageCallBack)call;
 
 ///教程详情
--(void)getClassDetailWithDic:(NSDictionary *)dic callback:(NSDictionaryCallBack)call;
+-(void)getClassDetailWithDic:(NSDictionary *)dic success:(SLSuccessDicBlock)success failure:(SLFailureReasonBlock)failure finish:(SLFinishedResultBlock)finish;
+
+-(void)getClassRecommendWithDic:(NSDictionary *)dic success:(SLSuccessDicBlock)success failure:(SLFailureReasonBlock)failure finish:(SLFinishedResultBlock)finish;
+
 ///添加教程观看历史
 -(void)setCourseReadHistory:(NSDictionary *)dict callback:(NSDictionaryCallBack)call;
 
@@ -117,6 +128,14 @@ NS_ASSUME_NONNULL_BEGIN
 ///获取 民族数组
 -(void)getNationDataCallback:(NSArrayCallBack)call;
 
+/// 获取 公告列表
+-(void)getActivityAnnouncement:(NSDictionary *)param Callback:(NSDictionaryCallBack)call;
+
+/// 标记已读
+-(void)activityAnnouncementMarkRead:(NSDictionary *)param Callback:(MessageCallBack)call;
+
+///公告未读数量
+-(void)activityAnnouncementUnReadNumberCallback:(NSDictionaryCallBack)call;
 
 
 @end

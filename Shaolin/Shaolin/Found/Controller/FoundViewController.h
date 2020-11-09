@@ -6,11 +6,11 @@
 //  Copyright © 2020 syqaxldy. All rights reserved.
 //  发现 
 
-#import <UIKit/UIKit.h>
-#import "XLPageViewControllerConfig.h"
+#import "RootViewController.h"
+
 NS_ASSUME_NONNULL_BEGIN
 
-@interface FoundViewController : UIViewController
+@interface FoundViewController : RootViewController
 
 @end
 

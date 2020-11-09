@@ -85,7 +85,7 @@
         [self.reservationButton setTitle:SLLocalizedString(@"预约") forState:UIControlStateNormal];
     }
 //    if (model.flag){
-//        self.reservationButton.backgroundColor = [UIColor colorForHex:@"8E2B25"];
+//        self.reservationButton.backgroundColor = kMainYellow;
 //    } else {
 //        self.reservationButton.backgroundColor = [UIColor colorWithWhite:0.5 alpha:1];
 //    }
@@ -134,7 +134,7 @@
 - (UIButton *)reservationButton{
     if (!_reservationButton){
         _reservationButton = [[UIButton alloc] init];
-        _reservationButton.backgroundColor = [UIColor colorForHex:@"8E2B25"];
+        _reservationButton.backgroundColor = kMainYellow;
         _reservationButton.clipsToBounds = YES;
         _reservationButton.titleLabel.font = kFont(15);
         [_reservationButton addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];

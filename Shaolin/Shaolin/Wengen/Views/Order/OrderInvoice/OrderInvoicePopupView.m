@@ -95,13 +95,52 @@
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    for (int i = 0; i < self.cellArr.count; i++) {
-        NSMutableDictionary *dic = self.cellArr[i];
-        [dic setValue:@"0" forKey:@"isSelect"];
-    }
     
     NSMutableDictionary *dic = self.cellArr[indexPath.row];
+    
+    NSString *title = dic[@"title"];
+    
+    if(dic[@"is_electronic"] != nil || dic[@"is_VAT"] != nil){
+        BOOL is_electronic = [dic[@"is_electronic"] boolValue];
+        BOOL is_VAT = [dic[@"is_VAT"] boolValue];
+        
+
+        
+//        if ([title isEqualToString:SLLocalizedString(@"电子发票")]) {
+//            if (is_electronic == NO) {
+//                return;
+//            }
+//        }
+//        if ([title isEqualToString:SLLocalizedString(@"增值税专用发票")]) {
+//            if (is_VAT == NO) {
+//                return;
+//            }
+//        }
+        
+        if ([title isEqualToString:SLLocalizedString(@"纸质发票")]) {
+            if (is_electronic == NO) {
+                return;
+            }
+        }
+        if ([title isEqualToString:SLLocalizedString(@"增值税专用发票")]) {
+            if (is_VAT == NO) {
+                return;
+            }
+        }
+    }
+    for (int i = 0; i < self.cellArr.count; i++) {
+        NSMutableDictionary *tempDic = self.cellArr[i];
+        [tempDic setValue:@"0" forKey:@"isSelect"];
+    }
+    
     [dic setValue:@"1" forKey:@"isSelect"];
+    
+    if ([title isEqualToString:SLLocalizedString(@"增值税专用发票")]) {
+        if ([dic[@"optional"] boolValue] == NO) {
+            [ShaolinProgressHUD singleTextAutoHideHud:@"请先填写增票资质"];
+            return;
+        }
+    }
     
     [self.tableView reloadData];
     
@@ -175,5 +214,9 @@
     [self.tableView reloadData];
 }
 
+-(void)setTitleStr:(NSString *)titleStr{
+    _titleStr = titleStr;
+    [self.titleLabel setText:titleStr];
+}
 
 @end

@@ -242,7 +242,7 @@
         _pickerView.rowHeight = 50;
 //        _pickerView.isHiddenMiddleText = false;
         _pickerView.lineBackgroundColor = [UIColor hexColor:@"EEEEEE"];
-        _pickerView.textColorOfSelectedRow = WENGEN_RED;
+        _pickerView.textColorOfSelectedRow = kMainYellow;
         _pickerView.textColorOfOtherRow = [UIColor hexColor:@"333333"];
         
         _pickerView.textFontOfSelectedRow = kMediumFont(16);
@@ -254,7 +254,7 @@
 -(UILabel *)centerLineLabel {
     if (!_centerLineLabel) {
         _centerLineLabel = [UILabel new];
-        _centerLineLabel.textColor = WENGEN_RED;
+        _centerLineLabel.textColor = kMainYellow;
         _centerLineLabel.font = kMediumFont(16);
         _centerLineLabel.text = @"-";
     }
@@ -368,7 +368,7 @@
     if (!_chooseBtn) {
         _chooseBtn = [UIButton new];
         [_chooseBtn setTitle:@"确定" forState:UIControlStateNormal];
-        _chooseBtn.backgroundColor = WENGEN_RED;
+        _chooseBtn.backgroundColor = kMainYellow;
         _chooseBtn.titleLabel.font = kRegular(16);
         _chooseBtn.alpha = 0.0;
         [_chooseBtn setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];

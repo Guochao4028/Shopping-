@@ -9,6 +9,7 @@
 #import "XLPageViewController.h"
 #import "XLPageBasicTitleView.h"
 #import "XLPageSegmentedTitleView.h"
+#import "XLPagePictureAndTextTitleView.h"
 
 typedef void(^XLContentScollBlock)(BOOL scrollEnabled);
 
@@ -103,6 +104,8 @@ typedef void(^XLContentScollBlock)(BOOL scrollEnabled);
     self.titleView = [[XLPageBasicTitleView alloc] initWithConfig:config];
     if (config.titleViewStyle == XLPageTitleViewStyleSegmented) {
         self.titleView = [[XLPageSegmentedTitleView alloc] initWithConfig:config];
+    } else if (config.titleViewStyle == XLPageTitleViewStylePictureAndText) {
+        self.titleView = [[XLPagePictureAndTextTitleView alloc] initWithConfig:config];
     }
     self.titleView.dataSource = self;
     self.titleView.delegate = self;

@@ -7,7 +7,6 @@
 //
 
 #import "KungfuManager.h"
-#import "NetworkingHandler.h"
 
 #import "EnrollmentModel.h"
 #import "EnrollmentListModel.h"
@@ -24,7 +23,11 @@
 #import <AFNetworking.h>
 #import "DefinedHost.h"
 
+#import "DefinedURLs.h"
 #import "DegreeNationalDataModel.h"
+#import "EnrollmentAddressModel.h"
+
+#import "ExamNoticeModel.h"
 
 @interface KungfuManager()
 
@@ -33,6 +36,7 @@
 @end
 
 @implementation KungfuManager
+
 + (instancetype)sharedInstance {
     static dispatch_once_t onceToken;
     static KungfuManager *instance = nil;
@@ -41,24 +45,12 @@
     });
     return instance;
 }
-//-(void)postHotCitySuccess:(void (^)(NSURLSessionDataTask * task, id responseObject))success failure:(void (^)(NSURLSessionDataTask * task, NSError * error))failure {
-//     NSString *url = [NSString stringWithFormat:@"%@%@",Found,KungFu_HotCity];
-//     [[NetworkingHandler sharedInstance] POSTHandle:url head:nil parameters:nil progress:nil success:success failure:failure];
-//
-//
-//
-//
-//}
+
 -(void)postHotCitySuccess:(SLSuccessDicBlock)success
                   failure:(SLFailureReasonBlock)failure
                    finish:(SLFinishedResultBlock)finish{
     [SLRequest postHttpRequestWithApi:KungFu_HotCity parameters:@{} success:success failure:failure finish:finish];
 }
-
-
-
-
-
 
 //-(void)classificationSuccess:(void (^)(NSURLSessionDataTask * task, id responseObject))success failure:(void (^)(NSURLSessionDataTask * task, NSError * error))failure {
 //     NSString *url = [NSString stringWithFormat:@"%@%@",Found,Activity_Classification];
@@ -273,7 +265,7 @@
     }];
 }
 
-///检查筛查所适用报名的段位
+///检查筛查所适用报名的位阶
 -(void)activityCheckedLevel:(NSDictionary *)param callbacl:(NSObjectCallBack)call{
     
     //    NSString *url = [NSString stringWithFormat:@"%@?activityCode=%@", ADD(ACTIVITY_LEVEL_ACTIVITYCHECKEDLEVEL), param[@"activityCode"]];
@@ -319,13 +311,35 @@
         }else{
             Message *message = [[Message alloc]init];
             message.isSuccess = NO;
-            message.reason = dic[MSG];
+            message.reason = errorReason;
             if (call) call(message);
         }
     }];
     
-    
-    
+}
+
+///段品制活动详情
+-(void)activityDetails:(NSDictionary *)param callbacl:(NSObjectCallBack)call{
+    [SLRequest postHttpRequestWithApi:KungFu_applicationsEcho parameters:param success:^(NSDictionary * _Nullable resultDic) {
+        
+    } failure:^(NSString * _Nullable errorReason) {
+        
+    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
+        NSDictionary * dic = resultDic;
+        if ([ModelTool checkResponseObject:dic]){
+            
+            NSDictionary *dataDic = [[dic objectForKey:DATAS] objectForKey:DATAS];
+            
+            EnrollmentListModel *model = [EnrollmentListModel mj_objectWithKeyValues:dataDic];
+            if (call) call(model);
+            
+        }else{
+            Message *message = [[Message alloc]init];
+            message.isSuccess = NO;
+            message.reason = errorReason;
+            if (call) call(message);
+        }
+    }];
 }
 
 -(void)getHotClassListAndCallback:(NSArrayCallBack)call {
@@ -545,7 +559,7 @@
 }
 
 //成绩详情查询
--(void)getScoreDetailWithParams:(NSDictionary *)params callbacl:(NSObjectCallBack)call {
+-(void)getScoreDetailWithParams:(NSDictionary *)params callbacl:(MessageCallBack)call {
     //    [self.manager GET:MKURL(Found, KungFu_ScoreDetail) parameters:params headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
     //        NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
     //        if ([ModelTool checkResponseObject:dic]) {
@@ -565,54 +579,32 @@
     } failure:^(NSString * _Nullable errorReason) {
         
     } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
+        Message *message = [[Message alloc] init];
         NSDictionary * dic = resultDic;
         if ([ModelTool checkResponseObject:dic]) {
             NSDictionary * dataDic = [dic objectForKey:DATAS];
             ScoreDetailModel *model = [ScoreDetailModel mj_objectWithKeyValues:dataDic];
-            if (call) call(model);
+            message.extensionDic = @{
+                @"ScoreDetailModel" : model,
+            };
+            if (call) call(message);
         } else {
-            if (call) call(nil);
+            message.reason = errorReason;
+            if (call) call(message);
         }
     }];
     
     
 }
 
--(void)getClassWithDic:(NSDictionary *)dic ListAndCallback:(NSArrayCallBack)call {
-    //    [self.manager POST:MKURL(Found, KungFu_ClassList) parameters:dic headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-    //           NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-    //
-    //
-    //           if ([ModelTool checkResponseObject:dic]) {
-    //               NSArray *arr = [[dic objectForKey:DATAS] objectForKey:LIST];
-    //               NSArray *dataList = [ClassListModel mj_objectArrayWithKeyValuesArray:arr];
-    //               if (call) call(dataList);
-    //           } else {
-    //               if (call) call(nil);
-    //           }
-    //       }failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-    //
-    //           NSLog(@"error : %@", error);
-    //           if (call) call(nil);
-    //       }];
+-(void)getClassWithDic:(NSDictionary *)dic success:(SLSuccessDicBlock)success failure:(SLFailureReasonBlock)failure finish:(SLFinishedResultBlock)finish {
+  
+    [SLRequest postHttpRequestWithApi:KungFu_ClassList parameters:dic success:success failure:failure finish:finish];
+}
+
+-(void)getClassRecommendWithDic:(NSDictionary *)dic success:(SLSuccessDicBlock)success failure:(SLFailureReasonBlock)failure finish:(SLFinishedResultBlock)finish {
     
-    [SLRequest postHttpRequestWithApi:KungFu_ClassList parameters:dic success:^(NSDictionary * _Nullable resultDic) {
-        
-    } failure:^(NSString * _Nullable errorReason) {
-        
-    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
-        NSDictionary * dic = resultDic;
-        if ([ModelTool checkResponseObject:dic]) {
-            NSArray *arr = [[dic objectForKey:DATAS] objectForKey:LIST];
-            NSArray *dataList = [ClassListModel mj_objectArrayWithKeyValuesArray:arr];
-            if (call) call(dataList);
-        } else {
-            if (call) call(nil);
-        }
-    }];
-    
-    
-    
+    [SLRequest postHttpRequestWithApi:KungFu_ClasDetail_Recomment parameters:dic success:success failure:failure finish:finish];
 }
 
 -(void)getInstitutionListWithDic:(NSDictionary *)dic ListAndCallback:(NSArrayCallBack)call {
@@ -694,7 +686,7 @@
     
     
     
-    [SLRequest postHttpRequestWithApi:KungFu_ApplicationsSave parameters:dic success:^(NSDictionary * _Nullable resultDic) {
+    [SLRequest postJsonRequestWithApi:KungFu_ApplicationsSave parameters:dic success:^(NSDictionary * _Nullable resultDic) {
         
     } failure:^(NSString * _Nullable errorReason) {
         
@@ -707,9 +699,10 @@
             message.extensionDic = dic[DATAS][DATAS];
         }else{
             isSuccess = NO;
+            message.reason = errorReason;
         }
         message.isSuccess = isSuccess;
-        message.reason = dic[MSG];
+        
         
         if (call) call(message);
     }];
@@ -717,7 +710,7 @@
     
 }
 
--(void)getMyapplicationsAndCallback:(NSArrayCallBack)call {
+-(void)getMyapplicationsWithParameters:(NSDictionary *)parameter AndCallback:(NSArrayCallBack)call {
     
     //    [self.manager GET:MKURL(Found, KungFu_MyApplications) parameters:nil headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
     //        NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
@@ -736,7 +729,7 @@
     //    }];
     
     
-    [SLRequest getRequestWithApi:KungFu_MyApplications parameters:@{} success:^(NSDictionary * _Nullable resultDic) {
+    [SLRequest getRequestWithApi:KungFu_MyApplications parameters:parameter success:^(NSDictionary * _Nullable resultDic) {
         
     } failure:^(NSString * _Nullable errorReason) {
         
@@ -949,35 +942,11 @@
     
 }
 
--(void)getClassDetailWithDic:(NSDictionary *)dic callback:(NSDictionaryCallBack)call {
-    //    [self.manager POST:MKURL(Found, KungFu_ClassDetail) parameters:dic headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-    //        NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-    //        if ([ModelTool checkResponseObject:dic]) {
-    //            NSDictionary * result = [dic objectForKey:DATAS];
-    //            if (call) call(result);
-    //        } else {
-    //            if (call) call(dic);
-    //        }
-    //    }failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-    //        NSLog(@"error : %@", error);
-    //        if (call) call(nil);
-    //    }];
-    
-    
-    [SLRequest postHttpRequestWithApi:KungFu_ClassDetail parameters:dic success:^(NSDictionary * _Nullable resultDic) {
-        
-    } failure:^(NSString * _Nullable errorReason) {
-        
-    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
-        
-        if ([ModelTool checkResponseObject:resultDic]) {
-            NSDictionary * result = [resultDic objectForKey:DATAS];
-            if (call) call(result);
-        } else {
-            if (call) call(dic);
-        }
-    }];
-    
+
+
+-(void)getClassDetailWithDic:(NSDictionary *)dic success:(SLSuccessDicBlock)success failure:(SLFailureReasonBlock)failure finish:(SLFinishedResultBlock)finish {
+
+    [SLRequest postHttpRequestWithApi:KungFu_ClassDetail parameters:dic success:success failure:failure finish:finish];
 }
 
 -(void)getClassCollectWithDic:(NSDictionary *)dic callback:(MessageCallBack)call {
@@ -1289,54 +1258,64 @@
             if (call) call(nil);
         }
     }];
-    
-    
 }
 
-
--(void)updateToken{
-    SLAppInfoModel *appInfoModel = [[SLAppInfoModel sharedInstance] getCurrentUserInfo];
-    
-    if (appInfoModel != nil && appInfoModel.access_token != nil) {
-        [_manager.requestSerializer setValue:appInfoModel.access_token forHTTPHeaderField:@"token"];
-    } else {
-        [_manager.requestSerializer setValue:@"" forHTTPHeaderField:@"token"];
-    }
-    
-    [_manager.requestSerializer setValue:@"iOS" forHTTPHeaderField:@"cellphoneType"];
-    [_manager.requestSerializer setValue:BUILD_STR forHTTPHeaderField:@"version"];
-    [_manager.requestSerializer setValue:VERSION_STR forHTTPHeaderField:@"versionName"];
-    [_manager.requestSerializer setValue:[SLAppInfoModel sharedInstance].deviceString forHTTPHeaderField:@"device-type"];
-    
-    NSString * systemStr = [NSString stringWithFormat:@"%.2f",SYSTEM_VERSION];
-    [_manager.requestSerializer setValue:systemStr forHTTPHeaderField:@"SystemVersionCode"];
-}
-
-
-#pragma mark - gettet / setter
--(AFHTTPSessionManager *)manager{
-    if (_manager == nil) {
-        //获取请求对象
-        _manager= [AFHTTPSessionManager manager];
-        // 设置请求格式
-        _manager.requestSerializer = [AFJSONRequestSerializer serializer];
-        // 设置返回格式
-        _manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-        // 返回数据解析类型
-        _manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"text/json", @"text/javascript", @"text/html", nil];
-        [_manager.requestSerializer setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+/// 获取 公告列表
+-(void)getActivityAnnouncement:(NSDictionary *)param Callback:(NSDictionaryCallBack)call{
+    [SLRequest postHttpRequestWithApi:ACTIVITY_ANNOINCEMENT parameters:param success:^(NSDictionary * _Nullable resultDic) {
         
-        [_manager.requestSerializer setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-        //
-        //        [_manager.requestSerializer setValue:@"multipart/form-data;" forHTTPHeaderField:@"Content-Type"];
+    } failure:^(NSString * _Nullable errorReason) {
         
-        _manager.requestSerializer.timeoutInterval = 60;
-    }
-    [self updateToken];
-    [SLRequest refreshToken];
-    return _manager;
+    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
+        NSDictionary *dic = resultDic;
+        if ([ModelTool checkResponseObject:dic]){
+            NSDictionary *dataDic = dic[DATAS];
+            
+            NSArray *dataArray = [ExamNoticeModel mj_objectArrayWithKeyValuesArray: dataDic[DATAS]];
+            
+            NSMutableDictionary *resulrMutableDic = [NSMutableDictionary dictionary];
+            [resulrMutableDic setValue:dataArray forKey:@"dataArray"];
+            [resulrMutableDic setValue:dataDic[@"total"] forKey:@"total"];
+
+            if (call) call(resulrMutableDic);
+        } else {
+            if (call) call(nil);
+        }
+    }];
 }
 
+/// 标记已读
+-(void)activityAnnouncementMarkRead:(NSDictionary *)param Callback:(MessageCallBack)call{
+    [SLRequest postHttpRequestWithApi:ACTIVITY_ANNOINCEMENTMARKREAD parameters:param success:^(NSDictionary * _Nullable resultDic) {
+        
+    } failure:^(NSString * _Nullable errorReason) {
+        
+    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
+        if (call) call(nil);
+    }];
+}
+
+-(void)activityAnnouncementUnReadNumberCallback:(NSDictionaryCallBack)call{
+    [SLRequest postHttpRequestWithApi:ACTIVITY_ANNOINCEMENTUNREADNUMBER parameters:@{} success:^(NSDictionary * _Nullable resultDic) {
+        
+    } failure:^(NSString * _Nullable errorReason) {
+        
+    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
+        NSDictionary *dic = resultDic;
+        if ([ModelTool checkResponseObject:dic]){
+            NSDictionary *dataDic = dic[DATAS];
+            if (call) call(dataDic);
+        } else {
+            if (call) call(nil);
+        }
+    }];
+}
+
+- (void)getSubjectList:(NSDictionary *)params success:(SLSuccessDicBlock)success failure:(SLFailureReasonBlock)failure finish:(SLFinishedResultBlock)finish {
+    
+    
+    [SLRequest postJsonRequestWithApi:Kungfu_SubjectList parameters:params success:success failure:failure finish:finish];
+}
 
 
 @end

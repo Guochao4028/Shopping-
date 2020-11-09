@@ -96,7 +96,7 @@
         _nameLabel.text = @"";
         _nameLabel.textColor = [UIColor colorForHex:@"FFFFFF"];
         _nameLabel.font = kMediumFont(16);
-        _nameLabel.numberOfLines = 2;
+        _nameLabel.numberOfLines = 1;
         _nameLabel.textAlignment = NSTextAlignmentLeft;
     }
     return _nameLabel;
@@ -108,7 +108,7 @@
     
     NSString *timeStr = [ModelTool calculatedTimeWith:CalculatedTimeTypeDonotSecond secondStr:model.weight];
     
-    self.contentLabel.text = [NSString stringWithFormat:SLLocalizedString(@"%@ · %@ · %@人练过"), model.level_name, timeStr, model.user_num];
+    self.contentLabel.text = [NSString stringWithFormat:SLLocalizedString(@"%@ · %@"), model.level_name, timeStr];
 
     [self.imageV sd_setImageWithURL:[NSURL URLWithString:model.cover] placeholderImage:[UIImage imageNamed:@"default_big"]];
 }

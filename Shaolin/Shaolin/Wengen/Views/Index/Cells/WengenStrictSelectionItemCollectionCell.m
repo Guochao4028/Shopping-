@@ -19,6 +19,11 @@
 
 @property(nonatomic, assign)BOOL isHiddenSellView;
 
+@property (weak, nonatomic) IBOutlet UIImageView *proprietaryImageView;
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *proprietaryImageViewW;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *proprietaryGayW;
+
 @end
 
 @implementation WengenStrictSelectionItemCollectionCell
@@ -28,6 +33,10 @@
     // Initialization code
     self.goodsImageView.layer.cornerRadius = 4;
     self.goodsImageView.layer.masksToBounds = YES;
+    
+    [self.proprietaryImageView setHidden:YES];
+    self.proprietaryImageViewW.constant = 0;
+    self.proprietaryGayW.constant = 0;
 }
 
 #pragma mark - methods
@@ -68,6 +77,18 @@
     }else{
         self.isHiddenSellView = YES;
     }
+    
+    BOOL is_self = [model.is_self boolValue];
+    if (is_self) {
+        [self.proprietaryImageView setHidden:NO];
+        self.proprietaryImageViewW.constant = 35;
+        self.proprietaryGayW.constant = 5;
+    }else{
+        [self.proprietaryImageView setHidden:YES];
+        self.proprietaryImageViewW.constant = 0;
+        self.proprietaryGayW.constant = 0;
+    }
+    
 }
 
 

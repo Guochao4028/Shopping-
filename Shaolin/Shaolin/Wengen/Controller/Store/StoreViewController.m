@@ -33,7 +33,7 @@
 #import "GoodsDetailsViewController.h"
 
 #import "SearchViewController.h"
-
+#import "DataManager.h"
 #define oriOfftY -217
 
 
@@ -62,7 +62,7 @@
 
 @property(nonatomic, assign)BOOL isCollect;
 
-
+@property(nonatomic, assign)BOOL isClearNavBar;
 
 
 
@@ -72,6 +72,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.hideNavigationBar = YES;
     // Do any additional setup after loading the view.
 //    [self initData];
     [self initUI];
@@ -80,13 +81,19 @@
 
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-    [self.navigationController setNavigationBarHidden:NO animated:NO];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self.navigationController setNavigationBarHidden:YES animated:NO];
+    if (self.isClearNavBar){
+        [self setNavigationBarClearTintColorBlackStyle];
+    }
     [self initData];
+}
+
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    self.isClearNavBar = NO;
 }
 
 #pragma mark - methods
@@ -247,6 +254,7 @@
 }
 
 -(void)jumpStoreDetailAction{
+    self.isClearNavBar = YES;
     StoreDetailsViewController *stortDetailsVC = [[StoreDetailsViewController alloc]init];
     stortDetailsVC.isCollect = self.isCollect;
     stortDetailsVC.storeId = self.storeId;

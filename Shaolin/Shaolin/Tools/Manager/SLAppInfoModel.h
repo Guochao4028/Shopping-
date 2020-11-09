@@ -12,13 +12,20 @@ NS_ASSUME_NONNULL_BEGIN
 @class WengenBannerModel,FoundModel;
 @interface SLAppInfoModel : NSObject
 @property(nonatomic,copy) NSString *id;
+///手机号
 @property(nonatomic,copy) NSString *phoneNumber;
+///密码
 @property(nonatomic,copy) NSString *password;
+///昵称
 @property(nonatomic,copy) NSString *nickname;
+///真实姓名
 @property(nonatomic,copy) NSString *realname;
 @property(nonatomic,copy) NSString *gender;
 @property(nonatomic,copy) NSString *nationality;
+///证件号
 @property(nonatomic,copy) NSString *idcard;
+///证件类型（1：身份证，2:护照）
+@property(nonatomic,copy) NSString *idCard_type;
 @property(nonatomic,copy) NSString *balance;
 @property(nonatomic,copy) NSString *createtime;
 @property(nonatomic,copy) NSString *birthtime;
@@ -36,6 +43,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic,copy) NSString *iM_id;
 @property(nonatomic,copy) NSString *iM_password;
+
+// 以下两个属性用以展示段品制中考取位阶和已学教程超过多少人
+@property(nonatomic,copy) NSString * kungfu_level;
+@property(nonatomic,copy) NSString * kungfu_learn;
 
 + (instancetype)sharedInstance;
 

@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface KungfuHomeTableSectionHeaderView : UIView
 
+@property (weak, nonatomic) IBOutlet UIImageView *pointImgv;
+@property (weak, nonatomic) IBOutlet UIImageView *lineImgv;
 
 @property (nonatomic, assign) BOOL arrowHidden;
 @property (nonatomic, copy) NSString * titleString;

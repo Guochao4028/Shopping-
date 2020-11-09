@@ -17,6 +17,8 @@
 
 #import "SMAlert.h"
 
+#import "SearchHistoryModel.h"
+
 
 static NSString *const typeCellId = @"typeTableCell";
 
@@ -29,6 +31,7 @@ static NSString *const typeCellId = @"typeTableCell";
 @property (nonatomic, strong) NSMutableArray *historyArray;
 
 @property (nonatomic, strong) UITableView * typeTable;
+@property (nonatomic, strong) NSArray *typeTableList;
 @property (nonatomic, strong) UIImageView *typeTableBackView;
 
 
@@ -40,25 +43,27 @@ static NSString *const typeCellId = @"typeTableCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    
-    self.typeString = SLLocalizedString(@"教程");
+    self.hideNavigationBar = YES;
+    self.typeTableList = @[SLLocalizedString(@"教程"),SLLocalizedString(@"活动"),SLLocalizedString(@"机构")];
+    if (IsNilOrNull(self.typeString)) {
+        self.typeString = SLLocalizedString(@"教程");
+    }
     [self initUI];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
-     [super viewWillAppear:animated];
-    self.navigationController.navigationBar.hidden = YES;
+    [super viewWillAppear:animated];
+    self.historyArray = [[[ModelTool shareInstance] select:[SearchHistoryModel class] tableName:@"searchHistory" where:[NSString stringWithFormat:@"type = '%ld' AND userId = '%@' ORDER BY id DESC", SearchHistoryCourseType, [SLAppInfoModel sharedInstance].id]] mutableCopy];
+    [self.searchHistoryView removeFromSuperview];
+    self.searchHistoryView = [self setViewWithOriginY:NavBar_Height + StatueBar_Height title:SLLocalizedString(@"搜索历史") textArr:self.historyArray];
+    [self.view addSubview:self.searchHistoryView];
+    [self.navgationView.searchTF becomeFirstResponder];
 }
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     [self.navgationView becomeFirstResponder];
-    
-    self.navigationController.navigationBar.hidden = YES;
 }
-
-
 
 -(void)initUI{
     [self.view setBackgroundColor:[UIColor whiteColor]];
@@ -66,6 +71,12 @@ static NSString *const typeCellId = @"typeTableCell";
     [self.view addSubview:self.typeTableBackView];
     [self.typeTableBackView addSubview:self.typeTable];
     [self.view addSubview:self.searchHistoryView];
+    
+    [self.navgationView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(kStatusBarHeight);
+        make.left.right.mas_equalTo(self.view);
+        make.height.mas_equalTo(44);
+    }];
 }
 
 #pragma mark - tableviewDelegate && dataSource
@@ -73,7 +84,7 @@ static NSString *const typeCellId = @"typeTableCell";
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    return 3;
+    return self.typeTableList.count;
 }
 
 
@@ -84,16 +95,15 @@ static NSString *const typeCellId = @"typeTableCell";
     cell.backgroundColor = UIColor.clearColor;
     cell.contentView.backgroundColor = UIColor.clearColor;
     
-    NSArray * list = @[SLLocalizedString(@"教程"),SLLocalizedString(@"活动"),SLLocalizedString(@"机构")];
-    cell.textLabel.text = list[indexPath.row];
+    cell.textLabel.text = self.typeTableList[indexPath.row];
     cell.textLabel.font = kRegular(12);
     cell.textLabel.textColor = [UIColor hexColor:@"333333"];
     cell.textLabel.backgroundColor = [UIColor clearColor];
 //    cell.textLabel.textAlignment = NSTextAlignmentCenter;
     if ([cell.textLabel.text isEqualToString:self.navgationView.typeLabel.text]) {
-        cell.textLabel.textColor = [UIColor hexColor:@"8E2B25"];
+        cell.textLabel.textColor = kMainYellow;
     }
-    if (indexPath.row == list.count - 1){
+    if (indexPath.row == self.typeTableList.count - 1){
         cell.separatorInset = UIEdgeInsetsMake(0,0,0,kScreenWidth);
     } else {
         cell.separatorInset = UIEdgeInsetsZero;// UIEdgeInsetsMake(0,15,0,0);
@@ -112,8 +122,7 @@ static NSString *const typeCellId = @"typeTableCell";
 //    if (indexPath.row == 2) {
 //        self.classType = KfClassType_pay;
 //    }
-    NSArray * list = @[SLLocalizedString(@"教程"),SLLocalizedString(@"活动"),SLLocalizedString(@"机构")];
-    self.typeString = list[indexPath.row];
+    self.typeString = self.typeTableList[indexPath.row];
     [self hideTypeTable];
 }
 
@@ -174,7 +183,7 @@ static NSString *const typeCellId = @"typeTableCell";
     CGFloat y = SLChange(15) + SLChange(40);
     CGFloat letfWidth = SLChange(15);
     for (int i = 0; i < textArr.count; i++) {
-        NSString *text = [self subTextString:textArr[i] len:6];
+        NSString *text = [self subModelTextString:textArr[i] len:6];
         CGFloat width = [self getWidthWithStr:text] + SLChange(35);
         if (letfWidth + width + SLChange(15) > kWidth) {
             if (y >= SLChange(130) && [title isEqualToString:SLLocalizedString(@"搜索历史")]) {
@@ -214,7 +223,7 @@ static NSString *const typeCellId = @"typeTableCell";
     
     [self.navgationView resignFirstResponder];
     
-    [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+    [SMAlert setConfirmBtBackgroundColor:kMainYellow];
     [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
     [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
     [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
@@ -231,7 +240,12 @@ static NSString *const typeCellId = @"typeTableCell";
         [self.searchHistoryView removeFromSuperview];
         self.searchHistoryView = [self setNoHistoryView];
         [self.historyArray removeAllObjects];
-        [NSKeyedArchiver archiveRootObject:self.historyArray toFile:KGoodsHistorySearchPath];
+//        [NSKeyedArchiver archiveRootObject:self.historyArray toFile:KGoodsHistorySearchPath];
+        
+        NSString *userId = [SLAppInfoModel sharedInstance].id;
+        [[ModelTool shareInstance]deleteTableName:@"searchHistory" where:[NSString stringWithFormat:@"userId = '%@' AND type = '%ld' ", userId, SearchHistoryCourseType]];
+        
+        
         [self.view addSubview:self.searchHistoryView];
        
     }] cancleButton:[SMButton initWithTitle:SLLocalizedString(@"取消") clickAction:nil]];
@@ -256,21 +270,39 @@ static NSString *const typeCellId = @"typeTableCell";
     [NSKeyedArchiver archiveRootObject:testArr toFile:KGoodsHistorySearchPath];
 }
 
--(NSString*)subTextString:(NSString*)str len:(NSInteger)len{
-    if(str.length<=len)return str;
+//-(NSString*)subTextString:(NSString*)str len:(NSInteger)len{
+//    if(str.length<=len)return str;
+//    int count=0;
+//    NSMutableString *sb = [NSMutableString string];
+//
+//    for (int i=0; i<str.length; i++) {
+//        NSRange range = NSMakeRange(i, 1) ;
+//        NSString *aStr = [str substringWithRange:range];
+//        count += [aStr lengthOfBytesUsingEncoding:NSUTF8StringEncoding]>1?2:1;
+//        [sb appendString:aStr];
+//        if(count >= len*2) {
+//            return (i==str.length-1)?[sb copy]:[NSString stringWithFormat:@"%@...",[sb copy]];
+//        }
+//    }
+//    return str;
+//}
+
+-(NSString*)subModelTextString:(SearchHistoryModel*)model len:(NSInteger)len{
+    NSString *searchContent = model.searchContent;
+    if (searchContent.length<=len) return searchContent;
     int count=0;
     NSMutableString *sb = [NSMutableString string];
-    
-    for (int i=0; i<str.length; i++) {
+    for (int i=0; i<searchContent.length; i++) {
         NSRange range = NSMakeRange(i, 1) ;
-        NSString *aStr = [str substringWithRange:range];
+        NSString *aStr = [searchContent substringWithRange:range];
         count += [aStr lengthOfBytesUsingEncoding:NSUTF8StringEncoding]>1?2:1;
         [sb appendString:aStr];
         if(count >= len*2) {
-            return (i==str.length-1)?[sb copy]:[NSString stringWithFormat:@"%@...",[sb copy]];
+            return (i==searchContent.length-1)?[sb copy]:[NSString stringWithFormat:@"%@...",[sb copy]];
+
         }
     }
-    return str;
+    return searchContent;
 }
 
 - (UIView *)setNoHistoryView {
@@ -301,11 +333,22 @@ static NSString *const typeCellId = @"typeTableCell";
         [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请输入搜索内容") view:self.view afterDelay:TipSeconds];
         return;
     }
-    if ([self.historyArray containsObject:text]) {
-        [self.historyArray removeObject:text];
-    }
-    [self.historyArray insertObject:text atIndex:0];
-    [NSKeyedArchiver archiveRootObject:self.historyArray toFile:KGoodsHistorySearchPath];
+//    if ([self.historyArray containsObject:text]) {
+//        [self.historyArray removeObject:text];
+//    }
+//    [self.historyArray insertObject:text atIndex:0];
+//    [NSKeyedArchiver archiveRootObject:self.historyArray toFile:KGoodsHistorySearchPath];
+    
+    NSString *userId = [SLAppInfoModel sharedInstance].id;
+    
+    SearchHistoryModel *historyModel = [[SearchHistoryModel alloc]init];
+    historyModel.userId = userId;
+    historyModel.searchContent = text;
+    
+    
+    historyModel.type = [NSString stringWithFormat:@"%ld", SearchHistoryCourseType];;
+    
+    [historyModel addSearchWordWithDataArray:_historyArray];
          
     
     // 跳转结果界面
@@ -326,6 +369,7 @@ static NSString *const typeCellId = @"typeTableCell";
 
 - (void) pushResultControllerWithSearchText:(NSString *)text {
     if ([self.typeString isEqualToString:SLLocalizedString(@"教程")]) {
+        
         KungfuClassListViewController *resultVC = [[KungfuClassListViewController alloc]init];
         resultVC.searchText = text;
         [self.navigationController pushViewController:resultVC animated:YES];
@@ -347,7 +391,7 @@ static NSString *const typeCellId = @"typeTableCell";
 #pragma mark - getter / setter
 -(void)setTypeString:(NSString *)typeString {
     _typeString = typeString;
-    
+    self.navgationView.searchTF.placeholder = [NSString stringWithFormat:@"%@%@", SLLocalizedString(@"搜索"), typeString];
     self.navgationView.typeLabel.text = _typeString;
 }
 
@@ -403,7 +447,11 @@ static NSString *const typeCellId = @"typeTableCell";
 
 -(NSMutableArray *)historyArray{
     if (!_historyArray) {
-           _historyArray = [NSKeyedUnarchiver unarchiveObjectWithFile:KGoodsHistorySearchPath];
+//           _historyArray = [NSKeyedUnarchiver unarchiveObjectWithFile:KGoodsHistorySearchPath];
+        
+        
+        _historyArray = [[[ModelTool shareInstance] select:[SearchHistoryModel class] tableName:@"searchHistory" where:[NSString stringWithFormat:@"type = '%ld' AND userId = '%@' ORDER BY id DESC", SearchHistoryCourseType, [SLAppInfoModel sharedInstance].id]] mutableCopy];
+        
            if (!_historyArray) {
                self.historyArray = [NSMutableArray array];
            }

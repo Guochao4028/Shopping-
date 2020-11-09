@@ -29,4 +29,12 @@
 }
 
 
+///设置发票 不可选中按钮 样式
++(void)setupButtonDisabled:(UIButton *)button{
+    [button setBackgroundColor:[UIColor colorForHex:@"F3F3F3"]];
+    [button setTitleColor:[UIColor colorForHex:@"A7A7A7"] forState:(UIControlStateDisabled)];
+    button.layer.borderWidth = 0;
+    button.layer.cornerRadius = SLChange(16.5);
+}
+
 @end

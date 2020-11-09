@@ -160,7 +160,7 @@
 {
     if (!_statusLabel) {
         _statusLabel = [[UILabel alloc] init];
-        _statusLabel.textColor = [UIColor colorForHex:@"8E2B25"];
+        _statusLabel.textColor = kMainYellow;
         _statusLabel.font = kRegular(11);
         _statusLabel.textAlignment = NSTextAlignmentCenter;
         _statusLabel.text = @"";
@@ -184,7 +184,7 @@
         _refusedBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
         [_refusedBtn setBackgroundImage:[UIImage imageNamed:@"me_postmanagement_look"] forState:(UIControlStateNormal)];
         [_refusedBtn setTitle:SLLocalizedString(@"查看拒绝原因") forState:(UIControlStateNormal)];
-        [_refusedBtn setTitleColor:[UIColor colorForHex:@"8E2B25"] forState:(UIControlStateNormal)];
+        [_refusedBtn setTitleColor:kMainYellow forState:(UIControlStateNormal)];
         _refusedBtn.titleLabel.font = kRegular(9);
         [_refusedBtn addTarget:self action:@selector(refuseAction) forControlEvents:(UIControlEventTouchUpInside)];
     }

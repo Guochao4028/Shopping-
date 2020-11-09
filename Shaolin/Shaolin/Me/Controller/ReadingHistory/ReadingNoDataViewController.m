@@ -16,12 +16,14 @@
 
 @implementation ReadingNoDataViewController
 
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self hideNavigationBarShadow];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.titleLabe.text = @"";
-    [self.navigationController.navigationBar setBackgroundImage:[[UIImage alloc]init]forBarMetrics:UIBarMetricsDefault];
-
-       [self.navigationController.navigationBar setShadowImage:[[UIImage alloc]init]];
     [self layoutView];
     if ([self.typeStr isEqualToString:@"text"]) {
         self.logoImageView.image = [UIImage imageNamed:@"reading_notext"];

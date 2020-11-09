@@ -6,7 +6,7 @@
 //  Copyright © 2020 syqaxldy. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "RootViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -17,6 +17,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString * flag;
 @property (nonatomic, copy) NSString * activityCode;
 @property(nonatomic, strong)EnrollmentListModel *model;
+//费用类型
+@property(nonatomic, copy)NSString *chargeType;
 
 /**
  是否是考试

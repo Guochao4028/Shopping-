@@ -33,6 +33,7 @@
 @interface RecommendViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic,strong) UITableView *tableView;
 @property(nonatomic,strong) NSMutableArray *foundArray;
+@property(nonatomic,strong) NSMutableArray *topArray;
 @property (nonatomic, copy) NSString *totalStr;
 @property (nonatomic, assign) NSInteger pager;
 @property(nonatomic,strong) LYEmptyView *emptyView;
@@ -42,9 +43,14 @@
 @end
 
 @implementation RecommendViewController
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self hideNavigationBarShadow];
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.view.backgroundColor = [UIColor colorForHex:@"FAFAFA"];
     /**
         置顶的cell高度  60
           广告的cell 高度 353
@@ -54,6 +60,7 @@
      */
     NSLog(@"==============");
     self.foundArray = [@[] mutableCopy];
+    self.topArray = [@[] mutableCopy];
     [self update];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(getSelectPageData:) name:@"ReloadCurrentPage" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(playerCellAction:) name:@"VideoPlayerAction" object:nil];
@@ -68,7 +75,11 @@
     
      [self.view addSubview:self.tableView];
      [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
-           make.edges.equalTo(self.view);
+         make.top.mas_equalTo(10);
+         make.left.mas_equalTo(15);
+         make.right.mas_equalTo(-15);
+         make.bottom.mas_equalTo(0);
+//           make.edges.equalTo(self.view);
        }];
    
     [_tableView setTableFooterView:[[UIView alloc] init]];
@@ -133,6 +144,7 @@
     {
         FoundVideoListVc *vC = [[FoundVideoListVc alloc]init];
            vC.hidesBottomBarWhenPushed = YES;
+           vC.hideNavigationBarView = YES;
            vC.fieldId = model.fieldId;
            vC.videoId = model.id;
            vC.tabbarStr = @"Found";
@@ -219,7 +231,16 @@
         [hud hideAnimated:YES];
         if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
             NSArray *arr = [solveJsonData changeType:[[responseObject objectForKey:@"data"] objectForKey:@"data"]];
-            NSArray *foundModelArray = [FoundModel mj_objectArrayWithKeyValuesArray:arr];
+            NSMutableArray *foundModelArray = [[FoundModel mj_objectArrayWithKeyValuesArray:arr] mutableCopy];
+            if (self.foundArray.count == 0){
+                for (FoundModel *model in foundModelArray) {
+                    if ([model.cellIdentifier isEqualToString:NSStringFromClass([StickCell class])]){
+                        [self.topArray addObject:model];
+                    }
+                }
+                
+                [foundModelArray removeObjectsInArray:self.topArray];
+            }
             [self.foundArray addObjectsFromArray:foundModelArray];
             if (self.foundArray.count == 0){
                 self.tableView.ly_emptyView = self.emptyView;
@@ -237,6 +258,7 @@
 - (void)update{
     self.pager = 1;
     [self.foundArray removeAllObjects];
+    [self.topArray removeAllObjects];
     [self requestData:^(NSArray *foundModelArray) {
         [self.tableView.mj_header endRefreshing];
         [self.tableView.mj_footer endRefreshing];
@@ -321,12 +343,28 @@
     [scrollView zf_scrollViewWillBeginDragging];
 }
 #pragma mark - UITableViewDataSource
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    if (self.topArray.count > 0) return 2;
+    return 1;
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return _foundArray.count;
+    if (self.topArray.count > 0){
+        if (section == 0) {
+            return self.topArray.count;
+        } else {
+            return self.foundArray.count;
+        }
+    }
+    return self.foundArray.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    FoundModel *model = _foundArray[indexPath.row];
+    NSArray *currentArray = self.foundArray;
+    if (indexPath.section == 0 && self.topArray.count > 0){
+        currentArray = self.topArray;
+    }
+    FoundModel *model = currentArray[indexPath.row];
     AllTableViewCell *cell;
     NSString *cellIdentifier;
     cellIdentifier = model.cellIdentifier;
@@ -334,8 +372,22 @@
     cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     [cell setFoundModel:model indexpath:indexPath];
+    if (currentArray.count == 1){
+        cell.cellPosition = CellPosition_OnlyOne;
+    } else if (indexPath.row == 0){
+        cell.cellPosition = CellPosition_Top;
+    } else if (indexPath.row == currentArray.count - 1){
+        cell.cellPosition = CellPosition_Bottom;
+    } else {
+        cell.cellPosition = CellPosition_Center;
+    }
    
     NSMutableArray *typeNum = [NSMutableArray array];
+    for (FoundModel *dic in self.topArray) {
+        if ([dic.type isEqualToString:@"1"]) {
+             [typeNum addObject:dic.type];
+        }
+    }
     for (FoundModel *dic in self.foundArray) {
         if ([dic.type isEqualToString:@"1"]) {
              [typeNum addObject:dic.type];
@@ -354,12 +406,105 @@
        return cell;
 
 }
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if ([cell respondsToSelector:@selector(tintColor)]) {
+        if (tableView == self.tableView) {
+            // 圆角弧度半径
+            CGFloat cornerRadius = 10.f;
+            // 设置cell的背景色为透明，如果不设置这个的话，则原来的背景色不会被覆盖
+            cell.backgroundColor = UIColor.clearColor;
+            
+            // 创建一个shapeLayer
+            CAShapeLayer *layer = [[CAShapeLayer alloc] init];
+            CAShapeLayer *backgroundLayer = [[CAShapeLayer alloc] init]; //显示选中
+            // 创建一个可变的图像Path句柄，该路径用于保存绘图信息
+            CGMutablePathRef pathRef = CGPathCreateMutable();
+            // 获取cell的size
+            CGRect bounds = CGRectInset(cell.bounds, 0, 0);
+            
+            // CGRectGetMinY：返回对象顶点坐标
+            // CGRectGetMaxY：返回对象底点坐标
+            // CGRectGetMinX：返回对象左边缘坐标
+            // CGRectGetMaxX：返回对象右边缘坐标
+            
+            // 这里要判断分组列表中的第一行，每组section的第一行，每组section的中间行
+            BOOL addLine = NO;
+            // CGPathAddRoundedRect(pathRef, nil, bounds, cornerRadius, cornerRadius);
+            if (indexPath.row == 0) {
+                // 初始起点为cell的左下角坐标
+                CGPathMoveToPoint(pathRef, nil, CGRectGetMinX(bounds), CGRectGetMaxY(bounds));
+                // 起始坐标为左下角，设为p1，（CGRectGetMinX(bounds), CGRectGetMinY(bounds)）为左上角的点，设为p1(x1,y1)，(CGRectGetMidX(bounds), CGRectGetMinY(bounds))为顶部中点的点，设为p2(x2,y2)。然后连接p1和p2为一条直线l1，连接初始点p到p1成一条直线l，则在两条直线相交处绘制弧度为r的圆角。
+                CGPathAddArcToPoint(pathRef, nil, CGRectGetMinX(bounds), CGRectGetMinY(bounds), CGRectGetMidX(bounds), CGRectGetMinY(bounds), cornerRadius);
+                CGPathAddArcToPoint(pathRef, nil, CGRectGetMaxX(bounds), CGRectGetMinY(bounds), CGRectGetMaxX(bounds), CGRectGetMidY(bounds), cornerRadius);
+                // 终点坐标为右下角坐标点，把绘图信息都放到路径中去,根据这些路径就构成了一块区域了
+                CGPathAddLineToPoint(pathRef, nil, CGRectGetMaxX(bounds), CGRectGetMaxY(bounds));
+                addLine = YES;
+            } else if (indexPath.row == [tableView numberOfRowsInSection:indexPath.section]-1) {
+                // 初始起点为cell的左上角坐标
+                CGPathMoveToPoint(pathRef, nil, CGRectGetMinX(bounds), CGRectGetMinY(bounds));
+                CGPathAddArcToPoint(pathRef, nil, CGRectGetMinX(bounds), CGRectGetMaxY(bounds), CGRectGetMidX(bounds), CGRectGetMaxY(bounds), cornerRadius);
+                CGPathAddArcToPoint(pathRef, nil, CGRectGetMaxX(bounds), CGRectGetMaxY(bounds), CGRectGetMaxX(bounds), CGRectGetMidY(bounds), cornerRadius);
+                // 添加一条直线，终点坐标为右下角坐标点并放到路径中去
+                CGPathAddLineToPoint(pathRef, nil, CGRectGetMaxX(bounds), CGRectGetMinY(bounds));
+            } else {
+                // 添加cell的rectangle信息到path中（不包括圆角）
+                CGPathAddRect(pathRef, nil, bounds);
+                addLine = YES;
+            }
+            // 把已经绘制好的可变图像路径赋值给图层，然后图层根据这图像path进行图像渲染render
+            layer.path = pathRef;
+            backgroundLayer.path = pathRef;
+            // 注意：但凡通过Quartz2D中带有creat/copy/retain方法创建出来的值都必须要释放
+            CFRelease(pathRef);
+            // 按照shape layer的path填充颜色，类似于渲染render
+            // layer.fillColor = [UIColor colorWithWhite:1.f alpha:0.8f].CGColor;
+            layer.fillColor = [UIColor whiteColor].CGColor;
+            
+            //置顶分组里不画分割线
+            if (self.topArray.count && indexPath.section == 0){
+                addLine = NO;
+            }
+            //TODO:绘制cell间的分隔线
+            if (addLine == YES) {
+                CALayer *lineLayer = [[CALayer alloc] init];
+                CGFloat lineHeight = (1.f / [UIScreen mainScreen].scale);
+                lineLayer.frame = CGRectMake(CGRectGetMinX(bounds), bounds.size.height-lineHeight, bounds.size.width, lineHeight);
+                // 分隔线颜色取自于原来tableview的分隔线颜色
+                lineLayer.backgroundColor = tableView.separatorColor.CGColor;
+                [layer addSublayer:lineLayer];
+            }
+            
+            // view大小与cell一致
+            UIView *roundView = [[UIView alloc] initWithFrame:bounds];
+            // 添加自定义圆角后的图层到roundView中
+            [roundView.layer insertSublayer:layer atIndex:0];
+            roundView.backgroundColor = UIColor.clearColor;
+            //cell的背景view
+            //cell.selectedBackgroundView = roundView;
+            cell.backgroundView = roundView;
+            
+            //以上方法存在缺陷当点击cell时还是出现cell方形效果，因此还需要添加以下方法
+            UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:bounds];
+            backgroundLayer.fillColor = tableView.separatorColor.CGColor;
+            [selectedBackgroundView.layer insertSublayer:backgroundLayer atIndex:0];
+            selectedBackgroundView.backgroundColor = UIColor.clearColor;
+            cell.selectedBackgroundView = selectedBackgroundView;
+        }
+    }
+}
+
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [self pauseCurrentVideo];
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    
-    FoundModel *model = self.foundArray[indexPath.row];
+    FoundModel *model;
+    if (indexPath.section == 0 && self.topArray.count > 0){
+        model = self.topArray[indexPath.row];
+    }
+    if (!model) {
+        model = self.foundArray[indexPath.row];
+    }
     if ([model.type isEqualToString:@"3"]) {
         // 是广告
         [[SLAppInfoModel sharedInstance] advertEventResponseWithFoundModel:model];
@@ -367,6 +512,7 @@
        if ([model.kind isEqualToString:@"3"]) {
            FoundVideoListVc *vC = [[FoundVideoListVc alloc]init];
            vC.hidesBottomBarWhenPushed = YES;
+           vC.hideNavigationBarView = YES;
            vC.fieldId = model.fieldId;
            vC.videoId = model.id;
            vC.tabbarStr = @"Found";
@@ -385,31 +531,60 @@
        }
     }
 }
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    FoundModel *model = self.foundArray[indexPath.row];
-    return model.cellHeight;
-}
+//-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    FoundModel *model;
+//    if (indexPath.section == 0 && self.topArray.count > 0){
+//        model = self.topArray[indexPath.row];
+//    }
+//    if (!model) {
+//        model = self.foundArray[indexPath.row];
+//    }
+////
+////    if ([model.cellIdentifier isEqualToString:@"MorePhotoCell"] || [model.cellIdentifier isEqualToString:@"PureTextTableViewCell"]) {
+////
+////    } else {
+////        return model.cellHeight;
+////    }
+//    return tableView.rowHeight;
+//}
+
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return SLChange(10);
+    return 0;
 }
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    return 10;
+}
+
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    UIView *view = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWidth, SLChange(10))];
-    view.backgroundColor = [UIColor colorForHex:@"FFFFFF"];
-    return view;
+    return [UIView new];
 }
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+    return [UIView new];
+}
+
+//- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+//    UIView *view = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWidth, SLChange(10))];
+//    view.backgroundColor = [UIColor colorForHex:@"FFFFFF"];
+//    return view;
+//}
 
 #pragma mark - Getters
 - (UITableView *)tableView {
     if (!_tableView) {
-        _tableView = [[UITableView alloc] init];
+        _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+//        _tableView.contentInset = UIEdgeInsetsMake(10, 0, 0, 0);
         _tableView.delegate = self;
         _tableView.dataSource = self;
         _tableView.showsVerticalScrollIndicator = NO;
         _tableView.showsHorizontalScrollIndicator = NO;
-        _tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+        _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 //        _tableView.rowHeight = 227;
-      
+        
+        _tableView.estimatedRowHeight = 100;
+        _tableView.rowHeight = UITableViewAutomaticDimension;
+        _tableView.backgroundColor = [UIColor clearColor];
 
       
         _tableView.separatorColor = [UIColor colorWithRed:238/255.0 green:238/255.0 blue:238/255.0 alpha:1.0];

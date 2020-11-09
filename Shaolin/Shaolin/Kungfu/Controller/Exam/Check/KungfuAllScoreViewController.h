@@ -9,7 +9,7 @@
 //
 //  成绩查询列表
 
-
+#import "RootViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

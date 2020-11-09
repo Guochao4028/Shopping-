@@ -7,11 +7,10 @@
 //
 
 #import "LoginManager.h"
-#import "NetworkingHandler.h"
-#import "SLAppInfoModel.h"
-#import "AFNetworking.h"
-#import "DefinedHost.h"
 
+#import "SLAppInfoModel.h"
+#import "DefinedHost.h"
+#import "DefinedURLs.h"
 
 @implementation LoginManager
 + (instancetype)sharedInstance {

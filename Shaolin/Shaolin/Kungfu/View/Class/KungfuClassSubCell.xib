@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -17,19 +17,19 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="第1课 少林小通臂拳" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fem-D1-hpI">
-                        <rect key="frame" x="16" y="16" width="125" height="17"/>
+                        <rect key="frame" x="33" y="16" width="124.5" height="17"/>
                         <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
                         <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2020-05-13 更新" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kTn-13-ewm">
-                        <rect key="frame" x="16" y="41" width="125" height="16"/>
+                        <rect key="frame" x="33" y="41" width="124.5" height="16"/>
                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
                         <color key="textColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="try_icon_black" translatesAutoresizingMaskIntoConstraints="NO" id="J3L-0s-E4H">
-                        <rect key="frame" x="158" y="16" width="33" height="14"/>
+                        <rect key="frame" x="174.5" y="16" width="33" height="14"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="33" id="Ndd-hJ-3Pp"/>
                             <constraint firstAttribute="height" constant="14" id="Vr2-cw-SMq"/>
@@ -44,7 +44,7 @@
                     <constraint firstItem="J3L-0s-E4H" firstAttribute="leading" secondItem="fem-D1-hpI" secondAttribute="trailing" constant="17" id="Zib-ks-saA"/>
                     <constraint firstItem="fem-D1-hpI" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="aP0-sJ-QRF"/>
                     <constraint firstItem="J3L-0s-E4H" firstAttribute="top" secondItem="fem-D1-hpI" secondAttribute="top" id="akl-ou-YaZ"/>
-                    <constraint firstItem="fem-D1-hpI" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="gTc-TK-Gqu"/>
+                    <constraint firstItem="fem-D1-hpI" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="33" id="gTc-TK-Gqu"/>
                     <constraint firstAttribute="bottom" secondItem="kTn-13-ewm" secondAttribute="bottom" constant="7" id="jpu-i8-wyU"/>
                 </constraints>
             </tableViewCellContentView>

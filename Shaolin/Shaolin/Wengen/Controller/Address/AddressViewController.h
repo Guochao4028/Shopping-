@@ -6,7 +6,7 @@
 //  Copyright © 2020 syqaxldy. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "RootViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -14,9 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol AddressViewControllerDelegate;
 
-@interface AddressViewController : UIViewController
-
-@property(nonatomic, assign)BOOL isHiddenNav;
+@interface AddressViewController : RootViewController
 
 @property(nonatomic, strong)AddressListModel *addressListModel;
 

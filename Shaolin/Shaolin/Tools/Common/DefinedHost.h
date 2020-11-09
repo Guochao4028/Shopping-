@@ -104,6 +104,11 @@
 #define URL_H5_SharedActivityDetail(a) [NSString stringWithFormat:@"%@/activityDetail?id=%@",H5Host,a]
 
 /*
+    我的模块-我的活动
+    扫码签到失败
+ */
+#define URL_H5_MyActivityScanQRCodeError [NSString stringWithFormat:@"%@/activityRegistration?error=0", H5Host]
+/*
  法会活动祝福语分享链接
  */
 #define URL_H5_SharedRiteBlessing(a) [NSString stringWithFormat:@"%@/blessing?id=%@", H5Host, a]

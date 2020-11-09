@@ -9,7 +9,6 @@
 #import "AppDelegate.h"
 #import "ShaoLinTabBarController.h"
 #import <ShareSDK/ShareSDK.h>
-#import "LoginViewController.h"
 #import "EMDemoHelper.h"
 #import "EMDemoOptions.h"
 #import "MeManager.h"
@@ -37,12 +36,14 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // 获取存储的用户信息
-    [[SLAppInfoModel sharedInstance] getCurrentUserInfo];
+    
+    // 获取本地存储用户信息
+    [self initUserInfo];
     
     // 初始化window
     [self initWindow];
     
+    // 初始化网络
     [self initNetWork];
     
     // 初始化监听
@@ -59,10 +60,9 @@
     
     // 初始化广告相关
     [self initLaunchView];
-    //获取收货地址文件
-    [[DataManager shareInstance] getAddressListFile];
-    //获取购物车和订单数量
-    [[DataManager shareInstance] getOrderAndCartCount];
+    
+    // 获取收货地址和订单信息
+    [self initAddressAndOrderData];
     
 //    //注册极光推送
 //    [self registerNotifications:launchOptions];

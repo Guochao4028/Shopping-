@@ -8,6 +8,7 @@
 
 #import "ActivityManager.h"
 #import "DefinedHost.h"
+#import "DefinedURLs.h"
 
 @implementation ActivityManager
 + (instancetype)sharedInstance {

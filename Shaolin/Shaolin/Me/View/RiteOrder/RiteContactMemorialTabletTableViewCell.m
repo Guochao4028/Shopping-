@@ -24,10 +24,10 @@
     
     
     
-          [self.seeMemorialTabletButton setTitleColor:[UIColor hexColor:@"8E2B25"] forState:UIControlStateNormal];
+          [self.seeMemorialTabletButton setTitleColor:kMainYellow forState:UIControlStateNormal];
           self.seeMemorialTabletButton.titleLabel.font = kRegular(15);
           self.seeMemorialTabletButton.layer.borderWidth = 0.5f;
-          self.seeMemorialTabletButton.layer.borderColor = [UIColor hexColor:@"8E2B25"].CGColor;
+          self.seeMemorialTabletButton.layer.borderColor = kMainYellow.CGColor;
           self.seeMemorialTabletButton.layer.cornerRadius = 14;
 }
 

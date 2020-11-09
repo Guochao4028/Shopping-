@@ -12,6 +12,11 @@
 
 #import "CheckstandViewController.h"
 
+#import "FoundViewController.h"
+#import "KungfuViewController.h"
+#import "ActivityViewController.h"
+#import "MeViewController.h"
+#import "WengenViewController.h"
 
 @interface ShaoLinTabBarController ()<UITabBarControllerDelegate>
 
@@ -44,110 +49,85 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-  
     
-//    //去除系统线
+    
+    //    //去除系统线
     [UITabBar appearance].clipsToBounds = YES;
-//
-//    //添加自定义线
-//    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kWidth, 1)];
-//    lineView.backgroundColor = [UIColor redColor];
-//
-//    [[UITabBar appearance] addSubview:lineView];
+    //
+    //    //添加自定义线
+    //    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kWidth, 1)];
+    //    lineView.backgroundColor = [UIColor redColor];
+    //
+    //    [[UITabBar appearance] addSubview:lineView];
     [[UITabBar appearance] setBarTintColor:[UIColor whiteColor]];
     self.view.backgroundColor = [UIColor whiteColor];
-     [self creatNCs];
-     [[UITabBarItem appearance]setTitleTextAttributes:@{NSFontAttributeName:[UIFont   fontWithName:@"PingFangTC-Regular" size:14],NSForegroundColorAttributeName:[UIColor colorForHex:@"909090"]}   forState:UIControlStateNormal];
+    [self creatNCs];
     
-    
+    [[UITabBarItem appearance]setTitleTextAttributes:@{NSFontAttributeName:kRegular(11),NSForegroundColorAttributeName:[UIColor colorForHex:@"BABEC6"]}   forState:UIControlStateNormal];
+    [[UITabBarItem appearance]setTitleTextAttributes:@{NSFontAttributeName:kRegular(11),NSForegroundColorAttributeName:kMainYellow}   forState:UIControlStateSelected];
     
     //创建数据库
-    [[ModelTool shareInstance]createBatabase];
+    [[ModelTool shareInstance] createBatabase];
 }
--(void)creatNCs
-{
+
+- (void)creatNCs {
     [self creatFoundNC];
     [self creatKungfuNC];
     [self creatWengenNC];
     [self creatActivityNC];
     [self creatMeNC];
-    self.viewControllers = @[_foundNC,_activityNC,_kungfuNC,_wengenNC,_meNC];
+    self.viewControllers = @[self.foundNC,self.activityNC,self.kungfuNC,self.wengenNC,self.meNC];
     self.selectedIndex = 0;
-   
+    
 }
--(void)creatFoundNC
-{
-    
-    
-    
-//    CheckstandViewController*foundVC = [[CheckstandViewController alloc]init];
-//    foundVC.order_no = @"20204957549962213";
-//    foundVC.activityCode = @"2005111400012585";
-//    foundVC.isSignUp = YES;
-//    foundVC.goodsAmountTotal = @"￥10";
-//
-//       self.foundNC = [[UINavigationController alloc]initWithRootViewController:foundVC];
-//       _foundNC.tabBarItem.title = SLLocalizedString(@"发现");
-//
-//       _foundNC.tabBarItem.image = [[UIImage imageNamed:@"found_normal"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-//       _foundNC.tabBarItem.selectedImage = [[UIImage imageNamed:@"found_select"]imageWithRenderingMode:(UIImageRenderingModeAlwaysOriginal)];
-//       [_foundNC.tabBarItem setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor colorForHex:@"8E2B25"]} forState:(UIControlStateSelected)];
-//
-    
-    
-    self.foundVC = [[FoundViewController alloc]init];
-//    self.foundNC = [[UINavigationController alloc]initWithRootViewController:self.foundVC];
-    self.foundNC = [[RootNavigationController alloc] initWithRootViewController:self.foundVC];
-    _foundNC.tabBarItem.title = SLLocalizedString(@"发现");
 
-    _foundNC.tabBarItem.image = [[UIImage imageNamed:@"found_normal"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    _foundNC.tabBarItem.selectedImage = [[UIImage imageNamed:@"found_select"]imageWithRenderingMode:(UIImageRenderingModeAlwaysOriginal)];
-    [_foundNC.tabBarItem setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor colorForHex:@"8E2B25"]} forState:(UIControlStateSelected)];
+- (void)creatFoundNC {
+    self.foundVC = [[FoundViewController alloc]init];
+    //    self.foundNC = [[UINavigationController alloc]initWithRootViewController:self.foundVC];
+    self.foundNC = [[RootNavigationController alloc] initWithRootViewController:self.foundVC];
+    self.foundNC.tabBarItem.title = SLLocalizedString(@"发现");
     
+    self.foundNC.tabBarItem.image = [[UIImage imageNamed:@"new_found_normal"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    self.foundNC.tabBarItem.selectedImage = [[UIImage imageNamed:@"new_found_select"]imageWithRenderingMode:(UIImageRenderingModeAlwaysOriginal)];
+    [self.foundNC.tabBarItem setTitleTextAttributes:@{NSForegroundColorAttributeName:kMainYellow} forState:(UIControlStateSelected)];;
     
 }
--(void)creatKungfuNC
-{
+
+- (void)creatKungfuNC {
     self.kungfuVC = [[KungfuViewController alloc]init];
     self.kungfuNC = [[RootNavigationController alloc]initWithRootViewController:self.kungfuVC];
-    _kungfuNC.tabBarItem.title = SLLocalizedString(@"功夫");
-    _kungfuNC.tabBarItem.image = [[UIImage imageNamed:@"kungfu_normal"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    _kungfuNC.tabBarItem.selectedImage = [[UIImage imageNamed:@"kungfu_select"]imageWithRenderingMode:(UIImageRenderingModeAlwaysOriginal)];
-//    [_lookNC.tabBarItem setTitleTextAttributes:@{NSForegroundColorAttributeName:UIColorHex(#e24647)} forState:(UIControlStateSelected)];
-   // _lookNC.tabBarItem.badgeValue = @"5";
-   
-    [_kungfuNC.tabBarItem setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor colorForHex:@"8E2B25"]} forState:(UIControlStateSelected)];
+    self.kungfuNC.tabBarItem.title = SLLocalizedString(@"功夫");
+    self.kungfuNC.tabBarItem.image = [[UIImage imageNamed:@"new_kungfu_normal"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    self.kungfuNC.tabBarItem.selectedImage = [[UIImage imageNamed:@"new_kungfu_select"]imageWithRenderingMode:(UIImageRenderingModeAlwaysOriginal)];
+    [self.kungfuNC.tabBarItem setTitleTextAttributes:@{NSForegroundColorAttributeName:kMainYellow} forState:(UIControlStateSelected)];
 }
--(void)creatWengenNC
-{
+
+- (void)creatWengenNC {
     self.wengenVC = [[WengenViewController alloc]init];
     self.wengenNC = [[RootNavigationController alloc]initWithRootViewController:self.wengenVC];
-    _wengenNC.tabBarItem.title = SLLocalizedString(@"文创");
-    _wengenNC.tabBarItem.image = [[UIImage imageNamed:@"wengen_normal"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-       _wengenNC.tabBarItem.selectedImage = [[UIImage imageNamed:@"wengen_select"]imageWithRenderingMode:(UIImageRenderingModeAlwaysOriginal)];
-//    _reminNC.tabBarItem.image = [YYImage imageNamed:@"ios_bottom提醒"];
-//    _reminNC.tabBarItem.selectedImage = [[YYImage imageNamed:@"ios_bottom提醒红"]imageWithRenderingMode:(UIImageRenderingModeAlwaysOriginal)];
-//    [_reminNC.tabBarItem setTitleTextAttributes:@{NSForegroundColorAttributeName:UIColorHex(#e24647)} forState:(UIControlStateSelected)];
-     [_wengenNC.tabBarItem setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor colorForHex:@"8E2B25"]} forState:(UIControlStateSelected)];
+    self.wengenNC.tabBarItem.title = SLLocalizedString(@"文创");
+    self.wengenNC.tabBarItem.image = [[UIImage imageNamed:@"new_wengen_normal"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    self.wengenNC.tabBarItem.selectedImage = [[UIImage imageNamed:@"new_wengen_select"]imageWithRenderingMode:(UIImageRenderingModeAlwaysOriginal)];
+    [self.wengenNC.tabBarItem setTitleTextAttributes:@{NSForegroundColorAttributeName:kMainYellow} forState:(UIControlStateSelected)];
 }
--(void)creatActivityNC
-{
+
+- (void)creatActivityNC {
     self.activityVC = [[ActivityViewController alloc]init];
-       self.activityNC = [[RootNavigationController alloc]initWithRootViewController:self.activityVC];
-       _activityNC.tabBarItem.title = SLLocalizedString(@"活动");
-    _activityNC.tabBarItem.image = [[UIImage imageNamed:@"activity_normal"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    _activityNC.tabBarItem.selectedImage = [[UIImage imageNamed:@"activity_select"]imageWithRenderingMode:(UIImageRenderingModeAlwaysOriginal)];
-     [_activityNC.tabBarItem setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor colorForHex:@"8E2B25"]} forState:(UIControlStateSelected)];
+    self.activityNC = [[RootNavigationController alloc]initWithRootViewController:self.activityVC];
+    self.activityNC.tabBarItem.title = SLLocalizedString(@"活动");
+    self.activityNC.tabBarItem.image = [[UIImage imageNamed:@"new_activity_normal"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    self.activityNC.tabBarItem.selectedImage = [[UIImage imageNamed:@"new_activity_select"]imageWithRenderingMode:(UIImageRenderingModeAlwaysOriginal)];
+    [self.activityNC.tabBarItem setTitleTextAttributes:@{NSForegroundColorAttributeName:kMainYellow} forState:(UIControlStateSelected)];
+    
 }
--(void)creatMeNC
-{
+
+- (void)creatMeNC {
     self.meVC = [[MeViewController alloc]init];
     self.meNC = [[RootNavigationController alloc]initWithRootViewController:self.meVC];
-    _meNC.tabBarItem.title = SLLocalizedString(@"我的");
-    _meNC.tabBarItem.image = [[UIImage imageNamed:@"me_normal"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    _meNC.tabBarItem.selectedImage = [[UIImage imageNamed:@"me_select"]imageWithRenderingMode:(UIImageRenderingModeAlwaysOriginal)];
-//    [_meNC.tabBarItem setTitleTextAttributes:@{NSForegroundColorAttributeName:UIColorHex(#e24647)} forState:(UIControlStateSelected)];
-     [_meNC.tabBarItem setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor colorForHex:@"8E2B25"]} forState:(UIControlStateSelected)];
+    self.meNC.tabBarItem.title = SLLocalizedString(@"我的");
+    self.meNC.tabBarItem.image = [[UIImage imageNamed:@"new_me_normal"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    self.meNC.tabBarItem.selectedImage = [[UIImage imageNamed:@"new_me_select"]imageWithRenderingMode:(UIImageRenderingModeAlwaysOriginal)];
+    [self.meNC.tabBarItem setTitleTextAttributes:@{NSForegroundColorAttributeName:kMainYellow} forState:(UIControlStateSelected)];
 }
 
 
@@ -196,14 +176,14 @@
 
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 -(UIInterfaceOrientationMask)supportedInterfaceOrientations{
     return self.selectedViewController.supportedInterfaceOrientations;

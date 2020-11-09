@@ -35,14 +35,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-//    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
-//    self.navigationController.navigationBar.barTintColor = RGBA(132, 50, 42, 1);
-//    self.navigationController.navigationBar.hidden = NO;
-
-    [self wr_setNavBarBarTintColor:[UIColor hexColor:@"8E2B25"]];
-    [self wr_setNavBarTintColor:[UIColor whiteColor]];
-    [self wr_setNavBarBackgroundAlpha:1];
-    
+    [self setNavigationBarRedTintColor];
     self.isViewAppear = YES;
     if (self.isNeedReloadSorted) {
         self.isNeedReloadSorted = NO;

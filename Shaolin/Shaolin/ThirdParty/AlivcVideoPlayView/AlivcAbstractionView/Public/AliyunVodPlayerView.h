@@ -110,6 +110,10 @@
 -(void)updateCoverWithCoverUrl:(NSString *)coverUrl;
 -(void)replayClass;
 -(void)handleDeviceOrientationDidChange:(UIInterfaceOrientation)interfaceOrientation;
+// 移动播放位置、毫秒
+-(void)seekToTime:(int64_t)time;
+@property (nonatomic, assign) AVPStatus currentPlayStatus; //记录播放器的状态
+@property (nonatomic, strong) AliPlayer *aliPlayer;               //点播播放器
 
 @property (nonatomic, strong) AliyunPlayerViewControlView *controlView;
 

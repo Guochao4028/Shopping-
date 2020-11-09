@@ -75,8 +75,12 @@
 //字体灰色
 #define WENGEN_GREY [UIColor colorWithRed:153.0/255.0 green:153.0/255.0 blue:153.0/255.0 alpha:0.99]
 
+//导航底线颜色
+#define ColorNavSepGapLine [UIColor colorWithRed:229.0/255.0 green:229.0/255.0 blue:229.0/255.0 alpha:0.99]
+
 //主windowsView
-#define WINDOWSVIEW [[UIApplication sharedApplication].windows lastObject]
+//#define WINDOWSVIEW [[UIApplication sharedApplication].windows lastObject]
+#define WINDOWSVIEW [ModelTool lastWindow]
 
 #define VERSION_ID [[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] intValue]
 #define VERSION_STR [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]
@@ -90,7 +94,8 @@
 #define KNotificationKungfuPageChange @"KungfuPageChange"
 // 活动 - page切换的通知
 #define KNotificationActivityPageChange @"ActivityPageChange"
-
+// 功夫 - 功夫详情播放视频
+#define KNotificationClassVideoPlay @"ClassVideoPlay"
 // 功夫 - page切换的通知
 // 功夫 - 首页
 //#define KNotificationKfPageChangeHome @"KungFuExaminationSelectHome"
@@ -124,5 +129,7 @@
 //秘钥(用于MD5加密)
 #define ENCRYPTION_KEY      @"@shaolin"
 
+//查看视频首帧图片
+#define Video_First_Photo  @"?x-oss-process=video/snapshot,t_3000,m_fast"
 
 #endif /* DefinedKeys_h */

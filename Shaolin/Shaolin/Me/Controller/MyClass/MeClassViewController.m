@@ -19,15 +19,8 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self wr_setNavBarShadowImageHidden:YES];
-    [self wr_setNavBarBarTintColor:[UIColor colorForHex:@"8E2B25"]];
+    [self setNavigationBarRedTintColor];
     self.titleLabe.text = SLLocalizedString(@"我的教程");
-    self.titleLabe.textColor = [UIColor whiteColor];
-    
-    [self.leftBtn setImage:[UIImage imageNamed:@"real_left"] forState:(UIControlStateNormal)];
-    
-    self.navigationController.navigationBar.hidden = NO;
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
 }
 
 - (void)viewDidLoad {
@@ -43,7 +36,7 @@
 }
 
 - (void)initData{
-    self.enabledTitles = @[SLLocalizedString(@"观看历史"), SLLocalizedString(@"已购视频")];
+    self.enabledTitles = @[SLLocalizedString(@"观看历史"), SLLocalizedString(@"已购教程")];
 }
 
 - (XLPageViewController *)pageViewController {
@@ -88,11 +81,6 @@
         @"currentTitle":currentTitle
     };
     [[NSNotificationCenter defaultCenter] postNotificationName:@"MeClassListViewControllerReloadData" object:nil userInfo:params];
-}
-
-#pragma mark - device
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    return UIStatusBarStyleLightContent;
 }
 /*
 #pragma mark - Navigation

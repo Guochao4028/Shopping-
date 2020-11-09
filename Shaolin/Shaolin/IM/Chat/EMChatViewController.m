@@ -131,12 +131,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self.navigationController setNavigationBarHidden:NO];
-    
-    [self wr_setNavBarBarTintColor:[UIColor hexColor:@"8E2B25"]];
-    [self wr_setNavBarTintColor:[UIColor whiteColor]];
-    [self wr_setNavBarBackgroundAlpha:1];
-    
+    [self setNavigationBarRedTintColor];
     self.isViewDidAppear = YES;
     [EMConversationHelper markAllAsRead:self.conversationModel];
     
@@ -148,8 +143,6 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    [self.navigationController setNavigationBarHidden:YES];
-    
     self.isViewDidAppear = NO;
     
     if (self.enableTyping && self.isTyping) {

@@ -7,9 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
-
 #import "FoundModel.h"
+
+typedef NS_ENUM(NSInteger, CellPosition) {
+    CellPosition_Center,
+    CellPosition_Top,
+    CellPosition_Bottom,
+    CellPosition_OnlyOne,
+};
+
 @interface AllTableViewCell : UITableViewCell
+@property (nonatomic) CellPosition cellPosition;
+
 -(void)setFoundModel:(FoundModel *)f indexpath:(NSIndexPath *)indexPath;
 -(NSString *)compaareCurrentTime:(NSDate *)compareDate;
 -(NSDate *)nsstringConversionNSDate:(NSString *)dateStr;

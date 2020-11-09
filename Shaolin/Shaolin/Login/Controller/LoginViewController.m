@@ -22,6 +22,7 @@
 #import "AppDelegate+AppService.h"
 #import "YYText.h"
 #import "NSString+Tool.h"
+#import "LoginManager.h"
 
 @interface LoginViewController ()
 
@@ -36,7 +37,7 @@
 @property(nonatomic,strong) UIButton *registBtn;
 @property(nonatomic,strong) UIView *viewLine;
 @property(nonatomic,strong) UIView *crossView1;
-@property(nonatomic,strong) UILabel *titleLabe;
+@property(nonatomic,strong) UILabel *thirdpartyTitleLabe;
 @property(nonatomic,strong) UIView *crossView2;
 @property(nonatomic,strong) UIButton *wechatBtn;
 @property(nonatomic,strong) UIButton *qqBtn;
@@ -57,21 +58,12 @@
 #pragma mark - life cycle
 -(void)viewWillAppear:(BOOL)animated
 {
-    self.navigationController.navigationBar.hidden = YES;
-    
+    [super viewWillAppear:animated];
     [self reloadPhoneNumberAndPassword];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
-    self.navigationController.fd_fullscreenPopGestureRecognizer.enabled = NO;
-    
-    // 禁用返回手势
-    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
-        self.navigationController.interactivePopGestureRecognizer.enabled = NO;
-        
-    }
     
     WEAKSELF
     [[ThirdpartyAuthorizationManager sharedInstance] receiveCompletionBlock:^(ThirdpartyAuthorizationMessageCode code, Message * _Nonnull message) {
@@ -86,18 +78,11 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    
-    self.navigationController.fd_fullscreenPopGestureRecognizer.enabled = YES;
-    
-    // 开启返回手势
-    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
-        self.navigationController.interactivePopGestureRecognizer.enabled = YES;
-    }
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    self.hideNavigationBar = YES;
     if (@available(iOS 13.0, *)) {
         self.modalInPresentation = YES;
     }
@@ -157,7 +142,7 @@
     [self.view addSubview:self.forgetBtn];
     [self.view addSubview:self.registBtn];
     [self.view addSubview:self.viewLine];
-    [self.view addSubview:self.titleLabe];
+    [self.view addSubview:self.thirdpartyTitleLabe];
     [self.view addSubview:self.crossView1];
     [self.view addSubview:self.crossView2];
     [self.view addSubview:self.wechatBtn];
@@ -175,7 +160,7 @@
         make.top.mas_equalTo(0);//(StatueBar_Height + 24);
     }];
     
-    [self.titleLabe mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.thirdpartyTitleLabe mas_makeConstraints:^(MASConstraintMaker *make) {
         make.width.mas_equalTo(SLChange(108));
         make.centerX.mas_equalTo(self.view);
         make.height.mas_equalTo(SLChange(11.5));
@@ -251,14 +236,14 @@
     [self.crossView1 mas_makeConstraints:^(MASConstraintMaker *make) {
         make.width.mas_equalTo(SLChange(80));
         make.height.mas_equalTo(1);
-        make.right.mas_equalTo(self.titleLabe.mas_left).offset(-SLChange(10));
-        make.centerY.mas_equalTo(self.titleLabe);
+        make.right.mas_equalTo(self.thirdpartyTitleLabe.mas_left).offset(-SLChange(10));
+        make.centerY.mas_equalTo(self.thirdpartyTitleLabe);
     }];
     [self.crossView2 mas_makeConstraints:^(MASConstraintMaker *make) {
         make.width.mas_equalTo(SLChange(80));
         make.height.mas_equalTo(1);
-        make.left.mas_equalTo(self.titleLabe.mas_right).offset(SLChange(10));
-        make.centerY.mas_equalTo(self.titleLabe);
+        make.left.mas_equalTo(self.thirdpartyTitleLabe.mas_right).offset(SLChange(10));
+        make.centerY.mas_equalTo(self.thirdpartyTitleLabe);
     }];
     
     [self.agreementBtn mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -309,7 +294,7 @@
         self.selectPassWord = 1;
         self.phoneView.myTextField.text    = phoneStr;
         
-        [self.rememberPassWordBtn setTitleColor:[UIColor colorForHex:@"8E2B25"] forState:(UIControlStateNormal)];
+        [self.rememberPassWordBtn setTitleColor:kMainYellow forState:(UIControlStateNormal)];
         [self.rememberPassWordBtn setSelected:YES];
     }
     if (phonePassword.length == 0) {
@@ -402,7 +387,7 @@
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
     NSString *phoneNumber = self.phoneView.text;
     NSString *password = self.passWordView.text;
-    
+    [self setUserDefaults:phoneNumber passWord:@"" loginType:ThirdpartyType_Phone];
     [LoginManager postLoginPhoneNumber:phoneNumber PassWord:password Success:^(NSDictionary * _Nullable resultDic) {
         
         //        [self login:resultDic];
@@ -448,23 +433,23 @@
     
     [self EMClientLoginHandleWithUserName:[SLAppInfoModel sharedInstance].iM_id password:[SLAppInfoModel sharedInstance].iM_password];
     //            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-    
-    if (self.presentingViewController) {
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }
-    else{
-        if ([self.typeStr isEqualToString:@"1"]) {
-            [self.navigationController popViewControllerAnimated:NO];
-        }else if ([self.typeStr isEqualToString:@"3"]) {
-            [self.navigationController popViewControllerAnimated:YES];
-            self.tabBarController.tabBar.hidden = NO;
-            self.tabBarController.selectedIndex = 4;
-        }else {
-            [self.navigationController popViewControllerAnimated:YES];
-            self.tabBarController.tabBar.hidden = NO;
-            self.tabBarController.selectedIndex = 0;
-        }
-    }
+    [[AppDelegate shareAppDelegate] enterRootViewVC];
+//    if (self.presentingViewController) {
+//        [self dismissViewControllerAnimated:YES completion:nil];
+//    }
+//    else{
+//        if ([self.typeStr isEqualToString:@"1"]) {
+//            [self.navigationController popViewControllerAnimated:NO];
+//        }else if ([self.typeStr isEqualToString:@"3"]) {
+//            [self.navigationController popViewControllerAnimated:YES];
+//            self.tabBarController.tabBar.hidden = NO;
+//            self.tabBarController.selectedIndex = 4;
+//        }else {
+//            [self.navigationController popViewControllerAnimated:YES];
+//            self.tabBarController.tabBar.hidden = NO;
+//            self.tabBarController.selectedIndex = 0;
+//        }
+//    }
 }
 
 - (void) EMClientLoginHandleWithUserName:(NSString *)userName password:(NSString *)password {
@@ -512,7 +497,7 @@
     button.selected = !button.selected;
     if (button.selected) {
         self.selectPassWord = 1;
-        [button setTitleColor:[UIColor colorForHex:@"8E2B25"] forState:(UIControlStateNormal)];
+        [button setTitleColor:kMainYellow forState:(UIControlStateNormal)];
     }else
     {
         self.selectPassWord = 0;
@@ -612,14 +597,14 @@
 
 - (SLCommonLoginView *)phoneView {
     if (!_phoneView) {
-        _phoneView = [[SLCommonLoginView alloc]initWithplaceholder:SLLocalizedString(@"请输入您的手机号") secure:NO keyboardType:UIKeyboardTypeNumberPad];
+        _phoneView = [[SLCommonLoginView alloc]initWithplaceholder:SLLocalizedString(@"请输入手机号") secure:NO keyboardType:UIKeyboardTypeNumberPad];
         _phoneView.wordNumber = 11;
     }
     return _phoneView;
 }
 - (SLCommonLoginView *)passWordView {
     if (!_passWordView) {
-        _passWordView = [[SLCommonLoginView alloc]initWithplaceholder:SLLocalizedString(@"请输入您的密码") secure:YES keyboardType:UIKeyboardTypeDefault];
+        _passWordView = [[SLCommonLoginView alloc]initWithplaceholder:SLLocalizedString(@"请输入密码") secure:YES keyboardType:UIKeyboardTypeDefault];
         _passWordView.inputType = InputType_onlyNumbersAndEnglish;
         _passWordView.wordNumber = 16;
     }
@@ -660,7 +645,7 @@
         
         [_forgetBtn addTarget:self action:@selector(forgetAction) forControlEvents:(UIControlEventTouchUpInside)];
         [_forgetBtn setTitle:SLLocalizedString(@"忘记密码") forState:(UIControlStateNormal)];
-        [_forgetBtn setTitleColor:[UIColor colorForHex:@"8E2B25"] forState:(UIControlStateNormal)];
+        [_forgetBtn setTitleColor:kMainYellow forState:(UIControlStateNormal)];
         _forgetBtn.titleLabel.font = kRegular(14);
     }
     return _forgetBtn;
@@ -672,7 +657,7 @@
         
         [_registBtn addTarget:self action:@selector(registAction) forControlEvents:(UIControlEventTouchUpInside)];
         [_registBtn setTitle:SLLocalizedString(@"立即注册") forState:(UIControlStateNormal)];
-        [_registBtn setTitleColor:[UIColor colorForHex:@"8E2B25"] forState:(UIControlStateNormal)];
+        [_registBtn setTitleColor:kMainYellow forState:(UIControlStateNormal)];
         _registBtn.titleLabel.font = kRegular(14);
     }
     return _registBtn;
@@ -701,17 +686,17 @@
     }
     return _crossView2;
 }
--(UILabel *)titleLabe
+-(UILabel *)thirdpartyTitleLabe
 {
-    if (!_titleLabe) {
-        _titleLabe = [[UILabel alloc]init];
-        _titleLabe.text = SLLocalizedString(@"使用第三方账号登录");
-        _titleLabe.textAlignment = NSTextAlignmentCenter;
-        _titleLabe.textColor = [UIColor colorForHex:@"a36b6b"];
-        _titleLabe.font = kRegular(13);
-        _titleLabe.adjustsFontSizeToFitWidth = YES;
+    if (!_thirdpartyTitleLabe) {
+        _thirdpartyTitleLabe = [[UILabel alloc]init];
+        _thirdpartyTitleLabe.text = SLLocalizedString(@"使用第三方账号登录");
+        _thirdpartyTitleLabe.textAlignment = NSTextAlignmentCenter;
+        _thirdpartyTitleLabe.textColor = [UIColor colorForHex:@"a36b6b"];
+        _thirdpartyTitleLabe.font = kRegular(13);
+        _thirdpartyTitleLabe.adjustsFontSizeToFitWidth = YES;
     }
-    return _titleLabe;
+    return _thirdpartyTitleLabe;
 }
 -(UIButton *)wechatBtn
 {
@@ -785,7 +770,7 @@
         _agreementYYLabel.preferredMaxLayoutWidth = SCREEN_WIDTH - 104;
         NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:SLLocalizedString(@"已阅读并同意《用户服务协议》和《隐私政策》") attributes:@{NSFontAttributeName: [UIFont fontWithName:@"PingFang SC" size: 14],NSForegroundColorAttributeName: [UIColor colorWithRed:51/255.0 green:51/255.0 blue:51/255.0 alpha:1.0]}];
         
-        UIColor * redColor = [UIColor colorForHex:@"8E2B25"];
+        UIColor * redColor = kMainYellow;
         NSRange agreementRange = [string.string rangeOfString:SLLocalizedString(@"《用户服务协议》")];
         NSRange privacyRange = [string.string rangeOfString:SLLocalizedString(@"《隐私政策》")];
         

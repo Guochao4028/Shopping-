@@ -31,6 +31,10 @@ typedef NS_ENUM(NSUInteger, lgf_ChildLoadType) {
 - (void)lgf_CenterChildPageVC:(UIViewController *_Nullable)VC cell:(UICollectionViewCell *)cell indexPath:(NSIndexPath *)indexPath;
 // cell 点击事件
 - (void)lgf_CenterChildPageVC:(UIViewController *_Nullable)VC didSelectItemAtIndexPath:(NSIndexPath *)indexPath;
+
+// 返回 cell UIEdgeInsets
+- (UIEdgeInsets)lgf_EdgeInsetsForItemAtinsetForSectionAtIndex:(NSInteger)section VC:(UIViewController *)VC;
+
 @end
 @interface LGFCenterPageChildVC : UIViewController
 @property (nonatomic, weak, nullable) id <LGFCenterPageChildVCDelegate> delegate;

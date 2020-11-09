@@ -18,6 +18,7 @@
 #import "EMChatViewController.h"
 
 #import "NSString+Tool.h"
+#import "DataManager.h"
 
 #import "GoodsStoreInfoModel.h"
 

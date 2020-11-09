@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
-@class ClassListModel;
+@class SubjectModel;
 
 @interface KungfuCurriculumCell : UITableViewCell
 @property(nonatomic,strong) UIImageView *imageV;
@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic,strong) UILabel *nameLabel;
 @property(nonatomic,strong) UILabel *titleLabe;
 @property(nonatomic,strong) UIView *alphaView;
-@property(nonatomic,strong) ClassListModel *model;
+@property(nonatomic,strong) SubjectModel *model;
 
 @end
 

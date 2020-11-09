@@ -25,17 +25,18 @@
 -(void)layoutSubviews
 {
     [super layoutSubviews];
+    
     [self.logoView mas_makeConstraints:^(MASConstraintMaker *make) {
         
         make.centerX.mas_equalTo(self.contentView);
-        make.top.mas_equalTo(10);
+        make.top.mas_equalTo(0);
         make.size.mas_equalTo(25);
     }];
+    
     [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(0);
-        make.width.mas_equalTo(self.contentView);
-        make.top.mas_equalTo(self.logoView.mas_bottom).offset(11);
-        make.height.mas_equalTo(12);
+        make.left.right.mas_equalTo(0);
+        make.top.mas_equalTo(self.logoView.mas_bottom).offset(10);
+        make.height.mas_equalTo(14);
     }];
 }
 -(UIImageView *)logoView
@@ -51,9 +52,9 @@
 {
     if (!_nameLabel) {
         _nameLabel = [[UILabel alloc]init];
-        _nameLabel.textColor = [UIColor blackColor];
+        _nameLabel.textColor = [UIColor hexColor:@"7f7f7f"];
         _nameLabel.textAlignment = NSTextAlignmentCenter;
-        _nameLabel.font  = kRegular(13);
+        _nameLabel.font  = kRegular(14);
     }
     return _nameLabel;
 }

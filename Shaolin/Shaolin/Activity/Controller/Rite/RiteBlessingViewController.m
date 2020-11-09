@@ -48,22 +48,19 @@ static int const HeadImageViewTag = 2000;
 @implementation RiteBlessingViewController
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self setNavigationControllerClearColor];
+    [self setNavigationBarClearTintColorWhiteStyle];
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-    [self resetNavigationController];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [self setNavigationControllerClearColor];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-    [self resetNavigationController];
 }
 
 - (void)viewDidLoad {
@@ -71,43 +68,16 @@ static int const HeadImageViewTag = 2000;
     if (!self.orderCode){
         self.orderCode = @"";
     }
+    self.disableRightGesture = YES;
     self.titleLabe.text = SLLocalizedString(@"支付成功");
     self.titleLabe.textColor = [UIColor whiteColor];
     [self.leftBtn setImage:[UIImage imageNamed:@"video_left"] forState:(UIControlStateNormal)];
-    self.view.backgroundColor = [UIColor colorForHex:@"8E2B25"];
+    self.view.backgroundColor = kMainYellow;
     [self setUI];
     [self requestData:nil];
 }
 
 #pragma mark - UI
-- (void)setNavigationControllerClearColor{
-    self.navigationController.fd_fullscreenPopGestureRecognizer.enabled = NO;
-    
-    self.navigationController.navigationBar.hidden = NO;
-    UIImage *image = [[UIImage alloc]init];
-    [self.navigationController.navigationBar setBackgroundImage:image forBarMetrics:UIBarMetricsDefault];
-    [self.navigationController.navigationBar setShadowImage:[[UIImage alloc] init]];
-    self.navigationController.navigationBar.translucent = YES;
-
-    UIView *v = [self.navigationController.navigationBar.subviews firstObject];
-    [v.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        obj.hidden = YES;
-        obj.alpha = 0;
-    }];
-}
-
-- (void)resetNavigationController{
-    self.navigationController.fd_fullscreenPopGestureRecognizer.enabled = YES;
-    [self.navigationController.navigationBar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-    [self.navigationController.navigationBar setShadowImage:[[UIImage alloc] init]];
-    self.navigationController.navigationBar.translucent = NO;
-
-    UIView *v = [self.navigationController.navigationBar.subviews firstObject];
-    [v.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        obj.hidden = NO;
-        obj.alpha = 1;
-    }];
-}
 
 - (void)setUI{
     [self.view addSubview:self.inkStyleEavesImageView];
@@ -333,7 +303,7 @@ static int const HeadImageViewTag = 2000;
     };
     UIButton *button = [[UIButton alloc] init];
     button.titleLabel.font = kRegular(15);
-    button.backgroundColor = [UIColor colorForHex:@"8E2B25"];
+    button.backgroundColor = kMainYellow;
     [button setTitle:SLLocalizedString(@"确定") forState:UIControlStateNormal];
     WEAKSELF
     [button handleControlEvent:UIControlEventTouchUpInside block:^(UIButton * _Nonnull button) {
@@ -476,7 +446,7 @@ static int const HeadImageViewTag = 2000;
     UIButton *svaeWechatGroupBtn = [[UIButton alloc] init];
     svaeWechatGroupBtn.titleLabel.font = kRegular(15);
     svaeWechatGroupBtn.clipsToBounds = YES;
-    [svaeWechatGroupBtn setBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+    [svaeWechatGroupBtn setBackgroundColor:kMainYellow];
     [svaeWechatGroupBtn setTitle:SLLocalizedString(@"下载二维码") forState:UIControlStateNormal];
     [svaeWechatGroupBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     
@@ -642,6 +612,7 @@ static int const HeadImageViewTag = 2000;
 #pragma mark -
 - (void)leftAction{
     OrderHomePageViewController *orderVC = [[OrderHomePageViewController alloc] init];
+    orderVC.disableRightGesture = YES;
     [self.navigationController pushViewController:orderVC animated:YES];
 }
 
@@ -704,7 +675,7 @@ static int const HeadImageViewTag = 2000;
             weakSelf.progressLayer.path = [path CGPath];
             [weakSelf.saveButton setTitle:[NSString stringWithFormat:@"%.0f%%", progress*100] forState:UIControlStateNormal];
         } success:^(id  _Nullable responseObject) {
-            [weakSelf.saveButton setBackgroundColor:[[UIColor colorForHex:@"8E2B25"] colorWithAlphaComponent:0.65]];
+            [weakSelf.saveButton setBackgroundColor:[kMainYellow colorWithAlphaComponent:0.65]];
             [weakSelf.saveButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
             [weakSelf.saveButton setTitle:SLLocalizedString(@"完成") forState:UIControlStateNormal];
             weakSelf.saveButton.enabled = NO;
@@ -721,7 +692,7 @@ static int const HeadImageViewTag = 2000;
             }];
         } failure:^(NSString * _Nullable errorReason) {
             weakSelf.saveButton.selected = NO;
-            [weakSelf.saveButton setBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+            [weakSelf.saveButton setBackgroundColor:kMainYellow];
             [weakSelf.saveButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         } finish:^(id  _Nullable responseObject, NSError * _Nullable error) {
             UIBezierPath *path = [UIBezierPath bezierPathWithRect:CGRectZero];
@@ -799,14 +770,14 @@ static int const HeadImageViewTag = 2000;
         _saveButton = [[UIButton alloc] init];
         _saveButton.titleLabel.font = kRegular(14);
         _saveButton.clipsToBounds = YES;
-        _saveButton.backgroundColor = [UIColor colorForHex:@"8E2B25"];
-        _saveButton.layer.borderColor = [UIColor colorForHex:@"8E2B25"].CGColor;
+        _saveButton.backgroundColor = kMainYellow;
+        _saveButton.layer.borderColor = kMainYellow.CGColor;
         _saveButton.layer.borderWidth = 0;
         [_saveButton setTitle:SLLocalizedString(@"保存到本地") forState:UIControlStateNormal];
         [_saveButton addTarget:self action:@selector(saveButtonClick:) forControlEvents:UIControlEventTouchUpInside];
         
         _progressLayer = [CAShapeLayer layer];
-        _progressLayer.fillColor = [[UIColor colorForHex:@"8E2B25"] colorWithAlphaComponent:0.6].CGColor;
+        _progressLayer.fillColor = [kMainYellow colorWithAlphaComponent:0.6].CGColor;
 //        _progressLayer.strokeColor = [[UIColor whiteColor] CGColor];
         _progressLayer.opacity = 1;
         _progressLayer.lineCap = kCALineCapRound;

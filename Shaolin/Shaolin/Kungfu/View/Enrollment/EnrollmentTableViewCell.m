@@ -14,6 +14,8 @@
 
 - (IBAction)moreAction:(UIButton *)sender;
 - (IBAction)signUpAction:(UIButton *)sender;
+@property (weak, nonatomic) IBOutlet UIImageView *moreImageView;
+@property (weak, nonatomic) IBOutlet UIButton *moreButton;
 
 @end
 
@@ -38,7 +40,7 @@
 
 -(void)setListModel:(EnrollmentListModel *)listModel{
     _listModel = listModel;
-    [self.activityImage sd_setImageWithURL:[NSURL URLWithString:listModel.mechanismImage] placeholderImage:[UIImage imageNamed:@"default_small"]];
+    [self.activityImage sd_setImageWithURL:[NSURL URLWithString:listModel.institutionalThumbnail] placeholderImage:[UIImage imageNamed:@"default_small"]];
     
     [self.labelTitle setText:listModel.activityName];
     [self.labelAddress setText:[NSString stringWithFormat:SLLocalizedString(@"地址：%@"), listModel.addressDetails]];
@@ -58,13 +60,21 @@
      */
     [self.btnState setTitle:butNameStr forState:UIControlStateNormal];
     if ([keyStr isEqualToString:@"2"] == YES) {
-        self.btnState.layer.borderColor = [UIColor colorForHex:@"8E2B25"].CGColor;//设置边框颜色
-        [self.btnState setTitleColor:[UIColor colorForHex:@"8E2B25"] forState:UIControlStateNormal];
+        self.btnState.layer.borderColor = kMainYellow.CGColor;//设置边框颜色
+        [self.btnState setTitleColor:kMainYellow forState:UIControlStateNormal];
         [self.btnState setEnabled:YES];
     }else{
         self.btnState.layer.borderColor = [UIColor colorForHex:@"999999"].CGColor;//设置边框颜色
         [self.btnState setTitleColor:[UIColor colorForHex:@"999999"] forState:UIControlStateNormal];
          [self.btnState setEnabled:NO];
+    }
+   NSInteger activityTypeId = [listModel.activityTypeId integerValue];
+    if (activityTypeId == 4) {
+        [self.moreImageView setHidden:NO];
+        [self.moreButton setEnabled:YES];
+    }else{
+        [self.moreImageView setHidden:YES];
+        [self.moreButton setEnabled:NO];
     }
 }
 

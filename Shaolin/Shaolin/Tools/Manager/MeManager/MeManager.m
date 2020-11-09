@@ -8,10 +8,11 @@
 //
 
 #import "MeManager.h"
-#import "NetworkingHandler.h"
+
 #import "MeActivityModel.h"
 #import "WSIAPModel.h"
 #import "DefinedHost.h"
+#import "DefinedURLs.h"
 
 @implementation MeManager
 + (instancetype)sharedInstance {
@@ -143,65 +144,6 @@
     [SLRequest getRequestWithApi:Me_OutLogin parameters:@{} success:success failure:failure finish:finish];
 }
 
--(void)cancleRequestWithUrl:(NSString *)url params:(NSMutableArray *)params WithBlock:(void(^)(id responseObject, NSError *error))completion
-{
-    NSError *error;
-    
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:params options:0 error:&error];
-    
-    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-    
-    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
-    //method 为时post请求还是get请求
-    NSMutableURLRequest *request = [[AFJSONRequestSerializer serializer] requestWithMethod:@"POST" URLString:url parameters:nil error:nil];
-    
-    
-    
-    //设置超时时长
-    request.timeoutInterval = 60;
-    
-    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
-    [request setValue:[SLAppInfoModel sharedInstance].access_token forHTTPHeaderField:@"token"];
-    
-    [request setValue:@"iOS" forHTTPHeaderField:@"cellphoneType"];
-    [request setValue:BUILD_STR forHTTPHeaderField:@"version"];
-    [request setValue:VERSION_STR forHTTPHeaderField:@"versionName"];
-    [request setValue:[SLAppInfoModel sharedInstance].deviceString forHTTPHeaderField:@"device-type"];
-    
-    NSString * systemStr = [NSString stringWithFormat:@"%.2f",SYSTEM_VERSION];
-    [request setValue:systemStr forHTTPHeaderField:@"SystemVersionCode"];
-    
-    //将对象设置到requestbody中 ,主要是这不操作
-    [request setHTTPBody:[jsonString dataUsingEncoding:NSUTF8StringEncoding]];
-    //进行网络请求
-    [[manager dataTaskWithRequest:request uploadProgress:^(NSProgress * _Nonnull uploadProgress) {
-        
-    } downloadProgress:^(NSProgress * _Nonnull downloadProgress) {
-        
-    } completionHandler:^(NSURLResponse * _Nonnull response, id _Nullable responseObject, NSError * _Nullable error) {
-        
-        if (!error) {
-            
-            NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
-            
-            NSString *jsonString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-            
-            NSLog(@" === %@",jsonString);
-            
-            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-            
-            if (completion) completion(dic,nil);
-            
-        } else {
-            
-            if (completion) completion(nil,error);
-            
-        }
-    }] resume];
-    
-    [SLRequest refreshToken];
-}
 
 /*
  *  获取 发文管理 列表

@@ -35,6 +35,7 @@
 #import "WengenWebViewController.h"
 
 #import "DefinedHost.h"
+#import "DataManager.h"
 
 #import "StatementViewController.h"
 #import "StoreInformationModel.h"
@@ -46,24 +47,32 @@
 static int CollectionViewALineCellCount = 4;
 
 @interface MeViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UINavigationControllerDelegate>
-@property(nonatomic,strong) UIImageView *bgView;
-@property(nonatomic,strong) UIButton *rightBtn;
-@property(nonatomic,strong) PersonalDataView *personView;
-@property(nonatomic,strong) UIImageView *whiteView1;//板块1
-@property(nonatomic,strong) UIImageView *whiteView2;//板块2
-@property(nonatomic,strong) UICollectionView *collectionViewOne;
-@property(nonatomic,strong) UICollectionView *collectionViewTwo;
-@property (nonatomic,strong) UICollectionViewFlowLayout *layout;
-@property (nonatomic,strong) UICollectionViewFlowLayout *layoutTwo;
-@property(nonatomic,strong) NSString *stepStr;
-@property(nonatomic,strong) NSDictionary *dataDic;//执照信息
-@property(nonatomic,strong) NSString  *statusStr;
-@property(nonatomic,strong) NSString *checkMessage;
-@property(nonatomic, strong) NSArray *collectionViewOneDataArray;
-@property(nonatomic, strong) NSArray *collectionViewOneImageArray;
-@property(nonatomic, strong) NSArray *collectionViewTwoDataArray;
-@property(nonatomic, strong) NSArray *collectionViewTwoImageArray;
-@property(nonatomic, strong) StoreInformationModel *model;
+
+@property (nonatomic, strong) UIImageView *bgView;
+@property (nonatomic, strong) UIButton *messageBtn;
+@property (nonatomic, strong) PersonalDataView *personView;
+
+@property (nonatomic, strong) UIScrollView *bgScrollerView;
+
+@property (nonatomic, strong) UIView *whiteView1;//板块1
+@property (nonatomic, strong) UIView *whiteView2;//板块2
+@property (nonatomic, strong) UILabel *moduleTitle1;
+@property (nonatomic, strong) UILabel *moduleTitle2;
+@property (nonatomic, strong) UICollectionView *collectionViewOne;
+@property (nonatomic, strong) UICollectionView *collectionViewTwo;
+@property (nonatomic, strong) UICollectionViewFlowLayout *layout;
+@property (nonatomic, strong) UICollectionViewFlowLayout *layoutTwo;
+
+@property (nonatomic, strong) NSString *stepStr;
+@property (nonatomic, strong) NSDictionary *dataDic;//执照信息
+@property (nonatomic, strong) NSString  *statusStr;
+@property (nonatomic, strong) NSString *checkMessage;
+
+@property (nonatomic, strong) NSArray *collectionViewOneDataArray;
+@property (nonatomic, strong) NSArray *collectionViewOneImageArray;
+@property (nonatomic, strong) NSArray *collectionViewTwoDataArray;
+@property (nonatomic, strong) NSArray *collectionViewTwoImageArray;
+@property (nonatomic, strong) StoreInformationModel *model;
 @end
 
 @implementation MeViewController
@@ -72,10 +81,7 @@ static int CollectionViewALineCellCount = 4;
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
-    self.navigationController.navigationBar.hidden = YES;
-    
+    [self setStatusBarWhiteTextColor];
     [self getUserDataSuccess:nil failure:nil showHUD:NO];
     [self getUserStoreOpenInformation];
     [self getUserBalance];
@@ -87,14 +93,13 @@ static int CollectionViewALineCellCount = 4;
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    //    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
-    self.navigationController.navigationBar.hidden = NO;
     
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.view.backgroundColor = RGBA(252, 250, 250, 1);
+    self.hideNavigationBar = YES;
+    self.view.backgroundColor = [UIColor colorForHex:@"F7F7F7"];
     
     [self initUI];
     
@@ -103,42 +108,80 @@ static int CollectionViewALineCellCount = 4;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getUserStoreOpenInformation) name:@"MeViewController_reloadUserStoreOpenInformation" object:nil];
 }
 
--(void)initUI
-{
+-(void)initUI {
+    
+    [self.view addSubview:self.bgScrollerView];
+    [self.bgScrollerView addSubview:self.bgView];
+    
     self.bgView.userInteractionEnabled = YES;
-    [self.view addSubview:self.bgView];
-    [self.bgView addSubview:self.rightBtn];
+    [self.bgView addSubview:self.messageBtn];
     [self.bgView addSubview:self.personView];
+   
+    [self.bgScrollerView addSubview:self.whiteView1];
+    [self.bgScrollerView addSubview:self.whiteView2];
+    
+    [self.whiteView1 addSubview:self.moduleTitle1];
+    [self.whiteView2 addSubview:self.moduleTitle2];
+    [self.whiteView1 addSubview:self.collectionViewOne];
+    [self.whiteView2 addSubview:self.collectionViewTwo];
+    
+    [self.bgScrollerView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(self.view).mas_offset(-kStatusBarHeight-4);
+        make.left.right.bottom.mas_equalTo(self.view);
+    }];
+    
     [self.bgView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.width.mas_equalTo(kWidth);
-        make.height.mas_equalTo(SLChange(250));
+        make.height.mas_equalTo(202 + kStatusBarHeight);
         make.top.mas_equalTo(0);
         make.left.mas_equalTo(0);
     }];
-    [self.rightBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(StatueBar_Height+SLChange(20));
-        make.right.mas_equalTo(-SLChange(18));
-        make.size.mas_equalTo(SLChange(20));
+    [self.messageBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(StatueBar_Height+20);
+        make.right.mas_equalTo(-18);
+        make.size.mas_equalTo(20);
     }];
     
-    [self.view addSubview:self.whiteView1];
-    [self.view addSubview:self.whiteView2];
-    self.whiteView1.userInteractionEnabled = YES;
-    self.whiteView2.userInteractionEnabled = YES;
-    [self.whiteView1 addSubview:self.collectionViewOne];
-    [self.whiteView2 addSubview:self.collectionViewTwo];
     [self.whiteView1 mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(SLChange(6));
-        make.right.mas_equalTo(-SLChange(6));
-        make.height.mas_equalTo(SLChange(98));
-        make.top.mas_equalTo(self.personView.mas_bottom).offset(SLChange(20));
+        make.left.mas_equalTo(15);
+        make.width.mas_equalTo(kWidth - 30);
+        make.height.mas_equalTo(140);
+        make.top.mas_equalTo(self.personView.mas_bottom).mas_offset(10);
     }];
+    
+    [self.moduleTitle1 mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(15);
+        make.top.mas_equalTo(19);
+        make.size.mas_equalTo(CGSizeMake(100, 17));
+    }];
+    
+    [self.collectionViewOne mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(0);
+        make.right.mas_equalTo(0);
+        make.bottom.mas_equalTo(0);
+        make.top.mas_equalTo(self.moduleTitle1.mas_bottom).offset(26);
+    }];
+    
     [self.whiteView2 mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.mas_equalTo(self.whiteView1);
-        make.height.mas_equalTo(SLChange(242));
-        make.top.mas_equalTo(self.whiteView1.mas_bottom).offset(SLChange(8));
+        make.height.mas_equalTo(300);
+        make.top.mas_equalTo(self.whiteView1.mas_bottom).offset(10);
     }];
     
+    [self.moduleTitle2 mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(15);
+        make.top.mas_equalTo(19);
+        make.size.mas_equalTo(CGSizeMake(100, 17));
+    }];
+    
+    [self.collectionViewTwo mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(0);
+        make.right.mas_equalTo(0);
+        make.height.mas_equalTo(248);
+        make.top.mas_equalTo(self.moduleTitle2.mas_bottom).offset(26);
+    }];
+    
+    self.bgScrollerView.contentSize = CGSizeMake(0, 780 + kBottomSafeHeight);
 }
 
 - (void)setupUnreadMessageCount {
@@ -149,9 +192,9 @@ static int CollectionViewALineCellCount = 4;
     }
     
     if (unreadCount > 0) {
-        [self.rightBtn setImage:[UIImage imageNamed:@"me_message_icon_unread"] forState:(UIControlStateNormal)];
+        [self.messageBtn setImage:[UIImage imageNamed:@"me_message_icon_unread"] forState:(UIControlStateNormal)];
     } else {
-        [self.rightBtn setImage:[UIImage imageNamed:@"me_message_icon"] forState:(UIControlStateNormal)];
+        [self.messageBtn setImage:[UIImage imageNamed:@"xiaoxi"] forState:(UIControlStateNormal)];
     }
     
 }
@@ -171,13 +214,6 @@ static int CollectionViewALineCellCount = 4;
         if (success) success();
         NSDictionary *dic = responseObject;
         if (dic && [dic isKindOfClass:[NSDictionary class]]){
-            weakSelf.personView.dicData = dic;
-            for (UIViewController *controller in weakSelf.navigationController.viewControllers) {
-                if ([controller isKindOfClass:[PersonDataManagementVc class]]) {
-                    [(PersonDataManagementVc *)controller setDicData:weakSelf.personView.dicData];
-                    break;
-                }
-            }
             NSMutableDictionary *userDic =  [[NSMutableDictionary alloc]initWithDictionary:dic];
             [userDic setObject:[SLAppInfoModel sharedInstance].access_token forKey:kToken];
             
@@ -186,6 +222,14 @@ static int CollectionViewALineCellCount = 4;
             
             [[SLAppInfoModel sharedInstance] modelWithDictionary:allDic];
             [[SLAppInfoModel sharedInstance] saveCurrentUserData];
+            
+            weakSelf.personView.dicData = dic;
+            for (UIViewController *controller in weakSelf.navigationController.viewControllers) {
+                if ([controller isKindOfClass:[PersonDataManagementVc class]]) {
+                    [(PersonDataManagementVc *)controller setDicData:weakSelf.personView.dicData];
+                    break;
+                }
+            }
         }
     } failure:^(NSString * _Nullable errorReason) {
         if (failure) failure();
@@ -199,9 +243,9 @@ static int CollectionViewALineCellCount = 4;
     [[MeManager sharedInstance] getUserBalanceSuccess:^(id  _Nonnull responseObject) {
         NSDictionary *dict = responseObject;
         if ([dict isKindOfClass:[NSDictionary class]] && [dict objectForKey:@"balance"]){
-            self->_personView.balanceStr = [NSString stringWithFormat:@"%@",[dict objectForKey:@"balance"]];
+            self->_personView.balanceNumber = [dict objectForKey:@"balance"];//[NSString stringWithFormat:@"%@",[dict objectForKey:@"balance"]];
         } else {
-            self->_personView.balanceStr = @"0";
+            self->_personView.balanceNumber = @(0);
         }
         [[NSNotificationCenter defaultCenter] postNotificationName:@"GetUserBalance" object:nil];
     } failure:^(NSString * _Nonnull errorReason) {
@@ -214,7 +258,7 @@ static int CollectionViewALineCellCount = 4;
 {
     EMConversationsViewController *conversationsVC = [[EMConversationsViewController alloc] init];
     conversationsVC.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:conversationsVC animated:NO];
+    [self.navigationController pushViewController:conversationsVC animated:YES];
 }
 
 
@@ -255,43 +299,6 @@ static int CollectionViewALineCellCount = 4;
             if (failure) failure();
         }
     }];
-//    [[MeManager sharedInstance]postUserStoreInformationSuccess:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
-//        //        NSLog(@"%@",responseObject);
-//        if ([[responseObject objectForKey:@"code"] integerValue]==200) {
-//            self.stepStr = [NSString stringWithFormat:@"%@",[[responseObject objectForKey:@"data"] objectForKey:@"step"]];
-//            self.statusStr = [NSString stringWithFormat:@"%@",[[responseObject objectForKey:@"data"] objectForKey:@"status"]];
-//            self.checkMessage = [NSString stringWithFormat:@"%@",[[responseObject objectForKey:@"data"] objectForKey:@"check_message"]];
-//            self.dataDic = [responseObject objectForKey:@"data"];
-//            self.model = [StoreInformationModel mj_objectWithKeyValues:self.dataDic];
-//            if (success) success();
-//            for (UIViewController *controller in self.navigationController.viewControllers) {
-//                if ([controller isKindOfClass:[StoreOneViewController class]] ||
-//                    [controller isKindOfClass:[BusinessLicenseVc class]] ||
-//                    [controller isKindOfClass:[LegalPersonViewController class]] ||
-//                    [controller isKindOfClass:[OrganizationViewController class]] ||
-//                    [controller isKindOfClass:[TaxInformationVc class]] ||
-//                    [controller isKindOfClass:[StoreInfoViewController class]] ||
-//                    [controller isKindOfClass:[StoreTwoViewController class]] ||
-//                    [controller isKindOfClass:[StoreThreeViewController class]] ) {
-//                    if ([[controller class] instancesRespondToSelector:@selector(model)]) {
-//                        [controller setValue:self.model forKey:@"model"];
-//                    }
-//                    if ([[controller class] instancesRespondToSelector:@selector(stepStr)]) {
-//                        [controller setValue:self.stepStr forKey:@"stepStr"];
-//                    }
-//                    if ([[controller class] instancesRespondToSelector:@selector(dataDic)]){
-//                        [controller setValue:self.dataDic forKey:@"dataDic"];
-//                    }
-//                }
-//            }
-//            
-//            NSLog(@"MeViewController dataDic:%@", self.dataDic);
-//        } else {
-//            if (failure) failure();
-//        }
-//    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-//        if (failure) failure();
-//    }];
 }
 - (void)getUserStoreOpenInformation {
     [self getUserStoreOpenInformationSuccess:nil failure:nil];
@@ -304,21 +311,21 @@ static int CollectionViewALineCellCount = 4;
         oneVc.dataDic = self.dataDic;
         oneVc.model = self.model;
         oneVc.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:oneVc animated:NO];
+        [self.navigationController pushViewController:oneVc animated:YES];
     }else if ([self.stepStr isEqualToString:@"5"]){
         StoreTwoViewController *twoVc = [[StoreTwoViewController alloc]init];
         twoVc.stepStr = self.stepStr;
         twoVc.dataDic = self.dataDic;
         twoVc.model = self.model;
         twoVc.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:twoVc animated:NO];
+        [self.navigationController pushViewController:twoVc animated:YES];
     }else if ([self.stepStr isEqualToString:@"6"]){
         StoreThreeViewController *threeVc = [[StoreThreeViewController alloc]init];
         threeVc.stepStr = self.stepStr;
         threeVc.dataDic = self.dataDic;
         threeVc.model = self.model;
         threeVc.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:threeVc animated:NO];
+        [self.navigationController pushViewController:threeVc animated:YES];
     }else if([self.stepStr isEqualToString:@"7"] && [self.statusStr isEqualToString:@"4"]){
         StoreThreeViewController *threeVc = [[StoreThreeViewController alloc]init];
         threeVc.stepStr = self.stepStr;
@@ -326,7 +333,7 @@ static int CollectionViewALineCellCount = 4;
         threeVc.statusStr = self.statusStr;
         threeVc.model = self.model;
         threeVc.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:threeVc animated:NO];
+        [self.navigationController pushViewController:threeVc animated:YES];
     }else if ([self.stepStr isEqualToString:@"7"] && [self.statusStr isEqualToString:@"3"]) {
         StoreOneViewController *oneVc = [[StoreOneViewController alloc]init];
         oneVc.stepStr = self.stepStr;
@@ -334,8 +341,8 @@ static int CollectionViewALineCellCount = 4;
         oneVc.checkStr = self.checkMessage;
         oneVc.model = self.model;
         oneVc.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:oneVc animated:NO];
-
+        [self.navigationController pushViewController:oneVc animated:YES];
+        
     }else if ([self.stepStr isEqualToString:@"7"] && [self.statusStr isEqualToString:@"1"]) {
         [ShaolinProgressHUD singleTextHud:NSLocalizedString(@"恭喜您,店铺审核通过!", nil) view:self.view afterDelay:TipSeconds];
     }else if ([self.stepStr isEqualToString:@"7"] && [self.statusStr isEqualToString:@"2"]) {
@@ -387,11 +394,16 @@ static int CollectionViewALineCellCount = 4;
         
         if ([vcClassName isEqualToString:@"WengenWebViewController"]) {
             vc = [[WengenWebViewController alloc]initWithUrl:URL_H5_Invitation title:SLLocalizedString(@"邀请好友")];
+            [((RootViewController *)vc) setNavigationBarStyle:NavigationBarRedTintColorStyle];
+        }else if ([vcClassName isEqualToString:@"KungfuApplyCheckListViewController"]) {
+            KungfuApplyCheckListViewController *checkListVC = [[KungfuApplyCheckListViewController alloc]init];
+            [checkListVC setIsNavBarRed:YES];
+            vc = checkListVC;
         } else {
             vc = [[vcClass alloc] init];
         }
         vc.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:vc animated:NO];
+        [self.navigationController pushViewController:vc animated:YES];
         
         return;
     }
@@ -430,34 +442,37 @@ static int CollectionViewALineCellCount = 4;
 {
     WEAKSELF
     if (!_personView) {
-        _personView = [[PersonalDataView alloc]initWithFrame:CGRectMake(0, StatueBar_Height+SLChange(56), kWidth, SLChange(109))];
+        //        _personView = [[PersonalDataView alloc]initWithFrame:CGRectMake(0, StatueBar_Height+SLChange(56), kWidth, SLChange(109))];
+        
+        _personView = [[PersonalDataView alloc]initWithFrame:CGRectMake(0, StatueBar_Height + 68 , kWidth, 175)];
+        
         _personView.itemDidClick = ^(NSInteger index) {
             NSLog(@"%ld",index);
             if (index == 0) {
                 
                 OrderHomePageViewController *orderVC = [[OrderHomePageViewController alloc]init];
                 orderVC.hidesBottomBarWhenPushed = YES;
-                [weakSelf.navigationController pushViewController:orderVC animated:NO];
+                [weakSelf.navigationController pushViewController:orderVC animated:YES];
                 
             }else if (index ==1){
                 BalanceViewController * vc = [BalanceViewController new];
                 vc.hidesBottomBarWhenPushed = YES;
                 
-                [weakSelf.navigationController pushViewController:vc animated:NO];
+                [weakSelf.navigationController pushViewController:vc animated:YES];
             }
             else
             {
                 ShoppingCartViewController *shoppingCartVC = [[ShoppingCartViewController alloc]init];
                 
                 shoppingCartVC.hidesBottomBarWhenPushed = YES;
-                [weakSelf.navigationController pushViewController:shoppingCartVC animated:NO];
+                [weakSelf.navigationController pushViewController:shoppingCartVC animated:YES];
             }
         };
         _personView.personDataClick = ^(NSDictionary * _Nonnull dic) {
             PersonDataManagementVc *vC = [[PersonDataManagementVc alloc]init];
             vC.dicData = dic;
             vC.hidesBottomBarWhenPushed = YES;
-            [weakSelf.navigationController pushViewController:vC animated:NO];
+            [weakSelf.navigationController pushViewController:vC animated:YES];
         };
         _personView.backgroundColor = [UIColor clearColor];
     }
@@ -468,46 +483,77 @@ static int CollectionViewALineCellCount = 4;
 {
     if (!_bgView) {
         _bgView = [[UIImageView alloc]init];
-        _bgView.image = [UIImage imageNamed:@"me_bg"];
+        //        _bgView.image = [UIImage imageNamed:@"me_bg"];
+        [_bgView setBackgroundColor:kMainYellow];
     }
     return _bgView;
 }
 
--(UIButton *)rightBtn
-{
-    if (!_rightBtn) {
-        _rightBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
-        [_rightBtn setImage:[UIImage imageNamed:@"me_message_icon"] forState:(UIControlStateNormal)];
-        [_rightBtn addTarget:self action:@selector(messageAction) forControlEvents:(UIControlEventTouchUpInside)];
+-(UIScrollView *)bgScrollerView {
+    if (!_bgScrollerView) {
+        _bgScrollerView = [[UIScrollView alloc] initWithFrame:CGRectZero];
+        _bgScrollerView.showsVerticalScrollIndicator = NO;
     }
-    return _rightBtn;
+    return _bgScrollerView;
 }
 
--(UIImageView *)whiteView1
+-(UIButton *)messageBtn
+{
+    if (!_messageBtn) {
+        _messageBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
+        //        [_messageBtn setImage:[UIImage imageNamed:@"me_message_icon"] forState:(UIControlStateNormal)];
+        [_messageBtn setImage:[UIImage imageNamed:@"xiaoxi"] forState:(UIControlStateNormal)];
+        
+        [_messageBtn addTarget:self action:@selector(messageAction) forControlEvents:(UIControlEventTouchUpInside)];
+    }
+    return _messageBtn;
+}
+
+-(UIView *)whiteView1
 {
     if (!_whiteView1) {
-        _whiteView1 = [[UIImageView alloc]init];
-        _whiteView1.image = [UIImage imageNamed:@"me_white_one"];
+        _whiteView1 = [[UIView alloc] init];
+        _whiteView1.cornerRadius = 10;
+        _whiteView1.backgroundColor = UIColor.whiteColor;
     }
     return _whiteView1;
 }
 
--(UIImageView *)whiteView2
+-(UIView *)whiteView2
 {
     if (!_whiteView2) {
-        _whiteView2 = [[UIImageView alloc]init];
-        UIImage *image = [UIImage imageNamed:@"me_white_one"];
-        // 设置可被拉伸区域，避免四角被拉变形
-        _whiteView2.image = [image resizableImageWithCapInsets:UIEdgeInsetsMake(20, 20, 20, 20) resizingMode:UIImageResizingModeStretch];
+        _whiteView2 = [[UIView alloc] init];
+        _whiteView2.cornerRadius = 10;
+        _whiteView2.backgroundColor = UIColor.whiteColor;
     }
     return _whiteView2;
+}
+
+-(UILabel *)moduleTitle1 {
+    if (!_moduleTitle1) {
+        _moduleTitle1 = [UILabel new];
+        _moduleTitle1.font = kMediumFont(16);
+        _moduleTitle1.textColor = [UIColor hexColor:@"4c4c4c"];
+        _moduleTitle1.text = @"我的善缘";
+    }
+    return _moduleTitle1;
+}
+
+-(UILabel *)moduleTitle2 {
+    if (!_moduleTitle2) {
+        _moduleTitle2 = [UILabel new];
+        _moduleTitle2.font = kMediumFont(16);
+        _moduleTitle2.textColor = [UIColor hexColor:@"4c4c4c"];
+        _moduleTitle2.text = @"个人中心";
+    }
+    return _moduleTitle2;
 }
 
 -(UICollectionView *)collectionViewOne
 {
     if (!_collectionViewOne) {
         
-        _collectionViewOne = [[UICollectionView alloc] initWithFrame:CGRectMake(SLChange(21), SLChange(15), kWidth-SLChange(59), SLChange(70)) collectionViewLayout:self.layout];
+        _collectionViewOne = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:self.layout];
         _collectionViewOne.dataSource = self;
         _collectionViewOne.delegate = self;
         _collectionViewOne.backgroundColor = [UIColor clearColor];
@@ -520,7 +566,7 @@ static int CollectionViewALineCellCount = 4;
 {
     if (!_collectionViewTwo) {
         
-        _collectionViewTwo = [[UICollectionView alloc] initWithFrame:CGRectMake(SLChange(21), SLChange(15), kWidth-SLChange(59), SLChange(210)) collectionViewLayout:self.layoutTwo];
+        _collectionViewTwo = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:self.layoutTwo];
         _collectionViewTwo.dataSource = self;
         _collectionViewTwo.delegate = self;
         _collectionViewTwo.backgroundColor = [UIColor clearColor];
@@ -533,10 +579,9 @@ static int CollectionViewALineCellCount = 4;
 {
     if (!_layout) {
         _layout = [UICollectionViewFlowLayout new];
-        _layout.minimumLineSpacing = 0;
-        _layout.minimumInteritemSpacing = 0;
-        _layout.itemSize = CGSizeMake(SLChange(52), SLChange(57));
-        //            _layout.sectionInset = UIEdgeInsetsMake(SLChange(32) ,0 , 0,0);
+        _layout.minimumLineSpacing = .001;
+        _layout.minimumInteritemSpacing = .001;
+        _layout.itemSize = CGSizeMake((kScreenWidth-30)/4, 50);
     }
     return _layout;
 }
@@ -545,9 +590,9 @@ static int CollectionViewALineCellCount = 4;
 {
     if (!_layoutTwo) {
         _layoutTwo = [UICollectionViewFlowLayout new];
-        _layoutTwo.minimumLineSpacing = 0;
-        _layoutTwo.minimumInteritemSpacing = 0;
-        _layoutTwo.itemSize = CGSizeMake(SLChange(52), SLChange(50));
+        _layoutTwo.minimumLineSpacing = .001;
+        _layoutTwo.minimumInteritemSpacing = .001;
+        _layoutTwo.itemSize = CGSizeMake((kScreenWidth-30)/4, 50);
     }
     return _layoutTwo;
 }
@@ -595,10 +640,10 @@ static int CollectionViewALineCellCount = 4;
 }
 
 -(NSArray *)collectionViewOneImageArray {
-    return @[@"me_certificate_icon",
-    @"me_tutorial_icon",
-    @"me_activity_icon",
-    @"my_achieveIcon"];
+    return @[@"new_me_certificate_icon",
+             @"new_me_tutorial_icon",
+             @"new_me_activity_icon",
+             @"new_my_achieveIcon"];
 }
 
 -(NSArray *)collectionViewTwoDataArray {
@@ -610,7 +655,7 @@ static int CollectionViewALineCellCount = 4;
         SLLocalizedString(@"功德资糧"),
         SLLocalizedString(@"店铺关注"),
         SLLocalizedString(@"店铺入驻"),
-        SLLocalizedString(@"补考凭证"),
+        //        SLLocalizedString(@"补考凭证"),
         SLLocalizedString(@"我的收藏"),
         SLLocalizedString(@"邀约"),
         SLLocalizedString(@"帮助中心"),
@@ -619,24 +664,18 @@ static int CollectionViewALineCellCount = 4;
 
 -(NSArray *)collectionViewTwoImageArray {
     return @[
-        @"me_submitted_name",
-        @"me_postmanagement_icon",
-        @"me_draft_icon",
-        @"me_history_icon",
-        @"me_rite_icon",
-        @"me_guanzhu_store_icon",
-        @"me_store_icon",
-        @"me_voucher_icon",
-        @"me_star_icon",
-        @"me_invitation_icon",
-        @"me_help_icon",
+        @"new_me_submitted_name",
+        @"new_me_postmanagement_icon",
+        @"new_me_draft_icon",
+        @"new_me_history_icon",
+        @"new_me_rite_icon",
+        @"new_me_guanzhu_store_icon",
+        @"new_me_store_icon",
+        //        @"me_voucher_icon",
+        @"new_me_star_icon",
+        @"new_me_invitation_icon",
+        @"new_me_help_icon",
     ];
-}
-
-
-#pragma mark - device
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    return UIStatusBarStyleLightContent;
 }
 
 @end

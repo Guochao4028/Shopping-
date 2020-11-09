@@ -167,6 +167,89 @@ typedef void (^ShowaAtion)(void);
     self.isVisible = YES;
 }
 
+
++ (void)setDefaultAlertInfo{
+    [SMAlert setConfirmBtBackgroundColor:kMainYellow];
+    [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
+    [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
+    [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
+    [SMAlert setAlertBackgroundColor:[UIColor colorWithWhite:0 alpha:0.5]];
+}
+
++ (void)showAlertWithInfoString:(NSString *)text confirmButtonTitle:(NSString *)confirmButtonTitle success:(void (^)(void))success {
+    [SMAlert setDefaultAlertInfo];
+    UIView *customView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 300, 100)];
+    UILabel *title = [[UILabel alloc]initWithFrame:customView.bounds];
+    [title setFont:[UIFont systemFontOfSize:15]];
+    [title setTextColor:[UIColor darkGrayColor]];
+    title.text = text;
+    [title setTextAlignment:NSTextAlignmentCenter];
+    [customView addSubview:title];
+    [SMAlert showCustomView:customView stroke:YES
+              confirmButton:[SMButton initWithTitle:confirmButtonTitle clickAction:success]
+               cancleButton:nil];
+}
+
++ (void)showAlertWithInfoString:(NSString *)text confirmButtonTitle:(NSString *)confirmButtonTitle cancelButtonTitle:(NSString *)cancelButtonTitle success:(void (^)(void))success cancel:(void (^)(void))cancel{
+    [SMAlert setDefaultAlertInfo];
+    UIView *customView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 300, 100)];
+    UILabel *title = [[UILabel alloc]initWithFrame:customView.bounds];
+    [title setFont:[UIFont systemFontOfSize:15]];
+    [title setTextColor:[UIColor darkGrayColor]];
+    title.text = text;
+    [title setTextAlignment:NSTextAlignmentCenter];
+    [customView addSubview:title];
+    [SMAlert showCustomView:customView stroke:YES
+              confirmButton:[SMButton initWithTitle:confirmButtonTitle clickAction:success]
+               cancleButton:[SMButton initWithTitle:cancelButtonTitle clickAction:cancel]];
+}
+
++ (void)showAlertWithTitle:(NSString *)titleStr message:(NSString *)messageStr confirmButtonTitle:(NSString *)confirmButtonTitle success:(void (^)(void))success{
+    [SMAlert setDefaultAlertInfo];
+    UIView *customView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 300, 100)];
+    UILabel *title = [[UILabel alloc]initWithFrame:CGRectMake(0, 10, 300, 21)];
+    [title setFont:kMediumFont(15)];
+    [title setTextColor:[UIColor colorForHex:@"333333"]];
+    title.text = titleStr;
+    [title setTextAlignment:NSTextAlignmentCenter];
+    [customView addSubview:title];
+    
+    UILabel *neirongLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, CGRectGetMaxY(title.frame)+10, 270, 38)];
+    [neirongLabel setFont:kRegular(13)];
+    [neirongLabel setTextColor:[UIColor colorForHex:@"333333"]];
+    neirongLabel.text = messageStr;
+    neirongLabel.numberOfLines = 0;
+    neirongLabel.textAlignment = NSTextAlignmentCenter;
+    [customView addSubview:neirongLabel];
+    
+    [SMAlert showCustomView:customView stroke:YES
+              confirmButton:[SMButton initWithTitle:confirmButtonTitle clickAction:success]
+               cancleButton:nil];
+}
+
++ (void)showAlertWithTitle:(NSString *)titleStr message:(NSString *)messageStr confirmButtonTitle:(NSString *)confirmButtonTitle cancelButtonTitle:(NSString *)cancelButtonTitle success:(void (^)(void))success cancel:(void (^)(void))cancel{
+    [SMAlert setDefaultAlertInfo];
+    UIView *customView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 300, 100)];
+    UILabel *title = [[UILabel alloc]initWithFrame:CGRectMake(0, 10, 300, 21)];
+    [title setFont:kMediumFont(15)];
+    [title setTextColor:[UIColor colorForHex:@"333333"]];
+    title.text = titleStr;
+    [title setTextAlignment:NSTextAlignmentCenter];
+    [customView addSubview:title];
+    
+    UILabel *neirongLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, CGRectGetMaxY(title.frame)+10, 270, 38)];
+    [neirongLabel setFont:kRegular(13)];
+    [neirongLabel setTextColor:[UIColor colorForHex:@"333333"]];
+    neirongLabel.text = messageStr;
+    neirongLabel.textAlignment = NSTextAlignmentCenter;
+    neirongLabel.numberOfLines = 0;
+    [customView addSubview:neirongLabel];
+    
+    [SMAlert showCustomView:customView stroke:YES
+              confirmButton:[SMButton initWithTitle:confirmButtonTitle clickAction:success]
+               cancleButton:[SMButton initWithTitle:cancelButtonTitle clickAction:cancel]];
+}
+
 + (void)hide {
     SMAlert *alert = [SMAlert sharedView];
     if (alert.isVisible == NO) return;

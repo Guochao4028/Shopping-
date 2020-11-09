@@ -130,7 +130,7 @@
     
     if (arc4random()%2 == 0){
         self.stateLabel.text = SLLocalizedString(@"已结束");
-        self.stateLabel.textColor = [UIColor colorForHex:@"8E2B25"];
+        self.stateLabel.textColor = kMainYellow;
     } else {
         self.stateLabel.text = SLLocalizedString(@"进行中");
         self.stateLabel.textColor = [UIColor colorForHex:@"999999"];
@@ -271,7 +271,7 @@
 
     if ([model.resultsApplication isEqualToString:@"2"]){
         self.stateLabel.text = SLLocalizedString(@"进行中");
-        self.stateLabel.textColor = [UIColor colorForHex:@"8E2B25"];
+        self.stateLabel.textColor = kMainYellow;
     } else {
         self.stateLabel.text = SLLocalizedString(@"已结束");
         self.stateLabel.textColor = [UIColor colorForHex:@"999999"];

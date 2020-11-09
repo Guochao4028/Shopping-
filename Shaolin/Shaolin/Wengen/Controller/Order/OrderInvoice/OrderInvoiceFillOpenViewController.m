@@ -17,6 +17,10 @@
 
 #import "OrderInvoiceFillModel.h"
 
+#import "DataManager.h"
+
+#import "InvoiceQualificationsModel.h"
+
 
 @interface OrderInvoiceFillOpenViewController ()<UITableViewDelegate, UITableViewDataSource>
 
@@ -45,21 +49,47 @@
 @property(nonatomic, assign)BOOL isSpecialInvoice;
 
 @property(nonatomic, strong)OrderInvoiceFillModel *fillModel;
+///增票资质
+@property(nonatomic, strong)InvoiceQualificationsModel *qualificationsModel;
+
+/**
+ 配置 发票选择项
+ "is_VAT" 0 不可选 增值税发票 1 可选
+ "is_electronic" 0 不可选电子发票 1 可选
+ "is_paper" 所有店铺默认都可选纸质发票 可以不做判断
+ */
+@property(nonatomic, strong)NSDictionary *invoiceConfigurationDic;
+
+///到付数组
+@property(nonatomic, strong)NSArray *fillCostArray;
+
+///邮箱数组
+@property(nonatomic, strong)NSArray *emailArray;
+
 
 @end
 
 @implementation OrderInvoiceFillOpenViewController
 
 - (void)viewDidLoad {
-    [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    
-    [self initUI];
-    
-    [self initData];
+[super viewDidLoad];
+// Do any additional setup after loading the view.
+
+[self initUI];
+
+[self initData];
 }
 
 -(void)initData{
+    
+    if (self.isCheckInvoice) {
+        MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
+        
+        [[DataManager shareInstance]getGoodsInvoice:@{@"id":self.allStroeIdStr} Callback:^(NSDictionary *result) {
+            [hud hideAnimated:YES];
+            self.invoiceConfigurationDic = result;
+        }];
+    }
     
     self.fillModel = [[OrderInvoiceFillModel alloc]init];
     
@@ -72,58 +102,31 @@
     self.isOrdinary = YES;
     self.isSpecialInvoice = NO;
     
-    //    NSArray *basecArray = @[
-    //        @[
-    //            @{@"title" : SLLocalizedString(@"订单编号"), @"content" : self.orderSn, @"isMore" : @"0", @"isEditor" : @"0", @"placeholder" : @""},
-    //            @{@"title" : SLLocalizedString(@"发票形式"), @"content" : SLLocalizedString(@"电子发票"), @"isMore" : @"1", @"isEditor" : @"0", @"placeholder" : @""},
-    //            @{@"title" : SLLocalizedString(@"发票类型"), @"content" : SLLocalizedString(@"普通发票"), @"isMore" : @"1", @"isEditor" : @"0", @"placeholder" : @""},
-    //            @{@"title" : SLLocalizedString(@"发票内容"), @"content" : SLLocalizedString(@"商品明细"), @"isMore" : @"0", @"isEditor" : @"0", @"placeholder" : @""},
-    //            @{@"title" : SLLocalizedString(@"抬头类型"), @"content" : SLLocalizedString(@"个人"), @"isMore" : @"1", @"isEditor" : @"0", @"placeholder" : @""},
-    //            @{@"title" : SLLocalizedString(@"个人名称"), @"content" : @"", @"isMore" : @"0", @"isEditor" : @"1", @"placeholder" : SLLocalizedString(@"请输入个人名称")},
-    //            @{@"title" : SLLocalizedString(@"补开费用"), @"content" : SLLocalizedString(@"到付"), @"isMore" : @"0", @"isEditor" : @"0", @"placeholder" : @""},
-    //        ],
-    //    ];
-    //    self.dataArray = [basecArray mutableArrayDeeoCopy];
-    //
-    //    NSArray *enterpriseArray = @[
-    //        @[
-    //            @{@"title" : SLLocalizedString(@"订单编号"), @"content" : self.orderSn, @"isMore" : @"0", @"isEditor" : @"0", @"placeholder" : @""},
-    //            @{@"title" : SLLocalizedString(@"发票形式"), @"content" : SLLocalizedString(@"电子发票"), @"isMore" : @"1", @"isEditor" : @"0", @"placeholder" : @""},
-    //            @{@"title" : SLLocalizedString(@"发票类型"), @"content" : SLLocalizedString(@"普通发票"), @"isMore" : @"1", @"isEditor" : @"0", @"placeholder" : @""},
-    //            @{@"title" : SLLocalizedString(@"发票内容"), @"content" : SLLocalizedString(@"商品明细"), @"isMore" : @"0", @"isEditor" : @"0", @"placeholder" : @""},
-    //            @{@"title" : SLLocalizedString(@"抬头类型"), @"content" : SLLocalizedString(@"企业"), @"isMore" : @"1", @"isEditor" : @"0", @"placeholder" : @""},
-    //            @{@"title" : SLLocalizedString(@"单位名称"), @"content" : @"", @"isMore" : @"0", @"isEditor" : @"1", @"placeholder" : SLLocalizedString(@"请输入单位名称")},
-    //            @{@"title" : SLLocalizedString(@"单位税号"), @"content" : @"", @"isMore" : @"0", @"isEditor" : @"1", @"placeholder" : SLLocalizedString(@"请输入纳税人识别号")},
-    //            @{@"title" : SLLocalizedString(@"补开费用"), @"content" : SLLocalizedString(@"到付"), @"isMore" : @"0", @"isEditor" : @"0", @"placeholder" : @""},
-    //        ],
-    //    ];
-    //
-    //    self.enterpriseDataArray = [enterpriseArray mutableArrayDeeoCopy];
-    //
-    //    NSArray *specialArray = @[
-    //        @[
-    //            @{@"title" : SLLocalizedString(@"订单编号"), @"content" : self.orderSn, @"isMore" : @"0", @"isEditor" : @"0", @"placeholder" : @""},
-    //            @{@"title" : SLLocalizedString(@"发票形式"), @"content" : SLLocalizedString(@"电子发票"), @"isMore" : @"1", @"isEditor" : @"0", @"placeholder" : @""},
-    //            @{@"title" : SLLocalizedString(@"发票类型"), @"content" : SLLocalizedString(@"增值税专用发票发票"), @"isMore" : @"1", @"isEditor" : @"0", @"placeholder" : @""},
-    //            @{@"title" : SLLocalizedString(@"发票内容"), @"content" : SLLocalizedString(@"商品明细"), @"isMore" : @"0", @"isEditor" : @"0", @"placeholder" : @""},
-    //            @{@"title" : SLLocalizedString(@"补开费用"), @"content" : SLLocalizedString(@"到付"), @"isMore" : @"0", @"isEditor" : @"0", @"placeholder" : @""},
-    //        ],
-    //        @[
-    //            @{@"title" : SLLocalizedString(@"注册地址"), @"content" : @"", @"isMore" : @"0", @"isEditor" : @"1", @"placeholder" : SLLocalizedString(@"请输入注册地址")},
-    //            @{@"title" : SLLocalizedString(@"注册电话"), @"content" : @"", @"isMore" : @"0", @"isEditor" : @"1", @"placeholder" : SLLocalizedString(@"请输入注册电话")},
-    //            @{@"title" : SLLocalizedString(@"开户银行"), @"content" : @"", @"isMore" : @"0", @"isEditor" : @"1", @"placeholder" : SLLocalizedString(@"请输入开户银行")},
-    //            @{@"title" : SLLocalizedString(@"银行账户"), @"content" : @"", @"isMore" : @"0", @"isEditor" : @"1", @"placeholder" : SLLocalizedString(@"请输入银行账户")},
-    //        ],
-    //        @[
-    //            @{@"title" : SLLocalizedString(@"收票人"), @"content" : @"", @"isMore" : @"0", @"isEditor" : @"0", @"placeholder" : @""},
-    //            @{@"title" : SLLocalizedString(@"手机号码"), @"content" : SLLocalizedString(@"电子发票"), @"isMore" : @"1", @"isEditor" : @"0", @"placeholder" : @""},
-    //            @{@"title" : SLLocalizedString(@"详细地址"), @"content" : SLLocalizedString(@"增值税专用发票发票"), @"isMore" : @"0", @"isEditor" : @"1", @"placeholder" : @""},
-    //        ],
-    //    ];
-    //
-    //    self.specialDataArray = [specialArray mutableArrayDeeoCopy];
-    
-    
+    [[DataManager shareInstance]userQualifications:@{} Callback:^(NSObject *object) {
+        if ([object isKindOfClass:[InvoiceQualificationsModel class]] == YES) {
+            self.qualificationsModel = (InvoiceQualificationsModel *)object;
+            
+            if (self.qualificationsModel) {
+                for (NSMutableDictionary *mutableDic in self.registeredInfoArray) {
+                    NSString *title = mutableDic[@"title"];
+                    NSString *contentStr;
+                    if ([title isEqualToString:SLLocalizedString(@"注册地址")]) {
+                        contentStr = self.qualificationsModel.address;
+                    }else if ([title isEqualToString:SLLocalizedString(@"注册电话")]) {
+                        contentStr = self.qualificationsModel.phone;
+                    }else if ([title isEqualToString:SLLocalizedString(@"开户银行")]) {
+                        contentStr = self.qualificationsModel.bank;
+                    }else if ([title isEqualToString:SLLocalizedString(@"银行账户")]) {
+                        contentStr = self.qualificationsModel.bank_sn;
+                    }else{
+                        contentStr = @"";
+                    }
+                    
+                    [mutableDic setValue:contentStr forKey:@"content"];
+                }
+            }
+        }
+    }];
     
     NSArray *basecArray = @[
         @[
@@ -131,10 +134,21 @@
             @{@"title" : SLLocalizedString(@"发票形式"), @"content" : SLLocalizedString(@"电子发票"), @"isMore" : @"1", @"isEditor" : @"0", @"placeholder" : @""},
             @{@"title" : SLLocalizedString(@"发票类型"), @"content" : SLLocalizedString(@"普通发票"), @"isMore" : @"1", @"isEditor" : @"0", @"placeholder" : @""},
             @{@"title" : SLLocalizedString(@"发票内容"), @"content" : SLLocalizedString(@"商品明细"), @"isMore" : @"0", @"isEditor" : @"0", @"placeholder" : @""},
-            @{@"title" : SLLocalizedString(@"补开费用"), @"content" : SLLocalizedString(@"到付"), @"isMore" : @"0", @"isEditor" : @"0", @"placeholder" : @""},
+            
         ],
     ];
     self.dataArray = [basecArray mutableArrayDeeoCopy];
+    
+    NSArray *fillCostArray = @[
+    @{@"title" : SLLocalizedString(@"补开费用"), @"content" : SLLocalizedString(@"到付"), @"isMore" : @"0", @"isEditor" : @"0", @"placeholder" : @""},
+    ];
+    self.fillCostArray = [fillCostArray mutableArrayDeeoCopy];
+    
+    
+    NSArray *emailArray = @[
+    @{@"title" : SLLocalizedString(@"邮箱"), @"content" : @"", @"isMore" : @"0", @"isEditor" : @"1", @"placeholder" : SLLocalizedString(@"请输入邮箱")},
+    ];
+    self.emailArray = [emailArray mutableArrayDeeoCopy];
     
     
     NSArray *ticketArray = @[
@@ -156,7 +170,7 @@
     
     
     NSArray *enterpriseArray =  @[
-        @{@"title" : SLLocalizedString(@"抬头类型"), @"content" : SLLocalizedString(@"企业"), @"isMore" : @"1", @"isEditor" : @"0", @"placeholder" : @""},
+        @{@"title" : SLLocalizedString(@"抬头类型"), @"content" : SLLocalizedString(@"单位"), @"isMore" : @"1", @"isEditor" : @"0", @"placeholder" : @""},
         @{@"title" : SLLocalizedString(@"单位名称"), @"content" : @"", @"isMore" : @"0", @"isEditor" : @"1", @"placeholder" : SLLocalizedString(@"请输入单位名称")},
         @{@"title" : SLLocalizedString(@"单位税号"), @"content" : @"", @"isMore" : @"0", @"isEditor" : @"1", @"placeholder" : SLLocalizedString(@"请输入纳税人识别号")},
     ];
@@ -173,15 +187,26 @@
     // 要插入的位置
     NSMutableArray *baseArray = [self.dataArray firstObject];
     
-    NSIndexSet *indexPath = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange([baseArray count]-1, [self.personalDataArray count])];
+    NSIndexSet *indexPath = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange([baseArray count], [self.personalDataArray count])];
     
     
     // 要插入的数组
-    
     [baseArray insertObjects:self.personalDataArray atIndexes:indexPath];
+    
+//    //插入补开费用
+//    NSIndexSet *tempindexPath = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange([baseArray count], [self.fillCostArray count])];
+//    [baseArray insertObjects:self.fillCostArray atIndexes:tempindexPath];
+    //插入电子邮箱
+    NSIndexSet *tempindexPath = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange([baseArray count], [self.emailArray count])];
+    [baseArray insertObjects:self.emailArray atIndexes:tempindexPath];
+    
+    
+//    //插入 收票 数组
+//    [self.dataArray addObject:self.ticketArray];
     
     
     [self.tableView reloadData];
+    
     
 }
 
@@ -200,24 +225,31 @@
     [self.view endEditing:YES];
     
     BOOL flag = YES;
+    NSString *titleStr;
     for (NSArray *subArray in self.dataArray) {
+        
         for (NSDictionary *temDic in subArray) {
-             NSString *content = temDic[@"content"];
-            if (content.length == 0) {
+            NSString *content = temDic[@"content"];
+            NSString *title = temDic[@"title"];
+            
+            titleStr = temDic[@"placeholder"];
+            if (content.length == 0 && ([title isEqualToString:SLLocalizedString(@"邮箱")] == NO)) {
                 flag = NO;
+                
+                break;
             }
         }
     }
     
     if (flag == NO) {
-        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请填写发票信息") view:self.view afterDelay:TipSeconds];
+        [ShaolinProgressHUD singleTextHud:titleStr view:self.view afterDelay:TipSeconds];
         return;
     }
     
     
     
-    self.isPersonal = YES;
-    self.isCompany = NO;
+//    self.isPersonal = YES;
+//    self.isCompany = NO;
     self.isElectronic = YES;
     self.isPaper = NO;
     self.isOrdinary = YES;
@@ -256,7 +288,10 @@
     [[DataManager shareInstance]invoicing:dic Callback:^(Message *message) {
         [hud hideAnimated:YES];
         if (message.isSuccess) {
-            [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"提交成功") view:self.view afterDelay:TipSeconds];
+
+            [[ModelTool shareInstance] setIsOrderListNeedRefreshed:YES];
+            
+            [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"发票补开申请提交成功")];
             [self.navigationController popViewControllerAnimated:YES];
             
         }else{
@@ -335,290 +370,438 @@
      判断 标题是哪一种
      */
     if ([titleStr isEqualToString:SLLocalizedString(@"发票形式")]) {
-        NSString *contentStr = dic[@"content"];
-        /**
-         弹窗
-         */
-        OrderInvoicePopupView *popupView = [[OrderInvoicePopupView alloc]initWithFrame:self.view.bounds];
-        popupView.titleStr = SLLocalizedString(@"发票形式");
-        /**
-         弹窗展示内容
-         */
-        NSArray *array;
-        if ([contentStr isEqualToString:SLLocalizedString(@"电子发票")]) {
-            array = @[@{@"title":SLLocalizedString(@"电子发票"), @"isSelect":@"1"},@{@"title":SLLocalizedString(@"纸质发票"), @"isSelect":@"0"}];
-        }else{
-            array = @[@{@"title":SLLocalizedString(@"电子发票"), @"isSelect":@"0"},@{@"title":SLLocalizedString(@"纸质发票"), @"isSelect":@"1"}];
-        }
-        
-        [popupView setCellArr:array];
-        
-        [popupView setTitleStr:SLLocalizedString(@"发票形式")];
-        
-        [self.view addSubview:popupView];
-        
-        /**
-         选择后的回显
-         */
-        [popupView setSelectedBlock:^(NSString * _Nonnull cause) {
-            NSLog(@"cause : %@", cause);
-            [dic setValue:cause forKey:@"content"];
-            /**
-             判断 选择项
-             */
-            if ([cause isEqualToString:SLLocalizedString(@"纸质发票")]) {
-                /**
-                 纸质发票 需要 收票人信息
-                 */
-                if (![self.dataArray containsObject:self.ticketArray]) {
-                    [self.dataArray addObject:self.ticketArray];
-                }
-                
-                /**
-                 更改标识
-                 */
-                self.isElectronic = NO;
-                self.isPaper = YES;
-                
-            }else if([cause isEqualToString:SLLocalizedString(@"电子发票")]){
-                /**
-                电子发票 不要 收票人信息 和 注册信息
-                */
-                if ([self.dataArray containsObject:self.ticketArray]) {
-                    [self.dataArray removeObject:self.ticketArray];
-                }
-                
-                if ([self.dataArray containsObject:self.registeredInfoArray]) {
-                    [self.dataArray removeObject:self.registeredInfoArray];
-                }
-                
-                self.isElectronic = YES;
-                self.isPaper = NO;
-                
-                NSMutableDictionary *subDic = [rowArray objectAtIndex:2];
-                if ([subDic[@"content"] isEqualToString:SLLocalizedString(@"增值税专用发票")]) {
-                    [subDic setValue:SLLocalizedString(@"普通发票") forKey:@"content"];
-                }
-                
-                
-            }
-            
-            [tableView reloadData];
-        }];
-        
-        
+        [self p_invoiceProforma:indexPath];
     }
     
     if ([titleStr isEqualToString:SLLocalizedString(@"发票类型")]) {
-        NSString *contentStr = dic[@"content"];
-        
-        OrderInvoicePopupView *popupView = [[OrderInvoicePopupView alloc]initWithFrame:self.view.bounds];
-        popupView.titleStr = SLLocalizedString(@"发票类型");
-        
-        NSArray *array;
-        if ([contentStr isEqualToString:SLLocalizedString(@"普通发票")]) {
-            array = @[@{@"title":SLLocalizedString(@"普通发票"), @"isSelect":@"1"},@{@"title":SLLocalizedString(@"增值税专用发票"), @"isSelect":@"0"}];
-        }else{
-            array = @[@{@"title":SLLocalizedString(@"普通发票"), @"isSelect":@"0"},@{@"title":SLLocalizedString(@"增值税专用发票"), @"isSelect":@"1"}];
-        }
-        
-        [popupView setCellArr:array];
-        
-        [popupView setTitleStr:SLLocalizedString(@"发票类型")];
-        
-        [self.view addSubview:popupView];
-        
-        [popupView setSelectedBlock:^(NSString * _Nonnull cause) {
-            NSLog(@"cause : %@", cause);
-            [dic setValue:cause forKey:@"content"];
-            
-            if ([cause isEqualToString:SLLocalizedString(@"增值税专用发票")]) {
-                if ([self.dataArray containsObject:self.ticketArray]) {
-                    [self.dataArray removeObject:self.ticketArray];
-                }
-                
-                if ([self.dataArray containsObject:self.registeredInfoArray]) {
-                    [self.dataArray removeObject:self.registeredInfoArray];
-                }
-                [self.dataArray addObject:self.registeredInfoArray];
-                [self.dataArray addObject:self.ticketArray];
-                
-                
-                
-                self.isElectronic = NO;
-                self.isPaper = YES;
-                self.isOrdinary = NO;
-                self.isSpecialInvoice = YES;
-                
-                NSMutableDictionary *subDic = [rowArray objectAtIndex:1];
-                if ([subDic[@"content"] isEqualToString:SLLocalizedString(@"电子发票")]) {
-                    [subDic setValue:SLLocalizedString(@"纸质发票") forKey:@"content"];
-                }
-                
-                NSMutableArray *firstArray = [self.dataArray firstObject];
-                if (self.isPersonal) {
-                    [firstArray removeObjectsInArray:self.personalDataArray];
-                }
-                
-                if (self.isCompany) {
-                    [firstArray removeObjectsInArray:self.enterpriseDataArray];
-                }
-                
-            }else if([cause isEqualToString:SLLocalizedString(@"普通发票")]){
-                
-                self.isOrdinary = YES;
-                self.isSpecialInvoice = NO;
-                
-                if ([self.dataArray containsObject:self.ticketArray]) {
-                    [self.dataArray removeObject:self.ticketArray];
-                }
-                
-                if ([self.dataArray containsObject:self.registeredInfoArray]) {
-                    [self.dataArray removeObject:self.registeredInfoArray];
-                }
-                
-                if (self.isPersonal) {
-                    // 要插入的位置
-                    NSMutableArray *baseArray = [self.dataArray firstObject];
-                    
-                    NSIndexSet *indexPath = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange([baseArray count]-1, [self.personalDataArray count])];
-                    
-                    
-                    // 要插入的数组
-                    
-                    [baseArray insertObjects:self.personalDataArray atIndexes:indexPath];
-                }
-                
-                if (self.isCompany) {
-                    
-                    // 要插入的位置
-                    NSMutableArray *baseArray = [self.dataArray firstObject];
-                    
-                    NSIndexSet *indexPath = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange([baseArray count]-1, [self.enterpriseDataArray count])];
-                    
-                    // 要插入的数组
-                    
-                    [baseArray insertObjects:self.enterpriseDataArray atIndexes:indexPath];
-                    
-                }
-                
-            }
-            
-            [tableView reloadData];
-        }];
-        
-        
+        [self p_invoiceType:indexPath];
     }
     
     if ([titleStr isEqualToString:SLLocalizedString(@"抬头类型")]) {
-        NSString *contentStr = dic[@"content"];
-        OrderInvoicePopupView *popupView = [[OrderInvoicePopupView alloc]initWithFrame:self.view.bounds];
-        popupView.titleStr = SLLocalizedString(@"抬头类型");
-        
-        NSArray *array;
-        if ([contentStr isEqualToString:SLLocalizedString(@"个人")]) {
-            array = @[@{@"title":SLLocalizedString(@"个人"), @"isSelect":@"1"},@{@"title":SLLocalizedString(@"企业"), @"isSelect":@"0"}];
-        }else{
-            array = @[@{@"title":SLLocalizedString(@"个人"), @"isSelect":@"0"},@{@"title":SLLocalizedString(@"企业"), @"isSelect":@"1"}];
-        }
-        
-        [popupView setCellArr:array];
-        
-        [popupView setTitleStr:SLLocalizedString(@"抬头类型")];
-        
-        [self.view addSubview:popupView];
-        
-        [popupView setSelectedBlock:^(NSString * _Nonnull cause) {
-            NSLog(@"cause : %@", cause);
-//            [dic setValue:cause forKey:@"content"];
-            
-            NSMutableArray *firstArray = [self.dataArray firstObject];
-            
-            if ([cause isEqualToString:SLLocalizedString(@"个人")]) {
-                
-                if (self.isPersonal) {
-                    [firstArray removeObjectsInArray:self.personalDataArray];
-                }
-                
-                if (self.isCompany) {
-                    [firstArray removeObjectsInArray:self.enterpriseDataArray];
-                }
-                
-                
-                if ([self.dataArray containsObject:self.ticketArray]) {
-                    [self.dataArray removeObject:self.ticketArray];
-                }
-                
-                if ([self.dataArray containsObject:self.registeredInfoArray]) {
-                    [self.dataArray removeObject:self.registeredInfoArray];
-                }
-                self.isPersonal = YES;
-                self.isCompany = NO;
-                
-                if (self.isPersonal) {
-                    // 要插入的位置
-                    NSMutableArray *baseArray = [self.dataArray firstObject];
-                    
-                    NSIndexSet *indexPath = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange([baseArray count]-1, [self.personalDataArray count])];
-                    
-                    
-                    // 要插入的数组
-                    
-                    [baseArray insertObjects:self.personalDataArray atIndexes:indexPath];
-                }
-                
-                
-                
-                
-                if (self.isPaper) {
-                    [self.dataArray addObject:self.ticketArray];
-                }
-                
-            }else if([cause isEqualToString:SLLocalizedString(@"企业")]){
-                if (self.isPersonal) {
-                    [firstArray removeObjectsInArray:self.personalDataArray];
-                }
-                
-                if (self.isCompany) {
-                    [firstArray removeObjectsInArray:self.enterpriseDataArray];
-                }
-                if ([self.dataArray containsObject:self.ticketArray]) {
-                    [self.dataArray removeObject:self.ticketArray];
-                }
-                
-                if ([self.dataArray containsObject:self.registeredInfoArray]) {
-                    [self.dataArray removeObject:self.registeredInfoArray];
-                }
-                self.isPersonal = NO;
-                self.isCompany = YES;
-                
-                if (self.isCompany) {
-                    
-                    // 要插入的位置
-                    NSMutableArray *baseArray = [self.dataArray firstObject];
-                    
-                    NSIndexSet *indexPath = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange([baseArray count]-1, [self.enterpriseDataArray count])];
-                    
-                    
-                    // 要插入的数组
-                    
-                    [baseArray insertObjects:self.enterpriseDataArray atIndexes:indexPath];
-                    
-                }
-                
-                if (self.isPaper) {
-                    [self.dataArray addObject:self.ticketArray];
-                }
-                
-            }
-            [tableView reloadData];
-        }];
-        
+        [self p_invoiceTitleType:indexPath];
         
     }
     
+}
+
+#pragma mark - 私有方法
+
+#pragma mark - 发票形式
+-(void)p_invoiceProforma:(NSIndexPath *)indexPath{
+    NSArray *rowArray = self.dataArray[indexPath.section];
+    NSMutableDictionary *dic = rowArray[indexPath.row];
+    NSString *contentStr = dic[@"content"];
+    /**
+     弹窗
+     */
+    OrderInvoicePopupView *popupView = [[OrderInvoicePopupView alloc]initWithFrame:self.view.bounds];
+    popupView.titleStr = SLLocalizedString(@"发票形式");
+    /**
+     弹窗展示内容
+     */
+    NSArray *array;
+//    if ([contentStr isEqualToString:SLLocalizedString(@"电子发票")]) {
+//        array = @[
+//            @{@"title":SLLocalizedString(@"电子发票"), @"isSelect":@"1"},
+//            @{@"title":SLLocalizedString(@"纸质发票"), @"isSelect":@"0"}
+//        ];
+//    }else{
+//
+//        if (self.invoiceConfigurationDic) {
+//            array = @[
+//                @{@"title":SLLocalizedString(@"电子发票"), @"isSelect":@"0", @"is_electronic":self.invoiceConfigurationDic[@"is_electronic"]},
+//                @{@"title":SLLocalizedString(@"纸质发票"), @"isSelect":@"1"}
+//            ];
+//        }else{
+//            array = @[
+//                @{@"title":SLLocalizedString(@"电子发票"), @"isSelect":@"0"},
+//                @{@"title":SLLocalizedString(@"纸质发票"), @"isSelect":@"1"}
+//            ];
+//        }
+//    }
+    
+    if ([contentStr isEqualToString:SLLocalizedString(@"电子发票")]) {
+        array = @[
+            @{@"title":SLLocalizedString(@"电子发票"), @"isSelect":@"1"},
+            @{@"title":SLLocalizedString(@"纸质发票"), @"isSelect":@"0", @"is_electronic":@"0"}
+        ];
+    }else{
+        
+        array = @[
+            @{@"title":SLLocalizedString(@"电子发票"), @"isSelect":@"0"},
+            @{@"title":SLLocalizedString(@"纸质发票"), @"isSelect":@"1"}
+        ];
+        
+    }
+    
+    [popupView setCellArr:array];
+    
+    [popupView setTitleStr:SLLocalizedString(@"发票形式")];
+    
+    [self.view addSubview:popupView];
+    
+    /**
+     选择后的回显
+     */
+    [popupView setSelectedBlock:^(NSString * _Nonnull cause) {
+        NSLog(@"cause : %@", cause);
+        [dic setValue:cause forKey:@"content"];
+        /**
+         判断 选择项
+         */
+        if ([cause isEqualToString:SLLocalizedString(@"纸质发票")]) {
+            /**
+             纸质发票 需要 收票人信息
+             */
+            if (![self.dataArray containsObject:self.ticketArray]) {
+                [self.dataArray addObject:self.ticketArray];
+            }
+            
+            
+            NSMutableArray *baseArray = [self.dataArray firstObject];
+            if (![baseArray containsObject:[self.fillCostArray lastObject]]) {
+                [baseArray addObjectsFromArray:self.fillCostArray];
+            }
+            
+            NSLog(@"baseArray : %@", baseArray);
+            NSLog(@"[self.emailArray lastObject] : %@", [self.emailArray lastObject]);
+
+            if ([baseArray containsObject:[self.emailArray lastObject]]) {
+                [baseArray removeObjectsInArray:self.emailArray];
+            }
+            
+            
+            
+            
+            /**
+             更改标识
+             */
+            self.isElectronic = NO;
+            self.isPaper = YES;
+            
+        }else if([cause isEqualToString:SLLocalizedString(@"电子发票")]){
+            /**
+             电子发票 不要 收票人信息 和 注册信息
+             */
+            if ([self.dataArray containsObject:self.ticketArray]) {
+                [self.dataArray removeObject:self.ticketArray];
+            }
+            
+            if ([self.dataArray containsObject:self.registeredInfoArray]) {
+                [self.dataArray removeObject:self.registeredInfoArray];
+            }
+            
+            NSMutableArray *firstArray = [self.dataArray firstObject];
+            if (self.isPersonal) {
+                [firstArray removeObjectsInArray:self.personalDataArray];
+            }
+            
+            if (self.isCompany) {
+                [firstArray removeObjectsInArray:self.enterpriseDataArray];
+            }
+            
+            
+//            if ([firstArray containsObject:self.fillCostArray] == YES) {
+//                [self.dataArray removeObjectsInArray:self.fillCostArray];
+//            }
+            
+            if (self.isPersonal) {
+                // 要插入的位置
+                NSMutableArray *baseArray = [self.dataArray firstObject];
+                
+                NSIndexSet *indexPath = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange([baseArray count]-1, [self.personalDataArray count])];
+                
+                
+                // 要插入的数组
+                
+                [baseArray insertObjects:self.personalDataArray atIndexes:indexPath];
+            }
+            
+            
+            if (self.isCompany) {
+                
+                // 要插入的位置
+                NSMutableArray *baseArray = [self.dataArray firstObject];
+                
+                NSIndexSet *indexPath = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange([baseArray count]-1, [self.enterpriseDataArray count])];
+                
+                
+                // 要插入的数组
+                
+                [baseArray insertObjects:self.enterpriseDataArray atIndexes:indexPath];
+                
+            }
+            
+            
+            
+            
+            NSMutableArray *baseArray = [self.dataArray firstObject];
+            if ([baseArray containsObject:[self.fillCostArray lastObject]]) {
+                [baseArray removeObjectsInArray:self.fillCostArray];
+            }
+            
+            if (![baseArray containsObject:[self.emailArray lastObject]]) {
+                [baseArray addObjectsFromArray:self.emailArray];
+            }
+            
+            
+            self.isElectronic = YES;
+            self.isPaper = NO;
+            
+            NSMutableDictionary *subDic = [rowArray objectAtIndex:2];
+            if ([subDic[@"content"] isEqualToString:SLLocalizedString(@"增值税专用发票")]) {
+                [subDic setValue:SLLocalizedString(@"普通发票") forKey:@"content"];
+            }
+        }
+        
+        [self.tableView reloadData];
+    }];
     
 }
+
+#pragma mark - 发票类型
+-(void)p_invoiceType:(NSIndexPath *)indexPath{
+    NSArray *rowArray = self.dataArray[indexPath.section];
+    
+    NSMutableDictionary *dic = rowArray[indexPath.row];
+    
+    NSString *contentStr = dic[@"content"];
+    
+    OrderInvoicePopupView *popupView = [[OrderInvoicePopupView alloc]initWithFrame:self.view.bounds];
+    popupView.titleStr = SLLocalizedString(@"发票类型");
+    
+    NSArray *array;
+    NSString *optional = self.qualificationsModel == nil ? @"0" : @"1";
+//    if ([contentStr isEqualToString:SLLocalizedString(@"普通发票")]) {
+//        array = @[
+//            @{@"title":SLLocalizedString(@"普通发票"), @"isSelect":@"1"},
+//            @{@"title":SLLocalizedString(@"增值税专用发票"), @"isSelect":@"0", @"optional" : optional, @"is_VAT":self.invoiceConfigurationDic[@"is_VAT"]}];
+//    }else{
+//        array = @[
+//            @{@"title":SLLocalizedString(@"普通发票"), @"isSelect":@"0"},
+//            @{@"title":SLLocalizedString(@"增值税专用发票"), @"isSelect":@"1"}];
+//    }
+    
+    if ([contentStr isEqualToString:SLLocalizedString(@"普通发票")]) {
+        array = @[
+            @{@"title":SLLocalizedString(@"普通发票"), @"isSelect":@"1"},
+            @{@"title":SLLocalizedString(@"增值税专用发票"), @"isSelect":@"0", @"optional" : optional, @"is_VAT":@"0"}];
+    }else{
+        array = @[
+            @{@"title":SLLocalizedString(@"普通发票"), @"isSelect":@"0"},
+            @{@"title":SLLocalizedString(@"增值税专用发票"), @"isSelect":@"1"}];
+    }
+    
+    [popupView setCellArr:array];
+    
+    [popupView setTitleStr:SLLocalizedString(@"发票类型")];
+    
+    [self.view addSubview:popupView];
+    
+    [popupView setSelectedBlock:^(NSString * _Nonnull cause) {
+        NSLog(@"cause : %@", cause);
+        [dic setValue:cause forKey:@"content"];
+        
+        if ([cause isEqualToString:SLLocalizedString(@"增值税专用发票")]) {
+            if ([self.dataArray containsObject:self.ticketArray]) {
+                [self.dataArray removeObject:self.ticketArray];
+            }
+            
+            if ([self.dataArray containsObject:self.registeredInfoArray]) {
+                [self.dataArray removeObject:self.registeredInfoArray];
+            }
+            [self.dataArray addObject:self.registeredInfoArray];
+            [self.dataArray addObject:self.ticketArray];
+            
+            self.isElectronic = NO;
+            self.isPaper = YES;
+            self.isOrdinary = NO;
+            self.isSpecialInvoice = YES;
+            
+            NSMutableDictionary *subDic = [rowArray objectAtIndex:1];
+            if ([subDic[@"content"] isEqualToString:SLLocalizedString(@"电子发票")]) {
+                [subDic setValue:SLLocalizedString(@"纸质发票") forKey:@"content"];
+            }
+            
+            NSMutableArray *firstArray = [self.dataArray firstObject];
+            if (self.isPersonal) {
+                [firstArray removeObjectsInArray:self.personalDataArray];
+            }
+            
+            if (self.isCompany) {
+                [firstArray removeObjectsInArray:self.enterpriseDataArray];
+            }
+            
+            
+            if (![firstArray containsObject:[self.fillCostArray lastObject]]) {
+                [firstArray addObjectsFromArray:self.fillCostArray];
+            }
+            
+            if ([firstArray containsObject:[self.emailArray lastObject]]) {
+                [firstArray removeObjectsInArray:self.emailArray];
+            }
+            
+            
+        }else if([cause isEqualToString:SLLocalizedString(@"普通发票")]){
+            
+            self.isOrdinary = YES;
+            self.isSpecialInvoice = NO;
+            
+            if (self.isOrdinary && self.isPaper) {
+                if (![self.dataArray containsObject:self.ticketArray]) {
+                    [self.dataArray addObject:self.ticketArray];
+                }
+            }
+            
+            
+            
+            if ([self.dataArray containsObject:self.registeredInfoArray]) {
+                [self.dataArray removeObject:self.registeredInfoArray];
+            }
+            
+            if (self.isPersonal) {
+                // 要插入的位置
+                NSMutableArray *baseArray = [self.dataArray firstObject];
+                
+                
+                if ([baseArray containsObject:[self.personalDataArray lastObject]]) {
+                    [baseArray removeObjectsInArray:self.personalDataArray];
+                }
+                
+                NSIndexSet *indexPath = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange([baseArray count]-1, [self.personalDataArray count])];
+                
+                
+                // 要插入的数组
+                
+                [baseArray insertObjects:self.personalDataArray atIndexes:indexPath];
+            }
+            
+            if (self.isCompany) {
+                
+                // 要插入的位置
+                NSMutableArray *baseArray = [self.dataArray firstObject];
+                
+                if ([baseArray containsObject:[self.enterpriseDataArray lastObject]]) {
+                    [baseArray removeObjectsInArray:self.enterpriseDataArray];
+                }
+                
+                NSIndexSet *indexPath = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange([baseArray count]-1, [self.enterpriseDataArray count])];
+                
+                // 要插入的数组
+                
+                [baseArray insertObjects:self.enterpriseDataArray atIndexes:indexPath];
+                
+            }
+        }
+        
+        [self.tableView reloadData];
+    }];
+}
+
+#pragma mark - 抬头类型
+-(void)p_invoiceTitleType:(NSIndexPath *)indexPath{
+    
+    NSArray *rowArray = self.dataArray[indexPath.section];
+    NSMutableDictionary *dic = rowArray[indexPath.row];
+    NSString *contentStr = dic[@"content"];
+    OrderInvoicePopupView *popupView = [[OrderInvoicePopupView alloc]initWithFrame:self.view.bounds];
+    popupView.titleStr = SLLocalizedString(@"抬头类型");
+    
+    NSArray *array;
+    if ([contentStr isEqualToString:SLLocalizedString(@"个人")]) {
+        array = @[@{@"title":SLLocalizedString(@"个人"), @"isSelect":@"1"},@{@"title":SLLocalizedString(@"单位"), @"isSelect":@"0"}];
+    }else{
+        array = @[@{@"title":SLLocalizedString(@"个人"), @"isSelect":@"0"},@{@"title":SLLocalizedString(@"单位"), @"isSelect":@"1"}];
+    }
+    
+    [popupView setCellArr:array];
+    
+    [popupView setTitleStr:SLLocalizedString(@"抬头类型")];
+    
+    [self.view addSubview:popupView];
+    
+    [popupView setSelectedBlock:^(NSString * _Nonnull cause) {
+        NSLog(@"cause : %@", cause);
+        //            [dic setValue:cause forKey:@"content"];
+        
+        NSMutableArray *firstArray = [self.dataArray firstObject];
+        
+        if ([cause isEqualToString:SLLocalizedString(@"个人")]) {
+            
+            if (self.isPersonal) {
+                [firstArray removeObjectsInArray:self.personalDataArray];
+            }
+            
+            if (self.isCompany) {
+                [firstArray removeObjectsInArray:self.enterpriseDataArray];
+            }
+            
+            
+            if ([self.dataArray containsObject:self.ticketArray]) {
+                [self.dataArray removeObject:self.ticketArray];
+            }
+            
+            if ([self.dataArray containsObject:self.registeredInfoArray]) {
+                [self.dataArray removeObject:self.registeredInfoArray];
+            }
+            self.isPersonal = YES;
+            self.isCompany = NO;
+            
+            if (self.isPersonal) {
+                // 要插入的位置
+                NSMutableArray *baseArray = [self.dataArray firstObject];
+                
+                NSIndexSet *indexPath = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange([baseArray count]-1, [self.personalDataArray count])];
+                
+                
+                // 要插入的数组
+                [baseArray insertObjects:self.personalDataArray atIndexes:indexPath];
+            }
+            
+            if (self.isPaper) {
+                [self.dataArray addObject:self.ticketArray];
+            }
+            
+        }else if([cause isEqualToString:SLLocalizedString(@"单位")]){
+            if (self.isPersonal) {
+                [firstArray removeObjectsInArray:self.personalDataArray];
+            }
+            
+            if (self.isCompany) {
+                [firstArray removeObjectsInArray:self.enterpriseDataArray];
+            }
+            if ([self.dataArray containsObject:self.ticketArray]) {
+                [self.dataArray removeObject:self.ticketArray];
+            }
+            
+            if ([self.dataArray containsObject:self.registeredInfoArray]) {
+                [self.dataArray removeObject:self.registeredInfoArray];
+            }
+            self.isPersonal = NO;
+            self.isCompany = YES;
+            
+            if (self.isCompany) {
+                
+                // 要插入的位置
+                NSMutableArray *baseArray = [self.dataArray firstObject];
+                
+                NSIndexSet *indexPath = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange([baseArray count]-1, [self.enterpriseDataArray count])];
+                
+                
+                // 要插入的数组
+                [baseArray insertObjects:self.enterpriseDataArray atIndexes:indexPath];
+                
+            }
+            
+            if (self.isPaper) {
+                [self.dataArray addObject:self.ticketArray];
+            }
+            
+        }
+        [self.tableView reloadData];
+    }];
+}
+
 
 #pragma mark - setter / getter
 -(UITableView *)tableView{
@@ -631,9 +814,10 @@
         [_tableView setDelegate:self];
         [_tableView setDataSource:self];
         
-//        UIView * view = [UIView new];
-//        view.backgroundColor = UIColor.whiteColor;
-//        _tableView.tableFooterView = view;
+        [_tableView setBackgroundColor:[UIColor colorForHex:@"fafafa"]];
+        //        UIView * view = [UIView new];
+        //        view.backgroundColor = UIColor.whiteColor;
+        //        _tableView.tableFooterView = view;
         _tableView.backgroundColor = UIColor.whiteColor;
         [_tableView registerNib:[UINib nibWithNibName:NSStringFromClass([OrderInvoiceTableCell class])bundle:nil] forCellReuseIdentifier:@"OrderInvoiceTableCell"];
         _tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;

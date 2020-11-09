@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -54,7 +54,7 @@
                         <constraint firstAttribute="height" constant="30" id="elt-9M-jZj"/>
                         <constraint firstAttribute="width" constant="62" id="lyy-Jd-EX0"/>
                     </constraints>
-                    <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="15"/>
+                    <fontDescription key="fontDescription" name="PingFangSC-Medium" family="PingFang SC" pointSize="15"/>
                     <state key="normal" title="删除订单">
                         <color key="titleColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                     </state>
@@ -86,10 +86,23 @@
                         <action selector="rightHandle:" destination="jtx-lr-22B" eventType="touchUpInside" id="OCK-HB-4xU"/>
                     </connections>
                 </button>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uo7-AY-SaL">
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="1"/>
+                    <color key="backgroundColor" red="0.92549019610000005" green="0.92549019610000005" blue="0.92549019610000005" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="1" id="UQk-mx-eNZ"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
                 <constraint firstItem="pIE-lH-fpz" firstAttribute="centerY" secondItem="jtx-lr-22B" secondAttribute="centerY" id="0dc-TH-hn4"/>
+                <constraint firstItem="uo7-AY-SaL" firstAttribute="leading" secondItem="jtx-lr-22B" secondAttribute="leading" id="4HB-hr-4ng"/>
+                <constraint firstAttribute="trailing" secondItem="uo7-AY-SaL" secondAttribute="trailing" id="62N-Zq-rVm"/>
+                <constraint firstItem="uo7-AY-SaL" firstAttribute="top" secondItem="jtx-lr-22B" secondAttribute="top" id="9We-CP-PIL"/>
                 <constraint firstItem="5vf-n8-WkF" firstAttribute="leading" secondItem="jtx-lr-22B" secondAttribute="leading" constant="16" id="Chw-Pa-0Hv"/>
                 <constraint firstItem="5vf-n8-WkF" firstAttribute="centerY" secondItem="jtx-lr-22B" secondAttribute="centerY" id="Rsa-mY-738"/>
                 <constraint firstAttribute="trailing" secondItem="pIE-lH-fpz" secondAttribute="trailing" constant="106" id="c2d-fD-sLI"/>
@@ -103,7 +116,7 @@
                 <outlet property="deleteButton" destination="5vf-n8-WkF" id="qPq-Nm-W2q"/>
                 <outlet property="rightButton" destination="FmE-Bk-z01" id="1UO-M9-3dc"/>
             </connections>
-            <point key="canvasLocation" x="-23" y="20"/>
+            <point key="canvasLocation" x="138" y="83"/>
         </view>
     </objects>
 </document>

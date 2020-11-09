@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 @property(nonatomic, copy)NSString *idCard;
-@property(nonatomic, copy)NSString *realname;
+@property(nonatomic, copy)NSString *realName;
 @property(nonatomic, copy)NSString *birthTime;
 
 @property(nonatomic, copy)NSString *activityCode;
@@ -28,7 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, copy)NSString *activityName;
 @property(nonatomic, copy)NSString *activityStartTime;
 @property(nonatomic, copy)NSString *activityTypeId;
-@property(nonatomic, copy)NSArray *address;
+@property(nonatomic, copy)NSArray *activityAddresses;
 @property(nonatomic, copy)NSString *addressDetails;
 @property(nonatomic, copy)NSString *addressName;
 @property(nonatomic, strong)EnrollmentRegistModel *applications;
@@ -48,7 +48,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, copy)NSString *levelFloor;
 @property(nonatomic, copy)NSString *levelId;
 //
+
 @property(nonatomic, copy)NSString *mechanismImage;
+@property(nonatomic, copy)NSString *institutionalThumbnail;
 @property(nonatomic, copy)NSString *mechanismCode;
 @property(nonatomic, copy)NSString *mechanismInfo;
 @property(nonatomic, copy)NSString *mechanismName;
@@ -74,6 +76,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, copy)NSString *writeExamEndTime;
 @property(nonatomic, copy)NSString *writeExamStartTime;
 
+@property(nonatomic, copy)NSString *levelName;
+
+@property(nonatomic, copy)NSString *passportNumber;
 
 
 // 首页热门活动才有
@@ -118,7 +123,7 @@ NS_ASSUME_NONNULL_END
  "levelFloor": null,
  "levelId": null,
  "levelIds": "",
- "mechanismImage": "",
+ "institutionalThumbnail": "",
  "memberId": "",
  "peopleMax": 98,
  "phone": "",

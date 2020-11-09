@@ -11,6 +11,7 @@
 #import "KungfuApplyCheckListViewController.h"
 #import "WengenBannerModel.h"
 #import "NSString+Tool.h"
+#import "DataManager.h"
 
 #define ALPHANUM_KungfuSignViewController @"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
 @interface KungfuSignViewController ()<SDCycleScrollViewDelegate,UIScrollViewDelegate,UITextFieldDelegate>
@@ -36,7 +37,7 @@
 - (void)setUI {
     UILabel *lookLabel = [[UILabel alloc]init];
     lookLabel.text = SLLocalizedString(@"查询帮助");
-    lookLabel.textColor = [UIColor colorForHex:@"8E2B25"];
+    lookLabel.textColor = kMainYellow;
     lookLabel.font = kRegular(16);
     lookLabel.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:lookLabel];

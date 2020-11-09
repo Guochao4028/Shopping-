@@ -8,7 +8,6 @@
 
 #import "ChangePasswordVc.h"
 #import "MeManager.h"
-#import "LoginViewController.h"
 #import "ForgetPassWordVc.h"
 #import "NSString+Tool.h"
 
@@ -22,15 +21,6 @@
 @end
 
 @implementation ChangePasswordVc
-//-(void)viewWillAppear:(BOOL)animated
-//{
-//    [super viewWillAppear:animated];
-//    self.navigationController.navigationBar.hidden = YES;
-//}
-//- (void)viewWillDisappear:(BOOL)animated{
-//        [super viewWillDisappear:animated];
-//        self.navigationController.navigationBar.hidden = NO;
-//}
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
@@ -143,12 +133,12 @@
     [alertLabel mas_makeConstraints:^(MASConstraintMaker *make) {
                  make.left.mas_equalTo(SLChange(18.5));
                   make.right.mas_equalTo(-SLChange(18));
-                 make.top.mas_equalTo(v3.mas_bottom).offset(SLChange(15.5));
+                 make.top.mas_equalTo(v3.mas_bottom).offset(17.5);
                  make.height.mas_equalTo(11.5);
              }];
 //    UIButton *forgetBtn = [[UIButton alloc] init];
 //    [forgetBtn setTitle:SLLocalizedString(@"忘记原密码?") forState:(UIControlStateNormal)];
-//    [forgetBtn setTitleColor:[UIColor colorForHex:@"8E2B25"] forState:(UIControlStateNormal)];
+//    [forgetBtn setTitleColor:kMainYellow forState:(UIControlStateNormal)];
 //    forgetBtn.titleLabel.font = kRegular(13);
 //    [forgetBtn addTarget:self action:@selector(forgetAction) forControlEvents:(UIControlEventTouchUpInside)];
 //    [self.view addSubview:forgetBtn];
@@ -203,7 +193,7 @@
     if (!_finishButton) {
         _finishButton = [UIButton buttonWithType:(UIButtonTypeCustom)];
 //        [_finishButton setBackgroundImage:[UIImage imageNamed:@"me_done"] forState:(UIControlStateNormal)];
-        [_finishButton setBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+        [_finishButton setBackgroundColor:kMainYellow];
         [_finishButton setTitle:SLLocalizedString(@"完成") forState:(UIControlStateNormal)];
         _finishButton.titleLabel.font = kRegular(14);
         [_finishButton setTitleColor:[UIColor whiteColor] forState:(UIControlStateNormal)];

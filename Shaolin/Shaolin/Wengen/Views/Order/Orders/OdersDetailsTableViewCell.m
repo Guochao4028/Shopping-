@@ -84,13 +84,27 @@
             break;
     }
     
-    if (IsNilOrNull(model.invoice.type)) {
+//    if (IsNilOrNull(model.invoice.type)) {
+//        [self.invoiceTypeLabel setText:SLLocalizedString(@"不开发票")];
+//    } else if ([model.invoice.type isEqualToString:@"1"]) {
+//        [self.invoiceTypeLabel setText:SLLocalizedString(@"个人")];
+//    } else if ([model.invoice.type isEqualToString:@"2"]) {
+//        [self.invoiceTypeLabel setText:SLLocalizedString(@"单位")];
+//    }
+    NSInteger invoice_type =  [model.invoice.invoice_type integerValue];
+    
+    if (invoice_type == 0) {
         [self.invoiceTypeLabel setText:SLLocalizedString(@"不开发票")];
-    } else if ([model.invoice.type isEqualToString:@"1"]) {
-        [self.invoiceTypeLabel setText:SLLocalizedString(@"个人")];
-    } else if ([model.invoice.type isEqualToString:@"2"]) {
-        [self.invoiceTypeLabel setText:SLLocalizedString(@"单位")];
+    } else if (invoice_type == 1) {
+        [self.invoiceTypeLabel setText:SLLocalizedString(@"普通发票")];
+    } else if (invoice_type == 2) {
+        [self.invoiceTypeLabel setText:SLLocalizedString(@"增值税发票")];
+    }else{
+        [self.invoiceTypeLabel setText:SLLocalizedString(@"不开发票")];
     }
+    
+    
+    
     if ([model.pay_type isEqualToString:@"0"]) {
         [self.payTypeLabel setText:SLLocalizedString(@"在线支付")];
     }

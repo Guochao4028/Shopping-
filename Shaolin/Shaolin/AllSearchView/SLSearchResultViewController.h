@@ -6,11 +6,11 @@
 //  Copyright © 2020 syqaxldy. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "RootViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface SLSearchResultViewController : UIViewController
+@interface SLSearchResultViewController : RootViewController
 @property (nonatomic, copy) NSString *searchStr;
 @property (nonatomic, strong) NSMutableArray *hotArray;
 @property (nonatomic, strong) NSMutableArray *historyArray;

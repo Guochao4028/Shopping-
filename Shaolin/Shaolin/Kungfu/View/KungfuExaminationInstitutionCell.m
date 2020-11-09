@@ -103,8 +103,8 @@
     self.contentLabel.text = NotNilAndNull(model.contactDetails)?model.contactDetails:@"";
     self.addressLabel.text = [SLLocalizedString(@"地址：") stringByAppendingString:NotNilAndNull(model.mechanismCity)?model.mechanismCity:@""];
     
-    if (model.mechanismImage && model.mechanismImage.length != 0){
-        [self.imageIcon sd_setImageWithURL:[NSURL URLWithString:model.mechanismImage] placeholderImage:[UIImage imageNamed:@"default_small"]];
+    if (model.institutionalThumbnail && model.institutionalThumbnail.length != 0){
+        [self.imageIcon sd_setImageWithURL:[NSURL URLWithString:model.institutionalThumbnail] placeholderImage:[UIImage imageNamed:@"default_small"]];
     }
 }
 @end

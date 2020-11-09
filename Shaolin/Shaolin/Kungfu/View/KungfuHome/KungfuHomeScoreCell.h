@@ -15,7 +15,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) void(^ learnHandle)(void);
 @property (nonatomic, copy) void(^ examHandle)(void);
 
-@property (nonatomic, strong) NSDictionary * resultDic;
+//@property (nonatomic, strong) NSDictionary * resultDic;
+
+@property (nonatomic, copy) NSString * kungfuLevel;
 
 @end
 

@@ -26,6 +26,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.hideNavigationBar = YES;
     [self initData];
     [self initUI];
     
@@ -33,7 +34,6 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self.navigationController.navigationBar setHidden:YES];
 }
 
 #pragma mark - methods

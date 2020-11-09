@@ -27,8 +27,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString * bormtime;
 ///院士
 @property (nonatomic, copy) NSString * education;
+//申报位阶
+@property (nonatomic, copy) NSString * levelIds;
 
-@property (nonatomic, copy) NSString * examaddress;
+@property (nonatomic, copy) NSString * examAddress;
 @property (nonatomic, copy) NSString * gender;
 @property (nonatomic, copy) NSString * idCard;
 @property (nonatomic, copy) NSString * levelActivityTypeId;
@@ -40,13 +42,15 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString * examProofState;
 @property (nonatomic, copy) NSString * nation;
 
+@property (nonatomic, copy) NSString * signInTime;
+
 @property (nonatomic, copy) NSString * nationality;
 @property (nonatomic, copy) NSString * nowLevelId;
 @property (nonatomic, copy) NSString * passportNumber;
 @property (nonatomic, copy) NSString * payApplication;
-@property (nonatomic, copy) NSString * photosurl;
+@property (nonatomic, copy) NSString * photosUrl;
 @property (nonatomic, copy) NSString * post;
-@property (nonatomic, copy) NSString * realname;
+@property (nonatomic, copy) NSString * realName;
 ///--状态 0 失败 1申请成功 2进行中
 @property (nonatomic, copy) NSString * resultsApplication;
 @property (nonatomic, copy) NSString * search;
@@ -76,7 +80,31 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, copy)NSString * shoeSize;    // 鞋码
 @property(nonatomic, copy)NSString * martialArtsYears;  // 练武年限
 
+@property(nonatomic, copy)NSString * typeName;  // 活动类型
+
+@property(nonatomic, copy)NSString * mechanismName;
+
+
+@property(nonatomic, copy)NSString * intervalName;  // 类型
+
 @property(nonatomic, copy)NSString * valueType;
+
+//活动类型id 用于判断 考试 or 活动
+//4 考试
+@property(nonatomic, copy)NSString * activityTypeId;
+//培训时间
+@property(nonatomic, copy)NSString * trainingTime;
+//技能考试时间
+@property(nonatomic, copy)NSString * skillExamTime;
+//活动开始时间
+@property(nonatomic, copy)NSString * activityStartTime;
+
+@property(nonatomic, copy)NSString * activityCode;
+//申报位阶
+
+
+//现位阶
+@property(nonatomic, copy)NSString * memberLevel;
 
 @end
 NS_ASSUME_NONNULL_END

@@ -160,10 +160,24 @@
 //申请开发票
 #define URL_POST_SHOPAPI_COMMON_INVOICE_INVOICING @"/shopapi/common/Invoice/Invoicing"
 
+#define URL_GET_SHOPAPI_COMMON_GOODS_GETGOODSINVOICE @"/shopapi/common/goods/getGoodsInvoice"
+
 //ahq 列表
 #define URL_POST_SHOPAPI_COMMON_AHP_GETAHQLIST @"/shopapi/common/ahq/getAhqList"
 //猜你想问
 #define URL_POST_SHOPAPI_COMMON_AHP_GUESSLIST @"/shopapi/common/ahq/guessList"
+
+//换开发票
+#define URL_POST_SHOPAPI_COMMON_INVOICE_CHANGEINVOICE  @"/shopapi/common/invoice/changeInvoice"
+
+//发送邮件
+#define URL_POST_SHOPAPI_COMMON_SENDMAIL  @"/common/sendMail"
+
+
+
+//修改发票信息
+#define URL_POST_SHOPAPI_COMMON_INVOICE_EDITINVOICE  @"/shopapi/common/Invoice/editInvoice"
+
 
 
 
@@ -183,7 +197,7 @@
 //忘记支付密码-设置支付密码
 #define  URL_GET_USER_PAY_PASSWORDFORGET @"/user/payPasswordForget"
 
-//活动编号查询是否有符合该段位且该机构的考试凭证
+//活动编号查询是否有符合该位阶且该机构的考试凭证
 #define  URL_GET_USER_PAY_CHECKPROOF @"/pay/CheckProof"
 
 
@@ -236,8 +250,15 @@
 //段 、品、品阶
 #define Activity_LEVEL_LEVELLIST  @"/level/levelList"
 
-//检查筛查所适用报名的段位
+//检查筛查所适用报名的位阶
 #define ACTIVITY_LEVEL_ACTIVITYCHECKEDLEVEL @"/activity/activityCheckedLevel"
+
+//段品制活动详情
+#define ACTIVITY_ACTIVITYDETAILS @"/activity/activityDetails"
+
+//段品制 - 报名页面回显信息(新)
+#define KungFu_applicationsEcho @"/activity/applicationsEcho"
+
 //法会列表
 #define Activity_RiteList @"/pujaController/pujaList"
 
@@ -345,6 +366,7 @@
 #define KungFu_applicationsSearch @"/applicationsApp/applications/get"
 // 报名信息详情
 #define KungFu_applicationsDetail @"/applicationsApp/applications/details"
+
 // 考试通知
 #define KungFu_examinationNotice @"/applicationsApp/applications/notice"
 // 开始理论考试
@@ -353,9 +375,9 @@
 #define KungFu_ExaminationSubmit @"/examinationApp/examination/achievements"
 // 保存答题信息
 #define KungFu_ExaminationSave @"/examinationApp/examination/save"
-// 查询报名信息
-//#define KungFu_applicationsSearch @"/applicationsApp/applications/get"
 
+// 科目列表
+#define Kungfu_SubjectList @"/gradeapi/common/subject/getList"
 
 #define KungFu_Certificate @"/certificateApp/certificate/get" // 查看证书列表
 /**领取实物证书*/
@@ -369,12 +391,14 @@
 #define KungFu_InstitutionList @"/mechanism/mechanismList"  // 机构列表
 #define KungFu_ApplicationsSave @"/activity/applicationsSave"  // 提交报名信息
 
+
 #define KungFu_MyApplications @"/applicationsApp/applications/myApplications"  // 我的报名信息
 // 根据活动编号查询电话和姓名
 #define KungFu_OrderDetailUserInfo @"/activity/userInfoByOrderCode"
+// 课程详情下方更多推荐
+#define KungFu_ClasDetail_Recomment @"/gradeapi/common/course/getRecommend"
 
 
-//#define KungFu_applicationsSearch @"/applicationsApp/applications/get"  // 查询报名信息
 
 // 查询教程详情
 #define KungFu_ClassDetail @"/gradeapi/common/Course/getCourseInfo"
@@ -402,6 +426,15 @@
 
 // 活动报名 表单 民族
 #define COMMON_NATIONDATA @"/common/nationData"
+
+//活动公告 公告列表
+#define ACTIVITY_ANNOINCEMENT   @"/activity/announcement"
+
+//活动公告 公告未读数量
+#define ACTIVITY_ANNOINCEMENTUNREADNUMBER   @"/activity/announcementUnReadNumber"
+
+//活动公告 标记已读
+#define ACTIVITY_ANNOINCEMENTMARKREAD   @"/activity/announcementMarkRead"
 
 
 

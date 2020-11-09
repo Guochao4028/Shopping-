@@ -56,7 +56,8 @@
 
 -(void)setFreightTotal:(NSString *)freightTotal{
     //总运费
-    [self.freightTotalLabel setText:[NSString stringWithFormat:@"¥%@", freightTotal]];
+    float  freightTotalFloat = [freightTotal floatValue];
+    [self.freightTotalLabel setText:[NSString stringWithFormat:@"¥%.2f", freightTotalFloat]];
 }
 
 

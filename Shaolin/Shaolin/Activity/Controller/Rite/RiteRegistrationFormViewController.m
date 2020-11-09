@@ -734,10 +734,11 @@
 }
 
 - (UIImageView *)formBackImageView{
-   if (!_formBackImageView){
+    if (!_formBackImageView){
         _formBackImageView = [[UIImageView alloc] init];
+        _formBackImageView.clipsToBounds = YES;
         _formBackImageView.contentMode = UIViewContentModeScaleAspectFill;
-       _formBackImageView.image = [UIImage imageNamed:@"riteFormBackImage"];
+        _formBackImageView.image = [UIImage imageNamed:@"riteFormBackImage"];
     }
     return _formBackImageView;
 }

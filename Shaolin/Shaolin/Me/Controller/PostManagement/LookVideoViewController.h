@@ -6,11 +6,11 @@
 //  Copyright © 2020 syqaxldy. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "RootViewController.h"
 #import "MePostManagerModel.h"
 NS_ASSUME_NONNULL_BEGIN
 
-@interface LookVideoViewController : UIViewController
+@interface LookVideoViewController : RootViewController
 @property(nonatomic,strong) MePostManagerModel *model;
 @property (nonatomic,strong) NSString *videoStr;
 @property(nonatomic,strong) NSURL *urlArr;

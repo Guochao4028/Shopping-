@@ -110,7 +110,10 @@
     if (freight == 0) {
         [self.freightLabel setText:SLLocalizedString(@"免运费")];
     }else{
-        [self.freightLabel setText:[NSString stringWithFormat:@"￥%@",cartGoodsModel.freight]];
+        
+        float  freightTotalFloat = [cartGoodsModel.freight floatValue];
+        
+        [self.freightLabel setText:[NSString stringWithFormat:@"¥%.2f", freightTotalFloat]];
     }
     [self.countLabel setText:[NSString stringWithFormat:@"x%@", cartGoodsModel.num]];
     

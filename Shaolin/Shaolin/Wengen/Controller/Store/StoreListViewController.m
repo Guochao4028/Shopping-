@@ -12,7 +12,7 @@
 
 #import "StoreListTableViewCell.h"
 #import "StoreViewController.h"
-
+#import "DataManager.h"
 #import "UIScrollView+EmptyDataSet.h"
 
 @interface StoreListViewController ()<UITableViewDelegate, UITableViewDataSource, StoreListTableViewCellDelegate,DZNEmptyDataSetSource,DZNEmptyDataSetDelegate>
@@ -54,18 +54,11 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
-//    self.navigationController.navigationBar.barTintColor = [UIColor hexColor:@"8E2B25"];
-    
-//    self.navigationController.navigationBar.hidden = NO;
-    [self wr_setNavBarBarTintColor:[UIColor hexColor:@"8E2B25"]];
-    [self wr_setNavBarTintColor:[UIColor whiteColor]];
-    [self wr_setNavBarBackgroundAlpha:1];
+    [self setNavigationBarRedTintColor];
 }
 -(void)viewWillDisappear:(BOOL)animated
 {
      [super viewWillDisappear:animated];
-//     self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
 }
 
 

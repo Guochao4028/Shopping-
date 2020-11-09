@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17126"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -35,7 +35,7 @@
                     </label>
                 </subviews>
             </view>
-            <color key="backgroundColor" red="0.5568627451" green="0.16862745100000001" blue="0.1450980392" alpha="1" colorSpace="calibratedRGB"/>
+            <viewLayoutGuide key="safeArea" id="SEy-5g-ep8"/>
             <constraints>
                 <constraint firstAttribute="bottom" secondItem="ewr-0z-Iko" secondAttribute="bottom" id="N6d-Jp-HXT"/>
                 <constraint firstAttribute="trailing" secondItem="ewr-0z-Iko" secondAttribute="trailing" id="fLK-I8-231"/>
@@ -43,7 +43,6 @@
                 <constraint firstItem="Mze-aE-E0V" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="peI-kg-YRn"/>
                 <constraint firstItem="ewr-0z-Iko" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="ydm-W5-iBB"/>
             </constraints>
-            <viewLayoutGuide key="safeArea" id="SEy-5g-ep8"/>
             <size key="customSize" width="187" height="130"/>
             <connections>
                 <outlet property="iconImageView" destination="Mze-aE-E0V" id="Zne-oF-rez"/>

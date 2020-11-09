@@ -9,7 +9,7 @@
 //
 //  功夫 - 搜索界面
 
-
+#import "RootViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

@@ -51,7 +51,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.titleLabe.text = SLLocalizedString(@"成绩查询");
+//    self.titleLabe.text = SLLocalizedString(@"成绩查询");
+    self.titleLabe.text = SLLocalizedString(@"考试结果");
     self.bgScrollerView.showsVerticalScrollIndicator = NO;
     self.bgScrollerView.showsHorizontalScrollIndicator = NO;
     
@@ -70,7 +71,7 @@
 }
 
 - (void) setCorneradioWithButton:(UIButton *)button {
-    CGRect maskFrame = CGRectMake(0, 0, button.width, button.height);
+    CGRect maskFrame = CGRectMake(0, 0, kScreenWidth - 100, button.height);
     UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:maskFrame byRoundingCorners:UIRectCornerTopLeft | UIRectCornerTopRight cornerRadii:CGSizeMake(4,4)];
     CAShapeLayer *maskLayer = [[CAShapeLayer alloc] init];
     maskLayer.frame = maskFrame;
@@ -86,9 +87,8 @@
     view.layer.masksToBounds = NO;
 }
 
-
-- (void)setAccuratenumber:(NSString *)accuratenumber{
-    _accuratenumber = accuratenumber;
+- (void)setScoreId:(NSString *)scoreId {
+    _scoreId = scoreId;
     
     [self requestData];
 }
@@ -96,9 +96,9 @@
 - (void)reloadViews{
     if (!self.scoreDetailModel) return;
     
-    self.scoreTitleLabel.text = [NSString stringWithFormat:@"%@",self.scoreDetailModel.activityname];
+    self.scoreTitleLabel.text = [NSString stringWithFormat:@"%@",self.scoreDetailModel.activityName];
     
-    [self.scoreTitleBtn setTitle:[NSString stringWithFormat:@" %@",self.scoreDetailModel.activityname] forState:UIControlStateNormal];
+    [self.scoreTitleBtn setTitle:[NSString stringWithFormat:@" %@",self.scoreDetailModel.activityName] forState:UIControlStateNormal];
     
     if ([self.scoreDetailModel.type isEqualToString:@"1"]){
         self.cardIdNumberLabel.text = SLLocalizedString(@"身份证号：");
@@ -107,7 +107,7 @@
     }
     [self setNewText:self.scoreDetailModel.name label:self.nameLabel];
     [self setNewText:self.scoreDetailModel.idCard label:self.cardIdNumberLabel];
-    [self setNewText:self.scoreDetailModel.accuratenumber label:self.accuratenumberLabel];
+//    [self setNewText:self.scoreDetailModel.theoryScore label:self.accuratenumberLabel];
     
     [self setNewText:self.scoreDetailModel.theoryScore label:self.theoryNumberLabel];
     [self setNewText:[self generateResultText:self.scoreDetailModel.theoryResult] label:self.theoryScoreLabel];
@@ -115,14 +115,14 @@
     if ([self.scoreDetailModel.theoryResult intValue] == 0) {
         // 不合格
         self.theoryBgVIewHeightCon.constant = 143;
-        if ([self.scoreDetailModel.count isEqualToString:@"1"]){
-            self.hittoryLabel.text = [NSString stringWithFormat:SLLocalizedString(@"(前一次理论成绩分数分别为：%@)"), self.scoreDetailModel.hittory];
-        } else if ([self.scoreDetailModel.count isEqualToString:@"2"]){
-            self.hittoryLabel.text = [NSString stringWithFormat:SLLocalizedString(@"(前两次理论成绩分数分别为：%@)"), self.scoreDetailModel.hittory];
-        } else {
+//        if ([self.scoreDetailModel.count isEqualToString:@"1"]){
+//            self.hittoryLabel.text = [NSString stringWithFormat:SLLocalizedString(@"(前一次理论成绩分数分别为：%@)"), self.scoreDetailModel.hittory];
+//        } else if ([self.scoreDetailModel.count isEqualToString:@"2"]){
+//            self.hittoryLabel.text = [NSString stringWithFormat:SLLocalizedString(@"(前两次理论成绩分数分别为：%@)"), self.scoreDetailModel.hittory];
+//        } else {
             self.hittoryLabel.text = @"";
             self.theoryBgVIewHeightCon.constant = 120;
-        }
+//        }
     } else {
         self.hittoryLabel.text = @"";
         self.theoryBgVIewHeightCon.constant = 120;
@@ -138,12 +138,12 @@
     }
     
     
-    if (IsNilOrNull(self.scoreDetailModel.certificateurl) || self.scoreDetailModel.certificateurl.length == 0) {
+    if (IsNilOrNull(self.scoreDetailModel.certificateUrl) || self.scoreDetailModel.certificateUrl.length == 0) {
         self.rewardImgv.userInteractionEnabled = NO;
         self.noImgLabel.hidden = NO;
     } else {
         self.rewardImgv.userInteractionEnabled = YES;
-        [self.rewardImgv sd_setImageWithURL:[NSURL URLWithString:self.scoreDetailModel.certificateurl] placeholderImage:nil];
+        [self.rewardImgv sd_setImageWithURL:[NSURL URLWithString:self.scoreDetailModel.certificateUrl] placeholderImage:nil];
         self.noImgLabel.hidden = YES;
     }
     
@@ -153,6 +153,7 @@
     NSArray *array = [label.text componentsSeparatedByString:@"："];
     if (array.count > 1){
         label.text = [NSString stringWithFormat:@"%@：%@", array.firstObject, text];
+        [label setLineBreakMode:NSLineBreakByCharWrapping];
     } else {
         label.text = text;
     }
@@ -165,8 +166,9 @@
 }
 
 - (void)showPhotoBrowser {
+    if (!self.scoreDetailModel || !self.scoreDetailModel.certificateUrl.length) return;
     YBIBImageData *data = [YBIBImageData new];
-    data.imageURL = [NSURL URLWithString:self.scoreDetailModel.certificateurl];
+    data.imageURL = [NSURL URLWithString:self.scoreDetailModel.certificateUrl];
     data.projectiveView = self.rewardImgv;
     
     YBImageBrowser *browser = [YBImageBrowser new];
@@ -211,14 +213,14 @@
 }
 
 - (void)requestData{
-    if (self.accuratenumber && self.accuratenumber.length){
+    if (self.scoreId && self.scoreId.length){
         MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
-        [[KungfuManager sharedInstance] getScoreDetailWithParams:@{@"accuratenumber":self.accuratenumber} callbacl:^(NSObject *object) {
-            if ([object isKindOfClass:[ScoreDetailModel class]]){
-                self.scoreDetailModel = (ScoreDetailModel *)object;
+        [[KungfuManager sharedInstance] getScoreDetailWithParams:@{@"id":self.scoreId} callbacl:^(Message *message) {
+            self.scoreDetailModel = [message.extensionDic objectForKey:@"ScoreDetailModel"];
+            if (self.scoreDetailModel){
                 [self checkScoreDetailModel:self.scoreDetailModel];
             } else {
-                self.scoreDetailModel = nil;
+                [ShaolinProgressHUD singleTextAutoHideHud:message.reason];
             }
             [self reloadViews];
             [hud hideAnimated:YES];

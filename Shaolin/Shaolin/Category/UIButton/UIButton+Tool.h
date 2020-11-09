@@ -16,6 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 +(void)setupButtonSelected:(UIButton *)button;
 ///设置发票 未选中按钮 样式
 +(void)setupButtonNormal:(UIButton *)button;
+///设置发票 不可选中按钮 样式
++(void)setupButtonDisabled:(UIButton *)button;
 
 
 @end

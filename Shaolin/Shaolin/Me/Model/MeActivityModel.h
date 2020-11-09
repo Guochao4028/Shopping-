@@ -16,30 +16,46 @@ NS_ASSUME_NONNULL_BEGIN
 /**活动报名时间*/
 @property (nonatomic, copy) NSString *createTime;
 /**活动开始时间*/
-@property (nonatomic, copy) NSString *applyStartTime;
+@property (nonatomic, copy) NSString *activityStartTime;
 /**活动结束时间*/
-@property (nonatomic, copy) NSString *applyEndTime;
+@property (nonatomic, copy) NSString *activityEndTime;
+/**当前时间*/
+@property (nonatomic, copy) NSString *systemTime;
+/**签到时间*/
+@property (nonatomic, copy) NSString *signInTime;
+/**签到状态  1 已签到 0 未签到*/
+@property (nonatomic, copy) NSString *signInState;
 /**活动位阶*/
 @property (nonatomic, copy) NSString *levelIds;
 /**活动图片*/
+@property (nonatomic, copy) NSString *institutionalThumbnail;
 @property (nonatomic, copy) NSString *mechanismImage;
+
 /**报名位阶*/
 @property (nonatomic, copy) NSString *levelId;
-@property (nonatomic, copy) NSString *levelName;
+/**位阶名称*/
+@property (nonatomic, copy) NSString *intervalName;
 /**活动名称*/
 @property (nonatomic, copy) NSString *activityName;
-/**活动详情*/
-@property (nonatomic, copy) NSString *addressDetails;
-/**非考试最低可参加段位*/
+/**活动地址*/
+@property (nonatomic, copy) NSString *examAddress;
+/**非考试最低可参加位阶*/
 @property (nonatomic, copy) NSString *levelFloor;
 /**已报名人数*/
 @property (nonatomic, copy) NSString *registeredNumber;
-/**活动状态 已结束*/
+/**活动状态 (已报名、 已结束)*/
 @property (nonatomic, copy) NSString *stateName;
 /**活动分类 - 考试、交流会、*/
 @property (nonatomic, copy) NSString *activityTypeName;
 /**活动分类 - id     4 为考试    */
 @property (nonatomic, copy) NSString *activityTypeId;
+
+///是否已签到
+- (BOOL)isCheckIn;
+///是否能够进行签到
+- (BOOL)canCheckIn;
+///超过签到时间
+- (BOOL)timeOut;
 @end
 /*
  {
@@ -71,7 +87,7 @@ NS_ASSUME_NONNULL_BEGIN
      mailbox = "";
      mailingAddress = "";
      mechanismCode = "";
-     mechanismImage = "https://static.oss.cdn.oss.gaoshier.cn/image/cdfcead0-a1f2-4b6e-a3b9-d23cf5946616.png";
+     institutionalThumbnail = "https://static.oss.cdn.oss.gaoshier.cn/image/cdfcead0-a1f2-4b6e-a3b9-d23cf5946616.png";
      memberId = "";
      nation = "";
      nationality = "";

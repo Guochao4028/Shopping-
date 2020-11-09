@@ -179,7 +179,7 @@
 }
 
 - (void) showAlertWithInfoString:(NSString *)text isBack:(BOOL)isback{
-    [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+    [SMAlert setConfirmBtBackgroundColor:kMainYellow];
     [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
     [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
     [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
@@ -561,7 +561,7 @@
     if (!_submitBtn) {
         _submitBtn = [[UIButton alloc] initWithFrame:CGRectMake(16, 3, kScreenWidth - 32, 40)];
         _submitBtn.layer.cornerRadius = 20;
-        _submitBtn.backgroundColor = [UIColor hexColor:@"8E2B25"];
+        _submitBtn.backgroundColor = kMainYellow;
         [_submitBtn setTitle:SLLocalizedString(@"提交答案") forState:UIControlStateNormal];
         _submitBtn.titleLabel.textColor = UIColor.whiteColor;
         _submitBtn.titleLabel.font = [UIFont systemFontOfSize:14];

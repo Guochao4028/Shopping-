@@ -128,7 +128,7 @@
         _recommendLabel = [[UILabel alloc] init];
         _recommendLabel.font = kRegular(11);
         _recommendLabel.textColor = [UIColor whiteColor];
-        _recommendLabel.backgroundColor = [UIColor colorForHex:@"8E2B25"];
+        _recommendLabel.backgroundColor = kMainYellow;
         _recommendLabel.layer.cornerRadius = 4;
         _recommendLabel.clipsToBounds = YES;
         _recommendLabel.text = SLLocalizedString(@"推荐");

@@ -20,12 +20,27 @@
     [button addTarget:button action:@selector(buttonClick) forControlEvents:UIControlEventTouchUpInside];
     return button;
 }
+
+
++ (instancetype)initWithManualAndTitle:(NSString*)title clickAction:(SMButtonClickAction)action{
+    SMButton *button = [SMButton new];
+    [button setTitle:title forState:UIControlStateNormal];
+    [button setAction:action];
+    [button addTarget:button action:@selector(buttonClickAction) forControlEvents:UIControlEventTouchUpInside];
+    return button;
+}
+
+
 - (void)buttonClick {
     if (self.action) self.action();
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
     [NSClassFromString(@"SMAlert") performSelector:NSSelectorFromString(@"hide")];
 #pragma clang diagnostic pop
+}
+
+- (void)buttonClickAction {
+    if (self.action) self.action();
 }
 
 @end

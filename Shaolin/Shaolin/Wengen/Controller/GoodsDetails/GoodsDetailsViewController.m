@@ -20,8 +20,6 @@
 
 #import "GoodsSpecificationView.h"
 
-#import "WengenNavgationView.h"
-
 #import "AddressViewController.h"
 
 #import "AddressListModel.h"
@@ -41,14 +39,13 @@
 #import "EMChatViewController.h"
 
 #import "CustomerServicViewController.h"
+#import "DataManager.h"
 
-@interface GoodsDetailsViewController ()<GoodsDetailBottomViewDelegate, WengenNavgationViewDelegate, GoodsSpecificationViewDelegate, GoodsAddressListViewDelegate, UINavigationControllerDelegate, CreateAddressViewControllerDelegate, AddressViewControllerDelegate>
+@interface GoodsDetailsViewController ()<GoodsDetailBottomViewDelegate, GoodsSpecificationViewDelegate, GoodsAddressListViewDelegate, UINavigationControllerDelegate, CreateAddressViewControllerDelegate, AddressViewControllerDelegate>
 
 @property(nonatomic, strong)GoodsDetailsView *goodsDetailsView;
 
 @property(nonatomic, strong)GoodsDetailBottomView *bottomView;
-
-@property(nonatomic, strong)WengenNavgationView *navgationView;
 
 @property(nonatomic, strong)GoodsAddressListView *listView;
 
@@ -76,17 +73,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
     [self initData];
     [self initUI];
-    
-    
     
     [self.navigationController setDelegate:self];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    self.navigationController.navigationBar.hidden = YES;
 }
 
 #pragma mark - methods
@@ -94,9 +89,6 @@
 -(void)initUI{
     self.automaticallyAdjustsScrollViewInsets = NO;
     [self.view setBackgroundColor:BackgroundColor_White];
-    
-    [self.view addSubview:self.navgationView];
-    
     [self.view addSubview:self.goodsDetailsView];
     
     __weak typeof(self)weakSelf = self;
@@ -420,8 +412,7 @@
     [self.navigationController pushViewController:customerServicVC animated:YES];
 }
 
-#pragma mark - WengenNavgationViewDelegate
--(void)tapBack{
+-(void)leftAction{
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -593,35 +584,9 @@
     [self.goodsDetailsView setAddressModel:model];
 }
 
-#pragma mark - setter / getter
-
--(WengenNavgationView *)navgationView{
-    
-    if (_navgationView == nil) {
-        //状态栏高度
-        CGFloat barHeight ;
-        /** 判断版本
-         获取状态栏高度
-         */
-        if (@available(iOS 13.0, *)) {
-            barHeight = [[[[[UIApplication sharedApplication] keyWindow] windowScene] statusBarManager] statusBarFrame].size.height;
-        } else {
-            barHeight = [[UIApplication sharedApplication] statusBarFrame].size.height;
-        }
-        _navgationView = [[WengenNavgationView alloc]initWithFrame:CGRectMake(0, barHeight, ScreenWidth, 44)];
-        [_navgationView setDelegate:self];
-    }
-    return _navgationView;
-    
-}
-
 -(GoodsDetailsView *)goodsDetailsView{
     if (_goodsDetailsView == nil) {
-        CGFloat height = ScreenHeight - Height_TabBar - 44;
-        
-        CGFloat y = CGRectGetMaxY(self.navgationView.frame);
-        
-        _goodsDetailsView = [[GoodsDetailsView alloc]initWithFrame:CGRectMake(0, y, ScreenWidth, height)];
+        _goodsDetailsView = [[GoodsDetailsView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight - NavBar_Height - Height_TabBar)];
     }
     
     return _goodsDetailsView;
@@ -629,7 +594,7 @@
 
 -(GoodsDetailBottomView *)bottomView{
     if (_bottomView == nil) {
-        _bottomView = [[GoodsDetailBottomView alloc]initWithFrame:CGRectMake(0, ScreenHeight - Height_TabBar, ScreenWidth, Height_TabBar)];
+        _bottomView = [[GoodsDetailBottomView alloc]initWithFrame:CGRectMake(0, ScreenHeight - NavBar_Height - Height_TabBar, self.view.width, Height_TabBar)];
         
         [_bottomView setDelegagte:self];
     }

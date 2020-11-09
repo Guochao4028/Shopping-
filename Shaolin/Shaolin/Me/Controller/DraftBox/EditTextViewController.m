@@ -37,9 +37,7 @@ static CGFloat kFooterHeight = 47.f;
     }
     return _imageArr;
 }
--(void)viewWillAppear:(BOOL)animated {
-    
-}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.titleTextMaxCount = 30;
@@ -58,8 +56,6 @@ static CGFloat kFooterHeight = 47.f;
     
     //    self.automaticallyAdjustsScrollViewInsets = NO;
     self.view.backgroundColor = [UIColor whiteColor];
-    
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
     
     self.viewLine1 = [[UIView alloc] initWithFrame:CGRectMake(0,SLChange(70), kWidth, 1)];
     self.viewLine1.backgroundColor = [UIColor colorForHex:@"E5E5E5"];
@@ -160,7 +156,8 @@ static CGFloat kFooterHeight = 47.f;
                                                               handler:^(UIAlertAction * action) {
             
             //敏感词校验由服务器进行
-            [weakSelf postTextAndPhoto:self.titleTextView.text Introduction:self.introductionTextView.text TextId:model.id Source:@"" Author:@"" Content:htmlStr Type:typeStr State:@"2" CreateId:@"" CreateName:@"" CreateType:@"2" Coverurlids:lidsArr CoverUrlPlist:self.imageArr];
+//            [weakSelf postTextAndPhoto:self.titleTextView.text Introduction:self.introductionTextView.text TextId:model.id Source:@"" Author:@"" Content:htmlStr Type:typeStr State:@"2" CreateId:@"" CreateName:@"" CreateType:@"2" Coverurlids:lidsArr CoverUrlPlist:self.imageArr];
+            [weakSelf postTextAndPhoto:self.titleTextView.text Introduction:self.introductionTextView.text TextId:model.id Source:@"" Author:@"" Content:strUrl Type:typeStr State:@"2" CreateId:@"" CreateName:@"" CreateType:@"2" Coverurlids:lidsArr CoverUrlPlist:self.imageArr];
         }];
         
         UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:SLLocalizedString(@"取消") style:UIAlertActionStyleDefault
@@ -333,7 +330,8 @@ static CGFloat kFooterHeight = 47.f;
         }
         
         //敏感词校验由服务器进行
-        [self postTextAndPhoto:self.titleTextView.text Introduction:self.introductionTextView.text TextId:model.id Source:@"" Author:@"" Content:htmlStr Type:@"2" State:@"1" CreateId:@"" CreateName:@"" CreateType:@"2" Coverurlids:lidsArr CoverUrlPlist:self.imageArr];
+//        [self postTextAndPhoto:self.titleTextView.text Introduction:self.introductionTextView.text TextId:model.id Source:@"" Author:@"" Content:htmlStr Type:@"2" State:@"1" CreateId:@"" CreateName:@"" CreateType:@"2" Coverurlids:lidsArr CoverUrlPlist:self.imageArr];
+        [self postTextAndPhoto:self.titleTextView.text Introduction:self.introductionTextView.text TextId:model.id Source:@"" Author:@"" Content:strUrl Type:@"2" State:@"1" CreateId:@"" CreateName:@"" CreateType:@"2" Coverurlids:lidsArr CoverUrlPlist:self.imageArr];
     }];
 }
 
@@ -417,7 +415,7 @@ static CGFloat kFooterHeight = 47.f;
             self.titleTipsLabel.textColor = [UIColor colorForHex:@"999999"];
         } else if (textCount > textMaxCount){
             self.titleTipsLabel.text = [NSString stringWithFormat:SLLocalizedString(@"标题字数不可超过%ld个字"), textMaxCount];
-            self.titleTipsLabel.textColor = [UIColor colorForHex:@"8E2B25"];
+            self.titleTipsLabel.textColor = kMainYellow;
         } else {
             self.titleTipsLabel.text = @"";
         }
@@ -429,7 +427,7 @@ static CGFloat kFooterHeight = 47.f;
             self.introductionTipsLabel.textColor = [UIColor colorForHex:@"999999"];
         } else if (textCount > textMaxCount){
             self.introductionTipsLabel.text = [NSString stringWithFormat:SLLocalizedString(@"简介字数不可超过%ld个字"), textMaxCount];
-            self.introductionTipsLabel.textColor = [UIColor colorForHex:@"8E2B25"];
+            self.introductionTipsLabel.textColor = kMainYellow;
         } else {
             self.introductionTipsLabel.text = @"";
         }
@@ -713,11 +711,6 @@ static CGFloat kFooterHeight = 47.f;
     }
     
     return resultArray;
-}
-
-#pragma mark - device
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    return UIStatusBarStyleDefault;
 }
 /*
  #pragma mark - Navigation

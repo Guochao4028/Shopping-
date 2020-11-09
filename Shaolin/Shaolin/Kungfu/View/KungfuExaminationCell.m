@@ -54,7 +54,7 @@
         _nameLabel = [[UILabel alloc]init];
         _nameLabel.font = kRegular(15);
          _nameLabel.textAlignment = NSTextAlignmentCenter;
-        _nameLabel.textColor = [UIColor colorForHex:@"8E2B25"];
+        _nameLabel.textColor = kMainYellow;
     }
     return _nameLabel;
 }

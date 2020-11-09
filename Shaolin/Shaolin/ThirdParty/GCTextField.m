@@ -262,7 +262,7 @@ typedef NS_ENUM(NSInteger, CCLimitType){
     BOOL isLengthQualified = [self p_isOnRequired:text];
     
     //判断是否emoji
-    BOOL isEmoji = [NSString isContainsEmoji:text];
+    BOOL isEmoji = [NSString isContainsEmoji:string];
     //判断是否有空格
     //    NSString *blank = [[string componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] componentsJoinedByString:@""];
     //    BOOL isblank = NO;

@@ -211,9 +211,23 @@
     _model = model;
      NSString *status = model.status;
      if ([status isEqualToString:@"2"] == YES){
-        [self.normalCanceButton setHidden:NO];
+        
          [self.normalCanceButton setTitle:@"申请退款" forState:UIControlStateNormal];
-        [self.deleOrderButton setHidden:YES];
+         [self.deleOrderButton setHidden:YES];
+         [self.deleOrderButton setHidden:NO];
+         
+         if (model.isUnified) {
+             [self.normalCanceButton setHidden:NO];
+             [self.normalCanceView setHidden:NO];
+             [self.emptyView setHidden:YES];
+         }else{
+             [self.normalCanceButton setHidden:YES];
+             [self.normalCanceView setHidden:YES];
+             [self.emptyView setHidden:NO];
+         }
+       
+        
+         
            
      }else if ([status isEqualToString:@"3"] == YES){
         [self.normalCanceButton setHidden:YES];
@@ -266,6 +280,11 @@
            
            [self.DeliveryCheckInvoiceButton setTitle:buttonTitle forState:UIControlStateNormal];
            [self.normalCheckInvoiceButton setTitle:buttonTitle forState:UIControlStateNormal];
+           
+           if ([model.is_foreign isEqualToString:@"1"] && [buttonTitle isEqualToString:SLLocalizedString(@"补开发票")]) {
+               [self.DeliveryCheckInvoiceButton setHidden:YES];
+               [self.normalCheckInvoiceButton setHidden:YES];
+           }
        }
     
 }

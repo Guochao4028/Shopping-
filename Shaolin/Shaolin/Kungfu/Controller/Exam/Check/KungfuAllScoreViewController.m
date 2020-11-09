@@ -30,7 +30,7 @@ static NSString *const scoreCellId = @"KfAllScoreCell";
     [super viewDidLoad];
     self.pageNum = 1;
     self.pageSize = 10;
-    self.titleLabe.text = SLLocalizedString(@"成绩查询");
+    self.titleLabe.text = SLLocalizedString(@"考试结果");
     self.view.backgroundColor = [UIColor hexColor:@"fafafa"];
     [self.view addSubview:self.tableView];
     
@@ -58,9 +58,9 @@ static NSString *const scoreCellId = @"KfAllScoreCell";
 //
 //}
 
-- (void)pushKfScoreDetailViewController:(NSString *)accuratenumber{
+- (void)pushKfScoreDetailViewController:(NSString *)scoreId{
     KfScoreDetailViewController *vc = [[KfScoreDetailViewController alloc] init];
-    vc.accuratenumber = accuratenumber;
+    vc.scoreId = scoreId;
     [self.navigationController pushViewController:vc animated:YES];
 }
 
@@ -117,8 +117,7 @@ static NSString *const scoreCellId = @"KfAllScoreCell";
     return -30;
 }
 
-- (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView
-{
+- (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView{
     NSString *text = SLLocalizedString(@"暂无成绩");
     
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont boldSystemFontOfSize:15.0f],
@@ -133,53 +132,50 @@ static NSString *const scoreCellId = @"KfAllScoreCell";
 
 #pragma mark - delegate && dataSources
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return self.scoreList.count;
 }
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
+
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return 1;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     WEAKSELF
     KfAllScoreCell * cell = [tableView dequeueReusableCellWithIdentifier:scoreCellId];
     ScoreListModel *model = self.scoreList[indexPath.section];
     cell.cellModel = model;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.checkHandle = ^{
-        [weakSelf pushKfScoreDetailViewController:model.accuratenumber];
+        [weakSelf pushKfScoreDetailViewController:model.scoreId];
     };
     
     return cell;
 }
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    ScoreListModel *model = self.scoreList[indexPath.section];
-    [self pushKfScoreDetailViewController:model.accuratenumber];
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+//    ScoreListModel *model = self.scoreList[indexPath.section];
+//    [self pushKfScoreDetailViewController:model.scoreId];
 }
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 113;
 }
--(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
-{
+
+-(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     return 0.001;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-{
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     return .001;
 }
--(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
-{
+
+-(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 0, 0)];
     return v;
 }
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-{
+
+-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWidth, 10)];
     return v;
 }
@@ -187,7 +183,7 @@ static NSString *const scoreCellId = @"KfAllScoreCell";
 
 -(UITableView *)tableView {
     if (!_tableView) {
-        _tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, kWidth, kHeight - NavBar_Height) style:(UITableViewStyleGrouped)];
+        _tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 5, kWidth, kHeight - NavBar_Height - kBottomSafeHeight - 5) style:(UITableViewStyleGrouped)];
         _tableView.delegate = self;
         _tableView.dataSource = self;
         _tableView.backgroundColor = UIColor.clearColor;

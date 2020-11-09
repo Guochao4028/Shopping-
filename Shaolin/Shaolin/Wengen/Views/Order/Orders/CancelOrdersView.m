@@ -214,7 +214,7 @@
         CGFloat y = CGRectGetMaxY(self.contentView.bounds) - 40 - 20;
         CGFloat width = CGRectGetWidth(self.contentView.bounds) - 32;
         [_determineButton setFrame:CGRectMake(16, y, width, 40)];
-        [_determineButton setBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+        [_determineButton setBackgroundColor:kMainYellow];
         
         [_determineButton setAlpha:0.56];
         

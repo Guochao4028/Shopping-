@@ -94,6 +94,57 @@ typedef NS_ENUM(NSUInteger, CalculatedTimeType){
     CalculatedTimeTypeSecond = 20,
 };
 
+//订单类型
+typedef NS_ENUM(NSUInteger, OrderStatusType){
+    ///1：待付款
+    OrderStatusPaymentType = 1,
+    ///2：待发货
+    OrderStatusSendGoodsType = 2,
+    ///3：待收货
+    OrderStatusForGoddsType = 3,
+    ///4：已收货
+    OrderStatusHaveGoodsType = 4,
+    ///5：完成
+    OrderStatusCompleteType = 5,
+    ///6：取消
+    OrderStatusCancelType = 6,
+    ///7：支付超时
+    OrderStatusTimeoutType = 7,
+};
+
+//活动报名 费用类型
+typedef NS_ENUM(NSUInteger, KungfuApplyExpenseType){
+    ///报名费
+    KungfuApplyExpenseSignUpType = 0,
+    ///考试费
+    KungfuApplyExpenseExaminationType = 1,
+    /// 未选则任何选项
+    KungfuApplyExpenseNoSelectedType = 404,
+};
+
+
+//订单详情 类型
+typedef NS_ENUM(NSUInteger, OrderDetailsStatusType){
+    ///教程
+    OrderDetailsTutorialType = 2,
+    ///活动
+    OrderDetailsActivityType = 3,
+};
+
+//订单详情 类型
+typedef NS_ENUM(NSUInteger, SearchHistoryType){
+    ///文章
+    SearchHistoryArticleType = 10,
+    ///课程
+    SearchHistoryCourseType = 20,
+    ///商品
+    SearchHistoryGoodsType = 30,
+    ///活动 法会 - 少林客堂
+    SearchHistoryRiteClassroomType = 40,
+    ///活动 法会 -  少林慈善
+    SearchHistoryRiteCharityType = 50,
+};
+
 
 
 

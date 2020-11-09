@@ -49,7 +49,7 @@
     
     self.nameLabel.text = [NSString stringWithFormat:SLLocalizedString(@"活动名称：%@"),NotNilAndNull(cellModel.activityName)?cellModel.activityName:@""];
     self.timeLabel.text = [NSString stringWithFormat:SLLocalizedString(@"报名时间：%@"),createTime];
-    self.levelLabel.text = [NSString stringWithFormat:SLLocalizedString(@"所属位阶：%@"),NotNilAndNull(cellModel.levelName)?cellModel.levelName:@""];
+    self.levelLabel.text = [NSString stringWithFormat:SLLocalizedString(@"所属位阶：%@"),NotNilAndNull(cellModel.levelIds)?cellModel.levelIds:@""];
     self.typeLabel.text = [NSString stringWithFormat:SLLocalizedString(@"活动类型：%@"),NotNilAndNull(cellModel.activityType)?cellModel.activityType:@""];   
 }
 

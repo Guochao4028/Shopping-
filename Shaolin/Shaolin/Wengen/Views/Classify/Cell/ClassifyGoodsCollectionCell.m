@@ -22,6 +22,13 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *starAndNumberLabel;
 
+@property (weak, nonatomic) IBOutlet UIImageView *proprietaryImageView;
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *proprietaryImageViewW;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *proprietaryGayW;
+
+
+
 @end
 
 @implementation ClassifyGoodsCollectionCell
@@ -74,6 +81,19 @@
     }
     
     self.starAndNumberLabel.text = [NSString stringWithFormat:SLLocalizedString(@"销量 %@    星级 %@"),NotNilAndNull(model.user_num)?model.user_num:@"0",starStr];
+    
+    
+    BOOL is_self = [model.is_self boolValue];
+    if (is_self) {
+        [self.proprietaryImageView setHidden:NO];
+        self.proprietaryImageViewW.constant = 35;
+        self.proprietaryGayW.constant = 5;
+    }else{
+        [self.proprietaryImageView setHidden:YES];
+        self.proprietaryImageViewW.constant = 0;
+        self.proprietaryGayW.constant = 0;
+    }
+    
 }
 
 @end

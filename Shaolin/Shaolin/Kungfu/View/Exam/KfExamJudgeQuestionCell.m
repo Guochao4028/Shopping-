@@ -93,7 +93,7 @@
 
 - (IBAction)chooseTrueHandle:(UIButton *)sender
 {
-    [self.chooseTrueBtn setTitleColor:[UIColor hexColor:@"8E2B25"] forState:UIControlStateNormal];
+    [self.chooseTrueBtn setTitleColor:kMainYellow forState:UIControlStateNormal];
     [self.chooseTrueBtn setImage:[UIImage imageNamed:@"exam_choose"] forState:UIControlStateNormal];
     [self.chooseFalseBtn setImage:[UIImage imageNamed:@"exam_unChoose"] forState:UIControlStateNormal];
     [self.chooseFalseBtn setTitleColor:[UIColor hexColor:@"333333"] forState:UIControlStateNormal];
@@ -117,7 +117,7 @@
 
 - (IBAction)chooseFalseHandle:(UIButton *)sender
 {
-    [self.chooseFalseBtn setTitleColor:[UIColor hexColor:@"8E2B25"] forState:UIControlStateNormal];
+    [self.chooseFalseBtn setTitleColor:kMainYellow forState:UIControlStateNormal];
     [self.chooseFalseBtn setImage:[UIImage imageNamed:@"exam_choose"] forState:UIControlStateNormal];
     [self.chooseTrueBtn setImage:[UIImage imageNamed:@"exam_unChoose"] forState:UIControlStateNormal];
     [self.chooseTrueBtn setTitleColor:[UIColor hexColor:@"333333"] forState:UIControlStateNormal];

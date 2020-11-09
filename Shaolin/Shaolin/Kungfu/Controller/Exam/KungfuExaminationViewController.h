@@ -7,13 +7,13 @@
 //
 //
 //
-//  功夫 - 考试
+//  功夫 - 考试 (弃用)
 
-#import <UIKit/UIKit.h>
+#import "RootViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface KungfuExaminationViewController : UIViewController
+@interface KungfuExaminationViewController : RootViewController
 
 @end
 

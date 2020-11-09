@@ -14,6 +14,8 @@
 
 #import "SMAlert.h"
 
+#import "SearchHistoryModel.h"
+
 @interface SearchViewController ()<SearchNavgationViewDelegate>
 
 @property(nonatomic, strong)SearchNavgationView *navgationView;
@@ -29,15 +31,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.hideNavigationBarView = YES;
     [self initUI];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
     
-     [super viewWillAppear:animated];
-    
-    self.navigationController.navigationBar.hidden = YES;
-    
+    [super viewWillAppear:animated];
     self.historyArray = nil;
     
     [self.searchHistoryView removeFromSuperview];
@@ -88,13 +88,16 @@
     CGFloat y = SLChange(15) + SLChange(40);
     CGFloat letfWidth = SLChange(15);
     for (int i = 0; i < textArr.count; i++) {
-        NSString *text = [self subTextString:textArr[i] len:6];
+        NSString *text = [self subModelTextString:textArr[i] len:6];
         CGFloat width = [self getWidthWithStr:text] + SLChange(35);
         if (letfWidth + width + SLChange(15) > kWidth) {
             if (y >= SLChange(130) && [title isEqualToString:SLLocalizedString(@"搜索历史")]) {
                 [self removeTestDataWithTextArr:textArr index:i];
                 break;
             }
+            
+            
+            
             y += SLChange(40);
             letfWidth = SLChange(15);
         }
@@ -131,7 +134,7 @@
     
     [self.navgationView resignFirstResponder];
     
-    [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+    [SMAlert setConfirmBtBackgroundColor:kMainYellow];
     [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
     [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
     [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
@@ -148,7 +151,13 @@
         [self.searchHistoryView removeFromSuperview];
         self.searchHistoryView = [self setNoHistoryView];
         [self.historyArray removeAllObjects];
-        [NSKeyedArchiver archiveRootObject:self.historyArray toFile:KGoodsHistorySearchPath];
+//        [NSKeyedArchiver archiveRootObject:self.historyArray toFile:KGoodsHistorySearchPath];
+        
+        
+        NSString *userId = [SLAppInfoModel sharedInstance].id;
+        [[ModelTool shareInstance]deleteTableName:@"searchHistory" where:[NSString stringWithFormat:@"userId = '%@' AND type = '%ld' ", userId, SearchHistoryGoodsType]];
+        
+        
         [self.view addSubview:self.searchHistoryView];
        
     }] cancleButton:[SMButton initWithTitle:SLLocalizedString(@"取消") clickAction:nil]];
@@ -173,23 +182,42 @@
     [NSKeyedArchiver archiveRootObject:testArr toFile:KGoodsHistorySearchPath];
 }
 
--(NSString*)subTextString:(NSString*)str len:(NSInteger)len{
-    if(str.length<=len)return str;
+//-(NSString*)subTextString:(NSString*)str len:(NSInteger)len{
+//    if(str.length<=len)return str;
+//    int count=0;
+//    NSMutableString *sb = [NSMutableString string];
+//
+//    for (int i=0; i<str.length; i++) {
+//        NSRange range = NSMakeRange(i, 1) ;
+//        NSString *aStr = [str substringWithRange:range];
+//        count += [aStr lengthOfBytesUsingEncoding:NSUTF8StringEncoding]>1?2:1;
+//        [sb appendString:aStr];
+//        if(count >= len*2) {
+//            return (i==str.length-1)?[sb copy]:[NSString stringWithFormat:@"%@...",[sb copy]];
+//
+//        }
+//    }
+//    return str;
+//}
+
+-(NSString*)subModelTextString:(SearchHistoryModel*)model len:(NSInteger)len{
+    NSString *searchContent = model.searchContent;
+    if (searchContent.length<=len) return searchContent;
     int count=0;
     NSMutableString *sb = [NSMutableString string];
-    
-    for (int i=0; i<str.length; i++) {
+    for (int i=0; i<searchContent.length; i++) {
         NSRange range = NSMakeRange(i, 1) ;
-        NSString *aStr = [str substringWithRange:range];
+        NSString *aStr = [searchContent substringWithRange:range];
         count += [aStr lengthOfBytesUsingEncoding:NSUTF8StringEncoding]>1?2:1;
         [sb appendString:aStr];
         if(count >= len*2) {
-            return (i==str.length-1)?[sb copy]:[NSString stringWithFormat:@"%@...",[sb copy]];
-            
+            return (i==searchContent.length-1)?[sb copy]:[NSString stringWithFormat:@"%@...",[sb copy]];
+
         }
     }
-    return str;
+    return searchContent;
 }
+
 
 - (UIView *)setNoHistoryView {
     UIView *historyView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.navgationView.frame), kWidth, SLChange(80))];
@@ -224,11 +252,17 @@
         [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请输入搜索内容") view:self.view afterDelay:TipSeconds];
         return;
     }
-    if ([self.historyArray containsObject:text]) {
-           [self.historyArray removeObject:text];
-       }
-    [self.historyArray insertObject:text atIndex:0];
-    [NSKeyedArchiver archiveRootObject:self.historyArray toFile:KGoodsHistorySearchPath];
+    NSString *userId = [SLAppInfoModel sharedInstance].id;
+    
+    SearchHistoryModel *historyModel = [[SearchHistoryModel alloc]init];
+    historyModel.userId = userId;
+    historyModel.searchContent = text;
+    
+    
+    historyModel.type = [NSString stringWithFormat:@"%ld", SearchHistoryGoodsType];;
+    
+    [historyModel addSearchWordWithDataArray:_historyArray];
+    
     
     WengenSearchResultViewController *resultVC = [[WengenSearchResultViewController alloc]init];
     resultVC.storeId = self.storeId;
@@ -278,7 +312,11 @@
 
 -(NSMutableArray *)historyArray{
     if (!_historyArray) {
-           _historyArray = [NSKeyedUnarchiver unarchiveObjectWithFile:KGoodsHistorySearchPath];
+//           _historyArray = [NSKeyedUnarchiver unarchiveObjectWithFile:KGoodsHistorySearchPath];
+        
+        
+        
+        _historyArray = [[[ModelTool shareInstance] select:[SearchHistoryModel class] tableName:@"searchHistory" where:[NSString stringWithFormat:@"type = '%ld' AND userId = '%@' ORDER BY id DESC", SearchHistoryGoodsType, [SLAppInfoModel sharedInstance].id]] mutableCopy];
            if (!_historyArray) {
                self.historyArray = [NSMutableArray array];
            }

@@ -28,7 +28,6 @@
 @property(nonatomic,strong) WKWebView *webView;
 @property(nonatomic,strong) NSMutableDictionary *dataDic;
 @property(nonatomic,strong) SLShareView *slShareView;
-@property(nonatomic) BOOL originNavigationBarHidden;
 
 @property(nonatomic, strong)MBProgressHUD *hud;
 
@@ -58,25 +57,18 @@
 //    return _scrollView;
 //}
 - (void)viewWillAppear:(BOOL)animated {
-    self.originNavigationBarHidden = self.navigationController.navigationBar.hidden;
-    self.navigationController.navigationBar.hidden = YES;
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
-    
-    
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    self.navigationController.navigationBar.hidden = YES;
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
+    [super viewWillAppear:animated];
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
-    self.navigationController.navigationBar.hidden = self.originNavigationBarHidden;
+    [super viewWillDisappear:animated];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    if (!self.hideNavigationBarView && !self.hideNavigationBar){
+        self.hideNavigationBarView = YES;
+    }
     self.hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
     
     self.view.backgroundColor = [UIColor whiteColor];
@@ -285,8 +277,8 @@
     [leftBtn setEnlargeEdgeWithTop:15 right:15 bottom:15 left:15];
     [self.view addSubview:leftBtn];
     [leftBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(16);
-        make.top.mas_equalTo(10.5+StatueBar_Height);
+        make.left.mas_equalTo(9);
+        make.top.mas_equalTo(10+StatueBar_Height);
         make.width.mas_equalTo(25);
         make.height.mas_equalTo(25);
     }];
@@ -739,11 +731,6 @@
     [dateFormatter setDateFormat:@"YYYY-MM-dd HH:mm:ss"];
     NSDate *datestr = [dateFormatter dateFromString:dateStr];
     return datestr;
-}
-
-#pragma mark - device
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    return UIStatusBarStyleDefault;
 }
 
 -(void)dealloc{

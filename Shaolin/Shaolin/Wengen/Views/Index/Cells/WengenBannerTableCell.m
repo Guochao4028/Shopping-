@@ -76,13 +76,13 @@
 
 -(SDCycleScrollView *)bannerView{
     if (_bannerView == nil) {
-        _bannerView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(16, 12, ScreenWidth - 32, (154 -24)) delegate:self placeholderImage:[UIImage imageNamed:@"default_banner"]];
+        _bannerView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(16, 12, ScreenWidth - 32, (145)) delegate:self placeholderImage:[UIImage imageNamed:@"default_banner"]];
         _bannerView.layer.masksToBounds = YES;
         _bannerView.layer.cornerRadius = 4;
         _bannerView.hidesForSinglePage = YES;
         _bannerView.showPageControl = NO;
         _bannerView.pageControlStyle = SDCycleScrollViewPageContolStyleClassic;
-        _bannerView.bannerImageViewContentMode = UIViewContentModeScaleToFill;
+        _bannerView.bannerImageViewContentMode = UIViewContentModeScaleAspectFill;
     }
     return _bannerView;
 }

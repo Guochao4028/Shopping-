@@ -10,7 +10,22 @@
 
 NS_ASSUME_NONNULL_BEGIN
 @class ClassGoodsModel;
+
+@interface ClassDetailHistoryModel : NSObject
+
+
+
+@property (nonatomic, copy) NSString *history_id;
+@property (nonatomic, copy) NSString *goods_id;
+@property (nonatomic, copy) NSString *user_id;
+@property (nonatomic, copy) NSString *add_time;
+@property (nonatomic, copy) NSString *attr_id;
+@property (nonatomic, copy) NSString *look_time;
+
+@end
+
 @interface ClassDetailModel : NSObject
+@property (nonatomic, copy) NSString *subject_id;
 ///1 免费 2 会员 3 付费
 @property (nonatomic, copy) NSString *pay_type;
 @property (nonatomic, copy) NSString *classDetailId;
@@ -28,15 +43,21 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *collect;
 @property (nonatomic, strong) NSArray < ClassGoodsModel *> *goods_next;
 @property (nonatomic, copy) NSArray *img_data;
+@property (nonatomic, copy) NSString *cover;
+
 @property (nonatomic, copy) NSString *look_level_name;
+
 ///简介
 @property(nonatomic, copy)NSString *intro;
 
+@property (nonatomic, strong) ClassDetailHistoryModel *history;
 
 - (BOOL) isFreeClass;
 - (BOOL) isVIPClass;
 - (BOOL) isPayClass;
 @end
+
+
 /*
  "pay_type": 1,1 免费 2 会员 3 付费 <number>
  "id": 53,... <number>

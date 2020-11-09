@@ -43,8 +43,8 @@
     
     [self modifiedButton:self.firstButton borderColor:[UIColor colorForHex:@"979797"] cornerRadius:15];
     
-    [self modifiedButton:self.secondButton borderColor:[UIColor colorForHex:@"8E2B25"] cornerRadius:15];
-    [self.secondButton setBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+    [self modifiedButton:self.secondButton borderColor:kMainYellow cornerRadius:15];
+    [self.secondButton setBackgroundColor:kMainYellow];
     [self.secondButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
 }
 

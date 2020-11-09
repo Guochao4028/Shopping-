@@ -45,6 +45,13 @@
     [self addSubview:self.contentView];
     [self.contentView setFrame:self.bounds];
     
+    //设置所有按钮的不可选样式
+    [UIButton setupButtonDisabled:self.specialButton];
+    [UIButton setupButtonDisabled:self.electronicInvoiceButton];
+    [UIButton setupButtonDisabled:self.paperInvoiceButton];
+    [UIButton setupButtonDisabled:self.normalButton];
+    
+    //初始选中 样式
     [UIButton setupButtonSelected:self.electronicInvoiceButton];
     self.invoiceShape = @"2";
     [UIButton setupButtonNormal:self.paperInvoiceButton];
@@ -53,6 +60,10 @@
     self.invoiceType = @"1";
     [UIButton setupButtonNormal:self.specialButton];
     
+    
+
+  
+   
 }
 
 
@@ -64,6 +75,20 @@
         [UIButton setupButtonNormal:self.paperInvoiceButton];
         [self.paperInvoiceButton setSelected:NO];
         self.invoiceShape = @"2";
+        
+        [UIButton setupButtonSelected:self.normalButton];
+        [UIButton setupButtonNormal:self.specialButton];
+        [self.specialButton setSelected:NO];
+        [self.normalButton setSelected:YES];
+        self.invoiceType = @"1";
+        
+        if ([self.delegate respondsToSelector:@selector(orderFillInvoiceTabelHeadView:tapViewChangeProformaInvoice:)]) {
+            [self.delegate orderFillInvoiceTabelHeadView:self tapViewChangeProformaInvoice:self.invoiceShape];
+        }
+        
+        if ([self.delegate respondsToSelector:@selector(orderFillInvoiceTabelHeadView:tapView:)]) {
+            [self.delegate orderFillInvoiceTabelHeadView:self tapView:NO];
+        }
     }
 }
 
@@ -74,6 +99,10 @@
         [UIButton setupButtonNormal:self.electronicInvoiceButton];
         [self.electronicInvoiceButton setSelected:NO];
         self.invoiceShape = @"1";
+        
+        if ([self.delegate respondsToSelector:@selector(orderFillInvoiceTabelHeadView:tapViewChangeProformaInvoice:)]) {
+            [self.delegate orderFillInvoiceTabelHeadView:self tapViewChangeProformaInvoice:self.invoiceShape];
+        }
         
     }
 }
@@ -96,10 +125,10 @@
 - (IBAction)specialButtonAction:(UIButton *)sender{
     sender.selected = !sender.selected;
     
-//    if (self.qualificationsModel == nil) {
-//        [SLProgressHUDManagar showTipMessageInHUDView:WINDOWSVIEW withMessage:SLLocalizedString(@"请您至“我的-个人信息管理-增票资质”中开通与维护增票信息") afterDelay:TipSeconds];
-//        return;
-//    }
+    if (self.qualificationsModel == nil) {
+        [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"请您至“我的-个人信息管理-增票资质”中开通与维护增票信息")];
+        return;
+    }
     
     if (sender.selected) {
         [UIButton setupButtonSelected:sender];
@@ -116,6 +145,35 @@
     if ([self.delegate respondsToSelector:@selector(orderFillInvoiceTabelHeadView:tapView:)]) {
         [self.delegate orderFillInvoiceTabelHeadView:self tapView:YES];
     }
+    
+    if ([self.delegate respondsToSelector:@selector(orderFillInvoiceTabelHeadView:tapViewChangeProformaInvoice:)]) {
+        [self.delegate orderFillInvoiceTabelHeadView:self tapViewChangeProformaInvoice:self.invoiceShape];
+    }
+}
+
+-(void)setConfigurationDic:(NSDictionary *)configurationDic{
+    _configurationDic = configurationDic;
+    
+//    /**
+//     配置 发票选择项
+//     "is_VAT" 0 不可选 增值税发票 1 可选
+//     "is_electronic" 0 不可选电子发票 1 可选
+//     "is_paper" 所有店铺默认都可选纸质发票 可以不做判断
+//     */
+//    BOOL is_electronic = [configurationDic[@"is_electronic"] boolValue];
+//    BOOL is_VAT = [configurationDic[@"is_VAT"] boolValue];
+//
+//    if (is_VAT == NO) {
+//        [self.specialButton setEnabled:NO];
+//    }
+//
+//    if (is_electronic == NO) {
+//        [self.electronicInvoiceButton setEnabled:NO];
+//    }
+
+    [self.specialButton setEnabled:NO];
+    [self.paperInvoiceButton setEnabled:NO];
+
     
 }
 

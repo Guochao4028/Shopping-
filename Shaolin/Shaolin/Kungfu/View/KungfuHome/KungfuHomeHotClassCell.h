@@ -22,7 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
  hotSearchArr [HotClassModel]
  */
 @property (nonatomic, strong) NSArray * hotSearchArr;
-
+@property (nonatomic, strong) NSArray *subjectList;
 @end
 
 NS_ASSUME_NONNULL_END

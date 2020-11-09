@@ -15,6 +15,10 @@
 @property (weak, nonatomic) IBOutlet UILabel *storeTitleLabel;
 - (IBAction)jumpStoreAction:(UIButton *)sender;
 
+@property (weak, nonatomic) IBOutlet UIImageView *proprietaryImageView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *proprietaryImageViewW;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *proprietaryGayW;
+
 @end
 
 @implementation OrderGoodsItmeHeardTabelVeiw
@@ -39,6 +43,18 @@
 -(void)setStoreModel:(OrderStoreModel *)storeModel{
     _storeModel = storeModel;
     [self.storeTitleLabel setText:storeModel.name];
+    
+    BOOL is_self = [storeModel.is_self boolValue];
+    if (is_self) {
+        [self.proprietaryImageView setHidden:NO];
+        self.proprietaryImageViewW.constant = 35;
+        self.proprietaryGayW.constant = 5;
+    }else{
+        [self.proprietaryImageView setHidden:YES];
+        self.proprietaryImageViewW.constant = 0;
+        self.proprietaryGayW.constant = 0;
+    }
+    
 }
 
 - (IBAction)jumpStoreAction:(UIButton *)sender {

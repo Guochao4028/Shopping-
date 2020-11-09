@@ -37,11 +37,9 @@
     self.view.backgroundColor = [UIColor clearColor];
     self.tableView.backgroundColor = [UIColor clearColor];
 }
-
-- (void)viewDidAppear:(BOOL)animated{
-    [super viewDidAppear:animated];
-    [self.navigationController.navigationBar setBackgroundImage:[[UIImage alloc] init] forBarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
-    [self.navigationController.navigationBar setShadowImage:[UIImage new]];
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self hideNavigationBarShadow];
 }
 
 - (void)refreshAndScrollToTop {
@@ -149,10 +147,11 @@
     WEAKSELF
     cell.buttonClickBlock = ^(UIButton * _Nonnull button) {
         if (model.flag) {
-            SLRouteRealNameAuthenticationState state = [SLRouteManager pushRealNameAuthenticationState:self.navigationController showAlert:YES];
-            if (state == RealNameAuthenticationStateSuccess){
-                [weakSelf makeAnAppointment:model];
-            }
+            [SLRouteManager pushRealNameAuthenticationState:self.navigationController showAlert:YES isReloadData:YES finish:^(SLRouteRealNameAuthenticationState state) {
+                if (state == RealNameAuthenticationStateSuccess){
+                    [weakSelf makeAnAppointment:model];
+                }
+            }];
         } else {
             [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"人数已满")];
         }

@@ -6,13 +6,13 @@
 //  Copyright © 2020 syqaxldy. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "RootViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @class WengenGoodsModel;
 
-@interface GoodsDetailsViewController : UIViewController
+@interface GoodsDetailsViewController : RootViewController
 
 @property(nonatomic, strong)WengenGoodsModel *goodsModel;
 

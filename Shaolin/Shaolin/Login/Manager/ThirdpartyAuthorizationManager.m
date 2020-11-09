@@ -231,19 +231,26 @@ static NSString *const SinaRedirectURI      = @"https://api.weibo.com/oauth2/def
 }
 
 // 拉起分享
-- (void)sharedByThirdpartyType:(NSString *)thirdpartyType sharedModel:(SharedModel *)sharedModel{
+- (void)sharedByThirdpartyType:(NSString *)thirdpartyType sharedModel:(SharedModel *)sharedModel completion:(void (^)(void))completion{
     if (!sharedModel) return;
     if (!sharedModel.image && sharedModel.imageURL && sharedModel.imageURL.length){
         MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
-        UIImageView *imageV = [UIImageView new];
+        dispatch_group_t group = dispatch_group_create();
+        dispatch_queue_t queue = dispatch_queue_create("com.shaolin.downloadThirdpartySharedImage", DISPATCH_QUEUE_CONCURRENT);
+        dispatch_group_async(group, queue, ^{
+            NSData *data = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:sharedModel.imageURL]];
+            sharedModel.image = [UIImage imageWithData:data];
+        });
         WEAKSELF
-        [imageV sd_setImageWithURL:[NSURL URLWithString:sharedModel.imageURL] completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
-            if (image) sharedModel.image = image;
-            sharedModel.imageURL = @"";
-            [weakSelf sharedByThirdpartyType:thirdpartyType sharedModel:sharedModel];
-            [hud hideAnimated:YES];
-            return;
-        }];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            dispatch_group_wait(group, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)));
+            dispatch_async(dispatch_get_main_queue(), ^{
+                sharedModel.imageURL = @"";
+                [weakSelf sharedByThirdpartyType:thirdpartyType sharedModel:sharedModel completion:completion];
+                [hud hideAnimated:YES];
+            });
+        });
+        return;
     }
     if ([thirdpartyType isEqualToString:ThirdpartyType_WX]){
         [self weiXinShared:sharedModel wXScene:WXSceneSession];
@@ -254,6 +261,7 @@ static NSString *const SinaRedirectURI      = @"https://api.weibo.com/oauth2/def
     } else if ([thirdpartyType isEqualToString:ThirdpartyType_QQ]){
         [self QQShared:sharedModel];
     }
+    if (completion) completion();
 }
 #pragma mark - 微信相关
 - (void)weiXinLogin{

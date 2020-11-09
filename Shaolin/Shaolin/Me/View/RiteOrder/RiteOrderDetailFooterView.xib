@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -64,19 +65,37 @@
                         <action selector="firstButtonAction:" destination="-1" eventType="touchUpInside" id="sBf-df-Dc9"/>
                     </connections>
                 </button>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KXp-W7-NpC">
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="1"/>
+                    <color key="backgroundColor" red="0.92549019610000005" green="0.92549019610000005" blue="0.92549019610000005" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="1" id="OSo-kb-ck2"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
-            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+            <viewLayoutGuide key="safeArea" id="62R-wM-Vnm"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="FYE-zi-JX9" firstAttribute="centerY" secondItem="GML-Tx-qiH" secondAttribute="centerY" id="7dP-6e-Ifl"/>
                 <constraint firstAttribute="trailing" secondItem="llR-Om-nvO" secondAttribute="trailing" constant="16" id="DIc-3P-iHC"/>
+                <constraint firstAttribute="trailing" secondItem="KXp-W7-NpC" secondAttribute="trailing" id="ESF-tc-4BH"/>
                 <constraint firstItem="llR-Om-nvO" firstAttribute="centerY" secondItem="GML-Tx-qiH" secondAttribute="centerY" id="LF2-rE-r7y"/>
+                <constraint firstItem="KXp-W7-NpC" firstAttribute="top" secondItem="GML-Tx-qiH" secondAttribute="top" id="UpP-mJ-5xJ"/>
                 <constraint firstItem="AKZ-w3-reh" firstAttribute="centerY" secondItem="GML-Tx-qiH" secondAttribute="centerY" id="enF-tj-cHw"/>
                 <constraint firstItem="llR-Om-nvO" firstAttribute="leading" secondItem="FYE-zi-JX9" secondAttribute="trailing" constant="10" id="mJ2-jE-mwD"/>
+                <constraint firstItem="KXp-W7-NpC" firstAttribute="leading" secondItem="GML-Tx-qiH" secondAttribute="leading" id="nFE-6D-Cg9"/>
                 <constraint firstItem="AKZ-w3-reh" firstAttribute="leading" secondItem="GML-Tx-qiH" secondAttribute="leading" constant="16" id="w7q-9f-JFG"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="62R-wM-Vnm"/>
-            <point key="canvasLocation" x="-61" y="126"/>
+            <point key="canvasLocation" x="291" y="154"/>
         </view>
     </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
 </document>

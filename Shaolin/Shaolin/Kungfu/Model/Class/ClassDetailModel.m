@@ -35,3 +35,14 @@
 }
 
 @end
+
+@implementation ClassDetailHistoryModel
++ (NSDictionary *)mj_replacedKeyFromPropertyName{
+    return @{
+             @"history_id" : @"id",
+             };
+}
+
+
+@end
+

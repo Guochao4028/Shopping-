@@ -938,7 +938,7 @@ typedef NS_ENUM (NSUInteger,GHDropMenuShowType) {
     if (_sure == nil) {
         _sure = [[UIButton alloc]init];
         _sure.frame = CGRectMake(kGHScreenWidth - self.filter.frame.size.width , self.filter.frame.size.height + 9, 88, 30);
-        _sure.backgroundColor = [UIColor colorForHex:@"8E2B25"];
+        _sure.backgroundColor = kMainYellow;
         [_sure setTitle:SLLocalizedString(@"确定") forState:UIControlStateNormal];
         [_sure setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         _sure.tag = GHDropMenuButtonTypeSure;

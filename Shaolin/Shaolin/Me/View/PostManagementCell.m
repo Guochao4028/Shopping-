@@ -157,23 +157,23 @@
             for (NSDictionary *dic in f.coverurlList) {
                 urlStr = [dic objectForKey:@"route"];
             }
-            [self.bigImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",urlStr]]];
+            [self.bigImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",urlStr]] placeholderImage:[UIImage imageNamed:@"default_small"]];
         }else if (self.imageArr.count==2)
         {
             self.moreBtn.hidden = YES;
             self.imageOne.hidden = NO;
             self.imageTwo.hidden = NO;
             self.bigImage.hidden = YES;
-            [self.imageOne sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.imageArr[0][@"route"]]]];
-            [self.imageTwo sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.imageArr[1][@"route"]]]];
+            [self.imageOne sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.imageArr[0][@"route"]]] placeholderImage:[UIImage imageNamed:@"default_small"]];
+            [self.imageTwo sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.imageArr[1][@"route"]]] placeholderImage:[UIImage imageNamed:@"default_small"]];
         }else
         {
             self.moreBtn.hidden = NO;
             self.imageOne.hidden = NO;
             self.imageTwo.hidden = NO;
             self.bigImage.hidden = YES;
-            [self.imageOne sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.imageArr[0][@"route"]]]];
-            [self.imageTwo sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.imageArr[1][@"route"]]]];
+            [self.imageOne sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.imageArr[0][@"route"]]] placeholderImage:[UIImage imageNamed:@"default_small"]];
+            [self.imageTwo sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.imageArr[1][@"route"]]] placeholderImage:[UIImage imageNamed:@"default_small"]];
         }
     }else
     {
@@ -245,7 +245,7 @@
 {
     if (!_statusLabel) {
         _statusLabel = [[UILabel alloc] init];
-        _statusLabel.textColor = [UIColor colorForHex:@"8E2B25"];
+        _statusLabel.textColor = kMainYellow;
         _statusLabel.font = kRegular(11);
         _statusLabel.textAlignment = NSTextAlignmentCenter;
         _statusLabel.text = SLLocalizedString(@"审核中");
@@ -269,7 +269,7 @@
         _refusedBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
         [_refusedBtn setBackgroundImage:[UIImage imageNamed:@"me_postmanagement_look"] forState:(UIControlStateNormal)];
         [_refusedBtn setTitle:SLLocalizedString(@"查看拒绝原因") forState:(UIControlStateNormal)];
-        [_refusedBtn setTitleColor:[UIColor colorForHex:@"8E2B25"] forState:(UIControlStateNormal)];
+        [_refusedBtn setTitleColor:kMainYellow forState:(UIControlStateNormal)];
         _refusedBtn.titleLabel.font = kRegular(9);
         [_refusedBtn addTarget:self action:@selector(refuseAction) forControlEvents:(UIControlEventTouchUpInside)];
     }

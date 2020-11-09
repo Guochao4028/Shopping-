@@ -48,8 +48,8 @@
     _isChoose = isChoose;
     
     if (isChoose) {
-        self.bgView.layer.borderColor = [UIColor hexColor:@"8E2B25"].CGColor;
-        self.contentLabel.textColor = [UIColor hexColor:@"8E2B25"];
+        self.bgView.layer.borderColor = kMainYellow.CGColor;
+        self.contentLabel.textColor = kMainYellow;
     } else {
         self.bgView.layer.borderColor = [UIColor hexColor:@"DDDDDD"].CGColor;
         self.contentLabel.textColor = [UIColor hexColor:@"333333"];

@@ -28,6 +28,9 @@ typedef void(^CountingChamber)(NSInteger currentCountNumber, BOOL isSuccess, Mes
 ///订单数量
 @property(nonatomic, strong)NSString *orderCount;
 
+///订单列表是否需要刷新
+@property(nonatomic, assign)BOOL isOrderListNeedRefreshed;
+
 ///处理 网络 地址数据
 +(void)processingAddressData:(NSString *)filePath;
 
@@ -54,11 +57,15 @@ typedef void(^CountingChamber)(NSInteger currentCountNumber, BOOL isSuccess, Mes
 ///处理再次购买逻辑
 +(void)processPurchasLogicAgain:(NSArray *)goodsArray callBack:(MessageCallBack)call;
 
+
+///课程处理再次购买逻辑
++(NSArray *)courseDealsProcessPurchasLogicAgain:(NSArray *)goodsArray;
+
 /// 拼装订单数据
 +(NSArray *)assembleData:(NSArray *)goodsArray;
 
 ///获取用户信息
-+(void)getUserData;
++(void)getUserData:(void (^_Nullable)(void))finish;
 
 /// 根据订单列表数据 计算高度 并返回数据
 +(NSArray *)calculateHeight:(NSArray<OrderListModel *> *)dataArray;
@@ -70,6 +77,10 @@ typedef void(^CountingChamber)(NSInteger currentCountNumber, BOOL isSuccess, Mes
 
 +(NSArray *)assembleFilterCourierData:(NSArray *)dataArray orderId:(NSString *)orderId bySstortModel:(OrderStoreModel *)stortModel;
 
+
+
++(UIWindow *)lastWindow;
+
 /// 创建数据库
 -(void)createBatabase;
 ///根据 类 创建数据表
@@ -80,6 +91,10 @@ typedef void(^CountingChamber)(NSInteger currentCountNumber, BOOL isSuccess, Mes
 - (NSArray*)selectALL:(Class)model tableName:(NSString*)tbName;
 ///按条件查询
 - (NSArray*)select:(Class)model tableName:(NSString*)tbName where:(NSString*)str;
+
+///清除表数据
+- (BOOL)deleteTableName:(NSString*)tbName where:(NSString*)str;
+
 
 +(instancetype)shareInstance;
 

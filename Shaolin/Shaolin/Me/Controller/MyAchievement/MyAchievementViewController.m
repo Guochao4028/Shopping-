@@ -25,11 +25,9 @@
 @end
 
 @implementation MyAchievementViewController
-
--(void)viewDidLayoutSubviews {
-    [super viewDidLayoutSubviews];
-    
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self setNavigationBarRedTintColor];
 }
 
 - (void)viewDidLoad {
@@ -67,6 +65,9 @@
 
 -(void)layoutView
 {
+    
+    self.titleLabe.textColor = [UIColor whiteColor];
+    [self.leftBtn setImage:[UIImage imageNamed:@"real_left"] forState:(UIControlStateNormal)];
    
     self.tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 15, kWidth, kHeight - 15) style:(UITableViewStyleGrouped)];
     self.tableView.delegate = self;
@@ -183,8 +184,4 @@
     return v;
 }
 
-#pragma mark - device
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    return UIStatusBarStyleDefault;
-}
 @end

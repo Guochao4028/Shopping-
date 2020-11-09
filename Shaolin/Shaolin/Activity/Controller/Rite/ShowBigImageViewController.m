@@ -192,7 +192,7 @@
     if (!_saveButton) {
         _saveButton = [[UIButton alloc] initWithFrame:CGRectZero];
 //        _saveButton.layer.cornerRadius = 20;
-        _saveButton.backgroundColor = [UIColor hexColor:@"8E2B25"];
+        _saveButton.backgroundColor = kMainYellow;
         [_saveButton setTitle:@"保存图片" forState:UIControlStateNormal];
         _saveButton.titleLabel.textColor = UIColor.whiteColor;
         _saveButton.titleLabel.font = [UIFont systemFontOfSize:14];

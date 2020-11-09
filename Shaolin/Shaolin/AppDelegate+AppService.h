@@ -21,28 +21,26 @@
 //初始化 window
 -(void)initWindow;
 
+//初始化网络
 -(void)initNetWork;
 
 //初始化监听
 -(void)initObserver;
 
-//初始化版本信息
--(void)initAppVersion;
-
 // 初始化启动图、广告页等
 -(void)initLaunchView;
 
-//初始化用户系统
--(void)initUserManager;
+//获取本地存储的用户信息
+-(void) initUserInfo;
+
+//获取收货地址和订单信息
+-(void)initAddressAndOrderData;
 
 //环信相关
 - (void)initEasemob;
 
 //初始化三方SDK
 -(void)initThirdSDK;
-
-//初始化阿里视频
--(void)initAliSDK;
 
 //检查版本更新, showView:是否在有新版本并且处在不强制不弹窗的情况下显示界面
 - (void)checkAppVersion:(BOOL)showView completion:(void(^)(BOOL hasUpdate))completion;
@@ -70,4 +68,6 @@
 -(UIViewController*) getCurrentVC;
 -(UIViewController*) getCurrentUIVC;
 
+- (void)pushLoginVC;
+- (void)enterRootViewVC;
 @end

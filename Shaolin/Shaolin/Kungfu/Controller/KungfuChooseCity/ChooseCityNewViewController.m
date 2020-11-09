@@ -259,12 +259,7 @@
                [self.navigationController popViewControllerAnimated:YES];
            }
     }
-    
-    
-   
-    
-    
-    
+
 }
 
 
@@ -290,11 +285,11 @@
     {
         headerView = [[UITableViewHeaderFooterView alloc] initWithReuseIdentifier:HeaderIdentifier];
         [headerView setBackgroundColor:[UIColor clearColor]];
-        UILabel * titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 80, 35)];
+        UILabel * titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, 15, 80, 20)];
         [titleLabel setFont:kRegular(13)];
         titleLabel.tag = 1;
         titleLabel.backgroundColor = [UIColor clearColor];
-        titleLabel.textColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
+        titleLabel.textColor =  [UIColor colorForHex:@"999999"];
         [headerView.contentView addSubview:titleLabel];
     }
     headerView.contentView.backgroundColor = [UIColor colorForHex:@"ffffff"];
@@ -302,6 +297,8 @@
     NSString *titleStr;
     if (section == 0) {
         titleStr = SLLocalizedString(@"热门城市");
+        headerView.contentView.backgroundColor = [UIColor colorForHex:@"fafafa"];
+
     }else{
         titleStr = SLLocalizedString(@"选择地区");
     }
@@ -314,7 +311,7 @@
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     if (indexPath.section == 0) {
        
-        return ceil([self.hotCityArray count]/3.0) *52;
+        return (ceil([self.hotCityArray count]/3.0) *52) +15;
     }else{
         return 60;
     }
@@ -326,7 +323,7 @@
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    return 35;
+    return 50;
 }
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{

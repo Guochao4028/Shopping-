@@ -8,6 +8,15 @@
 
 #import "KungfuHomeHotClassCell.h"
 #import "HotClassModel.h"
+#import "KungfuCurriculumCell.h"
+#import "SubjectModel.h"
+#import "KungfuClassListViewController.h"
+#import "SLRouteManager.h"
+
+@interface KungfuHomeHotClassCell()<UITableViewDelegate, UITableViewDataSource>
+@property (nonatomic, strong) UITableView *tableView;
+@end
+
 
 @implementation KungfuHomeHotClassCell
 
@@ -22,13 +31,16 @@
     // Configure the view for the selected state
 }
 
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
+-(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
-        self.contentView.backgroundColor = [UIColor whiteColor];
-        self.tagView = [[KungfuHomeHotTagView alloc] initWithFrame:CGRectMake(16, 0, [UIScreen mainScreen].bounds.size.width - 32, 0)];
-        self.contentView.userInteractionEnabled = YES;
-        [self.contentView addSubview:self.tagView];
+        [self.contentView addSubview:self.tableView];
+        [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.edges.mas_equalTo(0);
+        }];
+//        self.contentView.backgroundColor = [UIColor whiteColor];
+//        self.tagView = [[KungfuHomeHotTagView alloc] initWithFrame:CGRectMake(16, 0, [UIScreen mainScreen].bounds.size.width - 32, 0)];
+//        self.contentView.userInteractionEnabled = YES;
+//        [self.contentView addSubview:self.tagView];
 
     }
     return self;
@@ -41,6 +53,92 @@
     /** 注意cell的subView的重复创建！（内部已经做了处理了......） */
     [self.tagView setTagWithTagArray:hotSearchArr];
 
+}
+
+- (void)setSubjectList:(NSArray *)subjectList{
+    _subjectList = subjectList;
+    [self.tableView reloadData];
+}
+#pragma mark - tableView delegate && dataSource
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return self.subjectList.count;
+}
+
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    
+    return 1;
+}
+
+-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    if (tableView == self.tableView) {
+        UIView *view = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWidth, 1)];
+        view.backgroundColor = UIColor.whiteColor;
+        return view;
+    }else {
+        return [UIView new];
+    }
+}
+
+-(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+    if (tableView == self.tableView) {
+        UIView *view = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWidth, 1)];
+        view.backgroundColor =  UIColor.whiteColor;
+        return view;
+    }
+    return [UIView new];
+}
+
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    KungfuCurriculumCell *cell = [tableView dequeueReusableCellWithIdentifier:NSStringFromClass([KungfuCurriculumCell class])];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    cell.model = self.subjectList[indexPath.section];
+    return cell;
+}
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    SubjectModel * subject = self.subjectList[indexPath.section];
+    
+    KungfuClassListViewController * vc = [KungfuClassListViewController new];
+    vc.subjectModel = subject;
+    vc.hidesBottomBarWhenPushed = YES;
+    
+    UINavigationController *nav = [SLRouteManager findCurrentShowingNavigationController];
+    [nav pushViewController:vc animated:YES];
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 150;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+//    if (section == 0 && tableView == self.tableView) {
+//         return 10;
+//    }else {
+         return 0.01;
+//    }
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+ 
+    return 0;
+}
+#pragma mark - getter
+- (UITableView *)tableView{
+    if (!_tableView){
+        _tableView = [[UITableView alloc]initWithFrame:CGRectZero style:(UITableViewStyleGrouped)];
+        _tableView.dataSource = self;
+        _tableView.delegate = self;
+        _tableView.showsVerticalScrollIndicator = NO;
+        _tableView.showsHorizontalScrollIndicator = NO;
+        _tableView.backgroundColor = [UIColor colorForHex:@"FFFFFF"];
+        _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+        
+        [_tableView registerClass:[KungfuCurriculumCell class] forCellReuseIdentifier:NSStringFromClass([KungfuCurriculumCell class])];
+        
+    }
+    return _tableView;
 }
 
 

@@ -83,6 +83,25 @@
     return timeSp;
 }
 
+/**
+ 时间 转化成 时间
+ 2020-09-29 10:27:48 => 2020-09-29
+*/
++(NSString *)timeStrIntoTimeWithString:(NSString *)formatTime andFormatter:(NSString *)format{
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateStyle:NSDateFormatterMediumStyle];
+    [formatter setTimeStyle:NSDateFormatterShortStyle];
+    [formatter setDateFormat:@"YYYY-MM-dd hh:mm:ss"];
+    //----------设置你想要的格式,hh与HH的区别:分别表示12小时制,24小时制
+    NSDate* date = [formatter dateFromString:formatTime];
+    //------------将字符串按formatter转成nsdate
+    NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
+    fmt.dateFormat = @"yyyy-MM-dd";   //创建日期格式（年-月-日）
+    NSString *temp = [fmt stringFromDate:date];
+    
+    return temp;
+}
+
 ///时间戳变为格式时间
 + (NSString *)convertStrToTime:(NSInteger)time{
     
@@ -204,6 +223,10 @@
 // 是否包含表情
 +(BOOL)isContainsEmoji:(NSString *)string
 {
+    NSString *other = @"➋➌➍➎➏➐➑➒";     //九宫格的输入值
+    if ([other rangeOfString:string].location != NSNotFound){
+        return  NO;
+    }
     __block BOOL returnValue = NO;
     
     [string enumerateSubstringsInRange:NSMakeRange(0, [string length])
@@ -221,12 +244,23 @@
             }
             
             // Not surrogate pair (U+2100-27BF)
-        } else {
-            if (0x2100 <= high && high <= 0x27BF){
-                returnValue = YES;
+        }else {
+            
+            if (0x2100 <= high && high <= 0x27FF){
+                
+                //判断 char 是否是9宫格 ➋➌➍➎➏➐➑➒
+                if (0x278b <= high && high <= 0x2792) {
+                    returnValue = NO;
+                }else{
+                    returnValue = YES;
+                }
             }
+            
         }
     }];
+    
+    
+    
     
     return returnValue;
 }

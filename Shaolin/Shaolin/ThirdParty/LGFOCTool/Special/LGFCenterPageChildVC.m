@@ -209,6 +209,18 @@ lgf_SBViewControllerForM(LGFCenterPageChildVC, @"LGFCenterPageVC", @"LGFCenterPa
         [self.delegate lgf_CenterChildPageVC:self didSelectItemAtIndexPath:indexPath];
     }
 }
+//设置每个item的UIEdgeInsets
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
+{
+    
+    if ([self.delegate respondsToSelector:@selector(lgf_EdgeInsetsForItemAtinsetForSectionAtIndex:VC:)] && self) {
+       
+        return [self.delegate lgf_EdgeInsetsForItemAtinsetForSectionAtIndex:section VC:self];
+    }
+    
+    return UIEdgeInsetsMake(0, 0, 0, 0);
+}
+
 
 #pragma mark - 以一个 空白ScrollView 联动两个非父子关系控件的核心代码
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {

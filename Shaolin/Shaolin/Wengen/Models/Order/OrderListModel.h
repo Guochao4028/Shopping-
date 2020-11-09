@@ -74,6 +74,9 @@ NS_ASSUME_NONNULL_BEGIN
 ///计算出来的 cell 高度
 @property(nonatomic, assign)CGFloat cellHight;
 
+/// 保存tableview 的位置
+@property(nonatomic, strong)NSIndexPath *tableViewIndexPath;
+
 @end
 
 NS_ASSUME_NONNULL_END

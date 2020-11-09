@@ -8,8 +8,6 @@
 
 #import "ShoppingCartViewController.h"
 
-#import "WengenNavgationView.h"
-
 #import "ShoppingCratFootView.h"
 
 #import "ShoppingCratTableCell.h"
@@ -40,19 +38,16 @@
 
 #import "GoodsDetailsViewController.h"
 
-#import "RealNameViewController.h"
-
 #import "OrderFillCourseViewController.h"
 
 #import "KungfuClassDetailViewController.h"
 
 #import "SLRouteManager.h"
+#import "DataManager.h"
 
 static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCell";
 
-@interface ShoppingCartViewController ()<WengenNavgationViewDelegate, UITableViewDelegate, UITableViewDataSource, ShoppingCratTableCellDelegate, ShoppingCratHeadViewDelegate>
-
-@property(nonatomic, strong)WengenNavgationView *navgationView;
+@interface ShoppingCartViewController ()<UITableViewDelegate, UITableViewDataSource, ShoppingCratTableCellDelegate, ShoppingCratHeadViewDelegate>
 
 @property(nonatomic, strong)UITableView *tableView;
 
@@ -68,24 +63,19 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.navigationController.navigationBar.hidden = YES;
+    self.titleLabe.text = SLLocalizedString(@"购物车");
+    [self.rightBtn setTitle:SLLocalizedString(@"编辑") forState:UIControlStateNormal];
     [self initUI];
     [self initData];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
    [super viewWillAppear:animated];
-    self.navigationController.navigationBar.hidden = YES;
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
-    
-    
 }
 
 
 -(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    self.navigationController.navigationBar.hidden = YES;
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
 }
 
 -(void)viewDidDisappear:(BOOL)animated{
@@ -100,7 +90,6 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
 #pragma mark - methods
 -(void)initUI{
     [self.view setBackgroundColor:[UIColor whiteColor]];
-    [self.view addSubview:self.navgationView];
     [self.view addSubview:self.tableView];
     [self.view addSubview:self.footView];
     [self.view addSubview:self.noGoodsView];
@@ -108,7 +97,7 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
 
 -(void)initData{
     
-    [ModelTool getUserData];
+    [ModelTool getUserData:nil];
     
     if (self.idArray) {
         self.idArray = [NSArray arrayWithContentsOfFile:KAgainBuyCarPath];
@@ -116,6 +105,7 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
  
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
     [self.dataArray removeAllObjects];
+    
     [[DataManager shareInstance]getOrderAndCartCount];
     
     [[DataManager shareInstance]getCartList:@{} Callback:^(NSArray *result) {
@@ -218,14 +208,10 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
     [self initData];
 }
 
-#pragma mark - WengenNavgationViewDelegate
-
 //返回按钮
--(void)tapBack{
+-(void)leftAction{
     [self.navigationController popViewControllerAnimated:YES];
 }
-
-#pragma mark - WengenNavgationViewAction
 
 //编辑
 -(void)rightAction{
@@ -249,15 +235,14 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
     [tempArray writeToFile:KTemporaryFilePath atomically:YES];
     
     
-    if (self.navgationView.isRight == NO) {
+    if (self.rightBtn.isSelected == NO) {
         for (ShoppingCartListModel *listModel in self.dataArray) {
             for (ShoppingCartGoodsModel *item in listModel.goods) {
                 item.isEditor = YES;
                 item.isSelected = NO;
             }
         }
-        [self.navgationView setRightStr:SLLocalizedString(@"完成")];
-        [self.navgationView setIsRight:YES];
+        [self.rightBtn setTitle:SLLocalizedString(@"完成") forState:UIControlStateNormal];
         [self.footView setIsDelete:YES];
         [self.tableView.mj_header setHidden:YES];
     }else{
@@ -311,13 +296,12 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
                        
                    }
         
-        
-        [self.navgationView setRightStr:SLLocalizedString(@"编辑")];
-        [self.navgationView setIsRight:NO];
+        [self.rightBtn setTitle:SLLocalizedString(@"编辑") forState:UIControlStateNormal];
         [self.footView setIsDelete:NO];
         
         [self.tableView.mj_header setHidden:NO];
     }
+    self.rightBtn.selected = !self.rightBtn.selected;
     [self calculateTotalPrice];
     [self calculateQuantityGoods];
     [self.footView setIsAll:[self decideWhetherChooseAll]];
@@ -438,7 +422,7 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
     [dic setValue:idStr forKey:@"id"];
     
     if ([idStr length] > 0) {
-        [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+        [SMAlert setConfirmBtBackgroundColor:kMainYellow];
         [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
         [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
         [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
@@ -517,15 +501,14 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
         ShoppingCartGoodsModel *goodsModel  = [allSelectedGoodsArray firstObject];
         //判断商品是否是教程
         if ([goodsModel.type isEqualToString:@"2"]) {
-            SLRouteRealNameAuthenticationState state = [SLRouteManager pushRealNameAuthenticationState:self.navigationController showAlert:YES];
-            if (state == RealNameAuthenticationStateSuccess) {
-                //如果实名就跳转填写订单
-                OrderFillCourseViewController *orderFillCourseVC = [[OrderFillCourseViewController alloc]init];
-                
-                orderFillCourseVC.dataArray = modelMutabelArray;
-                
-                [self.navigationController pushViewController:orderFillCourseVC animated:YES];
-            }
+            [SLRouteManager pushRealNameAuthenticationState:self.navigationController showAlert:YES isReloadData:YES finish:^(SLRouteRealNameAuthenticationState state) {
+                if (state == RealNameAuthenticationStateSuccess) {
+                    //如果实名就跳转填写订单
+                    OrderFillCourseViewController *orderFillCourseVC = [[OrderFillCourseViewController alloc]init];
+                    orderFillCourseVC.dataArray = modelMutabelArray;
+                    [self.navigationController pushViewController:orderFillCourseVC animated:YES];
+                }
+            }];
         }else{
             //如果是实物就直接跳转到填写订单
             OrderFillViewController *orderFillVC = [[OrderFillViewController alloc]init];
@@ -864,37 +847,13 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
 }
 
 #pragma mark - getter / setter
-
--(WengenNavgationView *)navgationView{
-    
-    if (_navgationView == nil) {
-        //状态栏高度
-        CGFloat barHeight ;
-        /** 判断版本
-         获取状态栏高度
-         */
-        if (@available(iOS 13.0, *)) {
-            barHeight = [[[[[UIApplication sharedApplication] keyWindow] windowScene] statusBarManager] statusBarFrame].size.height;
-        } else {
-            barHeight = [[UIApplication sharedApplication] statusBarFrame].size.height;
-        }
-        _navgationView = [[WengenNavgationView alloc]initWithFrame:CGRectMake(0, barHeight, ScreenWidth, 44)];
-        [_navgationView setTitleStr:SLLocalizedString(@"购物车")];
-        [_navgationView setRightStr:SLLocalizedString(@"编辑")];
-        [_navgationView setDelegate:self];
-        [_navgationView rightTarget:self action:@selector(rightAction)];
-    }
-    return _navgationView;
-    
-}
-
 -(UITableView *)tableView{
     
     if (_tableView == nil) {
         
-        CGFloat y = CGRectGetMaxY(self.navgationView.frame);
+        CGFloat y = 0;
         
-        CGFloat heigth = ScreenHeight - y - 49 - kBottomSafeHeight;
+        CGFloat heigth = ScreenHeight - NavBar_Height - 49 - kBottomSafeHeight;
         
         _tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, y, ScreenWidth, heigth) style:UITableViewStyleGrouped];
         
@@ -924,7 +883,7 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
     
     if (_footView == nil) {
         
-        _footView = [[ShoppingCratFootView alloc]initWithFrame:CGRectMake(0, ScreenHeight - 49 - kBottomSafeHeight, ScreenWidth, 49)];
+        _footView = [[ShoppingCratFootView alloc]initWithFrame:CGRectMake(0, ScreenHeight - NavBar_Height - 49 - kBottomSafeHeight, ScreenWidth, 49)];
         
         [_footView selectedAllTarget:self action:@selector(footerSelectAll:)];
         
@@ -940,9 +899,9 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
     
     if (_noGoodsView == nil) {
         
-        CGFloat y = CGRectGetMaxY(self.navgationView.frame);
+        CGFloat y = 0;
         
-        CGFloat heigth = ScreenHeight - y;
+        CGFloat heigth = ScreenHeight - NavBar_Height - y;
         
         _noGoodsView = [[ShoppingCartNoGoodsView alloc]initWithFrame:CGRectMake(0, y, ScreenWidth, heigth)];
         [_noGoodsView setHidden:YES];
@@ -968,8 +927,4 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
     return _idArray;
 }
 
-#pragma mark - device
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    return UIStatusBarStyleDefault;
-}
 @end

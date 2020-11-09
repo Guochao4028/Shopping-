@@ -11,6 +11,7 @@
 #import "MeManager.h"
 #import "WSIAPManager.h"
 #import "WSIAPModel.h"
+#import "DataManager.h"
 
 @interface ClassBalanceViewController ()
 
@@ -66,10 +67,24 @@
 
         if ([message.extensionDic.allKeys containsObject:@"iosMoney"])
         {
-            NSString *price =[NSString stringWithFormat:@"%.2f",[message.extensionDic[@"iosMoney"] floatValue]];
-            NSString *priceStr = [price stringByAppendingString:SLLocalizedString(@"元")];
+            NSNumber *balance = [message.extensionDic objectForKey:@"iosMoney"];
+            if (!balance) balance = @(0);
+            NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+//            formatter.positiveFormat = @",###.##"; // 正数格式
+            // 整数最少位数
+            formatter.minimumIntegerDigits = 1;
+            // 小数位最多位数
+            formatter.maximumFractionDigits = 2;
+            // 小数位最少位数
+            formatter.minimumFractionDigits = 2;
+            NSString *money = [formatter stringFromNumber:balance];
+            
+            NSString *price = money;
+            NSString *priceStr = [NSString stringWithFormat:@"%@ %@", price, SLLocalizedString(@"元")];
+            
             NSMutableAttributedString *missionAttributed = [[NSMutableAttributedString alloc]initWithString:priceStr];
             [missionAttributed addAttribute:NSFontAttributeName value:kBoldFont(45) range:NSMakeRange(0, price.length)];
+            [missionAttributed addAttribute:NSFontAttributeName value:kRegular(25) range:NSMakeRange(price.length, 2)];
             
             self.balanceLabel.attributedText = missionAttributed;
         }
@@ -189,7 +204,7 @@
     
     for (UIButton * btn in self.buttonList) {
         [btn setBackgroundImage:[self imageWithColor:UIColor.whiteColor] forState:UIControlStateNormal];
-        [btn setTitleColor:[UIColor hexColor:@"8E2B25"] forState:UIControlStateNormal];
+        [btn setTitleColor:kMainYellow forState:UIControlStateNormal];
     }
     
     [sender setBackgroundImage:[UIImage imageNamed:@"balanceBtnSelect"] forState:(UIControlStateNormal)];
@@ -197,7 +212,7 @@
 }
 
 - (void) showAlertWithTransList:(NSArray *)transList {
-    [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+    [SMAlert setConfirmBtBackgroundColor:kMainYellow];
     [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
     [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
     [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
@@ -233,10 +248,10 @@
     btn.size = CGSizeMake(btnWidth, 80);
     btn.tag = tag;
     [btn setTitle:title forState:UIControlStateNormal];
-    [btn setTitleColor:[UIColor hexColor:@"8E2B25"] forState:UIControlStateNormal];
+    [btn setTitleColor:kMainYellow forState:UIControlStateNormal];
     btn.titleLabel.font = [UIFont systemFontOfSize:20];
     btn.layer.cornerRadius = 5;
-    btn.layer.borderColor = [UIColor hexColor:@"8E2B25"].CGColor;
+    btn.layer.borderColor = kMainYellow.CGColor;
     btn.layer.borderWidth = 1;
     [btn addTarget:self action:@selector(chooseItem:) forControlEvents:UIControlEventTouchUpInside];
     return btn;

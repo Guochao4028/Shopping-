@@ -12,7 +12,7 @@
 #import "MeActivityModel.h"
 #import "KungfuWebViewController.h"
 #import "DefinedHost.h"
-//#define MEACTIVITY_TEST
+#import "QRCodeViewController.h"
 
 typedef NS_ENUM(NSInteger, MeActivityTitleButtonEnum) {
     MeActivityTitleButtonEnum_SignUp = 101,//已签约活动
@@ -35,12 +35,11 @@ static NSString *const MeActivityCollectionViewCellIdentifier = @"MeActivityColl
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self wr_setNavBarShadowImageHidden:YES];
-    [self wr_setNavBarBarTintColor:[UIColor colorForHex:@"8E2B25"]];
-    self.titleLabe.text = SLLocalizedString(@"我的活动");
-    self.titleLabe.textColor = [UIColor whiteColor];
     
-    [self.leftBtn setImage:[UIImage imageNamed:@"real_left"] forState:(UIControlStateNormal)];
+    [self setNavigationBarRedTintColor];
+    [self hideNavigationBarShadow];
+
+    self.titleLabe.text = SLLocalizedString(@"我的活动");
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -57,11 +56,9 @@ static NSString *const MeActivityCollectionViewCellIdentifier = @"MeActivityColl
     
     [self setUI];
     [self update];
-//    self.navigationController.navigationBar.hidden = YES;
+
     // Do any additional setup after loading the view.
 }
-
-
 
 - (void)setUI{
     [self.view addSubview:self.headerView];
@@ -71,38 +68,43 @@ static NSString *const MeActivityCollectionViewCellIdentifier = @"MeActivityColl
 
 - (void)viewWillLayoutSubviews{
     [super viewWillLayoutSubviews];
-    CGFloat headerViewH = SLChange(184);
+    CGFloat headerViewH = 184;
     [self.headerView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.mas_equalTo(0);
         make.top.mas_equalTo(-NavBar_Height - 5);
         make.width.mas_equalTo(self.view);
         make.height.mas_equalTo(headerViewH);
     }];
+    
     [self.activityCollectionView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.mas_equalTo(0);
         make.top.mas_equalTo(self.headerView).mas_offset(NavBar_Height + 5 + 40);
-        make.bottom.mas_equalTo(0);
+        make.bottom.mas_equalTo(-kBottomSafeHeight);
     }];
 }
 
 - (void)reloadCollectionView{
     [self.activityCollectionView reloadData];
+    [self.activityCollectionView layoutIfNeeded];
 }
 
 #pragma mark requestData -
 - (void)update{
     self.pageNum = 1;
-    [self.meActivityList removeAllObjects];
     WEAKSELF
     [self requestData:^(NSArray *downloadArray) {
+        weakSelf.meActivityList = [downloadArray mutableCopy];
         [weakSelf.activityCollectionView.mj_header endRefreshing];
         [weakSelf.activityCollectionView.mj_footer endRefreshing];
         if (downloadArray.count < weakSelf.pageSize){
             [weakSelf.activityCollectionView.mj_footer endRefreshingWithNoMoreData];
         }
-//        weakSelf.activityCollectionView.mj_footer.hidden = (downloadArray && downloadArray.count) == 0;
+        [weakSelf reloadCollectionView];
         if (downloadArray.count == 0){
             [weakSelf setNoData];
+        } else {
+            [weakSelf.activityCollectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UICollectionViewScrollPositionTop animated:YES];
+//            [weakSelf.activityCollectionView setContentOffset:CGPointZero animated:YES];
         }
     }];
 }
@@ -111,11 +113,13 @@ static NSString *const MeActivityCollectionViewCellIdentifier = @"MeActivityColl
     self.pageNum++;
     WEAKSELF
     [self requestData:^(NSArray *downloadArray) {
+        [weakSelf.meActivityList addObjectsFromArray:downloadArray];
         if (downloadArray.count == 0){
             [weakSelf.activityCollectionView.mj_footer endRefreshingWithNoMoreData];
         } else {
             [weakSelf.activityCollectionView.mj_footer endRefreshing];
         }
+        [weakSelf reloadCollectionView];
     }];
 }
 
@@ -131,23 +135,18 @@ static NSString *const MeActivityCollectionViewCellIdentifier = @"MeActivityColl
         @"pageSize" : [NSString stringWithFormat:@"%ld", self.pageSize],
         @"pageNum" : [NSString stringWithFormat:@"%ld", self.pageNum],
     };
-//    MBProgressHUD * hud = [ShaolinProgressHUD defaultLoadingWithText:SLLocalizedString(@"加载中"_];
-    WEAKSELF
+    MBProgressHUD * hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
     [[MeManager sharedInstance] postMeActivityList:params finish:^(id  _Nonnull responseObject, NSString * _Nonnull errorReason) {
         if ([ModelTool checkResponseObject:responseObject]){
             NSDictionary *data = responseObject[DATAS];
             NSArray *array = [data objectForKey:@"data"];
-            [weakSelf.meActivityList addObjectsFromArray:[MeActivityModel mj_objectArrayWithKeyValuesArray:array]];
-#ifdef MEACTIVITY_TEST
-            weakSelf.meActivityList = [weakSelf testMeActivityList:arc4random()%15];
-#endif
+            array = [MeActivityModel mj_objectArrayWithKeyValuesArray:array];
             if (finish) finish(array);
-            [weakSelf reloadCollectionView];
         } else {
             [ShaolinProgressHUD singleTextAutoHideHud:errorReason];
             if (finish) finish(nil);
         }
-//        [hud hideAnimated:YES];
+        [hud hideAnimated:YES];
     }];
 }
 
@@ -165,7 +164,7 @@ static NSString *const MeActivityCollectionViewCellIdentifier = @"MeActivityColl
 - (UIView *)headerView{
     if (!_headerView){
         _headerView = [[UIView alloc] init];
-        _headerView.backgroundColor = [UIColor colorForHex:@"8E2B25"];
+        _headerView.backgroundColor = kMainYellow;
         MeActivityTitleButtonEnum titleButtons[]  = { MeActivityTitleButtonEnum_SignUp, MeActivityTitleButtonEnum_Join };
         NSInteger count = sizeof(titleButtons) / sizeof(titleButtons[0]);
         
@@ -206,7 +205,9 @@ static NSString *const MeActivityCollectionViewCellIdentifier = @"MeActivityColl
         UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout new];
         layout.minimumLineSpacing = 15;
 //        layout.itemSize = CGSizeMake(SLChange(345), SLChange(223));
-        layout.estimatedItemSize = CGSizeMake(SLChange(345), SLChange(300));
+        
+        layout.sectionInset = UIEdgeInsetsMake(0, 0, 15, 0);
+        layout.estimatedItemSize = CGSizeMake(self.view.width, 290);
         
         _activityCollectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
         _activityCollectionView.dataSource = self;
@@ -243,6 +244,45 @@ static NSString *const MeActivityCollectionViewCellIdentifier = @"MeActivityColl
     [self update];
 }
 
+- (void)pushQRCodeViewController{
+    WEAKSELF
+    QRCodeViewController *vc = [[QRCodeViewController alloc] init];
+    vc.scanSucceeded = ^(NSArray<NSString *> * _Nonnull QRCodeStringArray, HandleSuccessBlock  _Nonnull handleSuccess) {
+        NSString *QRCodeString = URL_H5_MyActivityScanQRCodeError;
+        if (QRCodeStringArray.count && [QRCodeStringArray.firstObject containsString:H5Host]){
+            QRCodeString = QRCodeStringArray.firstObject;
+        }
+        if (handleSuccess) handleSuccess();
+        [weakSelf pushWebViewViewController:QRCodeString];
+    };
+    vc.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
+- (void)pushWebViewViewController:(NSString *)url{
+    NSString *token = [SLAppInfoModel sharedInstance].access_token;
+    url = [NSString stringWithFormat:@"%@&token=%@",url, token];
+    KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:url type:KfWebView_unknown];
+    webVC.disableRightGesture = YES;
+    webVC.receiveScriptMessageBlock = ^BOOL(NSDictionary * _Nonnull messageDict) {
+        NSString *flagStr = messageDict[@"flag"];
+        NSString *jsonStr = messageDict[@"json"];
+        NSDictionary *jsonDict = [jsonStr mj_JSONObject];
+        if ([flagStr isEqualToString:@"CheckInReturn"]){
+            [self.navigationController popToViewController:self animated:YES];
+            return YES;
+        } else if ([flagStr isEqualToString:@"singinState"] && [[jsonDict objectForKey:@"code"] isEqualToString:@"200"]){
+            [self update];
+        }
+        return NO;
+    };
+    webVC.leftActionBlock = ^BOOL{
+        [self.navigationController popToViewController:self animated:YES];
+        return YES;
+    };
+    webVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:webVC animated:YES];
+}
 #pragma mark - delegate
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return 1;
@@ -254,9 +294,11 @@ static NSString *const MeActivityCollectionViewCellIdentifier = @"MeActivityColl
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     MeActivityCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:MeActivityCollectionViewCellIdentifier forIndexPath:indexPath];
-#ifdef MEACTIVITY_TEST
-    [cell testUI];
-#else
+    if (self.currentData == MeActivityTitleButtonEnum_SignUp){
+        cell.type = @"signUp";
+    } else {
+        cell.type = @"";
+    }
     MeActivityModel *model = self.meActivityList[indexPath.row];;
     cell.model = model;
 
@@ -267,7 +309,9 @@ static NSString *const MeActivityCollectionViewCellIdentifier = @"MeActivityColl
         webVC.hidesBottomBarWhenPushed = YES;
         [weakSelf.navigationController pushViewController:webVC animated:YES];
     }];
-#endif
+    [cell setShowQRCodeBlock:^{
+        [weakSelf pushQRCodeViewController];
+    }];
     return cell;
 }
 
@@ -276,15 +320,6 @@ static NSString *const MeActivityCollectionViewCellIdentifier = @"MeActivityColl
 }
 
 #pragma mark - setter && getter
-
-- (NSArray *)testMeActivityList:(NSInteger)count{
-    NSMutableArray *mArray = [@[] mutableCopy];
-    for (int i = 0; i < count; i++){
-        [mArray addObject:[MeActivityModel new]];
-    }
-    return mArray;
-}
-
 - (void)setNoData {
     WEAKSELF
 //    NSString *curTitle = [self titleForEnum:self.currentData];

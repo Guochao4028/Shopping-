@@ -26,15 +26,19 @@
 #import "SLRiteFilterView.h"
 #import "NSDate+BRPickerView.h"
 #import "NSDate+LGFDate.h"
+#import "DataManager.h"
 
 #import "RiteSecondLevelListViewController.h"
 #import "RiteBlessingViewController.h"
+
+#import "RiteYellowCell.h"
 
 static NSString *const filterCellId = @"RiteFilterCell";
 static NSString *const bannerCellId = @"KungfuHomeBannerCell";
 static NSString *const marqueeCellId = @"RiteMarqueeCell";
 static NSString *const joinCellId = @"RiteJoinCell";
 static NSString *const riteCellId = @"RiteCell";
+static NSString *const riteYellowCellId = @"RiteYellowCell";
 
 static NSInteger bannerIndex = 0;
 static NSInteger marqueeIndex = 1;
@@ -71,21 +75,19 @@ static NSInteger riteIndex = 4;
 
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-    self.navigationController.navigationBar.hidden = YES;
+    [self hideNavigationBarShadow];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
     
-    self.navigationController.navigationBar.hidden = YES;
-    [self.homeTableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationFade];
+    [self.homeTableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationNone];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+//    self.hideNavigationBar = YES;
     self.pageNum = 1;
     
     [self initUI];
@@ -336,7 +338,7 @@ static NSInteger riteIndex = 4;
         cell.timeFilterHandle = ^{
             
             CGRect rect = [weakSelf.homeTableView rectForRowAtIndexPath:indexPath];
-            CGPoint pickerPoint = CGPointMake(rect.origin.x, rect.origin.y + 40 + NavBar_Height + 48 - self.tableOffsetY);
+            CGPoint pickerPoint = CGPointMake(rect.origin.x, rect.origin.y + 45 + NavBar_Height + 48 - self.tableOffsetY + 58);
             
             weakSelf.dateRangeView.startYears = weakSelf.yearsRange;
             weakSelf.dateRangeView.endYears = weakSelf.yearsRange;
@@ -357,26 +359,27 @@ static NSInteger riteIndex = 4;
         return cell;
     }
     
-    RiteCell * cell = [tableView dequeueReusableCellWithIdentifier:riteCellId];
+    RiteYellowCell * cell = [tableView dequeueReusableCellWithIdentifier:riteYellowCellId];
+//    RiteCell * cell = [tableView dequeueReusableCellWithIdentifier:riteCellId];
     if (self.riteList.count) {
         WEAKSELF
         RiteModel * model = self.riteList[indexPath.row];
         cell.cellModel = model;
-        cell.positionType = RiteCellPositionCenter;
-        cell.cellSelectHandle = ^{
-            KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteDetail(model.code, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_rite];
-            webVC.fillToView = YES;
-            webVC.hidesBottomBarWhenPushed = YES;
-            [webVC hideWebViewScrollIndicator];
-            [weakSelf.navigationController pushViewController:webVC animated:YES];
-        };
-        if (self.riteList.count == 1){
-            cell.positionType = RiteCellPositionOnlyOne;
-        } else if (indexPath.row == 0) {
-            cell.positionType = RiteCellPositionFirst;
-        } else if (indexPath.row == self.riteList.count - 1) {
-            cell.positionType = RiteCellPositionLast;
-        }
+//        cell.positionType = RiteCellPositionCenter;
+//        cell.cellSelectHandle = ^{
+//            KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteDetail(model.code, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_rite];
+//            webVC.fillToView = YES;
+//            webVC.hidesBottomBarWhenPushed = YES;
+//            [webVC hideWebViewScrollIndicator];
+//            [weakSelf.navigationController pushViewController:webVC animated:YES];
+//        };
+//        if (self.riteList.count == 1){
+//            cell.positionType = RiteCellPositionOnlyOne;
+//        } else if (indexPath.row == 0) {
+//            cell.positionType = RiteCellPositionFirst;
+//        } else if (indexPath.row == self.riteList.count - 1) {
+//            cell.positionType = RiteCellPositionLast;
+//        }
     }
 
     return cell;
@@ -385,22 +388,22 @@ static NSInteger riteIndex = 4;
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-//    if (indexPath.section == riteIndex) {
-//
-//        RiteModel * model = self.riteList[indexPath.row];
-//
-//        KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteDetail(model.code, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_rite];
-//        webVC.fillToView = YES;
-//        webVC.hidesBottomBarWhenPushed = YES;
-//        [webVC hideWebViewScrollIndicator];
-//        [self.navigationController pushViewController:webVC animated:YES];
-//    }
+    if (indexPath.section == riteIndex) {
+
+        RiteModel * model = self.riteList[indexPath.row];
+
+        KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteDetail(model.code, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_rite];
+        webVC.fillToView = YES;
+        webVC.hidesBottomBarWhenPushed = YES;
+        [webVC hideWebViewScrollIndicator];
+        [self.navigationController pushViewController:webVC animated:YES];
+    }
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == bannerIndex) {
-        return 142;
+        return 157;
     }
     
     if (indexPath.section == marqueeIndex) {
@@ -408,7 +411,7 @@ static NSInteger riteIndex = 4;
     }
     
     if (indexPath.section == longRiteJoinIndex) {
-        return 85;
+        return 90;
     }
     
     if (indexPath.section == filterIndex) {
@@ -416,8 +419,8 @@ static NSInteger riteIndex = 4;
     }
     
     if (indexPath.section == riteIndex) {
-        if (tableView.rowHeight < 102) {
-            return 102;
+        if (tableView.rowHeight < 131) {
+            return 131;
         }
         return tableView.rowHeight;
     }
@@ -495,6 +498,9 @@ static NSInteger riteIndex = 4;
         [_homeTableView registerClass:[RiteMarqueeCell class] forCellReuseIdentifier:marqueeCellId];
         [_homeTableView registerClass:[RiteJoinCell class] forCellReuseIdentifier:joinCellId];
         [_homeTableView registerClass:[RiteFilterCell class] forCellReuseIdentifier:filterCellId];
+        
+        
+        [_homeTableView registerNib:[UINib nibWithNibName:NSStringFromClass([RiteYellowCell class]) bundle:nil] forCellReuseIdentifier:riteYellowCellId];
         
         _homeTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
             weakSelf.pageNum = 1;

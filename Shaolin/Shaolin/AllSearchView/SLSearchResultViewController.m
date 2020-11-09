@@ -24,6 +24,8 @@
 #import "NSString+Tool.h"
 #import "DefinedHost.h"
 
+#import "SearchHistoryModel.h"
+
 @interface SLSearchResultViewController ()<UITextFieldDelegate,UITableViewDelegate,UITableViewDataSource,DZNEmptyDataSetSource,DZNEmptyDataSetDelegate>
 @property(nonatomic,strong) UITextField *textField;
 
@@ -39,13 +41,12 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    self.navigationController.navigationBar.hidden = YES;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    
+    self.hideNavigationBar = YES;
     self.view.backgroundColor = [UIColor whiteColor];
     
     self.pageNum = 1;
@@ -57,8 +58,6 @@
 }
 
 - (void)setupUI {
-    self.navigationController.navigationBar.hidden =YES;
-    
     UIView *view = [[UIView alloc] init];
     [self.view addSubview:view];
     view.userInteractionEnabled = YES;
@@ -256,14 +255,41 @@
         return;;
     }
     
-    for (int i = 0; i < _historyArray.count; i++) {
-        if ([_historyArray[i] isEqualToString:str]) {
-            [_historyArray removeObjectAtIndex:i];
-            break;
+//    for (int i = 0; i < _historyArray.count; i++) {
+//        if ([_historyArray[i] isEqualToString:str]) {
+//            [_historyArray removeObjectAtIndex:i];
+//            break;
+//        }
+//    }
+//    [_historyArray insertObject:str atIndex:0];
+//    [NSKeyedArchiver archiveRootObject:_historyArray toFile:KHistorySearchPath];
+    
+    
+    NSString *userId = [SLAppInfoModel sharedInstance].id;
+    
+    SearchHistoryModel *historyModel = [[SearchHistoryModel alloc]init];
+    historyModel.userId = userId;
+    historyModel.searchContent = str;
+    
+    if ([self.tabbarStr isEqualToString:@"Activity"]) {
+        if (self.isRite) {
+            //法会 - 客堂
+            historyModel.type = [NSString stringWithFormat:@"%ld", SearchHistoryRiteClassroomType];
+        }else{
+            //法会 - 慈善
+            historyModel.type = [NSString stringWithFormat:@"%ld", SearchHistoryRiteCharityType];
         }
+        
+    }else if([self.tabbarStr isEqualToString:@"Found"]){
+        // 文章
+        historyModel.type = [NSString stringWithFormat:@"%ld", SearchHistoryArticleType];
     }
-    [_historyArray insertObject:str atIndex:0];
-    [NSKeyedArchiver archiveRootObject:_historyArray toFile:KHistorySearchPath];
+    
+    
+    
+    [historyModel addSearchWordWithDataArray:_historyArray];
+    
+    
 }
 
 #pragma mark - textFieldDelegate
@@ -275,7 +301,9 @@
     } else {
         self.searchStr = self.textField.text;
     }
-    
+
+
+    [self setHistoryArrWithStr:self.searchStr];
     [self requestSearchResultList];
     [self.view endEditing:YES];
     
@@ -354,6 +382,7 @@
             if ([model.kind isEqualToString:@"3"]) {
                 FoundVideoListVc *vC = [[FoundVideoListVc alloc]init];
                 vC.hidesBottomBarWhenPushed = YES;
+                vC.hideNavigationBarView = YES;
                 vC.fieldId = model.fieldId;
                 vC.videoId = model.id;
                 vC.tabbarStr = @"Found";

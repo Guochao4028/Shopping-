@@ -8,8 +8,6 @@
 
 #import "OrderFillViewController.h"
 
-#import "WengenNavgationView.h"
-
 #import "OrderFillFooterView.h"
 
 #import "OrderFillContentView.h"
@@ -28,9 +26,11 @@
 
 #import "InvoiceQualificationsModel.h"
 
-@interface OrderFillViewController ()<WengenNavgationViewDelegate, OrderFillContentViewDelegate, OrderFillInvoiceViewDelegate, AddressViewControllerDelegate>
+#import "GoodsStoreInfoModel.h"
 
-@property(nonatomic, strong)WengenNavgationView *navgationView;
+#import "DataManager.h"
+
+@interface OrderFillViewController ()<OrderFillContentViewDelegate, OrderFillInvoiceViewDelegate, AddressViewControllerDelegate>
 
 @property(nonatomic, strong)OrderFillContentView *contentView;
 
@@ -51,6 +51,14 @@
 
 @property(nonatomic, strong)InvoiceQualificationsModel *qualificationsModel;
 
+/**
+ 配置 发票选择项
+ "is_VAT" 0 不可选 增值税发票 1 可选
+ "is_electronic" 0 不可选电子发票 1 可选
+ "is_paper" 所有店铺默认都可选纸质发票 可以不做判断
+ */
+@property(nonatomic, strong)NSDictionary *invoiceConfigurationDic;
+
 
 @end
 
@@ -58,12 +66,10 @@
 
 -(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    self.navigationController.navigationBar.hidden = YES;
 }
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    self.navigationController.navigationBar.hidden = YES;
     [self initData];
     [self initUI];
 }
@@ -71,14 +77,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-   
+//    self.hideNavigationBar = YES;
+    self.titleLabe.text = SLLocalizedString(@"填写订单");
     [self.view setBackgroundColor:[UIColor whiteColor]];
 }
 
 #pragma mark - methods
 -(void)initUI{
-    
-    [self.view addSubview:self.navgationView];
     [self.view addSubview:self.contentView];
     [self.view addSubview:self.footerView];
 }
@@ -90,6 +95,19 @@
             self.qualificationsModel = (InvoiceQualificationsModel *)object;
         }
     }];
+    
+    ///储存订单里所有店铺id的信息
+    NSMutableArray *allStroeIdArray = [NSMutableArray array];
+    for (NSDictionary *dic in self.dataArray) {
+        GoodsStoreInfoModel *storeInfoModel = dic[@"stroeInfo"];
+        [allStroeIdArray addObject: storeInfoModel.storeId];
+    }
+    
+    NSString *allStroeIdStr = [allStroeIdArray componentsJoinedByString:@","];
+    [[DataManager shareInstance]getGoodsInvoice:@{@"id":allStroeIdStr} Callback:^(NSDictionary *result) {
+        self.invoiceConfigurationDic = result;
+    }];
+    
     
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
     [[DataManager shareInstance]getAddressListCallback:^(NSArray *result) {
@@ -166,7 +184,7 @@
             
             [self.contentView setAddressListModel:nil];
             
-            [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+            [SMAlert setConfirmBtBackgroundColor:kMainYellow];
             [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
             [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
             [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
@@ -218,10 +236,14 @@
         NSString *type = self.invoiceDic[@"type"];
         NSString *invoiceType = self.invoiceDic[@"invoiceType"];
         
+        if (self.invoiceDic[@"email"]) {
+            [parma setValue:self.invoiceDic[@"email"] forKey:@"email"];
+        }
+        
         if ([invoiceType isEqualToString:@"UnSpecial"]) {
             if ([type isEqualToString:@"1"]) {
                 [parma setValue:self.invoiceDic[@"personal"] forKey:@"buy_name"];
-                [parma setValue:@"1" forKey:@"invoice_type"];
+                [parma setValue:@"1" forKey:@"companyOrpersonal"];
             }else{
                 
                 NSString *unitNameStr =  self.invoiceDic[@"unitName"];
@@ -229,7 +251,7 @@
                 
                 [parma setValue:unitNameStr forKey:@"buy_name"];
                 [parma setValue:unitNumberStr forKey:@"duty_num"];
-                [parma setValue:@"2" forKey:@"invoice_type"];
+                [parma setValue:@"2" forKey:@"companyOrpersonal"];
             }
         }else if ([invoiceType isEqualToString:@"Special"]){
             
@@ -299,9 +321,8 @@
    
 }
 
-#pragma mark - WengenNavgationViewDelegate
 //返回按钮
--(void)tapBack{
+-(void)leftAction{
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -314,8 +335,9 @@
     
     [self.invoiceView setAddressListModel:self.addressListModel];
     
-   UIWindow *window =[[UIApplication sharedApplication]keyWindow];
-   [window addSubview:self.invoiceView];
+    [self.invoiceView setConfigurationDic:self.invoiceConfigurationDic];
+    
+   [WINDOWSVIEW addSubview:self.invoiceView];
 }
 
 -(void)orderFillContentView:(OrderFillContentView *)contentView tapAddressView:(BOOL)isTap{
@@ -374,35 +396,22 @@
     }
 }
 
-#pragma mark - getter / setter
 
--(WengenNavgationView *)navgationView{
-    
-    if (_navgationView == nil) {
-        //状态栏高度
-        CGFloat barHeight ;
-        /** 判断版本
-         获取状态栏高度
-         */
-        if (@available(iOS 13.0, *)) {
-            barHeight = [[[[[UIApplication sharedApplication] keyWindow] windowScene] statusBarManager] statusBarFrame].size.height;
-        } else {
-            barHeight = [[UIApplication sharedApplication] statusBarFrame].size.height;
-        }
-        _navgationView = [[WengenNavgationView alloc]initWithFrame:CGRectMake(0, barHeight, ScreenWidth, 44)];
-        [_navgationView setTitleStr:SLLocalizedString(@"填写订单")];
-        [_navgationView setDelegate:self];
+-(void)orderFillInvoiceView:(OrderFillInvoiceView *)view tapNotDevelopmentTicket:(BOOL)isInvoices{
+    if (isInvoices == NO) {
+        self.invoiceDic = nil;
+        [self.contentView setInvoiceContent:SLLocalizedString(@"不开发票")];
     }
-    return _navgationView;
-
 }
+
+#pragma mark - getter / setter
 
 -(OrderFillContentView *)contentView{
     
     if (_contentView == nil) {
         
         CGFloat x = 0, width = ScreenWidth;
-        CGFloat y = CGRectGetMaxY(self.navgationView.frame);
+        CGFloat y = 0;
         CGFloat heigth = CGRectGetMinY(self.footerView.frame) - y;//  - 49 - TAB_BAR_HEIGHT;
         _contentView = [[OrderFillContentView alloc]initWithFrame:CGRectMake(x, y, width, heigth)];
         [_contentView setDelegate:self];
@@ -414,7 +423,7 @@
     
     if (_footerView == nil) {
         
-        CGFloat y = ScreenHeight - 49 - kBottomSafeHeight;
+        CGFloat y = ScreenHeight - NavBar_Height - 49 - kBottomSafeHeight;
         _footerView = [[OrderFillFooterView alloc]initWithFrame:CGRectMake(0, y, ScreenWidth, 49)];
         [_footerView comittTarget:self action:@selector(comittAction)];
     }

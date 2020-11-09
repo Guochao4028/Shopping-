@@ -23,7 +23,7 @@
 #import "DefinedHost.h"
 
 #import "SLRequest.h"
-
+#import "DefinedURLs.h"
 #import "CustomerServieListModel.h"
 
 @interface WengenManager ()
@@ -434,6 +434,8 @@
 //        [ModelTool processingAddressData:filePath];
 //    }];
 //    [downloadTask resume];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    [fileManager removeItemAtPath:filePath error:NULL];
     
     
     [SLRequest downloadRequestWithApi:ADD(URL_GET_AREA_LIST_TXT) parameters:@"" downloadSavePath:filePath progress:^(double progress) {
@@ -1019,7 +1021,12 @@
             isSuccess = NO;
         }
         message.isSuccess = isSuccess;
-        message.reason = resultDic[MSG];
+        if (resultDic != nil) {
+            message.reason = resultDic[MSG];
+        }else{
+            message.reason = errorReason;
+        }
+        
         
         if (call) call(message);
     }];
@@ -1651,7 +1658,12 @@
         if ([resultDic isKindOfClass:[NSString class]]) {
              message.reason = (NSString *)resultDic;
         }else{
-            message.reason = resultDic[MSG];
+            if ([resultDic isKindOfClass:[NSNull class]]) {
+                message.reason = @"";
+            }else{
+                message.reason = resultDic[MSG];
+            }
+            
         }
         
        
@@ -2180,6 +2192,106 @@
         }
     }];
     
+}
+
+
+
+-(void)getGoodsInvoice:(NSDictionary *)param Callback:(NSDictionaryCallBack)call{
+    
+    [SLRequest postJsonRequestWithApi:URL_GET_SHOPAPI_COMMON_GOODS_GETGOODSINVOICE parameters:param success:^(NSDictionary * _Nullable resultDic) {
+        
+    } failure:^(NSString * _Nullable errorReason) {
+        
+    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
+        if (call) {
+            call(resultDic[DATAS]);
+        }
+    }];
+    
+//    [SLRequest postRequestWithApi:URL_GET_SHOPAPI_COMMON_GOODS_GETGOODSINVOICE parameters:param success:^(NSDictionary * _Nullable resultDic) {
+//    } failure:^(NSString * _Nullable errorReason) {
+//    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
+//        NSLog(@"resultDic : %@", resultDic);
+//        if (call) {
+//            call(resultDic[DATAS]);
+//        }
+//
+//    }];
+}
+
+
+-(void)changeInvoice:(NSDictionary *)param Callback:(MessageCallBack)call{
+    
+    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_INVOICE_CHANGEINVOICE parameters:param success:^(NSDictionary * _Nullable resultDic) {
+        
+    } failure:^(NSString * _Nullable errorReason) {
+        
+    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
+        if (call) {
+            Message *message = [[Message alloc]init];
+            BOOL isSuccess = YES;
+            
+            if (errorReason) {
+                isSuccess = NO;
+                message.reason = errorReason;
+            }
+            
+            message.isSuccess = isSuccess;
+            
+            
+            if (call) call(message);
+        }
+    }];
+}
+
+///修改发票信息
+-(void)editInvoice:(NSDictionary *)param Callback:(MessageCallBack)call{
+    
+    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_INVOICE_EDITINVOICE parameters:param success:^(NSDictionary * _Nullable resultDic) {
+        
+    } failure:^(NSString * _Nullable errorReason) {
+        
+    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
+        if (call) {
+            Message *message = [[Message alloc]init];
+            BOOL isSuccess = YES;
+            
+            if (errorReason) {
+                isSuccess = NO;
+                message.reason = errorReason;
+            }
+            
+            message.isSuccess = isSuccess;
+            
+            
+            if (call) call(message);
+        }
+    }];
+}
+
+
+-(void)sendMail:(NSDictionary *)param Callback:(MessageCallBack)call{
+ 
+    [SLRequest postHttpRequestWithApi:URL_POST_SHOPAPI_COMMON_SENDMAIL parameters:param success:^(NSDictionary * _Nullable resultDic) {
+        
+    } failure:^(NSString * _Nullable errorReason) {
+        
+    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
+        if (call) {
+            Message *message = [[Message alloc]init];
+            BOOL isSuccess = YES;
+            
+            if (errorReason) {
+                isSuccess = NO;
+                message.reason = errorReason;
+            }
+            
+            message.isSuccess = isSuccess;
+            
+            
+            if (call) call(message);
+        }
+    }];
 }
 
 #pragma mark - 构造单例

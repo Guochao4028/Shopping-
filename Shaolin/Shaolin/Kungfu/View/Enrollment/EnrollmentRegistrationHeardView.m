@@ -79,7 +79,7 @@
 #pragma mark - UITextFieldDelegate
 - (void)textFieldDidEndEditing:(UITextField *)textField {
     
-    self.registModel.realname = self.nameTF.text;
+    self.registModel.realName = self.nameTF.text;
     self.registModel.beforeName = self.oldNameTF.text;
 //    self.registModel.nationality = self.nationalityTF.text;
 }
@@ -117,11 +117,11 @@
 -(void)setRegistModel:(EnrollmentRegistModel *)registModel {
     _registModel = registModel;
     
-    self.nameTF.text = self.registModel.realname;
+    self.nameTF.text = self.registModel.realName;
     self.oldNameTF.text = self.registModel.beforeName;
     self.nationalityTF.text = self.registModel.nationality;
     
-    if (self.registModel.realname == nil|| self.registModel.realname.length == 0) {
+    if (self.registModel.realName == nil|| self.registModel.realName.length == 0) {
         for (UILabel *lab in self.nameView.subviews){
             if ([lab respondsToSelector:@selector(setTextColor:)]){
                 lab.textColor = [UIColor colorForHex:@"333333"];

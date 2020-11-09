@@ -7,7 +7,6 @@
 //
 
 #import "RitePastListViewController.h"
-#import "RiteRegistrationFormViewController.h"
 #import "KungfuWebViewController.h"
 
 #import "RitePastModel.h"
@@ -49,14 +48,10 @@ static NSString *const riteCellId = @"RitePastListCell";
 
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-    self.navigationController.navigationBar.hidden = NO;
 }
 
 -(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
-    self.navigationController.navigationBar.hidden = NO;
 }
 
 - (void)viewDidLoad {
@@ -308,10 +303,11 @@ static NSString *const riteCellId = @"RitePastListCell";
 }
 
 - (UIImageView *)formBackImageView{
-   if (!_formBackImageView){
+    if (!_formBackImageView){
         _formBackImageView = [[UIImageView alloc] init];
+        _formBackImageView.clipsToBounds = YES;
         _formBackImageView.contentMode = UIViewContentModeScaleAspectFill;
-       _formBackImageView.image = [UIImage imageNamed:@"riteFormBackImage"];
+        _formBackImageView.image = [UIImage imageNamed:@"riteFormBackImage"];
     }
     return _formBackImageView;
 }

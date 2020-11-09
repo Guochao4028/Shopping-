@@ -24,9 +24,12 @@
     NSString *timeStr = [time stringByReplacingOccurrencesOfString:@"-" withString:@"."];
     self.timeLabel.text = [NSString stringWithFormat:SLLocalizedString(@"阅读于%@"),timeStr];
     if (model.coverurlList == nil || model.coverurlList.count == 0) {
-       self.imageV.image = [UIImage imageNamed:@""];
+       self.imageV.image = [UIImage imageNamed:@"default_big"];
     }else {
-        [self.imageV sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", model.coverurlList[0][@"route"], Video_First_Photo]]];
+//        [self.imageV sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", model.coverurlList[0][@"route"], Video_First_Photo]]];
+        
+        [self.imageV sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", model.coverurlList[0][@"route"], Video_First_Photo]] placeholderImage:[UIImage imageNamed:@"default_big"]];
+
         if (model.videoTimeStr.length){
             [self.timeBtn setTitle:[NSString stringWithFormat:@" %@", model.videoTimeStr] forState:UIControlStateNormal];
         } else {

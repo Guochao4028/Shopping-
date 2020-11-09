@@ -18,7 +18,7 @@
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
+    [self setNavigationBarRedTintColor];
 }
 
 - (void)viewDidLoad {
@@ -51,10 +51,6 @@
     } else {
         [super leftAction];
     }
-}
-#pragma mark - device
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    return UIStatusBarStyleDefault;
 }
 
 /*

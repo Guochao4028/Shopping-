@@ -16,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (weak, nonatomic) IBOutlet UILabel *applyTitleLabel;
 @property (weak, nonatomic) IBOutlet UILabel *applyContentLabel;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *contentRightCon;
 
 
 

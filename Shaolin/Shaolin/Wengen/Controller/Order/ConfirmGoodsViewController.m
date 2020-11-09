@@ -13,6 +13,7 @@
 #import "XHStarRateView.h"
 #import "StoreViewController.h"
 #import "OrderStoreModel.h"
+#import "DataManager.h"
 @interface ConfirmGoodsViewController ()<UITableViewDataSource,UITableViewDelegate,XHStarRateViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *mTableView;

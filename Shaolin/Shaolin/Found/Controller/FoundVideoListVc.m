@@ -31,7 +31,7 @@ static NSString *kIdentifier = @"kIdentifier";
 @property (nonatomic, strong) NSMutableArray *urls;
 @property(nonatomic,assign) NSInteger praiseInteger;
 @property(nonatomic,assign) NSInteger collectionInteger;
-@property(nonatomic,strong) UIButton *leftBtn;
+@property(nonatomic,strong) UIButton *backButton;
 @property(nonatomic,strong) SLShareView *slShareView;
 @property(nonatomic) BOOL originNavigationBarHidden;
 @end
@@ -39,32 +39,26 @@ static NSString *kIdentifier = @"kIdentifier";
 @implementation FoundVideoListVc
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    self.originNavigationBarHidden = self.navigationController.navigationBar.hidden;
-    [super viewWillAppear:animated];
-    self.navigationController.navigationBar.hidden = YES;
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-    self.navigationController.navigationBar.hidden = self.originNavigationBarHidden;
 }
 
 -(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
-    self.navigationController.navigationBar.hidden = YES;
     @weakify(self)
     [self.tableView zf_filterShouldPlayCellWhileScrolled:^(NSIndexPath *indexPath) {
         @strongify(self)
-        
         [self playTheVideoAtIndexPath:indexPath scrollToTop:NO];
     }];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-
+    if (!self.hideNavigationBar && !self.hideNavigationBarView){
+        self.hideNavigationBar = YES;
+    }
     self.view.backgroundColor = [UIColor blackColor];
     [self.view addSubview:self.tableView];
     
@@ -106,12 +100,12 @@ static NSString *kIdentifier = @"kIdentifier";
     
     
     
-    self.leftBtn = [[UIButton alloc]initWithFrame:CGRectMake(16, StatueBar_Height + 3, 30, 30)];
+    self.backButton = [[UIButton alloc]initWithFrame:CGRectMake(16, StatueBar_Height + 3, 30, 30)];
     
-    [self.leftBtn setImage:[UIImage imageNamed:@"video_left"] forState:(UIControlStateNormal)];
+    [self.backButton setImage:[UIImage imageNamed:@"video_left"] forState:(UIControlStateNormal)];
 
-    [self.leftBtn addTarget:self action:@selector(leftAction) forControlEvents:(UIControlEventTouchUpInside)];
-    [self.view addSubview:self.leftBtn];
+    [self.backButton addTarget:self action:@selector(leftAction) forControlEvents:(UIControlEventTouchUpInside)];
+    [self.view addSubview:self.backButton];
 
 }
 -(void)leftAction

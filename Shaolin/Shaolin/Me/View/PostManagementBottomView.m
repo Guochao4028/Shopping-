@@ -53,7 +53,7 @@
         _deleteBtn.titleLabel.font = kMediumFont(15);
         [_deleteBtn setTitle:SLLocalizedString(@"删除") forState:UIControlStateNormal];
         [_deleteBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        _deleteBtn.backgroundColor = [UIColor colorForHex:@"8E2B25"];
+        _deleteBtn.backgroundColor = kMainYellow;
         _deleteBtn.layer.cornerRadius = 17;
         _deleteBtn.layer.masksToBounds = YES;
     }

@@ -8,7 +8,7 @@
 //
 //  考试页面
 
-
+#import "RootViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 @class ExamDetailModel;

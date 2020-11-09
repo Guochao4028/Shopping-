@@ -41,8 +41,7 @@
     [self addSubview:self.contentView];
     
     
-    
-    [self.contentView setFrame:CGRectMake(0, 200, ScreenWidth, ScreenHeight - 200)];
+    [self.contentView setFrame:CGRectMake(0, ScreenHeight/2, ScreenWidth, ScreenHeight/2)];
     
 //    [self.contentView setFrame:self.bounds];
     
@@ -51,6 +50,13 @@
     [self.webView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
     [self.webView autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0];
     [self.webView autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
+    
+    
+    NSLog(@"---------------------------");
+    NSLog(@"now time : %@", [NSDate date]);
+    NSLog(@"---------------------------");
+    
+    NSLog(@"&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
 
 }
 
@@ -92,6 +98,16 @@
 }
 
 
+
+-(void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation{
+    NSLog(@"-------------didFinishNavigation--------------");
+    NSLog(@"now time : %@", [NSDate date]);
+    NSLog(@"---------------------------");
+    
+    NSLog(@"&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+}
+
+
 #pragma mark - setter / getter
 
 -(WKWebView *)webView{
@@ -117,7 +133,20 @@
 }
 
 -(void)setClassContentStr:(NSString *)classContentStr{
+    NSLog(@"-----------classContentStr---------------");
+    NSLog(@"now time : %@", [NSDate date]);
+    NSLog(@"---------------------------");
+    
+    NSLog(@"&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+
     NSString *htmlStr = [self htmlEntityDecode:classContentStr];
+    
+    NSLog(@"-----------htmlEntityDecode----------------");
+    NSLog(@"now time : %@", [NSDate date]);
+    NSLog(@"---------------------------");
+    
+    NSLog(@"&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+    
         
         NSString *htmlTxt = [NSString stringWithFormat:@"<html> \n"
                              "<head> \n"
@@ -150,9 +179,21 @@
                              "</script>%@"
                              "</body>"
                              "</html>", htmlStr];
+    
+    NSLog(@"------------stringWithFormat---------------");
+    NSLog(@"now time : %@", [NSDate date]);
+    NSLog(@"---------------------------");
+    
+    NSLog(@"&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
         
     
         [self.webView loadHTMLString:htmlTxt baseURL:nil];
+    
+    NSLog(@"-----------loadHTMLString----------------");
+    NSLog(@"now time : %@", [NSDate date]);
+    NSLog(@"---------------------------");
+    
+    NSLog(@"&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
 }
 
 

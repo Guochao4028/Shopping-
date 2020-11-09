@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) NSInteger currentClassIndex;
 @property (nonatomic, strong) ClassDetailModel *model;
-@property (nonatomic, copy) void(^ cellSelectBlock)(ClassGoodsModel * classGoodModel,NSInteger indexRow);
+@property (nonatomic, copy) void(^ cellSelectBlock)(NSInteger indexRow);
 
 @end
 

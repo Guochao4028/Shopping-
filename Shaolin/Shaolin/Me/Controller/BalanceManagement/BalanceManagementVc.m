@@ -27,25 +27,12 @@
 @end
 
 @implementation BalanceManagementVc
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    
-    self.navigationController.fd_fullscreenPopGestureRecognizer.enabled = NO;
-}
-
--(void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    
-    self.navigationController.fd_fullscreenPopGestureRecognizer.enabled = YES;
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
  
 
     self.priceTf.delegate = self;
-    self.priceTf.layer.borderColor = [[UIColor colorForHex:@"8E2B25"]CGColor];
+    self.priceTf.layer.borderColor = kMainYellow.CGColor;
     [self getUserBalance];
 //    [self.view addSubview:self.payButton];
 }
@@ -53,10 +40,21 @@
 - (void)getUserBalance {
     [[MeManager sharedInstance] getUserBalanceSuccess:^(id  _Nonnull responseObject) {
         NSDictionary *dict = responseObject;
-        NSString *balance = [dict objectForKey:@"balance"];
+        NSNumber *balance = [dict objectForKey:@"balance"];
+        if (!balance) balance = @(0);
+        NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+//        formatter.positiveFormat = @",###.##"; // 正数格式
+        // 整数最少位数
+        formatter.minimumIntegerDigits = 1;
+        // 小数位最多位数
+        formatter.maximumFractionDigits = 2;
+        // 小数位最少位数
+        formatter.minimumFractionDigits = 2;
+        NSString *money = [formatter stringFromNumber:balance];
         
-        NSString *price =[NSString stringWithFormat:@"%.2f",balance.floatValue];
-        NSString *priceStr = [NSString stringWithFormat:SLLocalizedString(@"%.2f 元"), balance.floatValue];
+        NSString *price = money;
+        NSString *priceStr = [NSString stringWithFormat:@"%@ %@", price, SLLocalizedString(@"元")];
+                              
         NSMutableAttributedString *missionAttributed = [[NSMutableAttributedString alloc]initWithString:priceStr];
         
         [missionAttributed addAttribute:NSFontAttributeName value:kBoldFont(45) range:NSMakeRange(0, price.length)];
@@ -78,7 +76,7 @@
         }else {
             UIButton *btn = (UIButton *)[self.view viewWithTag:i+ 100];
          
-            [btn setTitleColor:[UIColor colorForHex:@"8E2B25"] forState:(UIControlStateNormal)];
+            [btn setTitleColor:kMainYellow forState:(UIControlStateNormal)];
               [btn setBackgroundImage:[UIImage imageNamed:@"balanceBtnNormal"] forState:(UIControlStateNormal)];
         }
     }
@@ -135,12 +133,12 @@
 }
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
     self.priceStr = nil;
-    [self.oneBtn setTitleColor:[UIColor colorForHex:@"8E2B25"] forState:(UIControlStateNormal)];
-    [self.twoBtn setTitleColor:[UIColor colorForHex:@"8E2B25"] forState:(UIControlStateNormal)];
-    [self.threeBtn setTitleColor:[UIColor colorForHex:@"8E2B25"] forState:(UIControlStateNormal)];
-    [self.fourBtn setTitleColor:[UIColor colorForHex:@"8E2B25"] forState:(UIControlStateNormal)];
-    [self.fiveBtn setTitleColor:[UIColor colorForHex:@"8E2B25"] forState:(UIControlStateNormal)];
-    [self.sixBtn setTitleColor:[UIColor colorForHex:@"8E2B25"] forState:(UIControlStateNormal)];
+    [self.oneBtn setTitleColor:kMainYellow forState:(UIControlStateNormal)];
+    [self.twoBtn setTitleColor:kMainYellow forState:(UIControlStateNormal)];
+    [self.threeBtn setTitleColor:kMainYellow forState:(UIControlStateNormal)];
+    [self.fourBtn setTitleColor:kMainYellow forState:(UIControlStateNormal)];
+    [self.fiveBtn setTitleColor:kMainYellow forState:(UIControlStateNormal)];
+    [self.sixBtn setTitleColor:kMainYellow forState:(UIControlStateNormal)];
     [self.oneBtn setBackgroundImage:[UIImage imageNamed:@"balanceBtnNormal"] forState:(UIControlStateNormal)];
     [self.twoBtn setBackgroundImage:[UIImage imageNamed:@"balanceBtnNormal"] forState:(UIControlStateNormal)];
     [self.threeBtn setBackgroundImage:[UIImage imageNamed:@"balanceBtnNormal"] forState:(UIControlStateNormal)];

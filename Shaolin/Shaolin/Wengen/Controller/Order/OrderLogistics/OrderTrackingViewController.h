@@ -6,8 +6,8 @@
 //  Copyright © 2020 syqaxldy. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-#import "OrderListModel.h"
+#import "RootViewController.h"
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface OrderTrackingViewController : RootViewController

@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -11,17 +14,17 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bZe-zY-lYB">
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bZe-zY-lYB">
                     <rect key="frame" x="358" y="0.0" width="56" height="44"/>
                     <connections>
                         <action selector="shopCarHandle:" destination="iN0-l3-epB" eventType="touchUpInside" id="Rfm-fJ-9sN"/>
                     </connections>
                 </button>
                 <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="shoppingCart" translatesAutoresizingMaskIntoConstraints="NO" id="0GE-FB-dLY">
-                    <rect key="frame" x="383" y="15" width="15" height="14.5"/>
+                    <rect key="frame" x="378" y="12" width="20" height="20"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="15" id="VRN-71-2xC"/>
-                        <constraint firstAttribute="height" constant="14.5" id="fpq-Oa-zEy"/>
+                        <constraint firstAttribute="width" constant="20" id="VRN-71-2xC"/>
+                        <constraint firstAttribute="height" constant="20" id="fpq-Oa-zEy"/>
                     </constraints>
                 </imageView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4qQ-im-e8S">
@@ -60,7 +63,7 @@
                                 <constraint firstAttribute="height" constant="5" id="YsX-mq-qgX"/>
                             </constraints>
                         </imageView>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BE2-ds-8vT">
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BE2-ds-8vT">
                             <rect key="frame" x="0.0" y="0.0" width="74" height="30"/>
                             <connections>
                                 <action selector="typeBtnHandle:" destination="iN0-l3-epB" eventType="touchUpInside" id="H4s-A9-SMW"/>
@@ -72,7 +75,7 @@
                             <fontDescription key="fontDescription" type="system" pointSize="13"/>
                             <textInputTraits key="textInputTraits" returnKeyType="search"/>
                         </textField>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q1K-jT-INZ">
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q1K-jT-INZ">
                             <rect key="frame" x="74" y="-6" width="228" height="42"/>
                             <connections>
                                 <action selector="searchBtnHandle:" destination="iN0-l3-epB" eventType="touchUpInside" id="NJr-ps-0ZX"/>
@@ -107,7 +110,7 @@
                     </constraints>
                 </view>
                 <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PL0-5t-Ub9">
-                    <rect key="frame" x="393" y="10.5" width="11.5" height="9.5"/>
+                    <rect key="frame" x="393" y="7.5" width="11.5" height="9.5"/>
                     <color key="backgroundColor" red="0.98039215690000003" green="0.98039215690000003" blue="0.98039215690000003" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="9.5" id="ES6-f7-1JA"/>
@@ -127,7 +130,7 @@
                                 <constraint firstAttribute="height" constant="20" id="d2u-4A-feI"/>
                             </constraints>
                         </imageView>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TmF-8y-hIB">
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TmF-8y-hIB">
                             <rect key="frame" x="0.0" y="0.0" width="56" height="44"/>
                             <connections>
                                 <action selector="backBtnHandle:" destination="iN0-l3-epB" eventType="touchUpInside" id="tK5-eu-pGc"/>
@@ -138,7 +141,7 @@
                             <state key="normal" image="navigationBar_leftIcon"/>
                         </button>
                     </subviews>
-                    <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <constraints>
                         <constraint firstAttribute="trailing" secondItem="kJx-BC-vF8" secondAttribute="trailing" id="8Zq-6j-o5Z"/>
                         <constraint firstAttribute="bottom" secondItem="kJx-BC-vF8" secondAttribute="bottom" id="Bvd-c4-k0w"/>
@@ -152,7 +155,7 @@
                         <constraint firstItem="kJx-BC-vF8" firstAttribute="top" secondItem="dbq-gM-GCk" secondAttribute="top" id="ye4-4n-TAZ"/>
                     </constraints>
                 </view>
-                <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ByL-DM-5rt">
+                <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ByL-DM-5rt">
                     <rect key="frame" x="358" y="0.0" width="56" height="44"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <color key="tintColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
@@ -162,7 +165,7 @@
                     </connections>
                 </button>
             </subviews>
-            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="bZe-zY-lYB" firstAttribute="leading" secondItem="q1K-jT-INZ" secondAttribute="trailing" id="5fH-g3-fR5"/>
                 <constraint firstAttribute="bottom" secondItem="dbq-gM-GCk" secondAttribute="bottom" id="9Id-tZ-f2X"/>
@@ -210,5 +213,8 @@
         <image name="navigationBar_leftIcon" width="25" height="25"/>
         <image name="search" width="12.5" height="12.5"/>
         <image name="shoppingCart" width="15" height="14.5"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
     </resources>
 </document>

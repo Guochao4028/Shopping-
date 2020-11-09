@@ -9,17 +9,18 @@
 //
 //  功夫 - 教程
 
-#import <UIKit/UIKit.h>
+#import "RootViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
-
-@interface KungfuClassListViewController : UIViewController
+@class SubjectModel;
+@interface KungfuClassListViewController : RootViewController
 
 @property (nonatomic, copy) NSString * searchText;
 @property (nonatomic, copy) NSString * filterType;
-//@property (nonatomic, copy) NSString * is_delicate;
 
+@property (nonatomic, strong) SubjectModel * subjectModel;
 
+//@property (nonatomic, assign) BOOL showNavigationBar;
 
 @end
 

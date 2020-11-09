@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17126"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -25,7 +25,7 @@
                         </constraints>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="少林寺精品素食" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6Fi-da-tfV">
-                        <rect key="frame" x="0.0" y="122.5" width="113" height="20"/>
+                        <rect key="frame" x="40.5" y="122.5" width="72.5" height="20"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="20" id="pPD-AC-dwN"/>
                         </constraints>
@@ -72,30 +72,42 @@
                         </constraints>
                     </view>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="¥268" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wrx-BJ-PkF">
-                        <rect key="frame" x="0.0" y="145" width="34" height="20"/>
+                        <rect key="frame" x="0.5" y="145" width="34" height="20"/>
                         <fontDescription key="fontDescription" name="PingFangSC-Medium" family="PingFang SC" pointSize="14"/>
                         <color key="textColor" red="0.5568627451" green="0.16862745100000001" blue="0.1450980392" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="proprietary" translatesAutoresizingMaskIntoConstraints="NO" id="Tuq-Np-sss">
+                        <rect key="frame" x="0.5" y="125" width="35" height="16"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="16" id="pyq-rx-3K6"/>
+                            <constraint firstAttribute="width" constant="35" id="rsI-Nu-VkM"/>
+                        </constraints>
+                    </imageView>
                 </subviews>
             </view>
+            <viewLayoutGuide key="safeArea" id="SEy-5g-ep8"/>
             <constraints>
-                <constraint firstAttribute="trailing" secondItem="6Fi-da-tfV" secondAttribute="trailing" id="INn-Gc-Ulb"/>
-                <constraint firstItem="6Fi-da-tfV" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="LEY-PF-6tG"/>
+                <constraint firstItem="Tuq-Np-sss" firstAttribute="leading" secondItem="Gv7-Ow-OJm" secondAttribute="leading" id="2jh-C4-Hju"/>
+                <constraint firstItem="Tuq-Np-sss" firstAttribute="top" secondItem="Gv7-Ow-OJm" secondAttribute="bottom" constant="12.5" id="5p4-28-loz"/>
+                <constraint firstItem="6Fi-da-tfV" firstAttribute="leading" secondItem="Tuq-Np-sss" secondAttribute="trailing" constant="5" id="6JP-ey-lrw"/>
+                <constraint firstItem="Wrx-BJ-PkF" firstAttribute="leading" secondItem="Tuq-Np-sss" secondAttribute="leading" id="JhW-Z9-ZzS"/>
+                <constraint firstItem="6Fi-da-tfV" firstAttribute="trailing" secondItem="Gv7-Ow-OJm" secondAttribute="trailing" id="MQ1-UG-uf1"/>
                 <constraint firstItem="Gv7-Ow-OJm" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="Nfo-Q5-i3M"/>
                 <constraint firstItem="Gv7-Ow-OJm" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="eHU-YQ-mWn"/>
                 <constraint firstItem="VpC-FB-7kA" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="1" id="hXl-Qh-p1G"/>
                 <constraint firstItem="Wrx-BJ-PkF" firstAttribute="top" secondItem="6Fi-da-tfV" secondAttribute="bottom" constant="2.5" id="hon-xu-wtF"/>
-                <constraint firstItem="Wrx-BJ-PkF" firstAttribute="leading" secondItem="6Fi-da-tfV" secondAttribute="leading" id="prN-HI-31O"/>
                 <constraint firstItem="6Fi-da-tfV" firstAttribute="top" secondItem="Gv7-Ow-OJm" secondAttribute="bottom" constant="10" id="qXQ-bm-RLI"/>
                 <constraint firstAttribute="trailing" secondItem="VpC-FB-7kA" secondAttribute="trailing" constant="11" id="uuF-nt-ogy"/>
             </constraints>
-            <viewLayoutGuide key="safeArea" id="SEy-5g-ep8"/>
             <size key="customSize" width="195" height="190"/>
             <connections>
                 <outlet property="goodsImageView" destination="Gv7-Ow-OJm" id="NEg-pQ-Vve"/>
                 <outlet property="goodsNameLabel" destination="6Fi-da-tfV" id="hnv-7z-JEA"/>
                 <outlet property="goodsPriceLabel" destination="Wrx-BJ-PkF" id="nRr-1c-25U"/>
+                <outlet property="proprietaryGayW" destination="6JP-ey-lrw" id="TN9-SI-ccx"/>
+                <outlet property="proprietaryImageView" destination="Tuq-Np-sss" id="nqS-kz-kcK"/>
+                <outlet property="proprietaryImageViewW" destination="rsI-Nu-VkM" id="158-T4-aAn"/>
                 <outlet property="sellPriceLabel" destination="woP-Eb-aNX" id="ix2-Cf-Sx1"/>
                 <outlet property="sellView" destination="VpC-FB-7kA" id="Nhi-ex-r7a"/>
             </connections>
@@ -103,6 +115,7 @@
         </collectionViewCell>
     </objects>
     <resources>
+        <image name="proprietary" width="35" height="16.5"/>
         <image name="sell" width="30" height="30"/>
     </resources>
 </document>

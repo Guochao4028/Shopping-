@@ -120,7 +120,7 @@
         [_okButton setTitleColor:[UIColor colorForHex:@"ffffff"] forState:UIControlStateNormal];
         _okButton.titleLabel.font = kRegular(18);
         _okButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
-        [_okButton setBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+        [_okButton setBackgroundColor:kMainYellow];
         _okButton.layer.cornerRadius = 4;
         [_okButton addTarget:self action:@selector(okAction) forControlEvents:(UIControlEventTouchUpInside)];
     }

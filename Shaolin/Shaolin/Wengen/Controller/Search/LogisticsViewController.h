@@ -6,11 +6,11 @@
 //  Copyright © 2020 syqaxldy. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "RootViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface LogisticsViewController : UIViewController
+@interface LogisticsViewController : RootViewController
 @property (nonatomic, copy) void (^ selectedLogisticsName)(NSString *name);
 @end
 

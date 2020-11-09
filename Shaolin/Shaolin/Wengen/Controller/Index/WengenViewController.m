@@ -6,7 +6,8 @@
 //  Copyright © 2020 syqaxldy. All rights reserved.
 // 文创 商城 首页
 
-#import "WengenSearchView.h"
+#import "WengenViewController.h"
+//#import "WengenSearchView.h"
 #import "LGFCenterPageVC.h"
 #import "LGFCenterPageChildVC.h"
 #import "LGFOCTool.h"
@@ -45,6 +46,7 @@
 #import "SearchViewController.h"
 
 #import "WengenWebViewController.h"
+#import "DataManager.h"
 
 static NSString *const kWengenBannerTableCellIdentifier = @"WengenBannerTableCell";
 
@@ -54,10 +56,12 @@ static NSString *const kRecommendTableCellIdentifier = @"RecommendTableCell";
 
 static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStrictSelectionTableCell";
 
-@interface WengenViewController ()<LGFCenterPageVCDelegate, WengenSearchViewDelegate,UITableViewDelegate, UITableViewDataSource,WengenCategoryTableCellDelegate, WengenBannerTableCellDelegate, RecommendTableCellDelegate, WengenStrictSelectionTableCellDelegate>
+//@interface WengenViewController ()<LGFCenterPageVCDelegate, WengenSearchViewDelegate,UITableViewDelegate, UITableViewDataSource,WengenCategoryTableCellDelegate, WengenBannerTableCellDelegate, RecommendTableCellDelegate, WengenStrictSelectionTableCellDelegate>
+
+@interface WengenViewController ()<LGFCenterPageVCDelegate,UITableViewDelegate, UITableViewDataSource,WengenCategoryTableCellDelegate, WengenBannerTableCellDelegate, RecommendTableCellDelegate, WengenStrictSelectionTableCellDelegate>
 
 //top 搜索栏
-@property(nonatomic, strong)WengenSearchView *searchView;
+//@property(nonatomic, strong)WengenSearchView *searchView;
 //pageView
 @property(nonatomic, strong)UIView *pageView;
 //heardView 放tableView
@@ -92,42 +96,42 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+//    self.hideNavigationBar = YES;
     [self initData];
     [self initUI];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
-//    [self hideNavBar];
     [super viewWillAppear:animated];
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
-    [self.navigationController.navigationBar setHidden:YES];
-    
-    
     
     [[DataManager shareInstance] getOrderAndCartCount];
     
-    [self.searchView layoutSubviews];
+//    [self.searchView layoutSubviews];
+    
+    UIButton *leftButton = [self leftBtn];
+    leftButton.titleLabel.font = kMediumFont(20);
+    [leftButton setTitle:SLLocalizedString(@"文创") forState:UIControlStateNormal];
+    [leftButton setImage:[UIImage imageNamed:@""] forState:UIControlStateNormal];
+    [leftButton setTitleColor:[UIColor hexColor:@"333333"] forState:UIControlStateNormal];
+    
+    UIButton *rightButton = [self rightBtn];
+    [rightButton setImage:[UIImage imageNamed:@"new_shop_car"] forState:UIControlStateNormal];
+    
+    [self hideNavigationBarShadow];
+    
+    
 }
 
 -(void)viewDidDisappear:(BOOL)animated{
-//    [self hideNavBar];
     [super viewDidDisappear:animated];
 }
 
 #pragma mark - methods
-
-/// 隐藏导航栏
-/// 1,如果已经隐藏，就显示；2,如果没有隐藏，就隐藏；
-/// !isHideNavBar取反
--(void) hideNavBar {
-    BOOL isHideNavBar = self.navigationController.navigationBar.hidden;
-    [self.navigationController.navigationBar setHidden:!isHideNavBar];
-}
-
 /// 初始化UI
 -(void)initUI{
     
-    [self.view addSubview:self.searchView];
+//    [self.view addSubview:self.searchView];
+    
     [self.view addSubview:self.pageView];
     [self configPage];
     [lgf_NCenter addObserver:self selector:@selector(childScroll:) name:@"LGFChildScroll" object:nil];
@@ -247,6 +251,12 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
         self.strictSelectionArray = result;
         [self.tableView reloadData];
     }];
+}
+
+#pragma mark - action
+
+- (void)rightAction{
+    [self tapShopping];
 }
 
 
@@ -392,26 +402,59 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
 #pragma mark - UITableViewDelegate & UITableViewDataSource
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-    return 3;
+    return 2;
 }
 
 -(CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
-    return 10;
+    
+    if (section == 0) {
+        return .001;
+    }
+    return .001;
 }
 
 -(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+    
+    if (section == 1) {
+        return 40;
+    }
     return 0.01;
 }
 
 -(UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     UIView *view = [[UIView alloc] init];
     view.backgroundColor = [UIColor clearColor];
+    
+    UIImageView * pointImgv = [[UIImageView alloc] initWithFrame:CGRectMake(15, 40/2-10, 10, 10)];
+    pointImgv.image = [UIImage imageNamed:@"new_sectionHeaderPoint"];
+    [view addSubview:pointImgv];
+    
+    
+    UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(25 + 8, 5, 80, 20)];
+    label.text = @"为你推荐";
+    label.font = kMediumFont(18);
+    label.textColor = [UIColor hexColor:@"030303"];
+    
+    
+    
+    UIImageView * lineImgv = [[UIImageView alloc] initWithFrame:CGRectMake(25 + 8, label.bottom - 5, 70, 8)];
+    lineImgv.image = [UIImage imageNamed:@"new_sectionHeaderLine"];
+    [view addSubview:lineImgv];
+    
+    [view addSubview:label];
+    
+    view.hidden = YES;
+    
+    if (section == 1) {
+        view.hidden = NO;
+    }
+    
     return view;
 }
 
 -(UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
     UIView *view = [[UIView alloc] init];
-    view.backgroundColor = [UIColor colorForHex:@"FAFAFA"];
+    view.backgroundColor = [UIColor colorForHex:@"ffffff"];
     return view;
 }
 
@@ -442,7 +485,7 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
                 NSInteger count = self.categoryArray.count;
                 
                 if (count > 4) {
-                    tableViewH = 191;
+                    tableViewH = 200;
                 }else if ( count > 0 && count <= 4){
                     tableViewH = 96;
                 }else{
@@ -453,12 +496,17 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
                 break;
         }
     }else if(indexPath.section == 1){
+
         //新人推荐
-        tableViewH = 286;
-    }else if(indexPath.section == 2){
-        //严选
-        tableViewH = 324;
+        tableViewH = 160;
+//    }
+//    else if(indexPath.section == 2){
+//        //严选
+//        tableViewH = 324;
     }
+
+
+
     //    else{
     //        tableViewH = 870;
     //    }
@@ -485,25 +533,25 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
         }
             break;
             
+//        case 1:{
+//            // 新人推荐
+//            RecommendTableCell *recommendCell = [tableView dequeueReusableCellWithIdentifier:kRecommendTableCellIdentifier];
+//            [recommendCell setDelegate:self];
+//            recommendCell.dataArray = self.recommendGoodsArray;
+//            cell = recommendCell;
+//        }
+//            break;
         case 1:{
-            // 新人推荐
-            RecommendTableCell *recommendCell = [tableView dequeueReusableCellWithIdentifier:kRecommendTableCellIdentifier];
-            [recommendCell setDelegate:self];
-            recommendCell.dataArray = self.recommendGoodsArray;
-            cell = recommendCell;
-        }
-            break;
-        case 2:{
             // 严选
             WengenStrictSelectionTableCell *strictSelectionCell = [tableView dequeueReusableCellWithIdentifier:kWengenStrictSelectionTableCellIdentifier];
             [strictSelectionCell setDelegate:self];
             
-            strictSelectionCell.goodsArray = self.strictSelectionArray;
+//            strictSelectionCell.goodsArray = self.strictSelectionArray;
             
             cell = strictSelectionCell;
         }
             break;
-        case 3:{
+        case 2:{
             cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
         }
             break;
@@ -514,6 +562,8 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
             break;
     }
     
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    
     return cell;
 }
 
@@ -521,6 +571,12 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
 - (void)childScroll:(NSNotification *)noti {
     // noti.object @[@(contentOffset.y), @(选中的子控制器 index)]
     CGFloat offsetY = [noti.object[0] floatValue];
+    NSLog(@"offsetY : %f", offsetY);
+}
+
+
+-(void)searchDidSelectHandle {
+    [self tapSearch];
 }
 
 #pragma mark - LGFCenterPageChildVC Delegate
@@ -584,9 +640,16 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
      但是代码里不知道发生什么了，
      /2是合适的，弄清楚发生什么了就改回来。
      */
-    CGSize size = CGSizeMake(((ScreenWidth -(32+12))/2.0), ((257/2)));
+    CGSize size = CGSizeMake(((ScreenWidth -(32))/2.0), ((273/2)));
+
     return size;
 }
+
+- (UIEdgeInsets)lgf_EdgeInsetsForItemAtinsetForSectionAtIndex:(NSInteger)section VC:(UIViewController *)VC{
+    
+    return UIEdgeInsetsMake(0, 5, 0, 5);
+}
+
 // 传入要注册的自定义 cell class
 -(Class)lgf_CenterChildPageCVCellClass:(LGFCenterPageChildVC *)VC {
     return [WengenGoodsCollectionCell class];
@@ -613,6 +676,9 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
 
 
 #pragma mark - getter / setter
+- (UIView *)titleCenterView{
+    return self.searchView;
+}
 
 - (NSMutableArray *)titleArray{
     if (!_titleArray) {
@@ -621,30 +687,31 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
     return _titleArray;
 }
 
--(WengenSearchView *)searchView{
-    if (_searchView == nil) {
-        
-        //状态栏高度
-        CGFloat barHeight ;
-        /** 判断版本
-         获取状态栏高度
-         */
-        if (@available(iOS 13.0, *)) {
-            barHeight = [[[[[UIApplication sharedApplication] keyWindow] windowScene] statusBarManager] statusBarFrame].size.height;
-        } else {
-            barHeight = [[UIApplication sharedApplication] statusBarFrame].size.height;
-        }
-        _searchView = [[WengenSearchView alloc]initWithFrame:CGRectMake(0, barHeight, ScreenWidth, 44)];
-        _searchView.isHiddeIcon = NO;
-        [_searchView setDelegate:self];
-    }
-    return _searchView;
-}
+//-(WengenSearchView *)searchView{
+//    if (_searchView == nil) {
+//
+//        //状态栏高度
+//        CGFloat barHeight ;
+//        /** 判断版本
+//         获取状态栏高度
+//         */
+//        if (@available(iOS 13.0, *)) {
+//            barHeight = [[[[[UIApplication sharedApplication] keyWindow] windowScene] statusBarManager] statusBarFrame].size.height;
+//        } else {
+//            barHeight = [[UIApplication sharedApplication] statusBarFrame].size.height;
+//        }
+//        _searchView = [[WengenSearchView alloc]initWithFrame:CGRectMake(0, barHeight, ScreenWidth, 44)];
+//        _searchView.isHiddeIcon = NO;
+//        [_searchView setDelegate:self];
+//    }
+//    return _searchView;
+//}
 
 -(UIView *)pageView{
     if (_pageView == nil) {
-        CGFloat y = CGRectGetMaxY(self.searchView.frame);
-        _pageView = [[UIView alloc]initWithFrame:CGRectMake(0, y, ScreenWidth, ScreenHeight - y - TabbarHeight)];
+//        CGFloat y = CGRectGetMaxY(self.searchView.frame);
+        CGFloat y = 0;
+        _pageView = [[UIView alloc]initWithFrame:CGRectMake(0, y, ScreenWidth , ScreenHeight - y - TabbarHeight)];
         [_pageView setBackgroundColor:[UIColor redColor]];
     }
     return _pageView;
@@ -658,8 +725,8 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
         _style.lgf_LineWidthType = lgf_FixedWith;
         _style.lgf_LineWidth = 17.5;
         _style.lgf_LineHeight = 3.5;
-        _style.lgf_LineColor = [UIColor colorForHex:@"762017"];
-        _style.lgf_TitleSelectColor = [UIColor colorForHex:@"762017"];
+        _style.lgf_LineColor = kMainYellow;
+        _style.lgf_TitleSelectColor = kMainYellow;
         _style.lgf_UnTitleSelectColor = [UIColor colorForHex:@"333333"];
         _style.lgf_LineAnimation = lgf_PageLineAnimationDefult;
         _style.lgf_PVTitleViewBackgroundColor = [UIColor colorForHex:@"FFFFFF"];
@@ -673,7 +740,15 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
         _pageVC.view.backgroundColor = [UIColor colorForHex:@"FFFFFF"];//RGBA(243, 243, 243, 1);
         _pageVC.delegate = self;
         _pageVC.lgf_NavigationBarHeight = 0;// navigationBar 高度
-        _pageVC.lgf_HeaderHeight = 985+40;// header 高度 + LGFFreePTView 高度
+
+
+//        _pageVC.lgf_HeaderHeight = 985+40-164-316 + 50;// header 高度 + LGFFreePTView 高度
+
+//        _pageVC.lgf_HeaderHeight = 985 - 324 +40;// header 高度 + LGFFreePTView 高度
+
+        _pageVC.lgf_HeaderHeight = 985+40-164-316 + 50;// header 高度 + LGFFreePTView 高度
+
+
         _pageVC.lgf_PageTitleViewHeight = 40;// LGFFreePTView 高度
         _pageVC.lgf_HeaderView = self.tableView;// 设置自定义头部视图
         [_pageVC lgf_ShowInVC:self view:self.pageView];// 添加封装好的控制器
@@ -683,6 +758,8 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
 
 -(UITableView *)tableView{
     if (_tableView == nil) {
+//        _tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, 985) style:UITableViewStyleGrouped];
+        
         _tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, 985) style:UITableViewStyleGrouped];
         
         [_tableView setBackgroundColor:[UIColor redColor]];
@@ -706,11 +783,6 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
     }
     
     return _tableView;
-}
-
-#pragma mark - device
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    return UIStatusBarStyleDefault;
 }
 
 #pragma mark - dealloc

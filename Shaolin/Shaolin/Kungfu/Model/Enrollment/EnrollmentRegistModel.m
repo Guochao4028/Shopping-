@@ -10,4 +10,11 @@
 
 @implementation EnrollmentRegistModel
 
++ (NSDictionary *)mj_replacedKeyFromPropertyName{
+    return @{
+             @"realName" : @[@"realName", @"realname"],
+             };
+}
+
+
 @end

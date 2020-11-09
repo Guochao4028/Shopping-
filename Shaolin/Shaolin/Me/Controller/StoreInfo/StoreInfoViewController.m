@@ -36,10 +36,7 @@
 
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-    [self wr_setNavBarBarTintColor:[UIColor hexColor:@"8E2B25"]];
-    [self wr_setNavBarTintColor:[UIColor whiteColor]];
-    [self wr_setNavBarBackgroundAlpha:1];
+    [self setNavigationBarRedTintColor];
 }
 
 - (void)setUI {
@@ -49,7 +46,7 @@
     [button addTarget:self action:@selector(buttonAction) forControlEvents:(UIControlEventTouchUpInside)];
     [button setTitleColor:[UIColor colorForHex:@"FFFFFF"] forState:(UIControlStateNormal)];
     button.titleLabel.font = kRegular(15);
-    button.backgroundColor = [UIColor colorForHex:@"8E2B25"];
+    button.backgroundColor = kMainYellow;
     button.layer.cornerRadius = 4;
     button.layer.masksToBounds = YES;
     [self.view addSubview:button];

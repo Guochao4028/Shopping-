@@ -29,9 +29,12 @@
 
 @implementation ReadingVideoVc
 static  NSString* firseCellid = @"firseCell";
-- (void)viewWillDisappear:(BOOL)animated {
-    //    self.navigationController.navigationBar.hidden = YES;
+
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self setNavigationBarRedTintColor];
 }
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     _isInsertEdit = NO;
@@ -64,7 +67,11 @@ static  NSString* firseCellid = @"firseCell";
         _bottomView.allBtn.selected = !_bottomView.allBtn.selected;
         [_bottomView.allBtn setTitle:SLLocalizedString(@"全选") forState:UIControlStateNormal];
     }
-    _tableView.frame = CGRectMake(0, 0, kWidth, kHeight-NavBar_Height-48-SLChange(40)-BottomMargin_X);
+    _tableView.frame = CGRectMake(0, 0, kWidth, kHeight-NavBar_Height-48-SLChange(40)-kBottomSafeHeight);
+//    [_tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.top.right.mas_equalTo(self.view);
+//        make.bottom.mas_equalTo(-kBottomSafeHeight);
+//    }];
     //添加底部视图
     
     self.bottomView.hidden = NO;
@@ -74,7 +81,7 @@ static  NSString* firseCellid = @"firseCell";
     
     _isInsertEdit = NO;
     [_tableView setEditing:NO animated:YES];
-    _tableView.frame = CGRectMake(0, 0, kWidth, kHeight-NavBar_Height-48);
+    _tableView.frame = CGRectMake(0, 0, kWidth, kHeight-NavBar_Height-48-kBottomSafeHeight);
     
     [self.bottomView removeFromSuperview];
     _bottomView.hidden = YES;
@@ -357,7 +364,6 @@ static  NSString* firseCellid = @"firseCell";
         if ([model.type isEqualToString:@"1"]) {
             if ([model.state isEqualToString:@"6"]) {
                 FoundVideoListVc *vC = [[FoundVideoListVc alloc]init];
-                vC.hidesBottomBarWhenPushed = YES;
                 vC.fieldId = model.fieldId;
                 vC.videoId = model.id;
                 vC.tabbarStr = tabbarSt;
@@ -373,7 +379,6 @@ static  NSString* firseCellid = @"firseCell";
         }else {
             if ([model.state isEqualToString:@"2"]) {
                 FoundVideoListVc *vC = [[FoundVideoListVc alloc]init];
-                vC.hidesBottomBarWhenPushed = YES;
                 vC.fieldId = model.fieldId;
                 vC.videoId = model.id;
                 vC.tabbarStr = tabbarSt;
@@ -464,7 +469,7 @@ static  NSString* firseCellid = @"firseCell";
     [[NSNotificationCenter defaultCenter]postNotificationName:@"NormalButton" object:nil];
     _isInsertEdit = NO;
     [_tableView setEditing:NO animated:YES];
-    _tableView.frame = CGRectMake(0, 0, kWidth, kHeight-NavBar_Height-48);
+    _tableView.frame = CGRectMake(0, 0, kWidth, kHeight-NavBar_Height-48-kBottomSafeHeight);
     [self.bottomView removeFromSuperview];
     _bottomView.hidden = YES;
 }

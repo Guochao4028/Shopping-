@@ -14,7 +14,7 @@
 #import "WengenWebViewController.h"
 
 #import "DefinedHost.h"
-
+#import "DataManager.h"
 
 
 @interface QualificationViewController ()<UITableViewDelegate, UITableViewDataSource>
@@ -299,7 +299,7 @@
     if (_titleView == nil) {
         _titleView = [[UIView alloc]initWithFrame:CGRectMake(0, 10, ScreenWidth, 44)];
         
-        [_titleView setBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+        [_titleView setBackgroundColor:kMainYellow];
 
         UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(16, 11.5, 110, 21)];
         
@@ -339,7 +339,7 @@
         [_button setTitle:SLLocalizedString(@"提交") forState:UIControlStateNormal];
         CGFloat y = CGRectGetMaxY(self.tabelView.frame) +56;
         [_button setFrame:CGRectMake(16, y, ScreenWidth - 32, 40)];
-        [_button setBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+        [_button setBackgroundColor:kMainYellow];
         [_button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         
         [_button addTarget:self action:@selector(submitAction) forControlEvents: UIControlEventTouchUpInside];

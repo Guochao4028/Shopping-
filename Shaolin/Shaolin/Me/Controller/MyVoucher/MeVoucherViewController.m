@@ -28,10 +28,8 @@ static NSString *const MeVoucherCollectionViewCellIdentifier = @"MeVoucherCollec
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self wr_setNavBarShadowImageHidden:YES];
-    [self wr_setNavBarBarTintColor:[UIColor colorWithRed:46.0/255 green:46.0/255 blue:48.0/255 alpha:1]];
-//    [self.navigationController.navigationBar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-    
+    [self setNavigationBarRedTintColor];
+
     self.titleLabe.text = SLLocalizedString(@"补考凭证");
     self.titleLabe.textColor = [UIColor whiteColor];
     

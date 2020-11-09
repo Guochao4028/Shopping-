@@ -8,8 +8,6 @@
 
 #import "OrderHomePageViewController.h"
 
-#import "WengenNavgationView.h"
-
 #import "XLPageViewControllerConfig.h"
 #import "XLPageViewController.h"
 
@@ -22,7 +20,7 @@
 
 
 
-@interface OrderHomePageViewController ()<XLPageViewControllerDelegate,XLPageViewControllerDataSrouce, WengenNavgationViewDelegate>
+@interface OrderHomePageViewController ()<XLPageViewControllerDelegate,XLPageViewControllerDataSrouce>
 
 //配置信息
 @property (nonatomic, strong) XLPageViewControllerConfig *config;
@@ -31,34 +29,27 @@
 
 //标题组
 @property (nonatomic, strong) NSArray *titles;
-
-@property (nonatomic, strong)WengenNavgationView *navgationView;
-
 @end
 
 @implementation OrderHomePageViewController
 
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self.navigationController setNavigationBarHidden:YES];
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
+    
 }
+
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+    self.titleLabe.text = SLLocalizedString(@"我的订单");
     [self initUI];
 }
 
 -(void)initUI{
     [self.view setBackgroundColor:[UIColor whiteColor]];
-    [self.view addSubview:self.navgationView];
-    
-    CGFloat y = CGRectGetMaxY(self.navgationView.frame);
-    
-    self.pageViewController.view.frame = CGRectMake(0, y, ScreenWidth, ScreenHeight - y);
-    
+   
     [self addChildViewController:self.pageViewController];
     [self.view addSubview:self.pageViewController.view];
 }
@@ -70,9 +61,8 @@
 //    [self.navigationController pushViewController:vc animated:YES];
 }
 
-#pragma mark - WengenNavgationViewDelegate
 //返回按钮
--(void)tapBack{
+-(void)leftAction{
     
 //    self.tabBarController.selectedIndex = 4;
     
@@ -83,7 +73,7 @@
 - (UIViewController *)pageViewController:(XLPageViewController *)pageViewController viewControllerForIndex:(NSInteger)index {
     
     OrderViewController *orderVC = [[OrderViewController alloc]init];
-    
+    orderVC.disableRightGesture = self.disableRightGesture;
     if (index == 0) {
          orderVC.isOrder = YES;
     }
@@ -137,31 +127,6 @@
 }
 
 #pragma mark - getter / setter
-
--(WengenNavgationView *)navgationView{
-    
-    if (_navgationView == nil) {
-        //状态栏高度
-        CGFloat barHeight ;
-        /** 判断版本
-         获取状态栏高度
-         */
-        if (@available(iOS 13.0, *)) {
-            barHeight = [[[[[UIApplication sharedApplication] keyWindow] windowScene] statusBarManager] statusBarFrame].size.height;
-        } else {
-            barHeight = [[UIApplication sharedApplication] statusBarFrame].size.height;
-        }
-        _navgationView = [[WengenNavgationView alloc]initWithFrame:CGRectMake(0, barHeight, ScreenWidth, 44)];
-        [_navgationView setTitleStr:SLLocalizedString(@"我的订单")];
-        [_navgationView setDelegate:self];
-        
-//        [_navgationView setRightStr:SLLocalizedString(@"功夫订单")];
-//        [_navgationView rightTarget:self action:@selector(rightAction)];
-    }
-    return _navgationView;
-    
-}
-
 -(XLPageViewController *)pageViewController{
     
     if (_pageViewController == nil) {
@@ -190,7 +155,7 @@
         //隐藏动画线条
         _config.shadowLineHidden = NO;
         //分割线颜色
-        _config.shadowLineColor = [UIColor colorForHex:@"8E2B25"];
+        _config.shadowLineColor = kMainYellow;
         //标题居中显示
         _config.titleViewAlignment = XLPageTitleViewAlignmentCenter;
         
@@ -209,11 +174,5 @@
 
 -(void)setIndex:(NSInteger)index{
     [self.pageViewController setSelectedIndex:index];
-}
-
-
-#pragma mark - device
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    return UIStatusBarStyleDefault;
 }
 @end

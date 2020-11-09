@@ -40,19 +40,19 @@
         [self.imageV sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",urlStr]] placeholderImage:[UIImage imageNamed:@"default_big"]];
     }
     
-    self.userNameLabel.text = f.author;
+    self.userNameLabel.text = [NSString stringWithFormat:@"%@（%@）", SLLocalizedString(@"广告商"), f.author] ;
     CGFloat width = [UILabel getWidthWithTitle:self.titleL.text font:self.titleL.font];
-    
-    if ( width < kWidth-SLChange(32)) {
+    //这里的30是tableView的左右边距
+    if ( width < kWidth - 30 - SLChange(20)) {
         [self.titleL mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.height.mas_equalTo(SLChange(16));
+            make.height.mas_equalTo(16);
         }];
         
         
-        f.cellHeight =  SLChange(321);
+        f.cellHeight =  SLChange(270);
     }else
     {
-        f.cellHeight =  SLChange(350);
+        f.cellHeight =  SLChange(300);
         
     }
     self.indexPath = indexPath;
@@ -67,68 +67,67 @@
     [self.contentView addSubview:self.titleL];
     [self.contentView addSubview:self.imageV];
     [self.imageV addSubview:self.plaayerBtn];
-    [self.contentView addSubview:self.grayView];
-    [self.grayView addSubview:self.lookBtn];
-    [self.grayView addSubview:self.userNameLabel];
-    [self.contentView addSubview:self.adLogoBtn];
+    [self.imageV addSubview:self.adLogoBtn];
+    
+    [self.contentView addSubview:self.bottomView];
+    [self.bottomView addSubview:self.lookBtn];
+    [self.bottomView addSubview:self.userNameLabel];
     [self.contentView addSubview:self.timeLabel];
     [self.contentView addSubview:self.closeBtn];
-}
--(void)layoutSubviews
-{
-    [super layoutSubviews];
+    
     [self.titleL mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(SLChange(16));
-        make.right.mas_equalTo(-SLChange(16));
-        make.height.mas_equalTo(SLChange(45));
-        make.top.mas_equalTo(SLChange(15));
+        make.left.mas_equalTo(10);
+        make.right.mas_equalTo(-10);
+        make.height.mas_equalTo(45);
+        make.top.mas_equalTo(15);
     }];
     [self.imageV mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.mas_equalTo(self.titleL);
-        make.height.mas_equalTo(SLChange(195));
-        make.top.mas_equalTo(self.titleL.mas_bottom).offset(SLChange(10));
+        make.height.mas_equalTo(180);
+        make.top.mas_equalTo(self.titleL.mas_bottom).offset(10);
     }];
     [self.plaayerBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.centerY.mas_equalTo(self.imageV);
-        make.size.mas_equalTo(SLChange(29));
+        make.size.mas_equalTo(29);
     }];
-    [self.grayView mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.mas_equalTo(self.titleL);
-        make.height.mas_equalTo(SLChange(38));
-        make.top.mas_equalTo(self.imageV.mas_bottom);
+        make.top.mas_equalTo(self.imageV.mas_bottom).mas_equalTo(10);
+        make.bottom.mas_equalTo(-15);
     }];
     [self.userNameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(0);//SLChange(10)
-        make.right.mas_equalTo(self.lookBtn.mas_left).mas_equalTo(-SLChange(10));
-        make.centerY.mas_equalTo(self.grayView);
-        make.height.mas_equalTo(SLChange(25));
+        make.right.mas_equalTo(self.lookBtn.mas_left).mas_equalTo(-10);
+        make.top.bottom.mas_equalTo(0);
+        make.height.mas_equalTo(25);
     }];
     [self.lookBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.mas_equalTo(0);//-SLChange(10)
-        make.centerY.mas_equalTo(self.grayView);
-        make.width.mas_equalTo(SLChange(70));
-        make.height.mas_equalTo(SLChange(25));
+        make.centerY.mas_equalTo(self.bottomView);
+        make.width.mas_equalTo(70);
+        make.height.mas_equalTo(25);
     }];
     
     [self.adLogoBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.grayView.mas_bottom).offset(SLChange(10));
-        make.left.mas_equalTo(self.titleL);
-        make.width.mas_equalTo(SLChange(30));
-        make.height.mas_equalTo(SLChange(20));
+        make.top.mas_equalTo(10);
+        make.left.mas_equalTo(10);
+        make.width.mas_equalTo(44);
+        make.height.mas_equalTo(30);
     }];
-    [self.timeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(self.adLogoBtn.mas_right).offset(SLChange(5));
-        make.centerY.mas_equalTo(self.adLogoBtn);
-        make.width.mas_equalTo(kWidth/2);
-        make.height.mas_equalTo(SLChange(16.5));
-    }];
+//    [self.timeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.mas_equalTo(self.adLogoBtn.mas_right).offset(SLChange(5));
+//        make.centerY.mas_equalTo(self.adLogoBtn);
+//        make.width.mas_equalTo(kWidth/2);
+//        make.height.mas_equalTo(SLChange(16.5));
+//    }];
     [self.closeBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(self.adLogoBtn);
-        make.right.mas_equalTo(-SLChange(16));
-        make.width.mas_equalTo(SLChange(20));
-        make.height.mas_equalTo(SLChange(15));
+        make.right.mas_equalTo(-16);
+        make.width.mas_equalTo(20);
+        make.height.mas_equalTo(15);
     }];
 }
+
 -(UILabelLeftTopAlign *)titleL
 {
     if (!_titleL) {
@@ -145,6 +144,7 @@
 {
     if (!_imageV) {
         _imageV = [[UIImageView alloc]init];
+        _imageV.layer.cornerRadius = 4;
         _imageV.backgroundColor = [UIColor clearColor];
         _imageV.userInteractionEnabled = YES;
         _imageV.clipsToBounds = YES;
@@ -154,14 +154,13 @@
     }
     return _imageV;
 }
--(UIView *)grayView
+-(UIView *)bottomView
 {
-    if (!_grayView) {
-        _grayView = [[UIView alloc]init];
-        _grayView.backgroundColor = RGBA(252, 250, 250, 1);
-        _grayView.userInteractionEnabled = YES;
+    if (!_bottomView) {
+        _bottomView = [[UIView alloc]init];
+        _bottomView.userInteractionEnabled = YES;
     }
-    return _grayView;
+    return _bottomView;
 }
 
 -(UIButton *)lookBtn
@@ -170,11 +169,11 @@
         _lookBtn = [[UIButton alloc]init];
         
         _lookBtn.layer.borderWidth = 1;
-        _lookBtn.layer.borderColor = [UIColor colorForHex:@"C43E37"].CGColor;
+        _lookBtn.layer.borderColor = [UIColor colorForHex:@"AE8453"].CGColor;
         _lookBtn.layer.masksToBounds = YES;
         _lookBtn.layer.cornerRadius = 4;
         [_lookBtn setTitle:SLLocalizedString(@"查看详情") forState:(UIControlStateNormal)];
-        [_lookBtn setTitleColor:[UIColor colorForHex:@"C43E37"] forState:(UIControlStateNormal)];
+        [_lookBtn setTitleColor:[UIColor colorForHex:@"AE8453"] forState:(UIControlStateNormal)];
         _lookBtn.titleLabel.font = kRegular(13);
         _lookBtn.userInteractionEnabled = NO;
         //        [_lookBtn addTarget:self action:@selector(playerAction:) forControlEvents:(UIControlEventTouchUpInside)];
@@ -186,7 +185,7 @@
 {
     if (!_adLogoBtn) {
         _adLogoBtn = [[UIButton alloc]init];
-        [_adLogoBtn setImage:[UIImage imageNamed:@"found_advertising"] forState:(UIControlStateNormal)];
+        [_adLogoBtn setImage:[UIImage imageNamed:@"advertisementIcon"] forState:(UIControlStateNormal)];
     }
     return _adLogoBtn;
 }
@@ -198,7 +197,6 @@
         _timeLabel.numberOfLines = 1;
         _timeLabel.textAlignment = NSTextAlignmentLeft;
         _timeLabel.textColor = [UIColor colorForHex:@"999999"];
-        _timeLabel.text = SLLocalizedString(@"30分钟前");
     }
     return _timeLabel;
 }

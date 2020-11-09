@@ -79,6 +79,10 @@
 //待评星
 @property (weak, nonatomic) IBOutlet UIButton *reviewStarButton;
 
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *completeOperationViewW;
+
+@property (weak, nonatomic) IBOutlet UIView *completeCheckInvoiceView;
+
 /****** ACTION ****/
 
 //查看物流 action
@@ -217,8 +221,10 @@
 
 ///更新布局
 -(void)updateLayout:(OrderListModel *)listModel{
+    
+    self.completeOperationViewW.constant = (ScreenWidth - 32);
    
-    [self.orderNoLabel setText:[NSString stringWithFormat:SLLocalizedString(@"订单单号：%@"), listModel.order_car_sn]];
+    [self.orderNoLabel setText:[NSString stringWithFormat:SLLocalizedString(@"订单编号：%@"), listModel.order_car_sn]];
     NSArray *orderStoreArray = listModel.order_goods;
 //
 //
@@ -235,7 +241,7 @@
     if ([status isEqualToString:@"1"] == YES) {
         [self obligationLayout];
     }else if ([status isEqualToString:@"2"] == YES){
-        [self.instructionsLabel setText:SLLocalizedString(@"待发货")];
+        [self.instructionsLabel setText:SLLocalizedString(@"等待发货")];
         [self waitingSendGoodsLayout];
     }else if ([status isEqualToString:@"3"] == YES) {
         [self.instructionsLabel setText:SLLocalizedString(@"已发货")];
@@ -292,6 +298,15 @@
            [self.receivingCheckInvoiceButton setTitle:buttonTitle forState:UIControlStateNormal];
               [self.waitingSendGoodsCheckInvoiceButton setTitle:buttonTitle forState:UIControlStateNormal];
               [self.completeCheckInvoiceButton setTitle:buttonTitle forState:UIControlStateNormal];
+           
+           if ([goodsModel.is_foreign isEqualToString:@"1"] && [buttonTitle isEqualToString:SLLocalizedString(@"补开发票")]) {
+               [self.receivingCheckInvoiceButton setHidden:YES];
+               [self.waitingSendGoodsCheckInvoiceButton setHidden:YES];
+               [self.completeCheckInvoiceButton setHidden:YES];
+               
+               [self.completeCheckInvoiceView setHidden:YES];
+               self.completeOperationViewW.constant = self.completeOperationViewW.constant  - (self.completeOperationViewW.constant  / 4);
+           }
        }
        
       

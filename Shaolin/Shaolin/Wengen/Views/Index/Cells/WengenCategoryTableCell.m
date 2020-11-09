@@ -55,7 +55,7 @@ static NSString *const kItemCollectionViewCellIdentifier = @"ItemCollectionViewC
      32 是两边的边距 ，|-16-16-|
      30 是3*10，10是 间距
      */
-    CGFloat width = ScreenWidth  - 32 - (30);
+    CGFloat width = ScreenWidth  - 32 - ((ScreenWidth - (4 * 56) - 32));
     return CGSizeMake(width/4, 74);
 }
 
@@ -63,7 +63,7 @@ static NSString *const kItemCollectionViewCellIdentifier = @"ItemCollectionViewC
     ItemCollectionViewCell * cell  = [collectionView dequeueReusableCellWithReuseIdentifier:kItemCollectionViewCellIdentifier forIndexPath:indexPath];
     
     cell.model = self.dataArray[indexPath.row];
-    
+    cell.iconImageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"new_mall_icon%ld",indexPath.row]];
     return cell;
 }
 
@@ -99,19 +99,21 @@ static NSString *const kItemCollectionViewCellIdentifier = @"ItemCollectionViewC
         GCCollectionViewFlowLayout *layout = [[GCCollectionViewFlowLayout alloc]init];
         layout.row = 2;
         layout.column = 4;
-        layout.rowSpacing = 10;
-        layout.columnSpacing = 10;
+        layout.rowSpacing = 19;
+        
+        NSLog(@"layout.columnSpacing  : %f", (ScreenWidth - (4 * 56) - 32));
+        layout.columnSpacing = (ScreenWidth - (4 * 56) - 32) / 3;
         layout.pageWidth = ScreenWidth - 32;
         /**
          32 是两边的边距 ，|-16-16-|
          30 是3*10，10是 间距
          */
-        CGFloat width = ScreenWidth  - 32 - (30);
+        CGFloat width = ScreenWidth  - 32 - ((ScreenWidth - (4 * 56) - 32));
         layout.size = CGSizeMake(width/4, 74);
         
         layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
         
-        _collectionView = [[UICollectionView alloc]initWithFrame:CGRectMake(16, 12, ScreenWidth - 32, self.heigth - 24) collectionViewLayout:layout];
+        _collectionView = [[UICollectionView alloc]initWithFrame:CGRectMake(16, 20, ScreenWidth - 32, self.heigth - 24) collectionViewLayout:layout];
         
         [_collectionView setDelegate:self];
         [_collectionView setDataSource:self];

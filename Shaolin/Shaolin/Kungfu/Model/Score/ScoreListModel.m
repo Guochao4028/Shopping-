@@ -9,5 +9,9 @@
 #import "ScoreListModel.h"
 
 @implementation ScoreListModel
-
++ (NSDictionary *)mj_replacedKeyFromPropertyName{
+    return @{
+             @"scoreId" : @"id",
+             };
+}
 @end

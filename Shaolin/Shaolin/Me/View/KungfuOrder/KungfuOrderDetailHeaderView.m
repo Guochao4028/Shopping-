@@ -53,6 +53,11 @@
         // 活动
         nameStr = detailsModel.order_user_realName;
         telephoneStr = detailsModel.order_user_telephone;
+        
+        if (nameStr.length == 0) {
+            nameStr = [SLAppInfoModel sharedInstance].realname;
+            telephoneStr = [SLAppInfoModel sharedInstance].phoneNumber;
+        }
     } else {
         nameStr = NotNilAndNull([SLAppInfoModel sharedInstance].nickname)?[SLAppInfoModel sharedInstance].nickname:[SLAppInfoModel sharedInstance].realname;
         if (detailsModel.name.length > 0) {
@@ -154,7 +159,9 @@
     
     self.payBtn.hidden = YES;
     
-    self.contentLabel.text = [NSString stringWithFormat:SLLocalizedString(@"取消原因：%@"),self.detailsModel.cannel];
+    NSString *cannel = self.detailsModel.cannel.length == 0? @"支付超时": self.detailsModel.cannel;
+    
+    self.contentLabel.text = [NSString stringWithFormat:SLLocalizedString(@"取消原因：%@"),cannel];
 }
 
 - (void) completeLayout{

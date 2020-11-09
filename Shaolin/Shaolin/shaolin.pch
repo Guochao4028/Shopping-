@@ -15,23 +15,16 @@
 
 #import "NSDictionary+Safe.h"
 #import "IQKeyboardManager.h"
-#import "KungfuViewController.h"
-#import "MeViewController.h"
-#import "WengenViewController.h"
-#import "ActivityViewController.h"
-#import "FoundViewController.h"
 #import "Masonry.h"
 #import "solveJsonData.h"
 #import <MJRefresh.h>
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "UIColor+Hex.h"
 #import <TZImagePickerController/TZImagePickerController.h>
-#import "RootViewController.h"
 #import "MJExtension.h"
 #import "MBProgressHUD.h"
 #import "SLAppInfoModel.h"
 #import "UILabelLeftTopAlign.h"
-#import "XLPageViewController.h"
 #import "ShareSDK/ShareSDK.h"
 #import "ShareSDKUI/ShareSDK+SSUI.h"
 #import "Eleven.h"
@@ -39,7 +32,7 @@
 #import "UIColor+Extension.h"
 #import "NoDataView.h"
 #import "LYEmptyViewHeader.h"
-#import "WRNavigationBar.h"
+//#import "WRNavigationBar.h"
 #import "UIScrollView+EmptyDataSet.h"
 #import "WSSafeObject.h"
 #import "ShaolinProgressHUD.h"
@@ -64,7 +57,7 @@
 /**
  url文件，所有的url都在里面
  */
-#import "DefinedURLs.h"
+//#import "DefinedURLs.h"
 /**
  自定义枚举
  */
@@ -82,8 +75,8 @@
 /**
  网络层，所有网络的调用都在这个类中
  */
-#import "DataManager.h"
-#import "LoginManager.h"
+//#import "DataManager.h"
+//#import "LoginManager.h"
 #import "NSObject+Alert.h"
 #import "UIViewController+Util.h"
 #import <UINavigationController+FDFullscreenPopGesture.h>
@@ -126,9 +119,21 @@
 #define kColor_Blue [UIColor colorWithRed:45 / 255.0 green:116 / 255.0 blue:215 / 255.0 alpha:1.0]
 #define kColor_Gray [UIColor colorWithRed:229 / 255.0 green:229 / 255.0 blue:229 / 255.0 alpha:1.0]
 
+//颜色
+
+#define kMainYellow [UIColor colorWithRed:193.0/255.0 green:163.0/255.0 blue:116.0/255.0 alpha:0.99]
+
+#define kMainLightYellow [UIColor colorWithRed:235.0/255.0 green:212.0/255.0 blue:177.0/255.0 alpha:0.99]
+
+#define KMeLightYellow [UIColor colorWithRed:208.0/255.0 green:180.0/255.0 blue:137.0/255.0 alpha:0.99]
+
+
 //字体
 #define kFont(A) [UIFont fontWithName:@"PingFangSC-Light" size:A]
 #define kRegular(A) [UIFont fontWithName:@"PingFangSC-Regular" size:A]
+
+#define kDINFONT(A) [UIFont fontWithName:@"DINAlternate-Bold" size:A]
+
 //加粗字体
 #define kBoldFont(A) [UIFont fontWithName:@"PingFangSC-Semibold" size:A]
 #define kMediumFont(A) [UIFont fontWithName:@"PingFang-SC-Medium" size:A]
@@ -140,8 +145,8 @@
 //等宽粗字体
 #define kHelveticaBoldFont(A) [UIFont fontWithName:@"HelveticaNeue-Bold" size:A]
 
-#define EMVIEWTOPMARGIN (IS_iPhoneX ? 22.f : 0.f)
-#define EMVIEWBOTTOMMARGIN (IS_iPhoneX ? 34.f : 0.f)
+#define EMVIEWTOPMARGIN (IS_iphoneX ? 22.f : 0.f)
+#define EMVIEWBOTTOMMARGIN (IS_iphoneX ? 34.f : 0.f)
 
 //IM
 //账号状态

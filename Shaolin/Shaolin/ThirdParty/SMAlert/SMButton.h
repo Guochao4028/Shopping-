@@ -14,4 +14,6 @@ typedef void (^SMButtonClickAction)(void);
 
 + (instancetype)initWithTitle:(NSString*)title clickAction:(SMButtonClickAction)action;
 
++ (instancetype)initWithManualAndTitle:(NSString*)title clickAction:(SMButtonClickAction)action;
+
 @end

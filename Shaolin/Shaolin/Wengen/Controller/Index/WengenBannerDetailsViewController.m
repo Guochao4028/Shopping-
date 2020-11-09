@@ -13,11 +13,9 @@
 #import "WengenNavgationView.h"
 
 #import "GoodsDetailsViewController.h"
+#import "DataManager.h"
 
-@interface WengenBannerDetailsViewController ()<WengenNavgationViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource>
-
-@property(nonatomic, strong)WengenNavgationView *navgationView;
-
+@interface WengenBannerDetailsViewController ()<UICollectionViewDelegate, UICollectionViewDataSource>
 @property(nonatomic, strong)UICollectionView *collectionView;
 
 @property(nonatomic, strong)NSMutableArray *dataArray;
@@ -28,13 +26,17 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    if ([self.type isEqualToString:@"Recommend"]) {
+        self.titleLabe.text = SLLocalizedString(@"新人推荐");
+    } else {
+        self.titleLabe.text = SLLocalizedString(@"少林严选");
+    }
     // Do any additional setup after loading the view.
     [self initData];
     [self initUI];
 }
 
 -(void)initData{
-    NSMutableDictionary *param = [NSMutableDictionary dictionary];
     if ([self.type isEqualToString:@"Recommend"] == YES) {
         [[DataManager shareInstance]getRecommendGoodsCallback:^(NSArray *result) {
             [self.dataArray addObjectsFromArray:result];;
@@ -49,13 +51,7 @@
 }
 
 -(void)initUI{
-    [self.view addSubview:self.navgationView];
     [self.view addSubview:self.collectionView];
-}
-
-#pragma mark - WengenNavgationViewDelegate
--(void)tapBack{
-    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - UICollectionViewDelegate && UICollectionViewDataSource
@@ -91,33 +87,10 @@
 }
 
 #pragma mark - setter / getgter
--(WengenNavgationView *)navgationView{
-    if (_navgationView == nil) {
-        //状态栏高度
-        CGFloat barHeight ;
-        /** 判断版本
-         获取状态栏高度
-         */
-        if (@available(iOS 13.0, *)) {
-            barHeight = [[[[[UIApplication sharedApplication] keyWindow] windowScene] statusBarManager] statusBarFrame].size.height;
-        } else {
-            barHeight = [[UIApplication sharedApplication] statusBarFrame].size.height;
-        }
-        _navgationView = [[WengenNavgationView alloc]initWithFrame:CGRectMake(0, barHeight, ScreenWidth, 44)];
-        if ([self.type isEqualToString:@"Recommend"]) {
-            [_navgationView setTitleStr:SLLocalizedString(@"新人推荐")];
-        }else {
-            [_navgationView setTitleStr:SLLocalizedString(@"少林严选")];
-        }
-        [_navgationView setDelegate:self];
-    }
-    return _navgationView;
-}
-
 -(UICollectionView *)collectionView{
     
     if (_collectionView == nil) {
-        CGFloat y = CGRectGetMaxY(self.navgationView.frame);
+        CGFloat y = 0;
          UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
         layout.sectionInset = UIEdgeInsetsMake(0, 16, 0, 16);
         _collectionView = [[UICollectionView alloc]initWithFrame:CGRectMake(0, y, ScreenWidth, ScreenHeight - y) collectionViewLayout:layout];

@@ -40,6 +40,10 @@ static NSString *const classSubCellId = @"KungfuClassSubCell";
         self.tableView.bounces = NO;
         self.tableView.scrollsToTop = NO;
         
+        self.tableView.estimatedRowHeight = 64;
+        self.tableView.estimatedSectionFooterHeight = 0;
+        self.tableView.estimatedSectionHeaderHeight = 0;
+        
         [self.tableView registerNib:[UINib nibWithNibName:NSStringFromClass([KungfuClassSubCell class]) bundle:nil] forCellReuseIdentifier:classSubCellId];
         
         //self.tableView.backgroundColor = [UIColor whiteColor];
@@ -61,6 +65,10 @@ static NSString *const classSubCellId = @"KungfuClassSubCell";
 -(void)setCurrentClassIndex:(NSInteger)currentClassIndex {
     _currentClassIndex = currentClassIndex;
     
+    if (_currentClassIndex != 999) {
+        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:self.currentClassIndex inSection:0] atScrollPosition:UITableViewScrollPositionNone animated:YES];
+    }
+    
     [self.tableView reloadData];
 }
 
@@ -69,8 +77,8 @@ static NSString *const classSubCellId = @"KungfuClassSubCell";
     [self.dataSource removeAllObjects];
     if (model){
         [self.dataSource addObjectsFromArray:model.goods_next];
+        [self.tableView reloadData];
     }
-    [self.tableView reloadData];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -102,7 +110,13 @@ static NSString *const classSubCellId = @"KungfuClassSubCell";
     } else {
         cell.isPlaying = NO;
     }
-    
+
+//    if ([self.model.history.attr_id isEqualToString:model.classGoodsId]) {
+//        // 是后台保存的播放记录
+//        cell.isPlaying = YES;
+//    } else {
+//        cell.isPlaying = NO;
+//    }
     
     return cell;
 }
@@ -110,13 +124,14 @@ static NSString *const classSubCellId = @"KungfuClassSubCell";
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    if (self.currentClassIndex == indexPath.row) {
-        //正在播放时不做操作
-        return;
-    }
-
+//    if (self.currentClassIndex == indexPath.row) {
+//        //正在播放时不做操作
+//        return;
+//    }
+    
+//    [[NSNotificationCenter defaultCenter] postNotificationName:KNotificationClassVideoPlay object:@{@"index":[NSString stringWithFormat:@"%ld",indexPath.row]}];
     if (self.cellSelectBlock) {
-        self.cellSelectBlock(self.dataSource[indexPath.row],indexPath.row);
+        self.cellSelectBlock(indexPath.row);
     }
 }
 

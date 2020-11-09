@@ -59,19 +59,11 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    //跳转下一页后，FoundDetailsViewController、LookVideoViewController会隐藏navigationBar
-    self.navigationController.navigationBar.hidden = NO;
-    //    self.navigationController.navigationBar.barTintColor = RGBA(132, 50, 42, 1);
-    //    self.navigationController.navigationBar.hidden = NO;
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
-    [self wr_setNavBarBarTintColor:[UIColor hexColor:@"8E2B25"]];
-    [self wr_setNavBarTintColor:[UIColor whiteColor]];
-    [self wr_setNavBarBackgroundAlpha:1];
+    [self setNavigationBarRedTintColor];
 }
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    //     self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -93,6 +85,7 @@
     [self.view addSubview:self.tableView];
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(self.view);
+        make.bottom.mas_equalTo(-kBottomSafeHeight);
     }];
     
     [self registerCell];
@@ -296,6 +289,10 @@
 #pragma mark - 右侧编辑
 -(void)rightAction:(UIButton *)button
 {
+    if (self.dataArray.count == 0){
+        [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"暂无可编辑内容")];
+        return;
+    }
     button.selected = !button.selected;
     if (button.selected) {
         //点击编辑的时候清空删除数组
@@ -586,10 +583,5 @@
     if (self.rightBtn.selected) {
         [self.deleteArray removeObject:[self.dataArray objectAtIndex:indexPath.row]];
     }
-}
-
-#pragma mark - device
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    return UIStatusBarStyleLightContent;
 }
 @end

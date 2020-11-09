@@ -16,13 +16,27 @@
 @property (nonatomic , strong) UILabel *details;
 @property (nonatomic , strong) UIImageView *imageView;
 
+@property(nonatomic, strong)UILabel *line;
+
+
+
+
 @end
 
 @implementation GHDropMenuFilterSectionHeader
 
 - (void)setDropMenuModel:(GHDropMenuModel *)dropMenuModel {
     _dropMenuModel = dropMenuModel;
-    self.title.text = dropMenuModel.sectionHeaderTitle;
+    
+    
+    NSString *titleStr =  dropMenuModel.sectionHeaderTitle;
+    if ([titleStr containsString:@"状态"]) {
+        [self.line setHidden:NO];
+    }else{
+        [self.line setHidden:YES];
+    }
+    
+    self.title.text = titleStr;
     self.details.text = dropMenuModel.sectionHeaderDetails.length?dropMenuModel.sectionHeaderDetails:SLLocalizedString(@"全部");
     self.imageView.highlighted = dropMenuModel.sectionSeleted ? YES:NO;
     
@@ -64,6 +78,7 @@
     [self addSubview:self.title];
     [self addSubview:self.details];
     [self addSubview:self.imageView];
+    [self addSubview:self.line];
     
 }
 - (void)layoutSubviews {
@@ -75,6 +90,8 @@
     self.imageView.frame = CGRectMake(self.frame.size.width - 10 - 10, (self.frame.size.height - 5 ) * 0.5, 10, 5);
     
     self.details.frame = CGRectMake(self.frame.size.width - 10 - 15 - (self.frame.size.width - 10 - 15 - detailsSize.width), 0,self.frame.size.width - 10 - 15 - detailsSize.width, self.frame.size.height);
+    
+    self.line.frame = CGRectMake(0, 0, self.frame.size.width, 10);
 }
 - (UIImageView *)imageView {
     if (_imageView == nil) {
@@ -104,5 +121,14 @@
         _title.textColor = [UIColor darkGrayColor];
     }
     return _title;
+}
+
+- (UILabel *)line {
+    if (_line == nil) {
+        _line = [[UILabel alloc]init];
+        [_line setBackgroundColor:[UIColor colorForHex:@"FAFAFA"]];
+    
+    }
+    return _line;
 }
 @end

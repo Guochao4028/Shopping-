@@ -78,9 +78,11 @@
     
 }
 - (void)buttonAction:(UIButton *)button {
-    [[ThirdpartyAuthorizationManager sharedInstance] sharedByThirdpartyType:button.identifier sharedModel:self.model];
-    if (self.shareFinish) self.shareFinish();
-    [self cancleAction];
+    WEAKSELF
+    [[ThirdpartyAuthorizationManager sharedInstance] sharedByThirdpartyType:button.identifier sharedModel:self.model completion:^{
+        if (weakSelf.shareFinish) weakSelf.shareFinish();
+        [weakSelf cancleAction];
+    }];
 }
 
 - (void)cancleAction {

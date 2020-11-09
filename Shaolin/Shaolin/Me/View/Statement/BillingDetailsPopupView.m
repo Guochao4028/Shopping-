@@ -212,7 +212,7 @@
     if (_determineButton == nil) {
         _determineButton = [UIButton newAutoLayoutView];
         
-        [_determineButton setBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+        [_determineButton setBackgroundColor:kMainYellow];
         
         [_determineButton setTitle:SLLocalizedString(@"确定") forState:UIControlStateNormal];
         [_determineButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];

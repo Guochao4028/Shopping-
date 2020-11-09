@@ -35,8 +35,11 @@ static NSString *const cerCellId = @"KfCertificateCell";
 
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
+    if ([self.navigationBarWhiteTintColor boolValue]){
+        [self setNavigationBarWhiteTintColor];
+    } else {
+        [self setNavigationBarRedTintColor];
+    }
 }
 
 - (void)viewDidLoad {
@@ -87,7 +90,7 @@ static NSString *const cerCellId = @"KfCertificateCell";
     [self.view addSubview:self.tableView];
     
 
-    UIWindow * window = [self frontWindow];
+    UIWindow * window = [ShaolinProgressHUD frontWindow];
     [window addSubview:self.alphaView];
     [window addSubview:self.receiveView];
     
@@ -134,7 +137,7 @@ static NSString *const cerCellId = @"KfCertificateCell";
 
 - (void) showAlert{
     [SMAlert setConfirmBtBackgroundColor:[UIColor whiteColor]];
-    [SMAlert setConfirmBtTitleColor:[UIColor hexColor:@"8E2B25"]];
+    [SMAlert setConfirmBtTitleColor:kMainYellow];
     [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
     [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
     [SMAlert setAlertBackgroundColor:[UIColor colorWithWhite:0 alpha:0.5]];
@@ -293,18 +296,6 @@ static NSString *const cerCellId = @"KfCertificateCell";
     return _alphaView;
 }
 
-- (UIWindow *)frontWindow {
-    NSEnumerator *frontToBackWindows = [UIApplication.sharedApplication.windows reverseObjectEnumerator];
-    for (UIWindow *window in frontToBackWindows) {
-        BOOL windowOnMainScreen = window.screen == UIScreen.mainScreen;
-        BOOL windowIsVisible = !window.hidden && window.alpha > 0;
-        BOOL windowLevelSupported = (window.windowLevel >= UIWindowLevelNormal && window.windowLevel <= UIWindowLevelNormal);
-        if(windowOnMainScreen && windowIsVisible && windowLevelSupported) {
-            return window;
-        }
-    }
-    return nil;
-}
 
 #pragma mark - 移除加在 window上的控件
 - (void)removeSubViews{
@@ -320,8 +311,4 @@ static NSString *const cerCellId = @"KfCertificateCell";
     [self removeSubViews];
 }
 
-#pragma mark - device
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    return UIStatusBarStyleDefault;
-}
 @end

@@ -45,67 +45,66 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    /**
-        置顶的cell高度  60
-          广告的cell 高度 353
-                最右侧单图文章 116
-             多张图片 203
-               单张长图  227
-     */
-    NSLog(@"==============");
-   
+    //    self.hideNavigationBar = YES;
+    
     [self getData:self.selectPage];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(getSelectPageData:) name:@"Activity_ReloadCurrentPage" object:nil];
-     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(playerCellAction:) name:@"VideoPlayerAction" object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(playerCellAction:) name:@"VideoPlayerAction" object:nil];
     self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         [self getData:self.selectPage];
-      }];
+    }];
     self.tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
-           // 上拉加载
-           [self loadNowMoreAction];
-       }];
+        // 上拉加载
+        [self loadNowMoreAction];
+    }];
     
     
     
-     [self.view addSubview:self.tableView];
-       [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
-           make.edges.equalTo(self.view);
-       }];
+    [self.view addSubview:self.tableView];
+    [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(10);
+        make.left.mas_equalTo(15);
+        make.right.mas_equalTo(-15);
+        make.bottom.mas_equalTo(0);
+    }];
     
     [self registerCell];
     [self setNoData];
 }
-
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self hideNavigationBarShadow];
+}
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     [self playCurrentVideo];
 }
 
 - (void)setNoData {
-      WEAKSELF
-       LYEmptyView *emptyView = [LYEmptyView emptyActionViewWithImageStr:@"categorize_nogoods"
-                                                                titleStr:SLLocalizedString(@"暂无数据")
-                                                               detailStr:@""
-                                                             btnTitleStr:SLLocalizedString(@"点击加载")
-                                                           btnClickBlock:^(){
-           [weakSelf getData:self.selectPage];
-       }];
-        emptyView.subViewMargin = 12.f;
-        emptyView.titleLabTextColor = RGBA(125, 125, 125,1);
-        emptyView.detailLabTextColor =  RGBA(192, 192, 192,1);
-        emptyView.actionBtnFont = [UIFont systemFontOfSize:15.f];
-        emptyView.actionBtnTitleColor =  RGBA(90, 90, 90,1);
-        emptyView.actionBtnHeight = 35.f;
-        emptyView.actionBtnHorizontalMargin = 22.f;
-        emptyView.actionBtnCornerRadius = 2.f;
-        emptyView.actionBtnBorderColor =  RGBA(150, 150, 150,1);
-        emptyView.actionBtnBorderWidth = 0.5;
-        emptyView.actionBtnBackGroundColor = [UIColor colorForHex:@"FFFFFF"];
-     self.tableView.ly_emptyView = emptyView;
+    WEAKSELF
+    LYEmptyView *emptyView = [LYEmptyView emptyActionViewWithImageStr:@"categorize_nogoods"
+                                                             titleStr:SLLocalizedString(@"暂无数据")
+                                                            detailStr:@""
+                                                          btnTitleStr:SLLocalizedString(@"点击加载")
+                                                        btnClickBlock:^(){
+        [weakSelf getData:self.selectPage];
+    }];
+    emptyView.subViewMargin = 12.f;
+    emptyView.titleLabTextColor = RGBA(125, 125, 125,1);
+    emptyView.detailLabTextColor =  RGBA(192, 192, 192,1);
+    emptyView.actionBtnFont = [UIFont systemFontOfSize:15.f];
+    emptyView.actionBtnTitleColor =  RGBA(90, 90, 90,1);
+    emptyView.actionBtnHeight = 35.f;
+    emptyView.actionBtnHorizontalMargin = 22.f;
+    emptyView.actionBtnCornerRadius = 2.f;
+    emptyView.actionBtnBorderColor =  RGBA(150, 150, 150,1);
+    emptyView.actionBtnBorderWidth = 0.5;
+    emptyView.actionBtnBackGroundColor = [UIColor colorForHex:@"FFFFFF"];
+    self.tableView.ly_emptyView = emptyView;
 }
 -(void)getSelectPageData:(NSNotification *)user
 {
-//     [self.foundArray removeAllObjects];
+    //     [self.foundArray removeAllObjects];
     NSDictionary *dic = user.userInfo;
     NSLog(@"%@",dic);
     NSInteger identifier = [[dic objectForKey:@"identifier"] integerValue];
@@ -144,7 +143,7 @@
     if (!([model.type isEqualToString:@"3"] && [model.kind isEqualToString:@"3"])){
         return;
     }
-//    self.titleL.text = model.title;
+    //    self.titleL.text = model.title;
     NSString *urlStr;
     for (NSDictionary *dic in model.coverurlList) {
         urlStr = [dic objectForKey:@"route"];
@@ -196,7 +195,7 @@
                 self.foundArray = [FoundModel mj_objectArrayWithKeyValuesArray:arr];
                 [self.tableView reloadData];
                 [self.tableView.mj_header endRefreshing];
-//                self.noDataView.hidden = YES;
+                //                self.noDataView.hidden = YES;
             } else {
                 [self.foundArray removeAllObjects];
                 [self.tableView.mj_header endRefreshing];
@@ -229,7 +228,8 @@
             NSDictionary *data = responseObject[DATAS];
             NSArray *arr = [data objectForKey:@"data"];
             if ([arr isKindOfClass:[NSArray class]] && arr.count >0) {
-                [self.foundArray addObjectsFromArray:arr];
+                NSArray * modelArray = [FoundModel mj_objectArrayWithKeyValuesArray:arr];
+                [self.foundArray addObjectsFromArray:modelArray];
                 [self.tableView reloadData];
                 [self.tableView.mj_footer endRefreshing];
             } else {
@@ -245,13 +245,13 @@
 }
 -(void)registerCell
 {
-     [_tableView registerClass:[StickCell class] forCellReuseIdentifier:NSStringFromClass([StickCell class])];
-     [_tableView registerClass:[AdvertisingOneCell class] forCellReuseIdentifier:NSStringFromClass([AdvertisingOneCell class])];
-     [_tableView registerClass:[SinglePhotoCell class] forCellReuseIdentifier:NSStringFromClass([SinglePhotoCell class])];
-     [_tableView registerClass:[MorePhotoCell class] forCellReuseIdentifier:NSStringFromClass([MorePhotoCell class])];
-     [_tableView registerClass:[PureTextTableViewCell class] forCellReuseIdentifier:NSStringFromClass([PureTextTableViewCell class])];
-  
-   
+    [_tableView registerClass:[StickCell class] forCellReuseIdentifier:NSStringFromClass([StickCell class])];
+    [_tableView registerClass:[AdvertisingOneCell class] forCellReuseIdentifier:NSStringFromClass([AdvertisingOneCell class])];
+    [_tableView registerClass:[SinglePhotoCell class] forCellReuseIdentifier:NSStringFromClass([SinglePhotoCell class])];
+    [_tableView registerClass:[MorePhotoCell class] forCellReuseIdentifier:NSStringFromClass([MorePhotoCell class])];
+    [_tableView registerClass:[PureTextTableViewCell class] forCellReuseIdentifier:NSStringFromClass([PureTextTableViewCell class])];
+    
+    
 }
 
 #pragma mark - UIScrollViewDelegate   列表播放必须实现
@@ -300,67 +300,67 @@
     cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
     
     [cell setFoundModel:model indexpath:indexPath];
-   
+    
     NSMutableArray *typeNum = [NSMutableArray array];
     for (FoundModel *dic in self.foundArray) {
         if ([dic.type isEqualToString:@"1"]) {
-             [typeNum addObject:dic.type];
+            [typeNum addObject:dic.type];
         }
     }
     
     if ([model.type isEqualToString:@"1"]) {
         if (indexPath.row == typeNum.count-1) {
-             cell.separatorInset = UIEdgeInsetsMake(0, 16, 0, 16);
+            cell.separatorInset = UIEdgeInsetsMake(0, 16, 0, 16);
         }else
         {
-              cell.separatorInset = UIEdgeInsetsMake(0, 0, 0, cell.bounds.size.width*10);
+            cell.separatorInset = UIEdgeInsetsMake(0, 0, 0, cell.bounds.size.width*10);
         }
-           
+        
     }
-       return cell;
-
+    return cell;
+    
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [self pauseCurrentVideo];
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     FoundModel *model = self.foundArray[indexPath.row];
-
+    
     if ([model.type isEqualToString:@"3"]) {
         // 是广告
         [[SLAppInfoModel sharedInstance] advertEventResponseWithFoundModel:model];
     }else{
-       if ([model.kind isEqualToString:@"3"]) {
-           FoundVideoListVc *vC = [[FoundVideoListVc alloc]init];
-           vC.hidesBottomBarWhenPushed = YES;
-           vC.fieldId = model.fieldId;
-           vC.videoId = model.id;
-           vC.tabbarStr = @"Activity";
-           vC.typeStr = @"2";
-           [self.navigationController pushViewController:vC animated:YES];
-       } else {
-           AllTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-           FoundDetailsViewController *vC = [[FoundDetailsViewController alloc]init];
-           vC.idStr = model.id;
-           vC.tabbarStr = @"Activity";
-           vC.typeStr = @"2";
-           vC.stateStr = !model.state ? @"" : model.state;
-           vC.showImage = [cell getShowImage];
-           vC.hidesBottomBarWhenPushed = YES;
-           [self.navigationController pushViewController:vC animated:YES];
-       }
+        if ([model.kind isEqualToString:@"3"]) {
+            FoundVideoListVc *vC = [[FoundVideoListVc alloc]init];
+            vC.hidesBottomBarWhenPushed = YES;
+            vC.fieldId = model.fieldId;
+            vC.videoId = model.id;
+            vC.tabbarStr = @"Activity";
+            vC.typeStr = @"2";
+            [self.navigationController pushViewController:vC animated:YES];
+        } else {
+            AllTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+            FoundDetailsViewController *vC = [[FoundDetailsViewController alloc]init];
+            vC.idStr = model.id;
+            vC.tabbarStr = @"Activity";
+            vC.typeStr = @"2";
+            vC.stateStr = !model.state ? @"" : model.state;
+            vC.showImage = [cell getShowImage];
+            vC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:vC animated:YES];
+        }
     }
 }
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    FoundModel *model = self.foundArray[indexPath.row];
-    return model.cellHeight;
-}
+//-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    FoundModel *model = self.foundArray[indexPath.row];
+//    return model.cellHeight;
+//}
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return SLChange(10);
+    return 10;
 }
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    UIView *view = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWidth, SLChange(10))];
+    UIView *view = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWidth, 10)];
     view.backgroundColor = [UIColor colorForHex:@"FFFFFF"];
     return view;
 }
@@ -373,9 +373,11 @@
         _tableView.showsVerticalScrollIndicator = NO;
         _tableView.showsHorizontalScrollIndicator = NO;
         _tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-//        _tableView.rowHeight = 227;
+        //        _tableView.rowHeight = 227;
         _tableView.separatorColor = [UIColor colorWithRed:238/255.0 green:238/255.0 blue:238/255.0 alpha:1.0];
         _tableView.tableFooterView = [[UIView alloc]initWithFrame:CGRectZero];
+        _tableView.estimatedRowHeight = 100;
+        _tableView.rowHeight = UITableViewAutomaticDimension;
     }
     return _tableView;
 }
@@ -401,15 +403,15 @@
         };
         
         _player.orientationWillChange = ^(ZFPlayerController * _Nonnull player, BOOL isFullScreen) {
-    //        kAPPDelegate.allowOrentitaionRotation = isFullScreen;
-    //        [weakSelf setNeedsStatusBarAppearanceUpdate];
+            //        kAPPDelegate.allowOrentitaionRotation = isFullScreen;
+            //        [weakSelf setNeedsStatusBarAppearanceUpdate];
             if (!isFullScreen) {
                 /// 解决导航栏上移问题
-    //            self.navigationController.navigationBar.zf_height = KNavBarHeight;
+                //            self.navigationController.navigationBar.zf_height = KNavBarHeight;
             }
             //切全屏时播放声音，切回列表时静音
             playerManager.muted = !isFullScreen;
-//            weakSelf.tableView.scrollsToTop = NO;//!isFullScreen;
+            //            weakSelf.tableView.scrollsToTop = NO;//!isFullScreen;
             NSString *title = @"";
             if (isFullScreen){
                 FoundModel *model = weakSelf.foundArray[weakSelf.player.playingIndexPath.row];
@@ -452,13 +454,13 @@
 //    return _noDataView;
 //}
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end

@@ -10,9 +10,16 @@
 #import "UIButton+CenterImageAndTitle.h"
 #import "UIImage+YYWebImage.h"
 #import "UIColor+LGFGradient.h"
+#import "UIButton+LGFImagePosition.h"
 
 @interface RiteFilterCell()
 
+
+@property (nonatomic, strong) UIImageView * pointImgv;
+@property (nonatomic, strong) UIImageView * lineImgv;
+//@property (nonatomic, strong) UILabel * titleLabel;
+
+@property (nonatomic, strong) UIView * buttonBgView;
 @property (nonatomic, strong) UIButton * timeBtn;
 @property (nonatomic, strong) UIButton * doingBtn;
 @property (nonatomic, strong) UIButton * finishedBtn;
@@ -37,57 +44,70 @@
 
 -(void)layoutSubviews {
     
+    [self.pointImgv mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(15);
+        make.size.mas_equalTo(CGSizeMake(10, 10));
+        make.centerY.mas_equalTo(self.contentView);
+    }];
+    
     [self.timeBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.top.bottom.mas_equalTo(self.contentView);
-        make.width.mas_equalTo(self.contentView.width/2);
+        make.top.bottom.mas_equalTo(self.contentView);
+        make.left.mas_equalTo(self.pointImgv.mas_right).offset(7);
+        make.width.mas_equalTo(self.contentView.width/2 - self.pointImgv.right - 7);
+        
+    }];
+    
+    [self.lineImgv mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(self.timeBtn);
+        make.bottom.mas_equalTo(self.timeBtn.mas_bottom).mas_offset(-7);
+        make.size.mas_equalTo(CGSizeMake(70, 8));
+    }];
+    
+    [self.buttonBgView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.height.mas_equalTo(30);
+        make.centerY.mas_equalTo(self.contentView);
+        make.left.mas_equalTo(self.timeBtn.mas_right).mas_offset((kScreenWidth/2 - 140)/2);
+        make.width.mas_equalTo(140);
     }];
     
     [self.doingBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(30);
-        make.centerY.mas_equalTo(self.contentView);
-        make.left.mas_equalTo(self.timeBtn.mas_right).offset((kScreenWidth/2 - 140)/2);
+        make.centerY.mas_equalTo(self.buttonBgView);
+        make.left.mas_equalTo(self.buttonBgView);
         make.width.mas_equalTo(70);
     }];
     
     [self.finishedBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(30);
-        make.centerY.mas_equalTo(self.contentView);
-        make.left.mas_equalTo(self.doingBtn.mas_right);
+        make.centerY.mas_equalTo(self.buttonBgView);
+        make.right.mas_equalTo(self.buttonBgView);
         make.width.mas_equalTo(70);
     }];
     
-    //    [self layoutButton];
+    [self.timeBtn lgf_SetImagePosition:lgf_PositionRight spacing:15];
 }
-
-
-//- (void)layoutButton {
-//    [self.timeBtn horizontalCenterTitleAndImage:6];
-//    [self.stateBtn horizontalCenterTitleAndImage:6];
-//}
 
 -(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         self.selectionStyle = UITableViewCellSelectionStyleNone;
+        [self.contentView addSubview:self.pointImgv];
+        [self.contentView addSubview:self.lineImgv];
         [self.contentView addSubview:self.timeBtn];
-        [self.contentView addSubview:self.doingBtn];
-        [self.contentView addSubview:self.finishedBtn];
+        [self.contentView addSubview:self.buttonBgView];
+        [self.buttonBgView addSubview:self.doingBtn];
+        [self.buttonBgView addSubview:self.finishedBtn];
 //        [self.contentView addSubview:self.bottomLine];
     }
     return self;
 }
 
 -(void)resetTimeBtn {
-    
-    self.timeBtn.selected = NO;
-    [self.timeBtn horizontalCenterTitleAndImage];
+   
 }
 
 - (void)timeSelectHandle {
     if (self.timeFilterHandle) {
-        
-        self.timeBtn.selected = YES;
-        [self.timeBtn horizontalCenterTitleAndImage];
         
         self.timeFilterHandle();
     }
@@ -117,7 +137,7 @@
         [self.timeBtn setTitle:timeRangeStr forState:UIControlStateNormal];
     }
     
-    [self.timeBtn horizontalCenterTitleAndImage];
+    [self.timeBtn lgf_SetImagePosition:lgf_PositionRight spacing:15];
 }
 
 -(void)setTypeStr:(NSString *)typeStr {
@@ -125,29 +145,21 @@
     
     if ([typeStr isEqualToString:@"近期"]) {
         self.doingBtn.titleLabel.font = kMediumFont(15);
-        self.doingBtn.backgroundColor = self.gradientColor;
+        self.doingBtn.backgroundColor = kMainYellow;
+        [self.doingBtn setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
         
         self.finishedBtn.titleLabel.font = kRegular(15);
-        self.finishedBtn.backgroundColor = self.alphaColor;
-        
+        self.finishedBtn.backgroundColor = UIColor.whiteColor;
+        [self.finishedBtn setTitleColor:[UIColor hexColor:@"333333"] forState:UIControlStateNormal];
     } else {
         self.finishedBtn.titleLabel.font = kMediumFont(15);
-        self.finishedBtn.backgroundColor = self.gradientColor;
+        self.finishedBtn.backgroundColor = kMainYellow;
+        [self.finishedBtn setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
         
         self.doingBtn.titleLabel.font = kRegular(15);
-        self.doingBtn.backgroundColor = self.alphaColor;
-        
+        self.doingBtn.backgroundColor = UIColor.whiteColor;
+        [self.doingBtn setTitleColor:[UIColor hexColor:@"333333"] forState:UIControlStateNormal];
     }
-    
-//    [UIView animateWithDuration:0.3 animations:^{
-//        if ([typeStr isEqualToString:@"近期"]) {
-//            self.bottomLine.frame = CGRectMake(self.doingBtn.centerX - 8, self.doingBtn.bottom , 16, 2);
-//        } else {
-//            self.bottomLine.frame = CGRectMake(self.finishedBtn.centerX - 8, self.doingBtn.bottom , 16, 2);
-//        }
-//    }];
-    
-    
 }
 
 #pragma mark - getter
@@ -156,13 +168,10 @@
     if (!_timeBtn) {
         _timeBtn = [UIButton new];
         _timeBtn.titleLabel.font = kMediumFont(15);
-        [_timeBtn setTitleColor:WENGEN_RED forState:UIControlStateNormal];
-        [_timeBtn setImage:[UIImage imageNamed:@"rite_blackArrow"] forState:UIControlStateNormal];
+        [_timeBtn setTitleColor:[UIColor hexColor:@"333333"] forState:UIControlStateNormal];
+        [_timeBtn setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
+        [_timeBtn setImage:[UIImage imageNamed:@"new_rite_Arrow"] forState:UIControlStateNormal];
         
-        [_timeBtn setTitleColor:WENGEN_RED forState:UIControlStateSelected];
-        [_timeBtn setImage:[UIImage imageNamed:@"rite_redArrow"] forState:UIControlStateSelected];
-        
-        [_timeBtn horizontalCenterTitleAndImage];
         [_timeBtn addTarget:self action:@selector(timeSelectHandle) forControlEvents:UIControlEventTouchUpInside];
     }
     return _timeBtn;
@@ -172,12 +181,12 @@
     if (!_doingBtn) {
         _doingBtn = [UIButton new];
         
-        _doingBtn.cornerRadius = 2.0;
+        _doingBtn.cornerRadius = 15.0;
         _doingBtn.titleLabel.font = kRegular(15);
         [_doingBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [_doingBtn setTitle:@"近期" forState:UIControlStateNormal];
         
-        [_doingBtn setBackgroundColor:self.gradientColor];
+        [_doingBtn setBackgroundColor:kMainYellow];
 //        [_doingBtn setBackgroundImage:[UIImage yy_imageWithColor:selectColor] forState:UIControlStateSelected];
 //        [_doingBtn setBackgroundImage:[UIImage yy_imageWithColor:[UIColor hexColor:@"8e2b25" alpha:0.5]] forState:UIControlStateNormal];
         [_doingBtn addTarget:self action:@selector(doingRiteHandle) forControlEvents:UIControlEventTouchUpInside];
@@ -189,32 +198,64 @@
     if (!_finishedBtn) {
         _finishedBtn = [UIButton new];
         
-        _finishedBtn.cornerRadius = 2.0;
+        _finishedBtn.cornerRadius = 15.0;
         [_finishedBtn setTitle:@"往期" forState:UIControlStateNormal];
         _finishedBtn.titleLabel.font = kRegular(15);
         [_finishedBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
 
         
-        [_finishedBtn setBackgroundColor:self.alphaColor];
+        [_finishedBtn setBackgroundColor:kMainYellow];
 
         [_finishedBtn addTarget:self action:@selector(finishRiteHandle) forControlEvents:UIControlEventTouchUpInside];
     }
     return _finishedBtn;
 }
 
--(UIColor *)gradientColor {
-    return [UIColor lgf_GradientFromColor:[UIColor hexColor:@"8e2b25" alpha:0.5] toColor:[UIColor hexColor:@"8e2b25" alpha:1] height:35];
+-(UIView *)buttonBgView {
+    if (!_buttonBgView) {
+        _buttonBgView = [UIView new];
+        _buttonBgView.cornerRadius = 15.0;
+        _buttonBgView.layer.borderColor = kMainYellow.CGColor;
+        _buttonBgView.layer.borderWidth = 1.0f;
+    }
+    return _buttonBgView;
 }
 
-
--(UIColor *)alphaColor {
-    return [UIColor lgf_GradientFromColor:[UIColor hexColor:@"8e2b25" alpha:0.15] toColor:[UIColor hexColor:@"8e2b25" alpha:0.3] height:35];
+-(UIImageView *)pointImgv {
+    if (!_pointImgv) {
+        _pointImgv = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"new_sectionHeaderPoint"]];
+    }
+    return _pointImgv;
 }
+
+-(UIImageView *)lineImgv {
+    if (!_lineImgv) {
+        _lineImgv = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"new_sectionHeaderLine"]];
+    }
+    return _lineImgv;
+}
+
+//-(UILabel *)titleLabel {
+//    if (!_titleLabel) {
+//        _titleLabel = [UILabel new];
+//        _titleLabel.font =
+//    }
+//    return _titleLabel;
+//}
+
+//-(UIColor *)gradientColor {
+//    return [UIColor lgf_GradientFromColor:[UIColor hexColor:@"8e2b25" alpha:0.5] toColor:[UIColor hexColor:@"8e2b25" alpha:1] height:35];
+//}
+//
+//
+//-(UIColor *)alphaColor {
+//    return [UIColor lgf_GradientFromColor:[UIColor hexColor:@"8e2b25" alpha:0.15] toColor:[UIColor hexColor:@"8e2b25" alpha:0.3] height:35];
+//}
 
 //-(UIView *)bottomLine {
 //    if (!_bottomLine) {
 //        _bottomLine = [UIView new];
-//        _bottomLine.backgroundColor = WENGEN_RED;
+//        _bottomLine.backgroundColor = kMainYellow;
 //        _bottomLine.layer.cornerRadius = 1.0;
 //    }
 //    return _bottomLine;

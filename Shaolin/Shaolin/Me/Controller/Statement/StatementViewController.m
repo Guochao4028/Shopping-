@@ -41,6 +41,8 @@
     [self initData];
     [self initUI];
     [self.tabelView.mj_header beginRefreshing];
+    
+    
 }
 
 -(void)initData{
@@ -48,6 +50,7 @@
     GCPickTimeView *pickTimeView = [[GCPickTimeView alloc]initForAutoLayout];
     self.endTimeStr = [pickTimeView getTimeString];
     self.statementType = @"";
+    
 }
 
 -(void)initUI{

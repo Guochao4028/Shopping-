@@ -88,7 +88,18 @@
     if (!self.model) return;
     self.classNameLabel.text = self.model.classDetailName;
     
-    self.priceLabel.text = [NSString stringWithFormat:@"¥%@", self.model.old_price];
+    NSString * priceString = [NSString stringWithFormat:@"¥%@", self.model.old_price];
+    
+    
+    NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:priceString attributes: @{NSFontAttributeName: [UIFont fontWithName:@"PingFangSC" size: 16],NSForegroundColorAttributeName: [UIColor colorWithRed:190/255.0 green:0/255.0 blue:0/255.0 alpha:1.0]}];
+
+    [string addAttributes:@{NSForegroundColorAttributeName: [UIColor colorWithRed:190/255.0 green:0/255.0 blue:0/255.0 alpha:1.000000]} range:NSMakeRange(0, 1)];
+    
+    [string addAttributes:@{NSFontAttributeName: kRegular(19), NSForegroundColorAttributeName: [UIColor colorWithRed:190/255.0 green:0/255.0 blue:0/255.0 alpha:1.000000]} range:NSMakeRange(1, 1)];
+    [string addAttributes:@{NSFontAttributeName: kRegular(17), NSForegroundColorAttributeName: [UIColor colorWithRed:190/255.0 green:0/255.0 blue:0/255.0 alpha:1.000000]} range:NSMakeRange(2, priceString.length - 2)];
+
+    self.priceLabel.attributedText = string;
+    
     if ([self.model.old_price floatValue] == 0.00) {
         self.freeLabel.hidden = NO;
     } else {

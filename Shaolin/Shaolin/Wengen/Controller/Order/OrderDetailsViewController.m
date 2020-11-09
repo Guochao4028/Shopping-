@@ -65,6 +65,7 @@
 #import "CustomerServicViewController.h"
 
 #import "GoodsStoreInfoModel.h"
+#import "DataManager.h"
 
 @interface OrderDetailsViewController ()<WengenNavgationViewDelegate, UITableViewDelegate, UITableViewDataSource, OrderGoodsItmeTableViewCellDelegate, OrderDetailsHeardViewDelegate, OrdersFooterViewDelegate, OrderGoodsItmeHeardTabelVeiwDelegate, OdersDetailsGoodsPanelTableViewCellDelegate>
 
@@ -109,7 +110,7 @@
     NSLog(@"%s", __func__);
     self.isfrist = YES;
     
-    
+    self.hideNavigationBar = YES;
     [self initUI];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshUINotification) name:ORDERDETAILSHEARDVIEW_TIMECHANGE_ENDTIME object:nil];
@@ -154,7 +155,7 @@
 
 -(void)initUI{
     NSLog(@"%s", __func__);
-    [self.view setBackgroundColor:[UIColor hexColor:@"8E2B25"]];
+    [self.view setBackgroundColor:kMainYellow];
     //    BackgroundColor_White
     [self.view addSubview:self.navgationView];
     [self.view addSubview:self.tableView];
@@ -192,6 +193,19 @@
                 
             }
             
+            BOOL isUnified = YES;
+            
+            if ([self.orderStatus isEqualToString:status]) {
+                isUnified = YES;
+            }else{
+                isUnified = NO;
+            }
+            
+            for (OrderDetailsModel *model in tmpArray) {
+                model.isUnified = isUnified;
+            }
+            
+            
             [self assembleData:tmpArray];
             
             for (OrderDetailsModel *model in tmpArray) {
@@ -207,7 +221,9 @@
             
             self.detailsModel.orderPrice = self.orderPrice;
             
+           
             
+            self.detailsModel.isUnified = isUnified;
             
             [self.heardView setModel:self.detailsModel];
             [self.heardView setOrderPrice:self.orderPrice];
@@ -239,6 +255,9 @@
 }
 
 -(void)gotoPay:(OrderDetailsModel *)model{
+    
+    [[ModelTool shareInstance]setIsOrderListNeedRefreshed:YES];
+    
     CheckstandViewController *checkstandVC = [[CheckstandViewController alloc]init];
     
     checkstandVC.goodsAmountTotal = [NSString stringWithFormat:@"￥%@", self.orderPrice];
@@ -285,9 +304,8 @@
     if (self.isfrist == NO) {
         [self.heardView startTimer];
     }
+    [self setStatusBarWhiteTextColor];
     NSLog(@"%s", __func__);
-    self.navigationController.navigationBar.hidden = YES;
-    
     [self initData];
 }
 
@@ -578,11 +596,12 @@
 
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    UIColor *color = [UIColor hexColor:@"8E2B25"];
+    UIColor *color = kMainYellow;
     
     CGFloat offsetY = scrollView.contentOffset.y;
     
     if ((offsetY) > 64) {
+        [self setStatusBarBlackTextColor];
         [self.navgationView setBackgroundColor:[UIColor colorWithWhite:1 alpha:1]];
         
         [self.backButton setImage:[UIImage imageNamed:@"left"] forState:UIControlStateNormal];
@@ -591,10 +610,11 @@
         
         [self.view setBackgroundColor:[UIColor colorWithWhite:1 alpha:1]];
     }else{
+        [self setStatusBarWhiteTextColor];
         [self.navgationView setBackgroundColor:color];
         [self.view setBackgroundColor:color];
         [self.backButton setImage:[UIImage imageNamed:@"baiL"] forState:UIControlStateNormal];
-        [self.titleLabel setTextColor:[UIColor hexColor:@"8E2B25"]];
+        [self.titleLabel setTextColor:kMainYellow];
     }
 }
 
@@ -708,7 +728,7 @@
     //                 }
     //
     //             }];
-    [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+    [SMAlert setConfirmBtBackgroundColor:kMainYellow];
     [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
     [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
     [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
@@ -726,6 +746,9 @@
         [[DataManager shareInstance]confirmReceipt:@{@"id":model.order_no} Callback:^(Message *message) {
             [hud hideAnimated:YES];
             if (message.isSuccess) {
+                
+                [[ModelTool shareInstance]setIsOrderListNeedRefreshed:YES];
+                
                 [self initData];
             }else{
                 [ShaolinProgressHUD singleTextHud:message.reason view:self.view afterDelay:TipSeconds];
@@ -755,7 +778,7 @@
 -(void)goodsPanelTableViewCell:(OdersDetailsGoodsPanelTableViewCell *)cell confirmGoods:(OrderDetailsModel *)model{
     
     NSLog(@"OdersDetailsGoodsPanelTableViewCellDelegate > 确认收货");
-    [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+    [SMAlert setConfirmBtBackgroundColor:kMainYellow];
     [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
     [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
     [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
@@ -777,6 +800,8 @@
             if (message.isSuccess) {
                 
                 [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"确认成功") view:self.view afterDelay:TipSeconds];
+                
+                [[ModelTool shareInstance]setIsOrderListNeedRefreshed:YES];
                 
                 [self initData];
                 
@@ -825,7 +850,7 @@
 
 //删除订单
 -(void)ordersFooterView:(OrdersFooterView *)view delOrder:(OrderDetailsModel *)model{
-    [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+    [SMAlert setConfirmBtBackgroundColor:kMainYellow];
     [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
     [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
     [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
@@ -842,6 +867,9 @@
         [[DataManager shareInstance]delOrder:@{@"id":model.order_sn} Callback:^(Message *message) {
             [hud hideAnimated:YES];
             if (message.isSuccess) {
+                
+                [[ModelTool shareInstance]setIsOrderListNeedRefreshed:YES];
+                
                 [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"删除成功") view:self.view afterDelay:TipSeconds];
                 [self.navigationController popViewControllerAnimated:YES];
                 
@@ -865,6 +893,9 @@
         [[DataManager shareInstance]cancelOrder:@{@"order_id":model.order_sn, @"cancel":cause} Callback:^(Message *message) {
             [hud hideAnimated:YES];
             if (message.isSuccess) {
+                
+                [[ModelTool shareInstance]setIsOrderListNeedRefreshed:YES];
+                
                 [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"提交成功，正在为您取消订单") view:self.view afterDelay:TipSeconds];
                 [self.navigationController popViewControllerAnimated:YES];
             }else{
@@ -878,12 +909,29 @@
 //再次购买
 -(void)ordersFooterView:(OrdersFooterView *)view againBuy:(OrderDetailsModel *)model{
     
-    MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
-    [ModelTool processPurchasLogicAgain:self.dataArray callBack:^(Message *message) {
-        [hud hideAnimated:YES];
-        ShoppingCartViewController *shoppomgCartVC = [[ShoppingCartViewController alloc]init];
-        [self.navigationController pushViewController:shoppomgCartVC animated:YES];
-    }];
+  
+    
+    [SMAlert setConfirmBtBackgroundColor:kMainYellow];
+    [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
+    [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
+    [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
+    [SMAlert setAlertBackgroundColor:[UIColor colorWithWhite:0 alpha:0.5]];
+    UIView *customView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 300, 100)];
+    UILabel *title = [[UILabel alloc]initWithFrame:customView.bounds];
+    [title setFont:[UIFont systemFontOfSize:15]];
+    [title setTextColor:[UIColor darkGrayColor]];
+    title.text = SLLocalizedString(@"您是否要再次购买？");
+    [title setTextAlignment:NSTextAlignmentCenter];
+    [customView addSubview:title];
+    [SMAlert showCustomView:customView stroke:YES confirmButton:[SMButton initWithTitle:SLLocalizedString(@"确定") clickAction:^{
+        MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
+        [ModelTool processPurchasLogicAgain:self.dataArray callBack:^(Message *message) {
+            [hud hideAnimated:YES];
+            ShoppingCartViewController *shoppomgCartVC = [[ShoppingCartViewController alloc]init];
+            [self.navigationController pushViewController:shoppomgCartVC animated:YES];
+        }];
+    }] cancleButton:[SMButton initWithTitle:SLLocalizedString(@"取消") clickAction:nil]];
+    
 }
 
 //查看发票
@@ -892,15 +940,29 @@
     
     NSString *urlStr = URL_H5_InvoiceDetail(model.order_sn, appInfoModel.access_token);
     
-    WengenWebViewController *webVC = [[WengenWebViewController alloc]initWithUrl:urlStr title:SLLocalizedString(@"查看发票")];
+    WengenWebViewController *webVC = [[WengenWebViewController alloc]initWithUrl:urlStr title:SLLocalizedString(@"发票详情")];
     [self.navigationController pushViewController:webVC animated:YES];
 }
 
 //补开发票
 -(void)ordersFooterView:(OrdersFooterView *)view repairInvoice:(OrderDetailsModel *)model{
+    [[ModelTool shareInstance]setIsOrderListNeedRefreshed:YES];
+    
+    NSMutableArray *allStoreArray = [NSMutableArray array];
+    
+    for (OrderStoreModel *storeItem in self.dataArray) {
+        [allStoreArray addObject:storeItem.storeId];
+    }
+    NSString *allStroeIdStr = [allStoreArray componentsJoinedByString:@","];
+    
     OrderInvoiceFillOpenViewController * fillOpenVC= [[OrderInvoiceFillOpenViewController alloc]init];
     fillOpenVC.orderSn = model.order_sn;
     fillOpenVC.orderTotalSn = self.orderId;
+    
+    fillOpenVC.isCheckInvoice = YES;
+    
+    fillOpenVC.allStroeIdStr = allStroeIdStr;
+    
     [self.navigationController pushViewController:fillOpenVC animated:YES];
 }
 
@@ -918,7 +980,7 @@
 //确认收货
 -(void)ordersFooterView:(OrdersFooterView *)view confirmGoods:(OrderDetailsModel *)model{
     NSLog(@"OrdersFooterViewDelegate > 确认收货");
-    [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+    [SMAlert setConfirmBtBackgroundColor:kMainYellow];
     [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
     [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
     [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
@@ -936,6 +998,9 @@
         [[DataManager shareInstance]confirmReceipt:@{@"id":model.order_no} Callback:^(Message *message) {
             [hud hideAnimated:YES];
             if (message.isSuccess) {
+                
+                [[ModelTool shareInstance]setIsOrderListNeedRefreshed:YES];
+                
                 self.orderDetailsType = OrderDetailsHeardNormalType;
                 [self.heardView setType:OrderDetailsHeardNormalType];
                 [self.footerView setType:OrderDetailsHeardNormalType];
@@ -965,7 +1030,7 @@
             barHeight = [[UIApplication sharedApplication] statusBarFrame].size.height;
         }
         _navgationView = [[UIView alloc]initWithFrame:CGRectMake(0, barHeight, ScreenWidth, 40)];
-        [_navgationView setBackgroundColor:[UIColor hexColor:@"8E2B25"]];
+        [_navgationView setBackgroundColor:kMainYellow];
         [_navgationView addSubview:self.backButton];
         [self.backButton addTarget:self action:@selector(back) forControlEvents:UIControlEventTouchUpInside];
         
@@ -990,7 +1055,7 @@
         _titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(x, 0, 100, 40)];
         [_titleLabel setFont:kMediumFont(17)];
         [_titleLabel setText:SLLocalizedString(@"订单详情")];
-        [_titleLabel setTextColor:[UIColor hexColor:@"8E2B25"]];
+        [_titleLabel setTextColor:kMainYellow];
         [_titleLabel setTextAlignment:NSTextAlignmentCenter];
         
     }
@@ -1030,6 +1095,8 @@
         }else{
             self.automaticallyAdjustsScrollViewInsets = NO;
         }
+        
+        _tableView.backgroundColor = [UIColor hexColor:@"fafafa"];
     }
     return _tableView;
     

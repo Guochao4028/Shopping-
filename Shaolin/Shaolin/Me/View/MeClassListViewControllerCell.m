@@ -14,8 +14,12 @@
 @property (nonatomic, strong) UIImageView *imageV;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UILabel *contentLabel;
-@property (nonatomic, strong) UILabel *timeLabel;
+
 @property (nonatomic, strong) UILabel *tipsLabel;
+
+
+@property (nonatomic, strong) UIView *timeView;
+@property (nonatomic, strong) UILabel *timeLabel;
 @end
 
 @implementation MeClassListViewControllerCell
@@ -42,7 +46,7 @@
 - (void)setModel:(MeClassListModel *)model{
     _model = model;
     self.titleLabel.text = model.name;
-    self.contentLabel.text = model.desc2;
+    self.contentLabel.text = model.goods_value;
     NSInteger time = [model.weight integerValue];
     NSInteger hour = time/60;
     NSInteger minute = time%60;
@@ -59,42 +63,52 @@
     [self.contentView addSubview:self.backView];
     
     [self.backView addSubview:self.imageV];
-    [self.imageV addSubview:self.timeLabel];
+    [self.imageV addSubview:self.timeView];
     [self.backView addSubview:self.titleLabel];
     [self.backView addSubview:self.contentLabel];
     [self.backView addSubview:self.tipsLabel];
     
-    CGSize imageViewSize = CGSizeMake(SLChange(144), SLChange(65));
+    CGSize imageViewSize = CGSizeMake(110, 110);
+    
+    
+    [self.timeView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.mas_equalTo(-5);
+        make.bottom.mas_equalTo(-5);
+        make.height.mas_equalTo(15);
+    }];
     
     [self.backView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(self);
     }];
+    
     [self.imageV mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(SLChange(10));
-        make.left.mas_equalTo(SLChange(15.5));
+        make.top.mas_equalTo(10);
+        make.left.mas_equalTo(16);
         make.size.mas_equalTo(imageViewSize);
     }];
     [self.timeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.mas_equalTo(-SLChange(5));
-        make.bottom.mas_equalTo(-SLChange(5));
-        make.height.mas_equalTo(SLChange(7));
+        make.right.mas_equalTo(-5);
+        make.top.bottom.mas_equalTo(0);
     }];
     [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.imageV.mas_top).mas_offset(SLChange(7));
-        make.left.mas_equalTo(self.imageV.mas_right).mas_offset(SLChange(21));
-        make.right.mas_equalTo(SLChange(-12));
-        make.height.mas_equalTo(SLChange(14.5));
+        make.top.mas_equalTo(self.imageV.mas_top).mas_offset(13);
+        make.left.mas_equalTo(self.imageV.mas_right).mas_offset(21);
+        make.right.mas_equalTo(-12);
+        make.height.mas_equalTo(20);
     }];
-    [self.contentLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.titleLabel.mas_bottom).mas_offset(SLChange(8.5));
-        make.left.right.mas_equalTo(self.titleLabel);
-        make.height.mas_equalTo(SLChange(12));
-    }];
+    
     [self.tipsLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(self.titleLabel);
-        make.top.mas_equalTo(self.contentLabel.mas_bottom).mas_offset(SLChange(7.5));
-        make.height.mas_equalTo(SLChange(10.5));
+        make.bottom.mas_equalTo(self.imageV.mas_bottom).mas_offset(-12);
+        make.height.mas_equalTo(10.5);
     }];
+    
+    [self.contentLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(self.titleLabel.mas_bottom).mas_offset(8.5);
+        make.left.right.mas_equalTo(self.titleLabel);
+        make.bottom.mas_equalTo(self.tipsLabel.mas_top);
+    }];
+    
 }
 
 - (UIView *)backView{
@@ -119,6 +133,7 @@
         _titleLabel = [[UILabel alloc] init];
         _titleLabel.textColor = [UIColor colorForHex:@"0A0809"];
         _titleLabel.font = kRegular(15);
+        _titleLabel.numberOfLines = 1;
     }
     return _titleLabel;
 }
@@ -127,16 +142,44 @@
     if (!_contentLabel){
         _contentLabel = [[UILabel alloc] init];
         _contentLabel.textColor = [UIColor colorForHex:@"999999"];
-        _contentLabel.font = kRegular(12);
+        _contentLabel.font = kRegular(13);
+        _contentLabel.numberOfLines = 2;
     }
     return _contentLabel;
+}
+
+- (UIView *)timeView{
+    if (!_timeView){
+        _timeView = [[UIView alloc] init];
+        _timeView.backgroundColor = RGBA(238, 238, 243, 1);
+        _timeView.layer.cornerRadius = 4;
+        _timeView.clipsToBounds = YES;
+        
+        UIImageView *imageView = [[UIImageView alloc] init];
+        imageView.image = [UIImage imageNamed:@"history_time"];
+        
+        [_timeView addSubview:self.timeLabel];
+        [_timeView addSubview: imageView];
+        [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.centerY.mas_equalTo(_timeView);
+            make.left.mas_equalTo(5);
+            make.size.mas_equalTo(CGSizeMake(10, 10));
+        }];
+        [self.timeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(imageView.mas_right).mas_offset(5);
+            make.centerY.mas_equalTo(imageView);
+            make.right.mas_equalTo(-5);
+        }];
+    }
+    return _timeView;
 }
 
 - (UILabel *)timeLabel{
     if (!_timeLabel){
         _timeLabel = [[UILabel alloc] init];
-        _timeLabel.textColor = [UIColor colorForHex:@"FEFEFE"];
-        _timeLabel.font = [UIFont fontWithName:@"PingFangSC-Medium" size:9];
+        _timeLabel.font = kRegular(9);
+        _timeLabel.textColor = [UIColor colorForHex:@"999999"];
+        _timeLabel.textAlignment = NSTextAlignmentCenter;
     }
     return _timeLabel;
 }
@@ -144,8 +187,8 @@
 - (UILabel *)tipsLabel{
     if (!_tipsLabel){
         _tipsLabel = [[UILabel alloc] init];
-        _tipsLabel.textColor = [UIColor colorForHex:@"8E2B25"];
-        _tipsLabel.font = [UIFont fontWithName:@"PingFangSC-Light" size:10];
+        _tipsLabel.textColor = kMainYellow;
+        _tipsLabel.font = [UIFont fontWithName:@"PingFangSC-Light" size:12];
     }
     return _tipsLabel;
 }

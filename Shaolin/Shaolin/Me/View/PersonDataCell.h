@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PersonDataCell : UITableViewCell
 @property(nonatomic,strong) UILabel *titleLabe;
 @property(nonatomic,strong) UILabel *contentLabel;
-
+@property(nonatomic,strong) UIView *lineView;
 
 @end
 

@@ -15,7 +15,6 @@
 
 @property (nonatomic, strong) WKWebView * webView;
 @property (nonatomic, strong) UIProgressView * progressView;
-@property (weak,nonatomic) UIView * navLine;//导航栏横线
 
 @end
 
@@ -24,9 +23,7 @@
 #pragma mark - life cycle
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    
-    self.navLine.hidden = YES;
-    self.navigationController.navigationBarHidden = YES;
+    [self hideNavigationBarShadow];
 }
 
 
@@ -38,8 +35,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    
     [self initUI];
     
 }
@@ -122,22 +117,6 @@
 // 接收到服务器跳转请求即服务重定向时之后调用
 - (void)webView:(WKWebView *)webView didReceiveServerRedirectForProvisionalNavigation:(WKNavigation *)navigation {
     NSLog(@"1");
-}
-
-
-#pragma mark - WKScriptMessageHandler
-
-
-#pragma mark - getter / setter
-
-- (UIView *)navLine
-{
-    if (!_navLine) {
-        UIView *backgroundView = [self.navigationController.navigationBar subviews].firstObject;
-        _navLine = backgroundView.subviews.firstObject;
-        _navLine.hidden = YES;
-    }
-    return _navLine;
 }
 
 @end

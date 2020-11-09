@@ -24,6 +24,11 @@
 
 #import "ReceiveTicketsTableCell.h"
 
+#import "OrderFillInvoiceEmailTableViewCell.h"
+
+#import "NSString+Tool.h"
+
+
 static NSString *const kOrderFillInvoiceTableCellIdentifier = @"OrderFillInvoiceTableCell";
 
 static NSString *const kOrderFillIncreasedTicketQualificationTableCellIdentifier = @"OrderFillIncreasedTicketQualificationTableCell";
@@ -54,6 +59,9 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
 @property(nonatomic, assign)BOOL isPersonal;
 //记录发票类型  yes 专用发票。no 普通发票
 @property(nonatomic, assign)BOOL isSpecial;
+//记录是否要显示邮箱  yes 显示。no 不显示
+//只有电子发票才显示邮箱，纸质发票不显示
+@property(nonatomic, assign)BOOL isViewEmail;
 
 @end
 
@@ -102,8 +110,10 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
     
     [self.tableHeadView setQualificationsModel:self.qualificationsModel];
     
+    [self.tableHeadView setConfigurationDic:self.configurationDic];
     
     self.isInvoices = self.tabelFooterView.isInvoice;
+    
     [self.tableView reloadData];
     
     
@@ -114,6 +124,7 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
         self.alpha = 0;
     } completion:^(BOOL finished) {
         //        [self removeFromSuperview];
+        [self endEditing:YES];
         [self setHidden:YES];
     }];
     
@@ -163,7 +174,7 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
     据实际商品、服务情况决定。\n\
     ";
     
-    [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+    [SMAlert setConfirmBtBackgroundColor:kMainYellow];
     [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
     [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
     [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
@@ -210,7 +221,7 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
                     }
                     [param setValue:@"1" forKey:@"type"];
                 }else{
-                    [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请填写发票信息") view:self afterDelay:TipSeconds];
+                    [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请填写个人名称") view:self afterDelay:TipSeconds];
                     return;
                 }
             }else{
@@ -225,13 +236,39 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
                     }
                     [param setValue:@"2" forKey:@"type"];
                 }else{
-                    [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请填写发票信息") view:self afterDelay:TipSeconds];
+                    NSString *str;
+                    if (unitNameStr.length == 0) {
+                        str = @"请填写单位名称";
+                    }else if (unitNumberStr.length == 0){
+                        str = @"请填写纳税人识别号";
+                    }
+                    
+                    [ShaolinProgressHUD singleTextHud:str view:self afterDelay:TipSeconds];
                     return;
                 }
                 
             }
             
             [param setValue:@"UnSpecial" forKey:@"invoiceType"];
+            
+            
+            if (self.isViewEmail) {
+                
+                
+                OrderFillInvoiceEmailTableViewCell *invoiceEmailTableCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
+                
+                NSString *emailStr = invoiceEmailTableCell.emailStr;
+                if (emailStr.length) {
+                    if ([emailStr validationEmail]) {
+                        [param setValue:emailStr forKey:@"email"];
+                    }else{
+                        [ShaolinProgressHUD singleTextAutoHideHud:@"请填写正确的邮箱"];
+                        return;
+                    }
+                    
+                }
+            }
+            
             if ([self.delegate respondsToSelector:@selector(orderFillInvoiceView:tapDetermine:)] == YES) {
                 [self.delegate orderFillInvoiceView:self tapDetermine:param];
             }
@@ -244,7 +281,7 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
             NSString *phoneStr = invoiceTableCell.phone;
             NSString *addressStr = invoiceTableCell.address;
             
-           
+            
             if (nameStr.length > 0 && phoneStr.length > 0&& addressStr.length > 0) {
                 [param setValue:nameStr forKey:@"nameStr"];
                 [param setValue:phoneStr forKey:@"phoneStr"];
@@ -282,6 +319,13 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
 -(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     if (self.isInvoices == YES) {
         if (self.isSpecial == NO) {
+            if (self.isViewEmail) {
+                if (section == 0) {
+                    return 80;
+                }else{
+                    return 21;
+                }
+            }
             return 80;
         }else{
             return 40;
@@ -294,53 +338,36 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
     
     if (self.isInvoices == YES) {
         
+        //因为默认电子发票 所有 这里先设置为yes
+        self.isViewEmail = YES;
+        
         if (self.isSpecial == NO) {
-            static NSString *hIdentifier = @"OrderFillInvoiceRiseView";
+            //普通发票
             
-            UITableViewHeaderFooterView *view= [tableView dequeueReusableHeaderFooterViewWithIdentifier:hIdentifier];
-            OrderFillInvoiceRiseView *headView;
-            if(view == nil){
-                view = [[UITableViewHeaderFooterView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, 80)];
-                headView = [[OrderFillInvoiceRiseView alloc]initWithFrame:view.bounds];
-                [view.contentView addSubview:headView];
-            }
-            typeof(self)weakSelf = self;
-            [headView setRiseViewSelectedBlock:^(BOOL isPersonal) {
-                weakSelf.isPersonal = isPersonal;
-                [weakSelf.tableView reloadData];
+            if (self.isViewEmail) {
+                //电子发票
                 
-            }];
-            headView.isPersonal = self.isPersonal;
-            return view;
-        }else{
-            static NSString *hIdentifier = @"hIdentifier";
-            
-            UITableViewHeaderFooterView *view= [tableView dequeueReusableHeaderFooterViewWithIdentifier:hIdentifier];
-            UILabel *titleLabel;
-            UILabel *subTitleLabel;
-            if(view == nil){
-                view = [[UITableViewHeaderFooterView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, 40)];
-                titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(16, 0, 77, 21)];
-                [titleLabel setFont:kMediumFont(15)];
-                [titleLabel setTextColor:[UIColor colorForHex:@"333333"]];
+                static NSString *invoiceTitleIdentifier = @"p_InvoiceTitleAndEmailHeader";
                 
-                subTitleLabel = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(titleLabel.frame)+10, 0, 172, 17)];
-                [subTitleLabel setFont:kRegular(12)];
-                [subTitleLabel setTextColor:[UIColor colorForHex:@"999999"]];
+                UITableViewHeaderFooterView *view = [self p_InvoiceTitleAndEmailHeader:[tableView dequeueReusableHeaderFooterViewWithIdentifier:invoiceTitleIdentifier] inSection:section isPersonal:self.isPersonal];
                 
-                [view.contentView addSubview:titleLabel];
-                [view.contentView addSubview:subTitleLabel];
-            }
-            
-            if (section == 0) {
-                [titleLabel setText:SLLocalizedString(@"增票资质")];
-                titleLabel.mj_y = 10;
-                [subTitleLabel setHidden:YES];
+                return view;
+                
             }else{
-                [titleLabel setText:SLLocalizedString(@"收票人信息")];
-                [subTitleLabel setHidden:NO];
-                [subTitleLabel setText:SLLocalizedString(@"（该信息可与收货人信息不同）")];
+                //纸质 发票抬头
+                static NSString *invoiceTitleIdentifier = @"p_InvoiceTitleHeader";
+                
+                UITableViewHeaderFooterView *view = [self p_InvoiceTitleHeader:[tableView dequeueReusableHeaderFooterViewWithIdentifier:invoiceTitleIdentifier] inSection:section isPersonal:self.isPersonal];
+                
+                return view;
             }
+            
+            
+        }else{
+            //增值税发票
+            static NSString *headerIdentifier = @"p_vatSpecialInvoiceHeader";
+            
+            UITableViewHeaderFooterView *view = [self p_vatSpecialInvoiceHeader:[tableView dequeueReusableHeaderFooterViewWithIdentifier:headerIdentifier] inSection:section];
             
             return view;
         }
@@ -352,6 +379,9 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     if (self.isInvoices == YES) {
         if (self.isSpecial == NO) {
+            if (self.isViewEmail) {
+                return 2;
+            }
             return 1;
         }else{
             return 2;
@@ -359,7 +389,6 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
     }
     return  0;
 }
-
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     if (self.isInvoices == YES) {
@@ -370,40 +399,70 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
 }
 
 -(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    CGFloat rowHeight = 0;
     
     if (self.isSpecial == NO) {
-        if (self.isPersonal == YES) {
-            return 44;
+        
+        if (self.isViewEmail) {
+            if (indexPath.section == 0) {
+                if (self.isPersonal == YES) {
+                    rowHeight = 44;
+                }else{
+                    rowHeight =  75;
+                }
+            }else{
+                rowHeight = 44;
+            }
+        }else{
+            if (self.isPersonal == YES) {
+                rowHeight = 44;
+            }else{
+                rowHeight =  75;
+            }
         }
         
-        return 75;
     }else{
         if (indexPath.section == 0) {
-            return 178;
+            rowHeight = 178;
         }else{
-            return 112;
+            rowHeight = 112;
         }
     }
+    
+    return rowHeight;
     
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    //    OrderFillInvoiceTableCell *invoiceTableCell = [tableView dequeueReusableCellWithIdentifier:kOrderFillInvoiceTableCellIdentifier];
-    //
-    //    invoiceTableCell.isPersonal = self.isPersonal;
-    //    invoiceTableCell.tabelView = tableView;
-    //
-    //    return invoiceTableCell;
-    
-    
     if (self.isSpecial == NO) {
-        OrderFillInvoiceTableCell *invoiceTableCell = [tableView dequeueReusableCellWithIdentifier:kOrderFillInvoiceTableCellIdentifier];
         
-        invoiceTableCell.isPersonal = self.isPersonal;
-        invoiceTableCell.tabelView = tableView;
+        if (self.isViewEmail) {
+            
+            if (indexPath.section ==  0) {
+                OrderFillInvoiceTableCell *invoiceTableCell = [tableView dequeueReusableCellWithIdentifier:kOrderFillInvoiceTableCellIdentifier];
+                
+                invoiceTableCell.isPersonal = self.isPersonal;
+                invoiceTableCell.tabelView = tableView;
+                
+                return invoiceTableCell;
+                
+            }else{
+                OrderFillInvoiceEmailTableViewCell *invoiceEmailCell = [tableView dequeueReusableCellWithIdentifier:@"OrderFillInvoiceEmailTableViewCell"];
+                
+                return invoiceEmailCell;
+            }
+            
+        }else{
+            OrderFillInvoiceTableCell *invoiceTableCell = [tableView dequeueReusableCellWithIdentifier:kOrderFillInvoiceTableCellIdentifier];
+            
+            invoiceTableCell.isPersonal = self.isPersonal;
+            invoiceTableCell.tabelView = tableView;
+            
+            return invoiceTableCell;
+        }
         
-        return invoiceTableCell;
+        
     }else{
         if (indexPath.section == 0) {
             OrderFillIncreasedTicketQualificationTableCell *invoiceInfoTableCell = [tableView dequeueReusableCellWithIdentifier:kOrderFillIncreasedTicketQualificationTableCellIdentifier];
@@ -424,8 +483,19 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
 }
 
 #pragma mark - OrderFillInvoiceTabelHeadViewDelegate
+//发票类型选择
 -(void)orderFillInvoiceTabelHeadView:(OrderFillInvoiceTabelHeadView *)view tapView:(BOOL)istap{
     self.isSpecial = istap;
+    [self.tableView reloadData];
+}
+//发票形式选择
+-(void)orderFillInvoiceTabelHeadView:(OrderFillInvoiceTabelHeadView *)view tapViewChangeProformaInvoice:(NSString *)invoiceShape{
+    NSInteger invoiceShapeInteger = [invoiceShape integerValue];
+    if (invoiceShapeInteger == 2) {
+        self.isViewEmail = YES;
+    }else{
+        self.isViewEmail = NO;
+    }
     [self.tableView reloadData];
 }
 
@@ -438,6 +508,11 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
 
 //点击确定
 -(void)orderFillInvoiceFirstPageView:(OrderFillInvoiceFirstPageView *)view determine:(BOOL)isDetermine{
+    if (self.isInvoices == NO) {
+        if ([self.delegate respondsToSelector:@selector(orderFillInvoiceView:tapNotDevelopmentTicket:)]) {
+            [self.delegate orderFillInvoiceView:self tapNotDevelopmentTicket:self.isInvoices];
+        }
+    }
     [self disappear];
 }
 
@@ -458,8 +533,80 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
 }
 
 
-#pragma mark - getter / setter
+#pragma mark - 私有方法
+#pragma mark - 增值税表头
+-(UITableViewHeaderFooterView *)p_vatSpecialInvoiceHeader:(UITableViewHeaderFooterView *)view inSection:(NSInteger)section{
+    
+    UILabel *titleLabel;
+    UILabel *subTitleLabel;
+    if(view == nil){
+        view = [[UITableViewHeaderFooterView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, 40)];
+        titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(16, 0, 77, 21)];
+        [titleLabel setFont:kMediumFont(15)];
+        [titleLabel setTextColor:[UIColor colorForHex:@"333333"]];
+        
+        subTitleLabel = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(titleLabel.frame)+10, 0, 172, 17)];
+        [subTitleLabel setFont:kRegular(12)];
+        [subTitleLabel setTextColor:[UIColor colorForHex:@"999999"]];
+        
+        [view.contentView addSubview:titleLabel];
+        [view.contentView addSubview:subTitleLabel];
+    }
+    
+    if (section == 0) {
+        [titleLabel setText:SLLocalizedString(@"增票资质")];
+        titleLabel.mj_y = 10;
+        [subTitleLabel setHidden:YES];
+    }else{
+        [titleLabel setText:SLLocalizedString(@"收票人信息")];
+        [subTitleLabel setHidden:NO];
+        [subTitleLabel setText:SLLocalizedString(@"（该信息可与收货人信息不同）")];
+    }
+    return view;
+}
 
+#pragma mark - 发票抬头
+-(UITableViewHeaderFooterView *)p_InvoiceTitleHeader:(UITableViewHeaderFooterView *)view inSection:(NSInteger)section isPersonal:(BOOL)isPersonal{
+    
+    OrderFillInvoiceRiseView *headView;
+    if(view == nil){
+        view = [[UITableViewHeaderFooterView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, 80)];
+        headView = [[OrderFillInvoiceRiseView alloc]initWithFrame:view.bounds];
+        [view.contentView addSubview:headView];
+    }
+    typeof(self)weakSelf = self;
+    [headView setRiseViewSelectedBlock:^(BOOL isPersonal) {
+        weakSelf.isPersonal = isPersonal;
+        [weakSelf.tableView reloadData];
+        
+    }];
+    headView.isPersonal = isPersonal;
+    
+    return  view;
+}
+
+#pragma mark - 电子发票 在 发票抬头的基础上就邮箱
+-(UITableViewHeaderFooterView *)p_InvoiceTitleAndEmailHeader:(UITableViewHeaderFooterView *)view inSection:(NSInteger)section isPersonal:(BOOL)isPersonal{
+    
+    if (section == 0) {
+        view = [self p_InvoiceTitleHeader:view inSection:section isPersonal:isPersonal];
+    }else{
+        UILabel *titleLabel;
+        if(view == nil){
+            view = [[UITableViewHeaderFooterView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, 21)];
+            titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(16, 0, 77, 21)];
+            [titleLabel setFont:kMediumFont(15)];
+            [titleLabel setTextColor:[UIColor colorForHex:@"333333"]];
+            [view.contentView addSubview:titleLabel];
+        }
+        
+        [titleLabel setText:SLLocalizedString(@"收票人信息")];
+    }
+    
+    return  view;
+}
+
+#pragma mark - getter / setter
 
 -(UIView *)contentView{
     
@@ -500,13 +647,13 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
         
         [_titleView addSubview:closeButton];
         
-        UIButton *titleButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [titleButton setFrame:CGRectMake(ScreenWidth - 48 - 58, 0, 58, 52)];
-        [titleButton setTitle:SLLocalizedString(@"发票须知") forState:UIControlStateNormal];
-        [titleButton setTitleColor:[UIColor colorForHex:@"999999"] forState:UIControlStateNormal];
-        [titleButton addTarget:self action:@selector(invoiceInformation) forControlEvents:UIControlEventTouchUpInside];
-        [titleButton.titleLabel setFont:kRegular(14)];
-        [_titleView addSubview:titleButton];
+        //        UIButton *titleButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        //        [titleButton setFrame:CGRectMake(ScreenWidth - 48 - 58, 0, 58, 52)];
+        //        [titleButton setTitle:SLLocalizedString(@"发票须知") forState:UIControlStateNormal];
+        //        [titleButton setTitleColor:[UIColor colorForHex:@"999999"] forState:UIControlStateNormal];
+        //        [titleButton addTarget:self action:@selector(invoiceInformation) forControlEvents:UIControlEventTouchUpInside];
+        //        [titleButton.titleLabel setFont:kRegular(14)];
+        //        [_titleView addSubview:titleButton];
     }
     return _titleView;
     
@@ -536,7 +683,7 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
         [_tableView registerNib:[UINib nibWithNibName:NSStringFromClass([ReceiveTicketsTableCell class])bundle:nil] forCellReuseIdentifier:kReceiveTicketsTableCellIdentifier];
         
         
-        
+        [_tableView registerNib:[UINib nibWithNibName:NSStringFromClass([OrderFillInvoiceEmailTableViewCell class])bundle:nil] forCellReuseIdentifier:@"OrderFillInvoiceEmailTableViewCell"];
     }
     return _tableView;
 }
@@ -548,7 +695,7 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
         CGFloat y = CGRectGetMaxY(self.contentView.bounds) - 40 - 20;
         CGFloat width = CGRectGetWidth(self.contentView.bounds) - 32;
         [_determineButton setFrame:CGRectMake(16, y, width, 40)];
-        [_determineButton setBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+        [_determineButton setBackgroundColor:kMainYellow];
         [_determineButton setTitle:SLLocalizedString(@"确定") forState:UIControlStateNormal];
         [_determineButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [_determineButton.titleLabel setFont:kRegular(15)];

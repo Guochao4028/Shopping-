@@ -47,7 +47,7 @@
         return @"pin";
     } else if (self.orderType == 2){//教程
         return @"ke";
-    } else if (self.orderType == 3){//段品质活动
+    } else if (self.orderType == 3){//段品制活动
         return @"ke";
     } else if (self.orderType == 4){//退款
         return @"tui";

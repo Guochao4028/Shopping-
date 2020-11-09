@@ -54,7 +54,7 @@
     }else{
         [self.classifyDirectionImageView setImage:[UIImage imageNamed:@"selecgedUp"]];
         
-        [self.classifyNameLabel setTextColor:WENGEN_RED];
+        [self.classifyNameLabel setTextColor:kMainYellow];
     }
 }
 #pragma mark - action
@@ -94,7 +94,7 @@
 -(void)setSelectdModel:(WengenEnterModel *)selectdModel{
     _selectdModel = selectdModel;
      [self.classifyDirectionImageView setImage:[UIImage imageNamed:@"down"]];
-    [self.classifyNameLabel setTextColor:WENGEN_RED];
+    [self.classifyNameLabel setTextColor:kMainYellow];
     [self.classifyNameLabel setText:selectdModel.name];
 }
 
@@ -107,20 +107,20 @@
         }
             break;
         case ListXiaoLiangDescType:{
-            [self.salesVolumeLabel setTextColor:WENGEN_RED];
+            [self.salesVolumeLabel setTextColor:kMainYellow];
             [self.priceLabel setTextColor:WENGEN_GREY];
             [self.priceSortImageView setImage:[UIImage imageNamed:@"normal"]];
         }
             break;
         case ListJiaGeAscType:{
             [self.salesVolumeLabel setTextColor:WENGEN_GREY];
-            [self.priceLabel setTextColor:WENGEN_RED];
+            [self.priceLabel setTextColor:kMainYellow];
             [self.priceSortImageView setImage:[UIImage imageNamed:@"ascending"]];
         }
             break;
         case ListJiaGeDescType:{
             [self.salesVolumeLabel setTextColor:WENGEN_GREY];
-            [self.priceLabel setTextColor:WENGEN_RED];
+            [self.priceLabel setTextColor:kMainYellow];
             [self.priceSortImageView setImage:[UIImage imageNamed:@"descending"]];
             
         }

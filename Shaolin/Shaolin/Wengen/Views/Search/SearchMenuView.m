@@ -74,7 +74,7 @@
     _type = type;
     switch (type) {
         case ListXiaoLiangDescType:{
-            [self.xiaoLiangLabel setTextColor:WENGEN_RED];
+            [self.xiaoLiangLabel setTextColor:kMainYellow];
             [self.priceLabel setTextColor:WENGEN_GREY];
             [self.priceSortImageView setImage:[UIImage imageNamed:@"normal"]];
             [self.pingXingLabel setTextColor:WENGEN_GREY];
@@ -89,14 +89,14 @@
             break;
         case ListJiaGeAscType:{
             [self.xiaoLiangLabel setTextColor:WENGEN_GREY];
-            [self.priceLabel setTextColor:WENGEN_RED];
+            [self.priceLabel setTextColor:kMainYellow];
             [self.priceSortImageView setImage:[UIImage imageNamed:@"ascending"]];
             [self.pingXingLabel setTextColor:WENGEN_GREY];
         }
             break;
         case ListJiaGeDescType:{
             [self.xiaoLiangLabel setTextColor:WENGEN_GREY];
-            [self.priceLabel setTextColor:WENGEN_RED];
+            [self.priceLabel setTextColor:kMainYellow];
             [self.priceSortImageView setImage:[UIImage imageNamed:@"descending"]];
             [self.pingXingLabel setTextColor:WENGEN_GREY];
             
@@ -107,7 +107,7 @@
             [self.xiaoLiangLabel setTextColor:WENGEN_GREY];
             [self.priceLabel setTextColor:WENGEN_GREY];
             [self.priceSortImageView setImage:[UIImage imageNamed:@"normal"]];
-            [self.pingXingLabel setTextColor:WENGEN_RED];
+            [self.pingXingLabel setTextColor:kMainYellow];
             
         }
             break;

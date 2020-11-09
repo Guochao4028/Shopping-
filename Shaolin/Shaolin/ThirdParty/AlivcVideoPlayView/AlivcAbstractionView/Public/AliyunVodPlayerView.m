@@ -45,7 +45,7 @@ static const CGFloat AlilyunViewLoadingViewHeight = 120;
 
 #pragma mark - view
 @property (nonatomic, strong) UIButton *downloadButton;               //下载按钮
-@property (nonatomic, strong) AliPlayer *aliPlayer;               //点播播放器
+
 @property (nonatomic, strong) UIView *playerView;
 @property (nonatomic, strong) UIImageView *coverImageView;              //封面
 
@@ -74,7 +74,7 @@ static const CGFloat AlilyunViewLoadingViewHeight = 120;
 @property (nonatomic, strong) AliyunSTSModel *stsModel;              //vid+STS 播放方式
 @property (nonatomic, strong) AliyunMPSModel *mpsModel;              //vid+MPS 播放方式
 
-@property (nonatomic, assign) AVPStatus currentPlayStatus; //记录播放器的状态
+
 
 @property (strong, nonatomic) AVPTrackInfo *currentTrackInfo;
 
@@ -97,6 +97,11 @@ static const CGFloat AlilyunViewLoadingViewHeight = 120;
 -(void)replayClass
 {
     [self.aliPlayer seekToTime:0 seekMode:self.seekMode];
+    [self start];
+}
+
+-(void)seekToTime:(int64_t)time {
+    [self.aliPlayer seekToTime:time seekMode:self.seekMode];
     [self start];
 }
 

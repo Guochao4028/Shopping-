@@ -79,7 +79,7 @@
     if (!_iconImgv) {
         _iconImgv = [[UIImageView alloc] initWithFrame:CGRectMake(16, 8, 16, 14)];
 //        _iconImgv.contentMode = UIViewContentModeScaleAspectFill;
-        _iconImgv.image = [UIImage imageNamed:@"notice_icon"];
+        _iconImgv.image = [UIImage imageNamed:@"new_notice_icon"];
     }
     return _iconImgv;
 }
@@ -91,7 +91,7 @@
         
         _horizontalMarquee.numberOfLines = 1;
 //        _horizontalMarquee.backgroundColor = [UIColor yellowColor];
-        _horizontalMarquee.textColor = WENGEN_RED;
+        _horizontalMarquee.textColor = kMainYellow;
         _horizontalMarquee.font = kRegular(11);
         
 //        _horizontalMarquee.tag = 100;

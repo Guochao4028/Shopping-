@@ -22,6 +22,11 @@
 
 @property (weak, nonatomic) IBOutlet UIImageView *bgImageView;
 
+@property (weak, nonatomic) IBOutlet UIImageView *proprietaryImageView;
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *proprietaryImageViewW;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *proprietaryGayW;
+
 
 @end
 
@@ -33,6 +38,10 @@
     
     self.goodsImageView.layer.cornerRadius = 4;
     self.goodsImageView.layer.masksToBounds = YES;
+    
+    [self.proprietaryImageView setHidden:YES];
+    self.proprietaryImageViewW.constant = 0;
+    self.proprietaryGayW.constant = 0;
     
 }
 
@@ -85,7 +94,17 @@
     [odlAttrStr setAttributes:@{NSStrikethroughStyleAttributeName : @(NSUnderlineStyleSingle)}
                      range:NSMakeRange(0, oldPriceStr.length)];
     [self.old_price setAttributedText:odlAttrStr];
-  
+    
+    BOOL is_self = [model.is_self boolValue];
+    if (is_self) {
+        [self.proprietaryImageView setHidden:NO];
+        self.proprietaryImageViewW.constant = 35;
+        self.proprietaryGayW.constant = 5;
+    }else{
+        [self.proprietaryImageView setHidden:YES];
+        self.proprietaryImageViewW.constant = 0;
+        self.proprietaryGayW.constant = 0;
+    }
     
 }
 

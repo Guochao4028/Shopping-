@@ -22,12 +22,13 @@
 {
     
     NSString * optionStr = [NSString stringWithFormat:@"%@",f.title];
-    CGRect anserRect = [optionStr boundingRectWithSize:CGSizeMake(kWidth-SLChange(32), 0) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:kRegular(16)} context:nil];
-    CGFloat cHeight = anserRect.size.height;
+//    这里的30是tableView的左右边距
+//    CGRect anserRect = [optionStr boundingRectWithSize:CGSizeMake(kWidth - 30 - 20, 0) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:kRegular(16)} context:nil];
+//    CGFloat cHeight = anserRect.size.height;
+//
+//    f.cellHeight =  36 + cHeight;
     
-    f.cellHeight =  36 + cHeight;
-    
-    self.titleL.height = f.cellHeight;
+//    self.titleL.height = f.cellHeight;
     self.titleL.text = [NSString stringWithFormat:@"%@",f.title];
     self.nameLabel.text = [NSString stringWithFormat:@"%@",f.author];
 }
@@ -38,8 +39,48 @@
     [self.contentView addSubview:self.titleL];
     [self.contentView addSubview:self.stickLabel];
     [self.contentView addSubview:self.nameLabel];
+    [self.titleL mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(10);
+        make.right.mas_equalTo(-10);
+        make.top.mas_equalTo(5);
+    }];
     
+    [self.stickLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(self.titleL);
+        make.top.mas_equalTo(self.titleL.mas_bottom).mas_offset(2);
+        make.size.mas_equalTo(CGSizeMake(26, 18.5));
+    }];
+    
+    [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.size.mas_equalTo(CGSizeMake(78, 18.5));
+        make.left.mas_equalTo(self.stickLabel.mas_right).offset(10);
+        make.top.mas_equalTo(self.stickLabel);
+        make.bottom.mas_equalTo(-5);
+    }];
     self.selectionStyle = UITableViewCellSelectionStyleNone;
+}
+
+- (void)setCellPosition:(CellPosition)cellPosition{
+    [super setCellPosition:cellPosition];
+    if (cellPosition == CellPosition_Top || cellPosition == CellPosition_OnlyOne){
+        [self.titleL mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.top.mas_equalTo(15);
+        }];
+    } else {
+        [self.titleL mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.top.mas_equalTo(5);
+        }];
+    }
+    
+    if (cellPosition == CellPosition_Bottom || cellPosition == CellPosition_OnlyOne){
+        [self.nameLabel mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.bottom.mas_equalTo(-15);
+        }];
+    } else {
+        [self.nameLabel mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.bottom.mas_equalTo(-5);
+        }];
+    }
 }
 -(UILabel *)titleL
 {
@@ -57,7 +98,7 @@
     if (!_stickLabel) {
         _stickLabel = [[UILabel alloc]init];
         _stickLabel.font = kRegular(13);
-        _stickLabel.textColor = [UIColor colorForHex:@"C43E37"];
+        _stickLabel.textColor = [UIColor colorForHex:@"AE8453"];
         _stickLabel.text = SLLocalizedString(@"置顶");
     }
     return _stickLabel;
@@ -73,30 +114,12 @@
     }
     return _nameLabel;
 }
--(void)layoutSubviews
-{
-    [super layoutSubviews];
-    
-    [self.titleL mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(SLChange(16));
-        make.right.mas_equalTo(-SLChange(16));
-        make.top.mas_equalTo(SLChange(5));
-    }];
-    
-    [self.stickLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.mas_equalTo(SLChange(26));
-        make.height.mas_equalTo(SLChange(18.5));
-        make.left.mas_equalTo(self.titleL);
-        make.top.mas_equalTo(self.titleL.mas_bottom).mas_offset(3);
-    }];
-    
-    [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.mas_equalTo(SLChange(78));
-        make.height.mas_equalTo(SLChange(18.5));
-        make.left.mas_equalTo(self.stickLabel.mas_right).offset(SLChange(10));
-        make.top.mas_equalTo(self.titleL.mas_bottom).mas_offset(3);
-    }];
-}
+//-(void)layoutSubviews
+//{
+//    [super layoutSubviews];
+//
+//
+//}
 
 - (UIImage *)getShowImage{
     return nil;

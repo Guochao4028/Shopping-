@@ -39,7 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic , assign) NSInteger           nowTime;
 ///答题时长 单位：分钟
 @property (nonatomic , copy) NSString              * examTime;
-///段位id
+///位阶id
 @property (nonatomic , copy) NSString              * levelId;
 
 @property (nonatomic , copy) NSString              * questionCode;

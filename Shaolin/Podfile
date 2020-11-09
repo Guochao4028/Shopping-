@@ -23,13 +23,13 @@ pod 'FDFullscreenPopGesture'
 pod 'MMPopupView'
 pod 'XHLaunchAd', '~> 3.9.7'
 pod 'AliPlayerSDK_iOS'
-
+pod 'Bugly'
 
 
 #Lite版本(不带实时音视频通话功能)
 pod 'HyphenateLite'
 
-pod 'SDWebImage', '~> 4.0'
+pod 'SDWebImage', '~> 5.0'
 #pod 'SDWebImage/GIF'
 
   target 'ShaolinTests' do

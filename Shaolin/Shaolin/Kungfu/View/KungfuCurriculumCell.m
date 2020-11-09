@@ -7,7 +7,7 @@
 //
 
 #import "KungfuCurriculumCell.h"
-#import "ClassListModel.h"
+#import "SubjectModel.h"
 
 @implementation KungfuCurriculumCell
 -(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -20,9 +20,6 @@
 }
 - (void)setupView {
     [self.contentView addSubview:self.imageV];
-    //     [self.imageV addSubview:self.contentLabel];
-    //    [self.imageV addSubview:self.nameLabel];
-    //    [self.imageV addSubview:self.titleLabe];
     [self.contentView addSubview:self.alphaView];
     
     [self.contentView addSubview:self.contentLabel];
@@ -71,6 +68,7 @@
 {
     if (!_imageV) {
         _imageV = [[UIImageView alloc]init];
+        _imageV.cornerRadius = 10;
         _imageV.contentMode = UIViewContentModeScaleAspectFill;
         _imageV.userInteractionEnabled = YES;
         _imageV.clipsToBounds = YES;
@@ -84,6 +82,7 @@
         _alphaView = [[UIView alloc]init];
         _alphaView.backgroundColor = UIColor.blackColor;
         _alphaView.alpha = 0.2;
+        _alphaView.cornerRadius = 10;
         //        _alphaView.contentMode = UIViewContentModeScaleAspectFill;
         //        _alphaView.userInteractionEnabled = YES;
         //        _alphaView.clipsToBounds = YES;
@@ -132,17 +131,16 @@
     // Initialization code
 }
 
-- (void)setModel:(ClassListModel *)model{
+- (void)setModel:(SubjectModel *)model{
     _model = model;
     self.nameLabel.text = model.name;
-    //model.weight 是秒
     
-    NSString *timeStr = [ModelTool calculatedTimeWith:CalculatedTimeTypeDonotSecond secondStr:model.weight];
+    NSString *timeStr = [ModelTool calculatedTimeWith:CalculatedTimeTypeDonotSecond secondStr:model.time];
     
-    self.contentLabel.text = [NSString stringWithFormat:SLLocalizedString(@"%@ · %@ · %@人练过"), model.level_name, timeStr, model.user_num];
-    self.titleLabe.text = [NSString stringWithFormat:@"  %@  ",NotNilAndNull(model.desc2)?model.desc2:SLLocalizedString(@"明星也在学习的功夫")];
+    self.contentLabel.text = [NSString stringWithFormat:SLLocalizedString(@"%@ · %@ · %@人练过"), model.level_name, timeStr, model.num];
+    self.titleLabe.text = [NSString stringWithFormat:@"  %@  ",NotNilAndNull(model.recommend)?model.recommend:@""];
     
-    [self.imageV sd_setImageWithURL:[NSURL URLWithString:model.cover] placeholderImage:[UIImage imageNamed:@"default_small"]];
+    [self.imageV sd_setImageWithURL:[NSURL URLWithString:model.image] placeholderImage:[UIImage imageNamed:@"default_small"]];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

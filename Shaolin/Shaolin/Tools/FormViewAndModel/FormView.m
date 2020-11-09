@@ -438,12 +438,12 @@
     CGFloat secondVH = [[model.params objectForKey:RiteFormModel_ValueViewH_ParamsKey] floatValue];
     button.layer.cornerRadius = secondVH/2;
     button.layer.borderWidth = 0.5;
-    button.layer.borderColor = [UIColor colorForHex:@"8E2B25"].CGColor;
+    button.layer.borderColor = kMainYellow.CGColor;
     button.clipsToBounds = YES;
     
     button.titleLabel.font = self.labtlFont;
     [button setTitle:model.value forState:UIControlStateNormal];
-    [button setTitleColor:[UIColor colorForHex:@"8E2B25"] forState:UIControlStateNormal];
+    [button setTitleColor:kMainYellow forState:UIControlStateNormal];
     
     WEAKSELF
     [button handleControlEvent:UIControlEventTouchUpInside block:^(UIButton * _Nonnull button) {
@@ -508,7 +508,7 @@
         phoneStr = array.lastObject;
         NSRange phoneRange = [model.value rangeOfString:phoneStr];
         NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:model.value attributes:@{NSFontAttributeName: [UIFont fontWithName:@"PingFang SC" size: 14], NSForegroundColorAttributeName: [UIColor colorWithRed:51/255.0 green:51/255.0 blue:51/255.0 alpha:1.0]}];
-        [string addAttributes:@{NSForegroundColorAttributeName: [UIColor colorForHex:@"8E2B25"]} range:phoneRange];
+        [string addAttributes:@{NSForegroundColorAttributeName: kMainYellow} range:phoneRange];
         label.attributedText = string;
     }
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithActionLGFBlock:^(id  _Nonnull sender) {
@@ -547,7 +547,7 @@
     }
     
     UILabel *label = [self createLabel:model.value];
-    label.textColor = [UIColor colorForHex:@"8E2B25"];
+    label.textColor = kMainYellow;
     label.textAlignment = NSTextAlignmentCenter;
     [view addSubview:label];
     
@@ -1122,7 +1122,7 @@
         btn.titleLabel.adjustsFontSizeToFitWidth = YES;
         btn.titleLabel.textColor = [UIColor colorForHex:@"333333"];
         btn.titleLabel.normalTextColor = [UIColor colorForHex:@"333333"];
-        btn.titleLabel.selectTextColor = [UIColor colorForHex:@"8E2B25"];
+        btn.titleLabel.selectTextColor = kMainYellow;
         btn.userInteractionEnabled = simpleModel.enable;
         if (!simpleModel.enable){
             btn.titleLabel.textColor = [UIColor colorForHex:@"999999"];

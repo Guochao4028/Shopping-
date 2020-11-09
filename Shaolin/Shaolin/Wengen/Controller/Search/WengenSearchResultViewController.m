@@ -14,6 +14,10 @@
 #import "SearchMenuView.h"
 #import "ClassifyGoodsListView.h"
 #import "GoodsDetailsViewController.h"
+#import "DataManager.h"
+
+#import "SearchHistoryModel.h"
+
 //WengenSearchViewDelegate
 @interface WengenSearchResultViewController ()< SearchMenuViewDelegate, ClassifyGoodsListViewDelegate, SearchNavgationViewDelegate>
 //top 搜索栏
@@ -52,6 +56,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.hideNavigationBar = YES;
     // Do any additional setup after loading the view.
     
     [self initUI];
@@ -195,11 +200,22 @@
         [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请输入搜索内容") view:self.view afterDelay:TipSeconds];
         return;
     }
-    if ([self.historyArray containsObject:text]) {
-           [self.historyArray removeObject:text];
-       }
-    [self.historyArray insertObject:text atIndex:0];
-    [NSKeyedArchiver archiveRootObject:self.historyArray toFile:KGoodsHistorySearchPath];
+//    if ([self.historyArray containsObject:text]) {
+//           [self.historyArray removeObject:text];
+//       }
+//    [self.historyArray insertObject:text atIndex:0];
+//    [NSKeyedArchiver archiveRootObject:self.historyArray toFile:KGoodsHistorySearchPath];
+    
+    NSString *userId = [SLAppInfoModel sharedInstance].id;
+    
+    SearchHistoryModel *historyModel = [[SearchHistoryModel alloc]init];
+    historyModel.userId = userId;
+    historyModel.searchContent = text;
+    
+
+    historyModel.type = [NSString stringWithFormat:@"%ld", SearchHistoryGoodsType];;
+    
+    [historyModel addSearchWordWithDataArray:_historyArray];
     
     self.searchStr = text;
     [self update];
@@ -454,7 +470,8 @@
 
 -(NSMutableArray *)historyArray{
     if (!_historyArray) {
-           _historyArray = [NSKeyedUnarchiver unarchiveObjectWithFile:KGoodsHistorySearchPath];
+//           _historyArray = [NSKeyedUnarchiver unarchiveObjectWithFile:KGoodsHistorySearchPath];
+        _historyArray = [[[ModelTool shareInstance] select:[SearchHistoryModel class] tableName:@"searchHistory" where:[NSString stringWithFormat:@"type = '%ld' AND userId = '%@' ORDER BY id DESC", SearchHistoryGoodsType, [SLAppInfoModel sharedInstance].id]] mutableCopy];
            if (!_historyArray) {
                self.historyArray = [NSMutableArray array];
            }

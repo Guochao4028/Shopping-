@@ -30,6 +30,11 @@
 
 static  NSString* firseCellid = @"firseCell";
 
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self setNavigationBarRedTintColor];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -60,7 +65,11 @@ static  NSString* firseCellid = @"firseCell";
         _bottomView.allBtn.selected = !_bottomView.allBtn.selected;
         [_bottomView.allBtn setTitle:SLLocalizedString(@"全选") forState:UIControlStateNormal];
     }
-    _tableView.frame = CGRectMake(0, 0, kWidth, kHeight-NavBar_Height-48-SLChange(40)-BottomMargin_X);
+    _tableView.frame = CGRectMake(0, 0, kWidth, kHeight-NavBar_Height-48-SLChange(40)-kBottomSafeHeight);
+//    [_tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.top.right.mas_equalTo(self.view);
+//        make.bottom.mas_equalTo(-kBottomSafeHeight);
+//    }];
     //添加底部视图
     self.bottomView.hidden = NO;
     [self.view addSubview:self.bottomView];
@@ -70,7 +79,7 @@ static  NSString* firseCellid = @"firseCell";
     
     _isInsertEdit = NO;
     [_tableView setEditing:NO animated:YES];
-    _tableView.frame = CGRectMake(0, 0, kWidth, kHeight-NavBar_Height-48);
+    _tableView.frame = CGRectMake(0, 0, kWidth, kHeight-NavBar_Height-48-kBottomSafeHeight);
     
     [self.bottomView removeFromSuperview];
     _bottomView.hidden = YES;
@@ -271,6 +280,7 @@ static  NSString* firseCellid = @"firseCell";
             if ([model.state isEqualToString:@"6"]) {
                 if ([model.kind isEqualToString:@"1"] || [model.kind isEqualToString:@"2"]) {
                     FoundDetailsViewController *vC = [[FoundDetailsViewController alloc]init];
+                    vC.hideNavigationBar = YES;
                     vC.idStr = model.id;
                     vC.tabbarStr =tabbarSt;
                     vC.typeStr = model.type;
@@ -287,6 +297,7 @@ static  NSString* firseCellid = @"firseCell";
             if ([model.state isEqualToString:@"2"]) {
                 if ([model.kind isEqualToString:@"1"] || [model.kind isEqualToString:@"2"]) {
                     FoundDetailsViewController *vC = [[FoundDetailsViewController alloc]init];
+                    vC.hideNavigationBar = YES;
                     vC.idStr = model.id;
                     vC.tabbarStr =tabbarSt;
                     vC.typeStr = model.type;
@@ -377,7 +388,7 @@ static  NSString* firseCellid = @"firseCell";
     [[NSNotificationCenter defaultCenter]postNotificationName:@"NormalButton" object:nil];
     _isInsertEdit = NO;
     [_tableView setEditing:NO animated:YES];
-    _tableView.frame = CGRectMake(0, 0, kWidth, kHeight-NavBar_Height-48);
+    _tableView.frame = CGRectMake(0, 0, kWidth, kHeight-NavBar_Height-48-kBottomSafeHeight);
     
     [self.bottomView removeFromSuperview];
     _bottomView.hidden = YES;
@@ -385,7 +396,7 @@ static  NSString* firseCellid = @"firseCell";
 #pragma mark - Getters
 - (UITableView *)tableView {
     if (!_tableView) {
-        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, kWidth, kHeight-NavBar_Height-48) style:(UITableViewStylePlain)];
+        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, kWidth, kHeight-NavBar_Height-48-kBottomSafeHeight) style:(UITableViewStylePlain)];
         _tableView.delegate = self;
         _tableView.dataSource = self;
         [_tableView registerClass:[ReadingTextCell class] forCellReuseIdentifier:firseCellid];

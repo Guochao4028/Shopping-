@@ -27,13 +27,14 @@
 @end
 
 @implementation MeCollectionVideoVc
-
-- (void)viewWillDisappear:(BOOL)animated {
-//    self.navigationController.navigationBar.hidden = YES;
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self setNavigationBarRedTintColor];
 }
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-     _isInsertEdit = NO;
+    _isInsertEdit = NO;
     self.pageNum = 1;
     self.pageSize = 30;
     self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
@@ -45,33 +46,34 @@
     }];
     [self.tableView.mj_header beginRefreshing];
     [self.view addSubview:self.tableView];
-      [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.edges.equalTo(self.view);
-      }];
+    [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.top.mas_equalTo(self.view);
+        make.bottom.mas_equalTo(-kBottomSafeHeight);
+    }];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(selectEditCell) name:@"collectionEditVideoSelect" object:nil];
-           [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(normalEditCell) name:@"collectionEditVideoNormal" object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(normalEditCell) name:@"collectionEditVideoNormal" object:nil];
 }
 - (void)selectEditCell {
-   
+    
     //点击编辑的时候清空删除数组
     [self.deleteArray removeAllObjects];
-                   
+    
     _isInsertEdit = YES;//这个时候是全选模式
     [_tableView setEditing:YES animated:YES];
-                    
+    
     //如果在全选状态下，点击完成，再次进来的时候需要改变按钮的文字和点击状态
     if (_bottomView.allBtn.selected) {
-            _bottomView.allBtn.selected = !_bottomView.allBtn.selected;
-            [_bottomView.allBtn setTitle:SLLocalizedString(@"全选") forState:UIControlStateNormal];
+        _bottomView.allBtn.selected = !_bottomView.allBtn.selected;
+        [_bottomView.allBtn setTitle:SLLocalizedString(@"全选") forState:UIControlStateNormal];
     }
     _tableView.frame = CGRectMake(0, 0, kWidth, kHeight-NavBar_Height-48-SLChange(40)-BottomMargin_X);
     //添加底部视图
     self.bottomView.hidden = NO;
     [self.view addSubview:self.bottomView];
-   
+    
 }
 - (void)normalEditCell {
-     
+    
     _isInsertEdit = NO;
     [_tableView setEditing:NO animated:YES];
     _tableView.frame = CGRectMake(0, 0, kWidth, kHeight-NavBar_Height-48);
@@ -80,7 +82,7 @@
     _bottomView.hidden = YES;
 }
 - (void)getData {
-//    MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
+    //    MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
     self.pageNum = 1;
     [self.foundArray removeAllObjects];
     NSDictionary *params = @{
@@ -98,14 +100,14 @@
     } failure:^(NSString * _Nonnull errorReason) {
         [ShaolinProgressHUD singleTextAutoHideHud:errorReason];
     } finish:^(id  _Nonnull responseObject, NSString * _Nonnull errorReason) {
-//        [hud hideAnimated:YES];
+        //        [hud hideAnimated:YES];
         [self.tableView.mj_header endRefreshing];
         [self.tableView.mj_footer endRefreshing];
     }];
 }
 - (void)loadNowMoreAction {
     self.pageNum++;
-//    MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
+    //    MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
     NSDictionary *params = @{
         @"pageNum" : [NSString stringWithFormat:@"%ld", self.pageNum],
         @"pageSize" : [NSString stringWithFormat:@"%ld", self.pageSize],
@@ -124,7 +126,7 @@
         [self.tableView.mj_footer endRefreshing];
         [ShaolinProgressHUD singleTextAutoHideHud:errorReason];
     } finish:^(id  _Nonnull responseObject, NSString * _Nonnull errorReason) {
-//        [hud hideAnimated:YES];
+        //        [hud hideAnimated:YES];
     }];
 }
 
@@ -146,25 +148,25 @@
 #pragma mark - buttonAction
 - (void)priseAction:(UIButton *)btn {
     ReadingVideoCell *cell = (ReadingVideoCell *)btn.superview.superview;
-      NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
     FoundModel *model = self.foundArray[indexPath.row];
-       // 收藏
-        btn.selected = !btn.selected;
-        if (btn.selected) { //收藏成功调用的
-            [self foucsAction:model IndexPath:indexPath button:btn];
-        }else {
-                             
-                              //取消收藏
-            NSString *strId = [NSString stringWithFormat:@"%@", model.id];
-            NSMutableArray *arr = [NSMutableArray array];
-            NSDictionary *dic = @{@"contentId":strId,@"type":model.type};
-            [arr addObject:dic];
-     //      [arr setValue:strId forKey:@"contentId"];
-     //                        [arr setValue:self.typeStr forKey:@"type"];
-                              NSLog(@"%@",arr);
-                              
-            [self cancleCollectionAction:arr Model:model IndexPath:indexPath button:btn];
-        }
+    // 收藏
+    btn.selected = !btn.selected;
+    if (btn.selected) { //收藏成功调用的
+        [self foucsAction:model IndexPath:indexPath button:btn];
+    }else {
+        
+        //取消收藏
+        NSString *strId = [NSString stringWithFormat:@"%@", model.id];
+        NSMutableArray *arr = [NSMutableArray array];
+        NSDictionary *dic = @{@"contentId":strId,@"type":model.type};
+        [arr addObject:dic];
+        //      [arr setValue:strId forKey:@"contentId"];
+        //                        [arr setValue:self.typeStr forKey:@"type"];
+        NSLog(@"%@",arr);
+        
+        [self cancleCollectionAction:arr Model:model IndexPath:indexPath button:btn];
+    }
 }
 
 - (void)tapAllBtn:(UIButton *)btn{
@@ -194,29 +196,29 @@
 #pragma mark - 收藏成功
 -(void)foucsAction:(FoundModel *)layout IndexPath:(NSIndexPath *)indexPath button:(UIButton *)btn
 {
-  
+    
     NSString *contentId = [NSString stringWithFormat:@"%@",layout.id];
     NSLog(@"%@ --- %@",contentId,layout.type);
     
-//    [[HomeManager sharedInstance]postCollectionContentId:contentId Type:layout.type Kind:@"2" MemberId:@"" MemberName:@"" Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
-//           NSLog(@"%@",responseObject);
-//           if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
-//              
-//               NSInteger likeCount = [layout.collections integerValue];
-//               likeCount += 1;
-//               layout.collections = [NSString stringWithFormat:@"%ld",likeCount];
-//               [self.foundArray setObject:layout atIndexedSubscript:indexPath.row];
-//               [btn setSelected:YES];
-//               [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];
-//
-//               [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"收藏成功") view:self.view afterDelay:TipSeconds];
-//           }else
-//           {
-//               [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
-//           }
-//       } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-//           [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
-//       }];
+    //    [[HomeManager sharedInstance]postCollectionContentId:contentId Type:layout.type Kind:@"2" MemberId:@"" MemberName:@"" Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+    //           NSLog(@"%@",responseObject);
+    //           if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
+    //
+    //               NSInteger likeCount = [layout.collections integerValue];
+    //               likeCount += 1;
+    //               layout.collections = [NSString stringWithFormat:@"%ld",likeCount];
+    //               [self.foundArray setObject:layout atIndexedSubscript:indexPath.row];
+    //               [btn setSelected:YES];
+    //               [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];
+    //
+    //               [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"收藏成功") view:self.view afterDelay:TipSeconds];
+    //           }else
+    //           {
+    //               [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
+    //           }
+    //       } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+    //           [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
+    //       }];
     
     [[HomeManager sharedInstance]postCollectionContentId:contentId Type:layout.type Kind:@"2" MemberId:@"" MemberName:@"" Success:^(NSDictionary * _Nullable resultDic) {
         
@@ -225,14 +227,14 @@
     } finish:^(NSDictionary * _Nullable responseObject, NSString * _Nullable errorReason) {
         NSLog(@"%@",responseObject);
         if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
-           
+            
             NSInteger likeCount = [layout.collections integerValue];
             likeCount += 1;
             layout.collections = [NSString stringWithFormat:@"%ld",likeCount];
             [self.foundArray setObject:layout atIndexedSubscript:indexPath.row];
             [btn setSelected:YES];
             [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];
-
+            
             [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"收藏成功") view:self.view afterDelay:TipSeconds];
         }else
         {
@@ -243,23 +245,23 @@
 #pragma mark - 取消收藏
 -(void)cancleCollectionAction:(NSMutableArray *)arr Model:(FoundModel *)layout IndexPath:(NSIndexPath *)indexPath button:(UIButton *)btn
 {
-      NSLog(@"%@",arr);
+    NSLog(@"%@",arr);
     
     [[HomeManager sharedInstance]postCollectionCancleArray:arr WithBlock:^(id  _Nonnull responseObject, NSError * _Nonnull error) {
         NSLog(@"%@",responseObject);
         if ([[responseObject objectForKey:@"code"] integerValue]== 200) {
-           
-                       NSInteger likeCount = [layout.collections integerValue];
-                       likeCount --;
             
-                       layout.collections = [NSString stringWithFormat:@"%ld",likeCount];
+            NSInteger likeCount = [layout.collections integerValue];
+            likeCount --;
+            
+            layout.collections = [NSString stringWithFormat:@"%ld",likeCount];
             [self.foundArray setObject:layout atIndexedSubscript:indexPath.row];
-                     [btn setSelected:NO];
-                        
-                  
-           [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];
+            [btn setSelected:NO];
+            
+            
+            [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];
             [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"取消收藏") view:self.view afterDelay:TipSeconds];
-            [self.tableView.mj_header beginRefreshing];
+            [self getData];
         }else
         {
             [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
@@ -302,7 +304,7 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-   
+    
     return SLChange(172);
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
@@ -322,69 +324,69 @@
 {
     //根据不同状态返回不同编辑模式
     
-        return UITableViewCellEditingStyleDelete|UITableViewCellEditingStyleInsert;
-   
+    return UITableViewCellEditingStyleDelete|UITableViewCellEditingStyleInsert;
+    
 }
 
 - (void)tableView:(UITableView*)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath*)indexPath {
-   
+    
     //左滑删除数据方法
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-         [self.deleteArray addObject:[self.foundArray objectAtIndex:indexPath.row]];
-         [self deleteData];
+        [self.deleteArray addObject:[self.foundArray objectAtIndex:indexPath.row]];
+        [self deleteData];
     }
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (tableView.editing) {
-                NSLog(@"选中");
-              
-                [self.deleteArray addObject:[self.foundArray objectAtIndex:indexPath.row]];
-             
-          }else {
-             [tableView deselectRowAtIndexPath:indexPath animated:NO];
-             FoundModel *model = self.foundArray[indexPath.row];
-            NSString *tabbarSt ;
-            if ([model.type isEqualToString:@"1"]) {
-                tabbarSt = @"Found";
-            }else {
-                tabbarSt = @"Activity";
-            }
-            if ([model.type isEqualToString:@"1"]) {
-                if ([model.state isEqualToString:@"6"]) {
-                            FoundVideoListVc *vC = [[FoundVideoListVc alloc]init];
-                            vC.hidesBottomBarWhenPushed = YES;
-                            vC.fieldId = model.fieldId;
-                            vC.videoId = model.id;
-                            vC.tabbarStr = tabbarSt;
-                            vC.typeStr = model.type;
-                            vC.hidesBottomBarWhenPushed = YES;
-                            [self.navigationController pushViewController:vC animated:YES];
-                  }else {
-                            ReadingNoDataViewController *reVC = [[ReadingNoDataViewController alloc]init];
-                            reVC.hidesBottomBarWhenPushed = YES;
-                            reVC.typeStr = @"video";
-                            [self.navigationController pushViewController:reVC animated:YES];
-                        }
-            }else {
-                if ([model.state isEqualToString:@"2"]) {
-                        FoundVideoListVc *vC = [[FoundVideoListVc alloc]init];
-                        vC.hidesBottomBarWhenPushed = YES;
-                        vC.fieldId = model.fieldId;
-                        vC.videoId = model.id;
-                        vC.tabbarStr = tabbarSt;
-                        vC.typeStr = model.type;
-                        vC.hidesBottomBarWhenPushed = YES;
-                        [self.navigationController pushViewController:vC animated:YES];
-                }else {
-                        ReadingNoDataViewController *reVC = [[ReadingNoDataViewController alloc]init];
-                        reVC.hidesBottomBarWhenPushed = YES;
-                        reVC.typeStr = @"video";
-                        [self.navigationController pushViewController:reVC animated:YES];
-                      }
-                }
-
+        NSLog(@"选中");
+        
+        [self.deleteArray addObject:[self.foundArray objectAtIndex:indexPath.row]];
+        
+    }else {
+        [tableView deselectRowAtIndexPath:indexPath animated:NO];
+        FoundModel *model = self.foundArray[indexPath.row];
+        NSString *tabbarSt ;
+        if ([model.type isEqualToString:@"1"]) {
+            tabbarSt = @"Found";
+        }else {
+            tabbarSt = @"Activity";
         }
+        if ([model.type isEqualToString:@"1"]) {
+            if ([model.state isEqualToString:@"6"]) {
+                FoundVideoListVc *vC = [[FoundVideoListVc alloc]init];
+                vC.hidesBottomBarWhenPushed = YES;
+                vC.fieldId = model.fieldId;
+                vC.videoId = model.id;
+                vC.tabbarStr = tabbarSt;
+                vC.typeStr = model.type;
+                vC.hidesBottomBarWhenPushed = YES;
+                [self.navigationController pushViewController:vC animated:YES];
+            }else {
+                ReadingNoDataViewController *reVC = [[ReadingNoDataViewController alloc]init];
+                reVC.hidesBottomBarWhenPushed = YES;
+                reVC.typeStr = @"video";
+                [self.navigationController pushViewController:reVC animated:YES];
+            }
+        }else {
+            if ([model.state isEqualToString:@"2"]) {
+                FoundVideoListVc *vC = [[FoundVideoListVc alloc]init];
+                vC.hidesBottomBarWhenPushed = YES;
+                vC.fieldId = model.fieldId;
+                vC.videoId = model.id;
+                vC.tabbarStr = tabbarSt;
+                vC.typeStr = model.type;
+                vC.hidesBottomBarWhenPushed = YES;
+                [self.navigationController pushViewController:vC animated:YES];
+            }else {
+                ReadingNoDataViewController *reVC = [[ReadingNoDataViewController alloc]init];
+                reVC.hidesBottomBarWhenPushed = YES;
+                reVC.typeStr = @"video";
+                [self.navigationController pushViewController:reVC animated:YES];
+            }
+        }
+        
+    }
 }
 - (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath  {
     
@@ -402,55 +404,55 @@
 - (void)deleteData{
     if (self.deleteArray.count >0) {
         UIAlertController* alert = [UIAlertController alertControllerWithTitle:SLLocalizedString(@"提示")
-                                                                                           message:SLLocalizedString(@"是否进行删除")
-                                                                                    preferredStyle:UIAlertControllerStyleAlert];
-
-                         UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:SLLocalizedString(@"确认删除") style:UIAlertActionStyleDestructive
-                                 handler:^(UIAlertAction * action) {
-                             [ShaolinProgressHUD defaultSingleLoadingWithText:SLLocalizedString(@"删除中...")];
-                                NSMutableArray *deleteArr = [NSMutableArray array];
-                              
-                                for (FoundModel *model in self.deleteArray) {
-                                    NSMutableDictionary *dic = [NSMutableDictionary dictionary];
-                                    [dic setValue:model.id forKey:@"contentId"];
-                                    [dic setValue:model.type forKey:@"type"];
-                                     [deleteArr addObject:dic];
-                                }
-                             NSLog(@"%@",deleteArr);
-                             
-                             [[HomeManager sharedInstance]postCollectionCancleArray:deleteArr WithBlock:^(id  _Nonnull responseObject, NSError * _Nonnull error) {
-                                 NSLog(@"%@",responseObject);
-                                 if ([[responseObject objectForKey:@"code"] integerValue]==200) {
-                                     [self hiddenBoomtoView];
-                                      [self.foundArray removeObjectsInArray:self.deleteArray];
-                                      [self.tableView reloadData];
-                                     if (self.foundArray.count == 0) {
-//                                          self.tableView.ly_emptyView = self.emptyView;
-                                     }
-                                     [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"删除成功") view:self.view afterDelay:TipSeconds];
-                                 }else
-                                 {
-                                     [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"删除失败") view:self.view afterDelay:TipSeconds];
-                                 }
-                             }];
-                              NSLog(@"----%@",deleteArr);
-
-                            }];
-
-               UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:SLLocalizedString(@"取消") style:UIAlertActionStyleDefault
-                                    handler:nil];
-
-                       [alert addAction:defaultAction];
-                       [alert addAction:cancelAction];
-                   [self presentViewController:alert animated:YES completion:nil];
+                                                                       message:SLLocalizedString(@"是否进行删除")
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:SLLocalizedString(@"确认删除") style:UIAlertActionStyleDestructive
+                                                              handler:^(UIAlertAction * action) {
+            [ShaolinProgressHUD defaultSingleLoadingWithText:SLLocalizedString(@"删除中...")];
+            NSMutableArray *deleteArr = [NSMutableArray array];
+            
+            for (FoundModel *model in self.deleteArray) {
+                NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+                [dic setValue:model.id forKey:@"contentId"];
+                [dic setValue:model.type forKey:@"type"];
+                [deleteArr addObject:dic];
+            }
+            NSLog(@"%@",deleteArr);
+            
+            [[HomeManager sharedInstance]postCollectionCancleArray:deleteArr WithBlock:^(id  _Nonnull responseObject, NSError * _Nonnull error) {
+                NSLog(@"%@",responseObject);
+                if ([[responseObject objectForKey:@"code"] integerValue]==200) {
+                    [self hiddenBoomtoView];
+                    [self.foundArray removeObjectsInArray:self.deleteArray];
+                    [self.tableView reloadData];
+                    if (self.foundArray.count == 0) {
+                        //                                          self.tableView.ly_emptyView = self.emptyView;
+                    }
+                    [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"删除成功") view:self.view afterDelay:TipSeconds];
+                }else
+                {
+                    [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"删除失败") view:self.view afterDelay:TipSeconds];
+                }
+            }];
+            NSLog(@"----%@",deleteArr);
+            
+        }];
+        
+        UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:SLLocalizedString(@"取消") style:UIAlertActionStyleDefault
+                                                             handler:nil];
+        
+        [alert addAction:defaultAction];
+        [alert addAction:cancelAction];
+        [self presentViewController:alert animated:YES completion:nil];
         
         
         
         
-       }else
-       {
-           [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"没有选择文章") view:self.view afterDelay:TipSeconds];
-       }
+    }else
+    {
+        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"没有选择文章") view:self.view afterDelay:TipSeconds];
+    }
     
 }
 #pragma mark - Getters
@@ -459,11 +461,11 @@
         _tableView = [[UITableView alloc] init];
         _tableView.delegate = self;
         _tableView.dataSource = self;
-         [_tableView registerClass:[ReadingVideoCell class] forCellReuseIdentifier:@"cell"];
+        [_tableView registerClass:[ReadingVideoCell class] forCellReuseIdentifier:@"cell"];
         _tableView.showsVerticalScrollIndicator = NO;
         _tableView.showsHorizontalScrollIndicator = NO;
         _tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-//        _tableView.rowHeight = 227;
+        //        _tableView.rowHeight = 227;
         _tableView.separatorColor = [UIColor clearColor];
         _tableView.tableFooterView = [[UIView alloc]initWithFrame:CGRectZero];
         
@@ -475,12 +477,12 @@
 }
 -(void)hiddenBoomtoView
 {
-//     [self.rightBtn setSelected:NO];
-     [[NSNotificationCenter defaultCenter]postNotificationName:@"NormalCollectionButton" object:nil];
+    //     [self.rightBtn setSelected:NO];
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"NormalCollectionButton" object:nil];
     _isInsertEdit = NO;
     [_tableView setEditing:NO animated:YES];
     _tableView.frame = CGRectMake(0, 0, kWidth, kHeight-NavBar_Height-48);
-   
+    
     [self.bottomView removeFromSuperview];
     _bottomView.hidden = YES;
 }
@@ -509,13 +511,13 @@
     return _bottomView;
 }
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end

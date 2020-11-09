@@ -26,6 +26,10 @@
 @end
 
 @implementation StoreTwoViewController
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self setNavigationBarRedTintColor];
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -180,7 +184,7 @@
 //            [cell setSeparatorInset:UIEdgeInsetsMake(0, 0, 0, MAXFLOAT)];
 //            UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(SLChange(58), SLChange(15), SLChange(52), SLChange(18))];
 //            label.text = SLLocalizedString(@"(选填)");
-//            label.textColor = [UIColor colorForHex:@"8E2B25"];
+//            label.textColor = kMainYellow;
 //            label.font = kRegular(13);
 //            [cell.contentView addSubview:label];
 //        }else {
@@ -191,7 +195,7 @@
 //        if (indexPath.row == 0) {
 //            UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(SLChange(74), SLChange(15), SLChange(52), SLChange(18))];
 //            label.text = SLLocalizedString(@"(选填)");
-//            label.textColor = [UIColor colorForHex:@"8E2B25"];
+//            label.textColor = kMainYellow;
 //            label.font = kRegular(13);
 //            [cell.contentView addSubview:label];
 //            cell.textLabel.font = kMediumFont(16);
@@ -289,7 +293,7 @@
            [_nextBtn addTarget:self action:@selector(nextAction) forControlEvents:(UIControlEventTouchUpInside)];
            [_nextBtn setTitleColor:[UIColor colorForHex:@"FFFFFF"] forState:(UIControlStateNormal)];
            _nextBtn.titleLabel.font = kRegular(15);
-           _nextBtn.backgroundColor = [UIColor colorForHex:@"8E2B25"];
+           _nextBtn.backgroundColor = kMainYellow;
         _nextBtn.layer.cornerRadius = 4;
         _nextBtn.layer.masksToBounds = YES;
     }

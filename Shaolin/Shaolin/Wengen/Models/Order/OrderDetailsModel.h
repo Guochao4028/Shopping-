@@ -92,7 +92,7 @@ NS_ASSUME_NONNULL_BEGIN
 // 只有 isOperationPanel == yes 这个属性才有值，其他的情况为空
 @property(nonatomic, copy)NSString * allOrderNoStr;
 
-//段位
+//位阶
 @property(nonatomic, copy)NSString * goods_level;
 
 
@@ -112,6 +112,20 @@ NS_ASSUME_NONNULL_BEGIN
 //法会 订单审核状态 用于判断 发票 显示
 //0未审核 1通过 2没通过
 @property(nonatomic, copy)NSString *order_check;
+
+
+///发票 是否可补开
+///0国内 1国外
+///国外不可补开发票
+@property(nonatomic, copy)NSString *is_foreign;
+
+///是否自营
+@property(nonatomic, copy)NSString *is_self;
+
+///自用 订单状态是统一
+@property(nonatomic, assign)BOOL isUnified;
+
+
 
 @end
 

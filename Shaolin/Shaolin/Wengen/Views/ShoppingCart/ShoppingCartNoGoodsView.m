@@ -37,7 +37,7 @@
     
     self.goBuyButton.layer.cornerRadius = SLChange(4);
     self.goBuyButton.layer.borderWidth = 0.5;
-    self.goBuyButton.layer.borderColor = [UIColor colorForHex:@"8E2B25"].CGColor;
+    self.goBuyButton.layer.borderColor = kMainYellow.CGColor;
     [self.goBuyButton.layer setMasksToBounds:YES];
 }
 

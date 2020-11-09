@@ -13,6 +13,7 @@
 #import "ShaoLinTabBarController.h"
 //#import "UIDevice+TFDevice.h"
 
+#import "ShaolinWindiw.h"
 #import "EMDemoHelper.h"
 #import "EMDemoOptions.h"
 
@@ -23,12 +24,13 @@
 #import "VersionUpdateModel.h"
 #import "ADManager.h"
 #import "WSIAPManager.h"
+#import "DataManager.h"
 
 //#import "RMStore.h"
 
 #import "JANALYTICSService.h"
 
-//#import <Bugly/Bugly.h>
+#import <Bugly/Bugly.h>
 
 
 
@@ -45,37 +47,19 @@
 #pragma mark ————— 初始化window —————
 -(void)initWindow{
     
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    self.window = [[ShaolinWindiw alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
     
     ShaoLinTabBarController *rootTabbarVC = [[ShaoLinTabBarController alloc]init];
     self.window.rootViewController = rootTabbarVC;
     
     if (![[SLAppInfoModel sharedInstance] access_token]) {
-        LoginViewController *loginVC = [[LoginViewController alloc]init];
-        UINavigationController *homeNC = rootTabbarVC.viewControllers[0];
-        homeNC.tabBarController.tabBar.hidden = YES;
-        [homeNC pushViewController:loginVC animated:NO];
+        [self pushLoginVC];
     }
-    
     
     [self.window makeKeyAndVisible];
     [[UIButton appearance] setExclusiveTouch:YES];
     //    [[UIButton appearance] setShowsTouchWhenHighlighted:YES];
-    
-    UILabel * testLabel = [UILabel new];
-    testLabel.text = @"测试系统";
-    testLabel.backgroundColor = UIColor.whiteColor;
-    testLabel.textColor = WENGEN_RED;
-    testLabel.frame = CGRectMake(kScreenWidth - 42, 80, 40, 16);
-    testLabel.layer.cornerRadius = 8;
-    testLabel.layer.borderColor = WENGEN_RED.CGColor;
-    testLabel.layer.borderWidth = 0.5;
-    testLabel.font = kRegular(8);
-    testLabel.textAlignment = NSTextAlignmentCenter;
-    testLabel.clipsToBounds = YES;
-    
-    [self.window addSubview:testLabel];
 }
 
 -(void)initNetWork {
@@ -162,46 +146,17 @@
 }
 
 #pragma mark ————— 初始化用户系统 —————
--(void)initUserManager{
-    //    LoginViewController * loginVC = [LoginViewController new];
-    //
-    //    CATransition *anima = [CATransition animation];
-    //    anima.type = @"reveal";//设置动画的类型
-    //    anima.subtype = kCATransitionFromRight;//设置动画的方向
-    //    anima.duration = 0.3f;
-    //
-    //    self.window.rootViewController = loginVC;
-    //
-    //    userManager.isLogined = [userManager loadUserInfo];
-    //    userManager.experienceBaseUrl = URL_main;
-    //    if (userManager.isLogined) {
-    //        // 本地有存储的信息 ,请求用户权限
-    //        // 是否是试用账户
-    //        BOOL isExperienceUser = [kUserDefaults objectForKey:KDefaultIsExperienceUser];
-    //        if (isExperienceUser) {
-    //            NSString * expeienceUrl = [kUserDefaults objectForKey:KDefaultExperienceUserUrl];
-    //            if (NotNilAndNull(expeienceUrl)) {
-    //                userManager.isExperienceUser = YES;
-    //                userManager.experienceBaseUrl = expeienceUrl;
-    //            }
-    //        }
-    //
-    //
-    //        KPostNotification(KNotificationAddUrlFilter, nil)
-    //
-    //        AppAuthLogic *logic = [AppAuthLogic new];
-    //        [logic loadDataResult:^(BOOL result) {
-    //            if (result) {
-    //                userManager.isLogined = YES;
-    //                KPostNotification(KNotificationLoginStateChange, @YES)
-    //            } else {
-    //                KPostNotification(KNotificationLoginStateChange, @NO)
-    //            }
-    //        }];
-    //    } else {
-    //        //展示登录页面
-    //        KPostNotification(KNotificationLoginStateChange, @NO)
-    //    }
+-(void) initUserInfo{
+    // 获取存储的用户信息
+    [[SLAppInfoModel sharedInstance] getCurrentUserInfo];
+}
+
+#pragma mark ————— 获取一些信息 —————
+-(void) initAddressAndOrderData{
+    //获取收货地址文件
+    [[DataManager shareInstance] getAddressListFile];
+    //获取购物车和订单数量
+    [[DataManager shareInstance] getOrderAndCartCount];
 }
 
 #pragma mark ————— 环信相关 —————
@@ -312,6 +267,9 @@
 
 #pragma mark ————— 初始化三方SDK —————
 -(void)initThirdSDK {
+    //Bugly
+    [Bugly startWithAppId:@"e1f0dfb786"];
+    
     [ShareSDK registPlatforms:^(SSDKRegister *platformsRegister) {
         //QQ
         [platformsRegister setupQQWithAppId:@"101874690" appkey:@"aed9b0303e3ed1e27bae87c33761161d"];
@@ -511,18 +469,22 @@
 
 - (void)pushLoginVC {
     dispatch_async(dispatch_get_main_queue(), ^{
-        ShaoLinTabBarController *chooseVC = [[ShaoLinTabBarController alloc] init];
-        self.window.rootViewController = chooseVC;
+        UIViewController *showVC = [self getCurrentUIVC];
+        if ([showVC isKindOfClass:[LoginViewController class]]) return;
         LoginViewController *loginVC = [[LoginViewController alloc]init];
-        UINavigationController *homeNC = chooseVC.viewControllers[0];
-        homeNC.tabBarController.tabBar.hidden = YES;
-        [homeNC pushViewController:loginVC animated:NO];
-        
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:loginVC];
+        self.window.rootViewController = nav;
         [self.window makeKeyAndVisible];
     });
-    
 }
 
+- (void)enterRootViewVC{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        ShaoLinTabBarController *chooseVC = [[ShaoLinTabBarController alloc] init];
+        self.window.rootViewController = chooseVC;
+        [self.window makeKeyAndVisible];
+    });
+}
 
 #pragma mark ————— 配置极光统计—————
 - (void)setupAnalytics{

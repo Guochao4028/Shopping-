@@ -18,6 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, copy)NSString *storeId;
 @property(nonatomic, copy)NSString *order_id;
 @property(nonatomic, copy)NSString *name;
+///是否自营
+@property(nonatomic, copy)NSString *is_self;
 
 @property(nonatomic, copy)NSArray *goods;
 

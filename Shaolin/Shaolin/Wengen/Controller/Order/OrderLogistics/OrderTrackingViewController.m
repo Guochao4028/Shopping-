@@ -9,6 +9,7 @@
 #import "OrderTrackingViewController.h"
 #import "OrderTrackingTableViewCell.h"
 #import "OrderDetailsModel.h"
+#import "DataManager.h"
 @interface OrderTrackingViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic,strong) UITableView *tableView;
 @property(nonatomic,strong) UILabel *titleNumberLabel;//运单
@@ -22,13 +23,15 @@
 
 @implementation OrderTrackingViewController
 
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self hideNavigationBarShadow];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.titleLabe.text = SLLocalizedString(@"订单跟踪");
    self.coPyButton.hidden = YES;
-    [self.navigationController.navigationBar setBackgroundImage:[[UIImage alloc]init]forBarMetrics:UIBarMetricsDefault];
-
-    [self.navigationController.navigationBar setShadowImage:[[UIImage alloc]init]];
     [self layoutView];
     [self.view addSubview:self.tableView];
     self.tableView.hidden = YES;

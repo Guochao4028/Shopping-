@@ -126,7 +126,7 @@ static NSString *AnimationTranslationHide = @"KCBasicAnimation_Translation_Hide"
         btn.titleLabel.adjustsFontSizeToFitWidth = YES;
         btn.titleLabel.textColor = [UIColor colorForHex:@"333333"];
         btn.titleLabel.normalTextColor = [UIColor colorForHex:@"333333"];
-        btn.titleLabel.selectTextColor = [UIColor colorForHex:@"8E2B25"];
+        btn.titleLabel.selectTextColor = kMainYellow;
         [checkBoxBtnArray addObject:btn];
     }
     
@@ -323,7 +323,7 @@ static NSString *AnimationTranslationHide = @"KCBasicAnimation_Translation_Hide"
     if (!_confirmButton){
         _confirmButton = [[UIButton alloc] init];
         _confirmButton.clipsToBounds = YES;
-        UIColor *backColor = [UIColor colorForHex:@"8E2B25"];
+        UIColor *backColor = kMainYellow;
         [_confirmButton setBackgroundImage:[UIImage lgf_ColorImageWithFillColor:[backColor colorWithAlphaComponent:1]] forState:UIControlStateNormal];
         [_confirmButton setBackgroundImage:[UIImage lgf_ColorImageWithFillColor:[backColor colorWithAlphaComponent:0.59]] forState:UIControlStateDisabled];
         [_confirmButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];

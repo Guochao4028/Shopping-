@@ -12,6 +12,9 @@
 #import "HomeManager.h"
 #import "NSString+Tool.h"
 
+#import "SearchHistoryModel.h"
+
+
 @interface AllSearchViewController ()<UITextFieldDelegate>
 @property(nonatomic,strong) UITextField *textField;
 @property (nonatomic, strong) SLSearchView *searchView;
@@ -31,7 +34,24 @@
 - (NSMutableArray *)historyArray
 {
     if (!_historyArray) {
-        _historyArray = [NSKeyedUnarchiver unarchiveObjectWithFile:KHistorySearchPath];
+//        _historyArray = [NSKeyedUnarchiver unarchiveObjectWithFile:KHistorySearchPath];
+//        _historyArray = [[[ModelTool shareInstance]selectALL:[SearchHistoryModel class] tableName:@"searchHistory"] mutableCopy];
+        
+        SearchHistoryType type;
+        if ([self.tabbarStr isEqualToString:@"Activity"]) {
+            if (self.isRite) {
+                type = SearchHistoryRiteClassroomType;
+            }else{
+                type = SearchHistoryRiteCharityType;
+            }
+        }else if([self.tabbarStr isEqualToString:@"Found"]){
+            type = SearchHistoryArticleType;
+        }else{
+            type = 0;
+        }
+        
+        _historyArray = [[[ModelTool shareInstance] select:[SearchHistoryModel class] tableName:@"searchHistory" where:[NSString stringWithFormat:@"type = '%ld' AND userId = '%@' ORDER BY id DESC", type, [SLAppInfoModel sharedInstance].id]] mutableCopy];
+        
         if (!_historyArray) {
             self.historyArray = [NSMutableArray array];
         }
@@ -49,6 +69,7 @@
 }
 -(void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
     if ([self.tabbarStr isEqualToString:@"Activity"]) {
         [self setSearchView];
     } else {
@@ -66,10 +87,7 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     [self setupUI];
-    
-    
-    
-    
+    self.hideNavigationBarView = YES;
 }
 #pragma mark - 热词
 -(void)hotData
@@ -144,8 +162,11 @@
         UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:SLLocalizedString(@"确定清除") style:UIAlertActionStyleDestructive
                                                               handler:^(UIAlertAction * action) {
             
-            [[NSNotificationCenter defaultCenter]postNotificationName:@"ClearHistory" object:nil];
+//            [[NSNotificationCenter defaultCenter]postNotificationName:@"ClearHistory" object:nil];
             
+            
+            [[NSNotificationCenter defaultCenter]postNotificationName:@"ClearHistory" object:nil userInfo:@{@"tabbarStr":weakSelf.tabbarStr, @"isRite":[NSString stringWithFormat:@"%d", weakSelf.isRite]}];
+
         }];
         
         UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:SLLocalizedString(@"取消") style:UIAlertActionStyleDefault
@@ -171,9 +192,6 @@
 
 -(void)setupUI
 {
-    self.navigationController.navigationBar.hidden =YES;
-    
-    
     UIView *view = [[UIView alloc] init];
     [self.view addSubview:view];
     view.userInteractionEnabled = YES;
@@ -320,18 +338,67 @@
 {
 
     if (str.length == 0) {
-        return;;
+        return;
     }
     
-    for (int i = 0; i < _historyArray.count; i++) {
-        if ([_historyArray[i] isEqualToString:str]) {
-            [_historyArray removeObjectAtIndex:i];
-            break;
+    NSString *userId = [SLAppInfoModel sharedInstance].id;
+    
+    SearchHistoryModel *historyModel = [[SearchHistoryModel alloc]init];
+    historyModel.userId = userId;
+    historyModel.searchContent = str;
+    
+    if ([self.tabbarStr isEqualToString:@"Activity"]) {
+        if (self.isRite) {
+            //法会 - 客堂
+            historyModel.type = [NSString stringWithFormat:@"%ld", SearchHistoryRiteClassroomType];
+        }else{
+            //法会 - 慈善
+            historyModel.type = [NSString stringWithFormat:@"%ld", SearchHistoryRiteCharityType];
         }
+        
+    }else if([self.tabbarStr isEqualToString:@"Found"]){
+        // 文章
+        historyModel.type = [NSString stringWithFormat:@"%ld", SearchHistoryArticleType];
     }
-    [_historyArray insertObject:str atIndex:0];
-    [NSKeyedArchiver archiveRootObject:_historyArray toFile:KHistorySearchPath];
+    
+    
+    
+    [historyModel addSearchWordWithDataArray:_historyArray];
+//
+//    for (int i = 0; i < self.historyArray.count; i++) {
+//        SearchHistoryModel *tempHistoryModel = self.historyArray[i];
+//        if ([tempHistoryModel.searchContent isEqualToString:str]) {
+//            [self.historyArray removeObjectAtIndex:i];
+//            [[ModelTool shareInstance]deleteTableName:@"searchHistory" where:[NSString stringWithFormat:@"userId = '%@' AND searchContent = '%@'", userId, str]];
+//            break;
+//        }
+//    }
+//
+//    [self.historyArray insertObject:historyModel atIndex:0];
+//
+//
+//    [[ModelTool shareInstance]insert:historyModel tableName:@"searchHistory"];
+//
+//    NSArray *tempDataArray = [[ModelTool shareInstance] select:[SearchHistoryModel class] tableName:@"searchHistory" where:[NSString stringWithFormat:@"type = '%ld' AND userId = '%@' ORDER BY id DESC", SearchHistoryArticleType, userId]];
+//
+//    if ([tempDataArray count] > 20) {
+//        [[ModelTool shareInstance]deleteTableName:@"searchHistory" where:[NSString stringWithFormat:@"id <(select max(id) - 20 from searchHistory where userId = '%@' AND type = '%ld')", userId, SearchHistoryArticleType]];
+//    }
+//
+    
+    
+    
+//    for (int i = 0; i < _historyArray.count; i++) {
+//        if ([_historyArray[i] isEqualToString:str]) {
+//            [_historyArray removeObjectAtIndex:i];
+//            break;
+//        }
+//    }
+//    [_historyArray insertObject:str atIndex:0];
+//    [NSKeyedArchiver archiveRootObject:_historyArray toFile:KHistorySearchPath];
 }
+
+
 
 
 #pragma mark - UISearchBarDelegate -

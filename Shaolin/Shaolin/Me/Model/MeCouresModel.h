@@ -16,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *old_price;
 /**简介*/
 @property (nonatomic, copy) NSString *intro;
+@property (nonatomic, copy) NSString *goods_value;
 /**图片*/
 @property (nonatomic, copy) NSString *cover;
 /**教程名称*/

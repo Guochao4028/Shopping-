@@ -9,13 +9,14 @@
 #import "PersonDataManagementVc.h"
 #import "PersonDataEditVc.h"
 #import "ChangePasswordVc.h"
-#import "RealNameViewController.h"
+#import "RealNameSuccessViewController.h"
 #import "SelectAuthenticationMethodViewController.h"
 #import "AddressViewController.h"
 #import "PayPasswordVc.h"
 #import "MeManager.h"
 #import "AppDelegate.h"
 #import "UIView+Colors.h"
+#import "SMAlert.h"
 #import "QualificationViewController.h"
 #import "AboutShaolinViewController.h"
 #import "ThirdpartyBindingViewController.h"
@@ -39,9 +40,6 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-//    self.navigationController.navigationBar.hidden = YES;
-    self.navLine.hidden = YES;
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -80,14 +78,14 @@
         self.idLabel.text = [NSString stringWithFormat:@"ID:%@",[self.dicData objectForKey:@"id"]];
     }
     
-    if ([[self.dicData objectForKey:@"autograph"] isEqual:[NSNull null]] || [self.dicData objectForKey:@"autograph"] == nil) {
-         self.signatureLabel.text = SLLocalizedString(@"个性签名:");
+    NSString * autograph = [self.dicData objectForKey:@"autograph"];
+    if (IsNilOrNull(autograph) || autograph.length == 0) {
+         self.signatureLabel.text = @"";
     }else{
         self.signatureLabel.text = [NSString stringWithFormat:SLLocalizedString(@"个性签名:%@"),[self.dicData objectForKey:@"autograph"]];
-
     }
     NSString *levelName = [self.dicData objectForKey:@"levelName"];
-    if (levelName.length == 0 || [levelName isEqualToString:SLLocalizedString(@"无段位")]){
+    if (levelName.length == 0 ){
         levelName = SLLocalizedString(@"无位阶");
     }
     [self reloadLevelView:levelName];
@@ -111,6 +109,18 @@
         ];
         [self.levelView setGradationColor:colors startPoint:CGPointMake(0.0, 0.0) endPoint:CGPointMake(1.0, 1.0)];
     }
+}
+
+- (void)pushSelectAuthenticationMethodViewController{
+    SelectAuthenticationMethodViewController *v = [[SelectAuthenticationMethodViewController alloc] init];
+    v.params = self.dicData;
+    [self.navigationController pushViewController:v animated:YES];
+}
+
+- (void)pushRealNameSuccessViewController{
+    RealNameSuccessViewController *v = [[RealNameSuccessViewController alloc] init];
+    v.params = self.dicData;
+    [self.navigationController pushViewController:v animated:YES];
 }
 #pragma mark - 编辑
 -(void)editAction
@@ -198,6 +208,10 @@
         cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellIdentifier];
          UIImageView *i = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"personal_arrow"]];
          cell.accessoryView = i;
+         
+         UILabel *line = [[UILabel alloc]initWithFrame:CGRectMake(0, 49, ScreenWidth, 1)];
+         [line setBackgroundColor:[UIColor colorForHex:@"fafafa"]];
+         [cell addSubview:line];
      }
     cell.accessoryView.hidden = NO;
     if (indexPath.section == 0) {
@@ -220,6 +234,8 @@
             if ([[self.dicData objectForKey:@"verifiedState"] integerValue]==3) {
                 [cell.detailTextLabel setText:SLLocalizedString(@"认证失败")];
             }
+            
+           
         }
         
     }else
@@ -229,15 +245,18 @@
         cell.textLabel.textColor = [UIColor blackColor];
         cell.textLabel.text = arr[indexPath.row];
         
+        
     }
      cell.selectionStyle = UITableViewCellSelectionStyleNone;
      cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
-    if (indexPath.section == 0 && indexPath.row == 1 && ([[self.dicData objectForKey:@"verifiedState"] integerValue]==1 || [[self.dicData objectForKey:@"verifiedState"] integerValue]==2)) {
+    if (indexPath.section == 0 && indexPath.row == 1 && [[self.dicData objectForKey:@"verifiedState"] integerValue]==2) {
         
         cell.accessoryView.hidden = YES;
         cell.accessoryType = UITableViewCellAccessoryNone;
     }
+        
+    
     return cell;
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -247,18 +266,18 @@
             ChangePasswordVc *v = [[ChangePasswordVc alloc]init];
             [self.navigationController pushViewController:v animated:YES];
         } else if (indexPath.row == 1) {
-//            if ([[self.dicData objectForKey:@"verifiedState"] integerValue]==1) {
-//                [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"实名认证已经认证成功!") view:self.view afterDelay:TipSeconds];
-//                return;
-//            }
 //            if ([[self.dicData objectForKey:@"verifiedState"] integerValue]==2) {
 //                [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"实名认证正在审核中!") view:self.view afterDelay:TipSeconds];
 //                return;
 //            }
-//            RealNameViewController *v  =[[RealNameViewController alloc]init];
-            SelectAuthenticationMethodViewController *v = [[SelectAuthenticationMethodViewController alloc] init];
-            v.params = self.dicData;
-            [self.navigationController pushViewController:v animated:YES];
+            if ([[self.dicData objectForKey:@"verifiedState"] integerValue]==1) {
+                //认证成功后直接进入认证成功页面
+                [self pushRealNameSuccessViewController];
+//                [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"实名认证已经认证成功!") view:self.view afterDelay:TipSeconds];
+//                return;
+            } else {
+                [self pushSelectAuthenticationMethodViewController];
+            }
         }else if (indexPath.row == 2){ //支付密码
             PayPasswordVc * v = [PayPasswordVc new];
             [self.navigationController pushViewController:v animated:YES];
@@ -275,7 +294,6 @@
         switch (indexPath.row) {
             case 0:{
                 AddressViewController *addressVC = [[AddressViewController alloc]init];
-                addressVC.isHiddenNav = YES;
                 [self.navigationController pushViewController:addressVC animated:YES];
             }
                 
@@ -340,14 +358,14 @@
     [super viewWillDisappear:animated];
     
 }
-- (UIView *)navLine
-{
-    if (!_navLine) {
-        UIView *backgroundView = [self.navigationController.navigationBar subviews].firstObject;
-        _navLine = backgroundView.subviews.firstObject;
-    }
-    return _navLine;
-}
+//- (UIView *)navLine
+//{
+//    if (!_navLine) {
+//        UIView *backgroundView = [self.navigationController.navigationBar subviews].firstObject;
+//        _navLine = backgroundView.subviews.firstObject;
+//    }
+//    return _navLine;
+//}
 -(UIImageView *)headerImage
 {
     if (!_headerImage) {
@@ -422,20 +440,9 @@
 }
 - (void)outAction {
     WEAKSELF
-      UIAlertController* alert = [UIAlertController alertControllerWithTitle:SLLocalizedString(@"确定退出登录?")
-                                                                     message:nil
-                                                              preferredStyle:UIAlertControllerStyleAlert];
-
-      UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:SLLocalizedString(@"确定") style:UIAlertActionStyleDestructive
-                        handler:^(UIAlertAction * action) {
-                            [weakSelf outLoginAction];
-                        }];
-      UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:SLLocalizedString(@"取消") style:UIAlertActionStyleDefault
-                           handler:nil];
-    
-          [alert addAction:cancelAction];
-          [alert addAction:defaultAction];
-          [self presentViewController:alert animated:YES completion:nil];
+    [self showAlertWithInfoString:SLLocalizedString(@"确定退出登录?") success:^{
+        [weakSelf outLoginAction];
+    }];
    
 }
 - (void)outLoginAction {
@@ -469,9 +476,23 @@
 //    }];
 }
 
-#pragma mark - device
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    return UIStatusBarStyleDefault;
+- (void) showAlertWithInfoString:(NSString *)text success:(void (^ __nullable)(void))success{
+    [SMAlert setConfirmBtBackgroundColor:kMainYellow];
+    [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
+    [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
+    [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
+    [SMAlert setAlertBackgroundColor:[UIColor colorWithWhite:0 alpha:0.5]];
+    UIView *customView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 300, 100)];
+    UILabel *title = [[UILabel alloc]initWithFrame:customView.bounds];
+    [title setFont:[UIFont systemFontOfSize:15]];
+    [title setTextColor:[UIColor darkGrayColor]];
+    title.text = text;
+    [title setTextAlignment:NSTextAlignmentCenter];
+    [customView addSubview:title];
+    
+    [SMAlert showCustomView:customView stroke:YES confirmButton:[SMButton initWithTitle:SLLocalizedString(@"确定") clickAction:^{
+        if (success) success();
+    }] cancleButton:[SMButton initWithTitle:SLLocalizedString(@"取消") clickAction:nil]];
 }
 /*
 #pragma mark - Navigation

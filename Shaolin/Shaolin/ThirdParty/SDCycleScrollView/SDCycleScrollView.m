@@ -524,6 +524,12 @@ NSString * const ID = @"SDCycleScrollViewCell";
         [pageControl sizeToFit];
     }
     
+    if (@available(iOS 14.0, *)) {
+        x = 0;
+        size.width = self.sd_width;
+    }
+    
+    
     CGRect pageControlFrame = CGRectMake(x, y, size.width, size.height);
     pageControlFrame.origin.y -= self.pageControlBottomOffset;
     pageControlFrame.origin.x -= self.pageControlRightOffset;

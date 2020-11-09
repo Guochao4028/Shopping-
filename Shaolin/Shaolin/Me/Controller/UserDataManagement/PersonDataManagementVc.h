@@ -8,7 +8,7 @@
 //
 //  个人信息管理
 
-#import <UIKit/UIKit.h>
+#import "RootViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

@@ -21,6 +21,13 @@
 @property (weak, nonatomic) IBOutlet UILabel *starLabel;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *goodsNameLabelH;
 
+
+
+
+@property (weak, nonatomic) IBOutlet UIImageView *proprietaryImageView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *proprietaryImageViewW;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *proprietaryGayW;
+
 @end
 
 @implementation GoodsDetailsInfoTableViewCell
@@ -31,6 +38,11 @@
     
     [self.contentView setBackgroundColor:[UIColor whiteColor]];
     self.selectionStyle = UITableViewCellSelectionStyleNone;
+    
+    
+    [self.proprietaryImageView setHidden:YES];
+    self.proprietaryImageViewW.constant = 0;
+    self.proprietaryGayW.constant = 0;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -103,6 +115,18 @@
         
     }else{
         [self.goodsPriceLabel setText:@""];
+    }
+    
+    
+    BOOL is_self = [infoModel.is_self boolValue];
+    if (is_self) {
+        [self.proprietaryImageView setHidden:NO];
+        self.proprietaryImageViewW.constant = 35;
+        self.proprietaryGayW.constant = 5;
+    }else{
+        [self.proprietaryImageView setHidden:YES];
+        self.proprietaryImageViewW.constant = 0;
+        self.proprietaryGayW.constant = 0;
     }
     
 }

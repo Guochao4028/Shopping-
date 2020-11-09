@@ -14,7 +14,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) UIImageView *imageIcon;
 @property (nonatomic, strong) UILabel *nameLabel;
+@property (nonatomic, strong) UILabel *numLabel;
 @property (nonatomic, strong) UIView *bgView;
+
+
+@property (nonatomic, copy) NSString * messageNum;
 
 @end
 

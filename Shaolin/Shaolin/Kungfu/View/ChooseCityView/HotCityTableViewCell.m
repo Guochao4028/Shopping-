@@ -19,8 +19,8 @@
 - (void)awakeFromNib {
     [super awakeFromNib];
     self.selectionStyle = UITableViewCellSelectionStyleNone;
-    [self.contentView setBackgroundColor:[UIColor clearColor]];
-    [self setBackgroundColor:[UIColor clearColor]];
+    [self.contentView setBackgroundColor:[UIColor colorForHex:@"fafafa"]];
+    [self setBackgroundColor:[UIColor colorForHex:@"fafafa"]];
     // Initialization code
     [self.collectionView setDelegate:self];
     [self.collectionView setDataSource:self];

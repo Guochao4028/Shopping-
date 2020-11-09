@@ -81,12 +81,12 @@
     if (!_loadBtn) {
         _loadBtn = [[UIButton alloc]init];
         [_loadBtn setTitle:SLLocalizedString(@"点击加载") forState:(UIControlStateNormal)];
-        [_loadBtn setTitleColor:[UIColor colorForHex:@"8E2B25"] forState:(UIControlStateNormal)];
+        [_loadBtn setTitleColor:kMainYellow forState:(UIControlStateNormal)];
         _loadBtn.titleLabel.font = kRegular(15);
         _loadBtn.layer.masksToBounds = YES;
         _loadBtn.layer.cornerRadius = SLChange(17.5);
         _loadBtn.layer.borderWidth = 0.5;
-        _loadBtn.layer.borderColor = [UIColor colorForHex:@"8E2B25"].CGColor;
+        _loadBtn.layer.borderColor = kMainYellow.CGColor;
         [_loadBtn addTarget:self action:@selector(loadAction) forControlEvents:(UIControlEventTouchUpInside)];
     }
     return _loadBtn;

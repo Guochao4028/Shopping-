@@ -65,7 +65,7 @@
     _orderModel = orderModel;
     
     self.goodsImageView.image = [UIImage imageNamed:@"default_small"];
-    [self.orderNoLabel setText:[NSString stringWithFormat:SLLocalizedString(@"订单单号：%@"), orderModel.order_sn]];
+    [self.orderNoLabel setText:[NSString stringWithFormat:SLLocalizedString(@"订单编号：%@"), orderModel.order_sn]];
     NSArray *orderStoreArray = orderModel.order_goods;
            
     OrderStoreModel *storeModel = [orderStoreArray firstObject];

@@ -31,7 +31,7 @@
            self.imageV.image = [UIImage imageNamed:@"shaolinlogo"];
           }else
           {
-              [self.imageV sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",model.coverurlList[0][@"route"]]]];
+              [self.imageV sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",model.coverurlList[0][@"route"]]] placeholderImage:[UIImage imageNamed:@"default_small"]];
           }
        NSDate *date= [self nsstringConversionNSDate:model.returnTime];
        NSString *timeStr = [NSString stringWithFormat:@"%@",[self compaareCurrentTime:date]];

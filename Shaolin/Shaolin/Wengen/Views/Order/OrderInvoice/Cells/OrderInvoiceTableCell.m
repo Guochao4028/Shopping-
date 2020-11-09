@@ -27,6 +27,8 @@
     [self.moreImageView setHidden:YES];
     
     [self.contentTextField setDelegate:self];
+    
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -39,7 +41,7 @@
 
 -(void)textFieldDidEndEditing:(GCTextField *)textField{
     NSString *txt = textField.text;
-    if (txt.length > 0) {
+//    if (txt.length > 0) {
         [self.model  setValue:txt forKey:@"content"];
         
         NSString *titleStr = self.titleLabel.text;
@@ -73,10 +75,14 @@
             self.fillModel.duty_num = txt;
         }
         
-        if ([titleStr isEqualToString:SLLocalizedString(@"个人名称")]) {
+        if ([titleStr isEqualToString:SLLocalizedString(@"个人名称")] || [titleStr isEqualToString:SLLocalizedString(@"抬头名称")]|| [titleStr isEqualToString:SLLocalizedString(@"单位名称")]) {
             self.fillModel.buy_name = txt;
         }
-    }
+        
+        if ([titleStr isEqualToString:SLLocalizedString(@"邮箱")]) {
+            self.fillModel.email = txt;
+        }
+//    }
 }
 
 #pragma mark - setter / getter

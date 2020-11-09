@@ -41,31 +41,37 @@
     [self.contentView addSubview:self.priseBtn];
     
     [self.courseVideoImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(SLChange(21));
-        make.top.mas_equalTo(SLChange(15));
-        make.size.mas_equalTo(CGSizeMake(SLChange(151), SLChange(92)));
+        make.left.mas_equalTo(16);
+        make.top.mas_equalTo(15);
+        make.size.mas_equalTo(CGSizeMake(110, 110));
     }];
+    
+    
+    
     [self.courseTitleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(self.courseVideoImageView.mas_right).mas_offset(SLChange(16.5));
-        make.top.mas_equalTo(self.courseVideoImageView);
-        make.width.mas_equalTo(SLChange(155));
+        make.top.mas_equalTo(self.courseVideoImageView).mas_offset(11);
+        make.right.mas_equalTo(-30);
         make.height.mas_equalTo(SLChange(13.5));
     }];
+    
+    [self.priseBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.mas_equalTo(-15);
+        make.centerY.mas_equalTo(self.courseTitleLabel);
+        make.size.mas_equalTo(CGSizeMake(15, 15));
+    }];
+    
     [self.descLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.mas_equalTo(self.courseTitleLabel);
         make.top.mas_equalTo(self.courseTitleLabel.mas_bottom).mas_offset(SLChange(11.5));
-        make.height.mas_equalTo(SLChange(32));
+//        make.height.mas_equalTo(SLChange(32));
     }];
     [self.priceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.mas_equalTo(self.courseTitleLabel);
-        make.top.mas_equalTo(self.descLabel.mas_bottom).mas_offset(SLChange(25.5));
+        make.bottom.mas_equalTo(self.courseVideoImageView.mas_bottom).mas_offset(-12);
         make.height.mas_equalTo(SLChange(11.5));
     }];
-    [self.priseBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(self.courseTitleLabel.mas_right).mas_equalTo(SLChange(5));
-        make.centerY.mas_equalTo(self.courseTitleLabel);
-        make.size.mas_equalTo(CGSizeMake(SLChange(15), SLChange(15)));
-    }];
+    
 }
 
 - (void)priseButtonClick:(UIButton *)button {
@@ -127,14 +133,18 @@
 - (void)setModel:(MeCouresModel *)model{
     _model = model;
     
+    if (IsNilOrNull(model)) {
+        return;
+    }
+    
     self.courseTitleLabel.text = model.name;
     
     
-    self.descLabel.text = [self filterHTML:[self filterHTML:model.intro]];
-    
+//    self.descLabel.text = [self filterHTML:[self filterHTML:model.intro]];
+    self.descLabel.text = model.goods_value;
     
     self.priceLabel.text = [NSString stringWithFormat:@"￥%@", model.old_price];
-    [self.courseVideoImageView sd_setImageWithURL:[NSURL URLWithString:model.cover] placeholderImage:[UIImage imageNamed:@"shaolinlogo"]];
+    [self.courseVideoImageView sd_setImageWithURL:[NSURL URLWithString:model.cover] placeholderImage:[UIImage imageNamed:@"default_small"]];
     NSInteger weight = [model.weight integerValue];
     NSInteger hour = weight/60;
     NSInteger minute = weight%60;
@@ -198,7 +208,7 @@
 - (UILabel *)courseTitleLabel {
     if (!_courseTitleLabel) {
         _courseTitleLabel = [[UILabel alloc] init];
-        _courseTitleLabel.font = kRegular(14);
+        _courseTitleLabel.font = kRegular(15);
         _courseTitleLabel.textColor = [UIColor colorForHex:@"333333"];
     }
     return _courseTitleLabel;
@@ -207,7 +217,7 @@
 - (UILabel *)descLabel{
     if (!_descLabel){
         _descLabel = [[UILabelLeftTopAlign alloc] init];
-        _descLabel.font = kRegular(12);
+        _descLabel.font = kRegular(13);
         _descLabel.textColor = [UIColor colorForHex:@"999999"];
         _descLabel.numberOfLines = 2;
     }
@@ -218,7 +228,7 @@
     if (!_priceLabel){
         _priceLabel = [[UILabel alloc] init];
         _priceLabel.font = kRegular(15);
-        _priceLabel.textColor = [UIColor colorForHex:@"FE6444"];
+        _priceLabel.textColor = kMainYellow;
     }
     return _priceLabel;
 }

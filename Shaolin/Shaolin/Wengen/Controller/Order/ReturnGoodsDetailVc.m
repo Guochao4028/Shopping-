@@ -17,6 +17,7 @@
 
 #import "GoodsStoreInfoModel.h"
 #import "SMAlert.h"
+#import "DataManager.h"
 
 static NSString *const returnGoodsCellId = @"ReturnGoodsDetailCellTableViewCell";
 
@@ -108,7 +109,7 @@ static NSString *const returnGoodsCellId = @"ReturnGoodsDetailCellTableViewCell"
      ReturnGoodsDetailCellTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:returnGoodsCellId forIndexPath:indexPath];
     [cell setStoreInfoModel:self.storeInfoModel];
     cell.unDoHandle = ^{
-        [SMAlert setConfirmBtBackgroundColor:[UIColor colorForHex:@"8E2B25"]];
+        [SMAlert setConfirmBtBackgroundColor:kMainYellow];
         [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
         [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
         [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];

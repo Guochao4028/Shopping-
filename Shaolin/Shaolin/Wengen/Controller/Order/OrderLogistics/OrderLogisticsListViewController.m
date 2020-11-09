@@ -17,6 +17,7 @@
 #import "WengenWebViewController.h"
 
 #import "DefinedHost.h"
+#import "DataManager.h"
 
 @interface OrderLogisticsListViewController ()<UITableViewDelegate, UITableViewDataSource>
 
@@ -42,7 +43,6 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self.navigationController.navigationBar setHidden:NO];
 }
 
 -(void)initUI{
@@ -243,7 +243,7 @@
         _promptTitleLabel = [[UILabel alloc]initWithFrame:CGRectMake(16, 0, ScreenWidth - 16, 50)];
         
         [_promptTitleLabel setFont:kRegular(14)];
-        [_promptTitleLabel setTextColor:[UIColor colorForHex:@"8E2B25"]];
+        [_promptTitleLabel setTextColor:kMainYellow];
         [_promptTitleLabel setBackgroundColor:[UIColor colorForHex:@"F9F9F9"]];
     }
     return _promptTitleLabel;
