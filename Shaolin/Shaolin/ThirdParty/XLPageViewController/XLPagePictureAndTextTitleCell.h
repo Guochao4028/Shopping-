@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 + (CGSize)cellSize;
++ (CGFloat)pictureViewHeight;
 @end
 
 NS_ASSUME_NONNULL_END

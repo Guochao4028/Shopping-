@@ -90,13 +90,13 @@ static  WSIAPManager *manager = nil;
     }];
 }
 
-+ (void)checkProductWithProductId:(NSString *)productId success:(void (^)(void))success failure:(void (^)(NSString * errorString))failure
++ (void)checkProductWithProductId:(NSString *)productId success:(void (^)(NSArray *products))success failure:(void (^)(NSString * errorString))failure
 {
     NSSet *products = [NSSet setWithArray:@[productId]];
     [[RMStore defaultStore] requestProducts:products success:^(NSArray *products, NSArray *invalidProductIdentifiers) {
         
         if (products.count) {
-            if (success) success();
+            if (success) success(products);
         } else {
             if (failure) failure(SLLocalizedString(@"商品信息获取失败，请稍后重试"));
         }
@@ -111,9 +111,7 @@ static  WSIAPManager *manager = nil;
 {
     
 //    [[RMStore defaultStore] restoreTransactions]
-    
     [[RMStore defaultStore] addPayment:productId success:^(SKPaymentTransaction *transaction) {
-        
         /*
          trans.transactionState == SKPaymentTransactionStatePurchased
          只有上述情况才是成功，其余全部走失败的回调，RMStore里有判断
@@ -126,11 +124,9 @@ static  WSIAPManager *manager = nil;
          订单的状态是WSIAPCheckWait(尚未与后台验证)
          这一步在Controller中去执行
          */
-
         if (success) {
             success(transaction);
         }
-        
     } failure:^(SKPaymentTransaction *transaction, NSError *error) {
         if (failure) {
             // 失败
@@ -155,7 +151,7 @@ static  WSIAPManager *manager = nil;
             if (tran.transactionState == SKPaymentTransactionStatePurchased)
             {
                 // 如果支付状态是已支付，存在本地
-                [self updateLocalTransaction:tran checkType:WSIAPCheckWait iapModelBlock:nil];
+                [self updateLocalTransaction:tran checkType:WSIAPCheckWait customIdentifier:nil iapModelBlock:nil];
             } else {
                 // 其他状态的话移除此订单
                 [[SKPaymentQueue defaultQueue] finishTransaction:tran];
@@ -190,7 +186,7 @@ static  WSIAPManager *manager = nil;
             if (tran.transactionState == SKPaymentTransactionStatePurchased)
             {
                 // 如果支付状态是已支付，存在本地
-                [self updateLocalTransaction:tran checkType:WSIAPCheckWait iapModelBlock:^(WSIAPModel * _Nonnull iapModel) {
+                [self updateLocalTransaction:tran checkType:WSIAPCheckWait customIdentifier:nil iapModelBlock:^(WSIAPModel * _Nonnull iapModel) {
                      
                     tempTransactionList = [self getAllList];
                     if (block) block([tempTransactionList copy]);
@@ -206,8 +202,9 @@ static  WSIAPManager *manager = nil;
 
 
 + (void) updateLocalTransaction:(SKPaymentTransaction *)tran
-                 checkType:(WSIAPCheckType)checkType
-             iapModelBlock:(_Nullable IAPModelBlock)iapModelBlock
+                      checkType:(WSIAPCheckType)checkType
+               customIdentifier:(NSString *)customIdentifier
+                  iapModelBlock:(_Nullable IAPModelBlock)iapModelBlock
 {
     NSString * productId = tran.payment.productIdentifier;
     NSString * transId = tran.transactionIdentifier;
@@ -227,7 +224,8 @@ static  WSIAPManager *manager = nil;
     iapModel.createTime = createTime;
     iapModel.checkType = checkType;
     iapModel.receiptString = receiptString;
-//    iapModel.transaction = tran;
+    iapModel.customIdentifier = customIdentifier;
+
     
     NSMutableArray * keychainOldList = [self getKeychainDataList];
     NSMutableArray * keychainNewList = [self checkAndAddIapModel:iapModel saveList:keychainOldList];
@@ -314,6 +312,10 @@ static  WSIAPManager *manager = nil;
             if (![saveM.receiptString isEqualToString:iapModel.receiptString]) {
                 saveM.receiptString = iapModel.receiptString;
             }
+            
+            NSString * customIdentifier = NotNilNull(saveM.customIdentifier) ? saveM.customIdentifier : iapModel.customIdentifier;
+            iapModel.customIdentifier = customIdentifier;
+            saveM.customIdentifier = customIdentifier;
         }
     }
     

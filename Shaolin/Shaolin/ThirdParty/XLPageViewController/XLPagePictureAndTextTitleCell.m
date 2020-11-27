@@ -27,6 +27,10 @@ static CGFloat const TextLabelBottomGap = 18;
     return CGSizeMake(92, 92);
 }
 
++ (CGFloat)pictureViewHeight{
+    return PictureViewSize.height + TextLabelTopGap/2;
+}
+
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         [self setUI];
@@ -37,22 +41,10 @@ static CGFloat const TextLabelBottomGap = 18;
 - (void)setModel:(FieldModel *)model{
     _model = model;
     self.textLabel.text = model.name;
-    
-    if (model.image.length > 0) {
-        self.pictureView.image = [UIImage imageNamed:model.image];
-    } else {
-        if (model.name.length > 2) {
-            self.topLabel.text = [model.name substringWithRange:NSMakeRange(2, 1)];
-        } else if (model.name.length == 2){
-            self.topLabel.text = [model.name substringWithRange:NSMakeRange(1, 1)];
-        } else {
-            self.topLabel.text = model.name;
-        }
-    }
+    [self reloadPictureView:NO];
 }
 
 - (void)setUI{
-    
     [self.contentView addSubview:self.topLabel];
     [self.contentView addSubview:self.pictureView];
     
@@ -64,8 +56,7 @@ static CGFloat const TextLabelBottomGap = 18;
     [self.topLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(self.pictureView);
     }];
-    
-    self.topLabel.layer.cornerRadius = PictureViewSize.width/2.0;
+//    self.topLabel.layer.cornerRadius = PictureViewSize.width/2.0;
 }
 
 - (void)layoutSubviews {
@@ -75,14 +66,44 @@ static CGFloat const TextLabelBottomGap = 18;
 
 - (void)configCellOfSelected:(BOOL)selected {
     [super configCellOfSelected:selected];
-    self.topLabel.backgroundColor = selected ? self.config.titleSelectedColor : [UIColor colorForHex:@"EEEEEE"];
-    self.topLabel.textColor = selected ? [UIColor whiteColor] : self.config.titleSelectedColor;
+//    self.topLabel.backgroundColor = selected ? self.config.titleSelectedColor : KTextGray_EEE;
+//    self.topLabel.textColor = selected ? [UIColor whiteColor] : self.config.titleSelectedColor;
+    [self reloadPictureView:selected];
+}
+
+- (void)reloadPictureView:(BOOL)isSelected{
+//    if (self.model.showImg.length > 0) {
+    if (isSelected){
+        [self setPictureViewImage:self.model.checkedImg placeholderImage:@"default_select"];
+    } else {
+        [self setPictureViewImage:self.model.showImg placeholderImage:@"default_normal"];
+    }
+//    }
+//    else {
+//        if (self.model.name.length > 2) {
+//            self.topLabel.text = [self.model.name substringWithRange:NSMakeRange(2, 1)];
+//        } else if (self.model.name.length == 2){
+//            self.topLabel.text = [self.model.name substringWithRange:NSMakeRange(1, 1)];
+//        } else {
+//            self.topLabel.text = self.model.name;
+//        }
+//    }
+}
+
+- (void)setPictureViewImage:(NSString *)imageString placeholderImage:(NSString *)placeholderImage{
+    if (placeholderImage.length == 0) placeholderImage = @"default_small";
+    if ([imageString hasPrefix:@"http"]){
+        [self.pictureView sd_setImageWithURL:[NSURL URLWithString:imageString] placeholderImage:[UIImage imageNamed:placeholderImage]];
+    } else {
+        self.pictureView.image = [UIImage imageNamed:imageString];
+    }
 }
 #pragma mark -
 - (UIImageView *)pictureView{
     if (!_pictureView){
         _pictureView = [[UIImageView alloc] init];
         _pictureView.clipsToBounds = YES;
+        _pictureView.backgroundColor = [UIColor clearColor];
         _pictureView.contentMode = UIViewContentModeScaleAspectFill;
     }
     return _pictureView;
@@ -92,6 +113,7 @@ static CGFloat const TextLabelBottomGap = 18;
     if (!_topLabel){
         _topLabel = [[UILabel alloc] init];
         _topLabel.clipsToBounds = YES;
+        _topLabel.backgroundColor = [UIColor clearColor];
         _topLabel.textAlignment = NSTextAlignmentCenter;
         _topLabel.adjustsFontSizeToFitWidth = YES;
     }

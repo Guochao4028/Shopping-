@@ -213,6 +213,7 @@ typedef void (^RMStoreSuccessBlock)();
     SKMutablePayment *payment = [SKMutablePayment paymentWithProduct:product];
     if ([payment respondsToSelector:@selector(setApplicationUsername:)])
     {
+#warning applicationUsername这个字段不是让开发者自定义标识使用的，这个字段在iOS14开始总是会返回nil
         payment.applicationUsername = userIdentifier;
     }
     

@@ -328,6 +328,13 @@
     if (self.player.isSmallFloatViewShow && !self.player.isFullScreen && gestureType != ZFPlayerGestureTypeSingleTap) {
         return NO;
     }
+    
+    if (self.customDisablePanMovingDirection) {
+        if (gestureType == ZFPlayerGestureTypePan) {
+            return NO;
+        }
+    }
+    
     if (self.player.isFullScreen) {
         if (!self.customDisablePanMovingDirection) {
             /// 不禁用滑动方向
@@ -840,6 +847,13 @@
 - (void)setBackBtnClickCallback:(void (^)(void))backBtnClickCallback {
     _backBtnClickCallback = [backBtnClickCallback copy];
     self.landScapeControlView.backBtnClickCallback = _backBtnClickCallback;
+}
+
+-(void)setCustomDisablePanMovingDirection:(BOOL)customDisablePanMovingDirection{
+    _customDisablePanMovingDirection = customDisablePanMovingDirection;
+    
+        self.player.disablePanMovingDirection = ZFPlayerDisablePanMovingDirectionNone;
+    
 }
 
 @end

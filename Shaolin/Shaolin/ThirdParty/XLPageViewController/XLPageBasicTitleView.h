@@ -110,6 +110,11 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (__kindof XLPageTitleCell *)dequeueReusableCellWithIdentifier:(NSString *)identifier forIndex:(NSInteger)index;
 
+
+/**
+ 图片高度
+ */
+- (CGFloat)pictureHeight;
 @end
 
 NS_ASSUME_NONNULL_END

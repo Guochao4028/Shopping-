@@ -10,8 +10,12 @@
 #import "XLPageBasicTitleView.h"
 #import "XLPageSegmentedTitleView.h"
 #import "XLPagePictureAndTextTitleView.h"
+#import "AppDelegate+AppService.h"
+#import <WebKit/WebKit.h>
 
 typedef void(^XLContentScollBlock)(BOOL scrollEnabled);
+
+extern NSString *ViewWillAppearFinish;
 
 @interface XLPageContentView : UIView
 
@@ -58,6 +62,8 @@ typedef void(^XLContentScollBlock)(BOOL scrollEnabled);
 //手指拖拽距离
 @property (nonatomic, assign) CGFloat dragStartX;
 
+//当前VC
+@property (nonatomic, strong) UIViewController *currentVC;
 @end
 
 @implementation XLPageViewController
@@ -74,6 +80,8 @@ typedef void(^XLContentScollBlock)(BOOL scrollEnabled);
 
 - (instancetype)initWithConfig:(XLPageViewControllerConfig *)config {
     if (self = [super init]) {
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:ViewWillAppearFinish object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(viewWillAppearFinish:) name:ViewWillAppearFinish object:nil];
         self.automaticallyAdjustsScrollViewInsets = NO;
         [self initUIWithConfig:config];
         [self initData];
@@ -308,7 +316,31 @@ typedef void(^XLContentScollBlock)(BOOL scrollEnabled);
     [self delegateSelectedAdIndex:index];
     return true;
 }
-
+#pragma mark -
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
+    NSLog(@"observeValueForKeyPath:className(%@)", NSStringFromClass([self.currentVC class]));
+    if (!self.currentVC) return;
+    if (![keyPath isEqualToString:@"contentOffset"]) return;
+    if (![change objectForKey:NSKeyValueChangeNewKey] || ![change objectForKey:NSKeyValueChangeOldKey]) return;
+    CGPoint newP = [[change objectForKey:NSKeyValueChangeNewKey] CGPointValue];
+    CGPoint oldP = [[change objectForKey:NSKeyValueChangeOldKey] CGPointValue];
+    if (CGPointEqualToPoint(newP, oldP)) return;
+    CGVector vec =  CGVectorMake(newP.x - oldP.x, newP.y - oldP.y);
+    AppDelegate *appdelegate = (AppDelegate *)[AppDelegate sharedApplication];
+    if (appdelegate.touchPhase != UITouchPhaseMoved) return;
+    CGFloat moveHeight = [self.titleView pictureHeight];
+    if (vec.dy < 0 && fabs(fabs(self.titleView.y) - moveHeight) < 1){//向下动画
+        [UIView animateWithDuration:0.5 animations:^{
+            self.titleView.frame = CGRectMake(0, 0, self.contentView.bounds.size.width, self.config.titleViewHeight);
+            self.pageVC.view.frame = CGRectMake(0, self.config.titleViewHeight, self.contentView.bounds.size.width, self.contentView.bounds.size.height - self.config.titleViewHeight);
+        }];
+    } else if (vec.dy > 0 && fabs(self.titleView.y) < 1){//向上动画
+        [UIView animateWithDuration:0.5 animations:^{
+            self.titleView.frame = CGRectMake(0, -moveHeight, self.contentView.bounds.size.width, self.config.titleViewHeight);
+            self.pageVC.view.frame = CGRectMake(0, self.titleView.maxY, self.contentView.bounds.size.width, self.contentView.bounds.size.height - self.config.titleViewHeight + moveHeight);
+        }];
+    }
+}
 #pragma mark -
 #pragma mark Setter
 //设置选中位置
@@ -351,7 +383,9 @@ typedef void(^XLContentScollBlock)(BOOL scrollEnabled);
     }
     //设置当前展示VC
     __weak typeof(self)weakSelf = self;
-    [self.pageVC setViewControllers:@[[self viewControllerForIndex:index]] direction:direction animated:animated completion:^(BOOL finished) {
+    UIViewController *viewController = [self viewControllerForIndex:index];
+    [[NSNotificationCenter defaultCenter] postNotificationName:ViewWillAppearFinish object:viewController];
+    [self.pageVC setViewControllers:@[viewController] direction:direction animated:animated completion:^(BOOL finished) {
         weakSelf.pageVCAnimating = NO;
     }];
     //标题居中
@@ -383,6 +417,49 @@ typedef void(^XLContentScollBlock)(BOOL scrollEnabled);
 
 #pragma mark -
 #pragma mark 辅助方法
+- (UIScrollView *)getScrollViewByView:(UIView *)view{
+    for (UIView *v in view.subviews){
+        if ([v isKindOfClass:[UITableView class]] || [v isKindOfClass:[UICollectionView class]]){
+            return (UIScrollView *)v;
+        } else if ([v isKindOfClass:[WKWebView class]]){
+            return [(WKWebView *)v scrollView];
+        } else {
+            [self getScrollViewByView:v];
+        }
+    }
+    return nil;
+}
+
+- (UIScrollView *)getScrollViewByViewController:(UIViewController *)viewCollection{
+    UIScrollView *scrollView = [self getScrollViewByView:viewCollection.view];
+    return scrollView;
+}
+
+- (void)viewWillAppearFinish:(NSNotification *)notification {
+    if (!self.config.scrollTitleView) return;
+    UIViewController *currentVC = notification.object;
+    if (self.currentVC && currentVC != self.currentVC){
+        UIScrollView *scrollView = [self getScrollViewByViewController:self.currentVC];
+        @try {
+            [scrollView removeObserver:self forKeyPath:@"contentOffset" context:nil];//(__bridge void * _Nullable)(self.viewController)
+        } @catch (NSException *exception) {
+            
+        };
+    }
+    
+    if (currentVC != self.currentVC){
+        UIScrollView *scrollView = [self getScrollViewByViewController:currentVC];
+        if (scrollView){
+            [scrollView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew context:nil];
+        }
+    } 
+    if ([self.shownVCArr containsObject:currentVC]){
+        self.currentVC = currentVC;
+    } else {
+        self.currentVC = nil;
+    }
+}
+
 //指定位置的视图控制器 缓存方法
 - (UIViewController *)viewControllerForIndex:(NSInteger)index {
     

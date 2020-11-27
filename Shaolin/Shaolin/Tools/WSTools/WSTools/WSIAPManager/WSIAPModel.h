@@ -23,20 +23,22 @@ typedef enum : NSUInteger {
 @interface WSIAPModel : NSObject<NSCoding>
 
 
-/// 合同id
+/// 合同id，唯一
 @property (nonatomic, copy) NSString * transactionId;
 /// 凭据
 @property (nonatomic, copy) NSString * receiptString;
 /// 订单完成支付的时间，苹果返的
 @property (nonatomic, copy) NSString * createTime;
-
+/// 自己的标识
+/// 从苹果服务器获取订单时可以获取到（废弃，获取不到）
+@property (nonatomic, copy) NSString * customIdentifier;
 /// 订单对象
 //@property (nonatomic, strong) SKPaymentTransaction * transaction;
 
 
 /**
  验证状态
- 在用户点击刷新虚拟币时，从本地取出存储的所有model，如果验证状态是未验证，要重新跟后台验证
+ 在用户点击刷新虚拟币时，从本地取出存储的所有状态为WSIAPCheckWait的model，要重新跟后台验证
  */
 @property (nonatomic, assign) WSIAPCheckType checkType;
 

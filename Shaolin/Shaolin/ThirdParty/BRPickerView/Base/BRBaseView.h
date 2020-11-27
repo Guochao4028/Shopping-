@@ -19,6 +19,9 @@ typedef void(^BRResultBlock)(void);
 
 /** 选择器标题 */
 @property (nullable, nonatomic, copy) NSString *title;
+ 
+/** 选择器标题颜色*/
+@property (nullable, nonatomic, strong) UIColor *titleColor;
 
 /** 是否自动选择，即滚动选择器后就执行结果回调，默认为 NO */
 @property (nonatomic, assign) BOOL isAutoSelect;

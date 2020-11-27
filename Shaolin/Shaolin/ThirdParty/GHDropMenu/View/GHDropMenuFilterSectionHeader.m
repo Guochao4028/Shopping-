@@ -126,7 +126,7 @@
 - (UILabel *)line {
     if (_line == nil) {
         _line = [[UILabel alloc]init];
-        [_line setBackgroundColor:[UIColor colorForHex:@"FAFAFA"]];
+        [_line setBackgroundColor:KTextGray_FA];
     
     }
     return _line;

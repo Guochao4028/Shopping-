@@ -98,7 +98,7 @@ static NSString * const gifName = @"default_loding";
     hud.bezelView.style = MBProgressHUDBackgroundStyleSolidColor;
     
     hud.label.font = kMediumFont(15);
-    hud.label.textColor = [UIColor colorForHex:@"333333"];
+    hud.label.textColor = KTextGray_333;
     hud.label.numberOfLines = 0;
     
     hud.removeFromSuperViewOnHide = YES;

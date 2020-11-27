@@ -138,7 +138,7 @@ static NSString * const typeCellId = @"SLRiteFilterTypeCell";
         cell.typeLabel.font = kMediumFont(16);
         cell.chooseIcon.hidden = NO;
     } else {
-        cell.typeLabel.textColor = [UIColor hexColor:@"333333"];
+        cell.typeLabel.textColor = KTextGray_333;
         cell.typeLabel.font = kRegular(16);
         cell.chooseIcon.hidden = YES;
     }
@@ -174,9 +174,9 @@ static NSString * const typeCellId = @"SLRiteFilterTypeCell";
         _typeTable.delegate = self;
         _typeTable.showsVerticalScrollIndicator = NO;
         _typeTable.showsHorizontalScrollIndicator = NO;
-        _typeTable.backgroundColor = [UIColor colorForHex:@"FFFFFF"];
+        _typeTable.backgroundColor = UIColor.whiteColor;
         _typeTable.separatorStyle = UITableViewCellSeparatorStyleNone;
-        _typeTable.separatorColor = [UIColor hexColor:@"e5e5e5"];
+        _typeTable.separatorColor = KTextGray_E5;
 //        _typeTable.layer.cornerRadius = 4.0f;
         _typeTable.bounces = NO;
         _typeTable.userInteractionEnabled = YES;

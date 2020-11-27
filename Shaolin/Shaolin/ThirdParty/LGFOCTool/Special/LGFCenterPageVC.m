@@ -151,7 +151,9 @@ lgf_SBViewControllerForM(LGFCenterPageVC, @"LGFCenterPageVC", @"LGFCenterPageVC"
 
 -(UIEdgeInsets)lgf_EdgeInsetsForItemAtinsetForSectionAtIndex:(NSInteger)section VC:(UIViewController *)VC{
     if ([self.delegate respondsToSelector:@selector(lgf_EdgeInsetsForItemAtinsetForSectionAtIndex:VC:)]) {
+        
         return [self.delegate lgf_EdgeInsetsForItemAtinsetForSectionAtIndex:section VC:self];
+        
     }
     
     return UIEdgeInsetsMake(0, 0, 0, 0);

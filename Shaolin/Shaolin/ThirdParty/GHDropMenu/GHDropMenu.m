@@ -927,7 +927,7 @@ typedef NS_ENUM (NSUInteger,GHDropMenuShowType) {
         line.frame = CGRectMake(0, 0, _reset.frame.size.width, 1);
         [_reset addSubview:line];
         _reset.layer.borderWidth = 1;
-        _reset.layer.borderColor = [UIColor colorForHex:@"666666"].CGColor;
+        _reset.layer.borderColor = KTextGray_666.CGColor;
         _reset.layer.cornerRadius = 15;
         _reset.alpha = 0;
     }

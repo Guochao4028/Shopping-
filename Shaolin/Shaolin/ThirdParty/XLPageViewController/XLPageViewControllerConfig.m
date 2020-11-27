@@ -19,7 +19,7 @@
     //默认未选中标题颜色 灰色
     config.titleNormalColor = [UIColor colorWithRed:51/255.0 green:51/255.0 blue:51/255.0 alpha:1.0];
     //默认选中标题颜色 黑色
-    config.titleSelectedColor = [UIColor colorWithRed:142/255.0 green:43/255.0 blue:37/255.0 alpha:1.0];
+    config.titleSelectedColor = kMainYellow;//[UIColor colorWithRed:142/255.0 green:43/255.0 blue:37/255.0 alpha:1.0];
     //默认未选中标题字体 18号系统字体
     config.titleNormalFont = kRegular(16);
     //默认选中标题字体 18号粗体系统字体
@@ -47,7 +47,7 @@
     //默认阴影高度 3
     config.shadowLineHeight = 3.0f;
     //默认阴影颜色 黑色
-    config.shadowLineColor = [UIColor colorWithRed:142/255.0 green:43/255.0 blue:37/255.0 alpha:1.0];
+    config.shadowLineColor = kMainYellow;//[UIColor colorWithRed:142/255.0 green:43/255.0 blue:37/255.0 alpha:1.0];
     //默认阴影动画 平移
     config.shadowLineAnimationType = XLPageShadowLineAnimationTypePan;
     

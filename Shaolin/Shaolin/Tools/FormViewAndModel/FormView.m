@@ -19,6 +19,7 @@
 #import "SLDatePickerView.h"
 #import "NSDate+LGFDate.h"
 #import "UIGestureRecognizer+LGFBlockGestureRecognizer.h"
+#import "WJMTagViewConfig.h"
 
 @interface FormView()<GCTextFieldDelegate, GCTextViewDelegate>
 @property(nonatomic,strong) SLDatePickerView *datePickerView;
@@ -215,6 +216,18 @@
     return dict;
 }
 
+- (NSArray <WJMCheckboxBtn *> *)findAllCheckboxBtns:(UIView *)view{
+    NSMutableArray *buttonArray = [@[] mutableCopy];
+    for (WJMCheckboxBtn *btn in view.subviews){
+        if ([btn isKindOfClass:[WJMCheckboxBtn class]]){
+            [buttonArray addObject:btn];
+        } else {
+            [buttonArray addObjectsFromArray:[self findAllCheckboxBtns:btn]];
+        }
+    }
+    return buttonArray;
+}
+
 - (NSString *)getValueByIdentifier:(NSString *)identifier{
     UIView *view = [self viewWithIdentifier:identifier];
     if ([view isKindOfClass:[UILabel class]] || [view isKindOfClass:[UITextField class]] || [view isKindOfClass:[UITextView class]]){
@@ -224,9 +237,10 @@
         return [(UIButton *)view titleForState:UIControlStateNormal];
     }
     if ([view isKindOfClass:[WJMCheckBoxView class]]){
-        for (WJMCheckboxBtn *btn in view.subviews){
+        NSArray *buttons = [self findAllCheckboxBtns:view];
+        for (WJMCheckboxBtn *btn in buttons){
             if (btn.isSelected){
-                return btn.titleLabel.text;
+                return btn.tagView.titleLabel.text;
             }
         }
     }
@@ -492,7 +506,7 @@
     UIView *secondView = [[UIView alloc] init];
     [view addSubview:secondView];
     
-    UIImageView * imgv = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"rite_phone"]];
+    UIImageView * imgv = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"rite_phone_yellow"]];
     [secondView addSubview:imgv];
     
     [self setDefaultGrayColorAndCornerRadius:secondView];
@@ -643,7 +657,7 @@
     button.clipsToBounds = YES;
     button.titleLabel.font = self.labtlFont;
     [button setTitle:model.placeholder forState:UIControlStateNormal];
-    [button setTitleColor:[UIColor colorForHex:@"999999"] forState:UIControlStateNormal];
+    [button setTitleColor:KTextGray_999 forState:UIControlStateNormal];
     [button setTitleEdgeInsets:UIEdgeInsetsMake(0, 10, 0, 0)];
     button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     [self setDefaultGrayColorAndCornerRadius:button];
@@ -696,7 +710,7 @@
             if (subCheckBoxView) [subCheckBoxView removeFromSuperview];
             if (lineView) [lineView removeFromSuperview];
             lineView = [[UIView alloc] init];
-            lineView.backgroundColor = [UIColor colorForHex:@"EEEEEE"];
+            lineView.backgroundColor = KTextGray_EEE;
             lineView.tag = subCheckBoxViewLineTag;
             subCheckBoxView = [weakSelf createCheckBoxView:simpleModel.formModel];
             subCheckBoxView.tag = subCheckBoxViewTag;
@@ -821,10 +835,10 @@
     timeButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     if (model.value){
         [timeButton setTitle:model.value forState:UIControlStateNormal];
-        [timeButton setTitleColor:[UIColor colorForHex:@"121212"] forState:UIControlStateNormal];
+        [timeButton setTitleColor:KTextGray_12 forState:UIControlStateNormal];
     } else {
         [timeButton setTitle:model.placeholder forState:UIControlStateNormal];
-        [timeButton setTitleColor:[UIColor hexColor:@"999999"] forState:UIControlStateNormal];
+        [timeButton setTitleColor:KTextGray_999 forState:UIControlStateNormal];
     }
     
     WEAKSELF
@@ -834,7 +848,7 @@
             FormViewModel *model = [weakSelf getFormViewModel:timeButton.identifier];
             model.value = selectValue;
             [timeButton setTitle:selectValue forState:UIControlStateNormal];
-            [timeButton setTitleColor:[UIColor colorForHex:@"121212"] forState:UIControlStateNormal];
+            [timeButton setTitleColor:KTextGray_12 forState:UIControlStateNormal];
             [weakSelf riteRegistrationFormViewDataChange:model simpleModel:nil];
         };
         weakSelf.datePickerView.minDate = nil;
@@ -888,16 +902,16 @@
     [view addSubview:secondView];
     
     UIView *lineView = [[UIView alloc] init];
-    lineView.backgroundColor = [UIColor hexColor:@"333333"];
+    lineView.backgroundColor = KTextGray_333;
     
     UIButton *beginTimeButton = [[UIButton alloc] init];
     beginTimeButton.identifier = model.simpleArray.firstObject.identifier;
     if (model.simpleArray.firstObject.value){
         [beginTimeButton setTitle:model.simpleArray.firstObject.value forState:UIControlStateNormal];
-        [beginTimeButton setTitleColor:[UIColor colorForHex:@"121212"] forState:UIControlStateNormal];
+        [beginTimeButton setTitleColor:KTextGray_12 forState:UIControlStateNormal];
     } else {
         [beginTimeButton setTitle:model.simpleArray.firstObject.title forState:UIControlStateNormal];
-        [beginTimeButton setTitleColor:[UIColor hexColor:@"999999"] forState:UIControlStateNormal];
+        [beginTimeButton setTitleColor:KTextGray_999 forState:UIControlStateNormal];
     }
     beginTimeButton.titleLabel.font = self.labtlFont;
     
@@ -905,10 +919,10 @@
     endTimeButton.identifier = model.simpleArray.lastObject.identifier;
     if (model.simpleArray.lastObject.value && model.simpleArray.lastObject.value.length){
         [endTimeButton setTitle:model.simpleArray.lastObject.value forState:UIControlStateNormal];
-        [endTimeButton setTitleColor:[UIColor colorForHex:@"121212"] forState:UIControlStateNormal];
+        [endTimeButton setTitleColor:KTextGray_12 forState:UIControlStateNormal];
     } else {
         [endTimeButton setTitle:model.simpleArray.lastObject.title forState:UIControlStateNormal];
-        [endTimeButton setTitleColor:[UIColor hexColor:@"999999"] forState:UIControlStateNormal];
+        [endTimeButton setTitleColor:KTextGray_999 forState:UIControlStateNormal];
     }
     endTimeButton.titleLabel.font = self.labtlFont;
     
@@ -918,7 +932,7 @@
         weakSelf.datePickerView.resultBlock = ^(NSDate *selectDate, NSString *selectValue) {
             model.simpleArray.firstObject.value = selectValue;
             [beginTimeButton setTitle:selectValue forState:UIControlStateNormal];
-            [beginTimeButton setTitleColor:[UIColor colorForHex:@"121212"] forState:UIControlStateNormal];
+            [beginTimeButton setTitleColor:KTextGray_12 forState:UIControlStateNormal];
             
             [weakSelf riteRegistrationFormViewDataChange:model simpleModel:model.simpleArray.firstObject];
         };
@@ -947,7 +961,7 @@
         weakSelf.datePickerView.resultBlock = ^(NSDate *selectDate, NSString *selectValue) {
             model.simpleArray.lastObject.value = selectValue;
             [endTimeButton setTitle:selectValue forState:UIControlStateNormal];
-            [endTimeButton setTitleColor:[UIColor colorForHex:@"121212"] forState:(UIControlStateNormal)];
+            [endTimeButton setTitleColor:KTextGray_12 forState:(UIControlStateNormal)];
             [weakSelf riteRegistrationFormViewDataChange:model simpleModel:model.simpleArray.lastObject];
         };
         NSString *startTime = [model.params objectForKey:RiteFormModel_StartTime_ParamsKey];
@@ -1074,15 +1088,15 @@
 - (UILabel *)createLabel:(NSString *)title{
     UILabel *label = [[UILabel alloc] init];
     label.text = title;
-    label.textColor = [UIColor colorForHex:@"333333"];
+    label.textColor = KTextGray_333;
     label.font = self.labtlFont;
     return label;
 }
 
 - (GCTextField *)createTextField:(NSString *)placeholder{
     GCTextField *tf = [[GCTextField alloc] init];
-    tf.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeholder attributes:@{NSForegroundColorAttributeName: [UIColor colorForHex:@"999999"]}];
-    tf.textColor = [UIColor colorForHex:@"333333"];
+    tf.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeholder attributes:@{NSForegroundColorAttributeName: KTextGray_999}];
+    tf.textColor = KTextGray_333;
     tf.font = self.labtlFont;
     tf.delegate = self;
     return tf;
@@ -1092,49 +1106,49 @@
     GCTextView *tv = [[GCTextView alloc] init];
     tv.backgroundColor = [UIColor clearColor];
     tv.font = self.labtlFont;
-    [tv setPlaceholder:placeholder placeholdColor:[UIColor colorForHex:@"999999"]];
-    tv.textColor = [UIColor colorForHex:@"333333"];
+    [tv setPlaceholder:placeholder placeholdColor:KTextGray_999];
+    tv.textColor = KTextGray_333;
     tv.gcDelegate = self;
     return tv;
 }
 
 - (WJMCheckBoxView *)createCheckBoxView:(FormViewModel *)model{
     NSMutableArray *checkBoxBtnArray = [@[] mutableCopy];
+    WJMTagViewConfig *config = [[WJMTagViewConfig alloc] init];
+    config.normalFont = self.labtlFont;
+    config.normalTextColor = KTextGray_333;
+    config.selectTextColor = kMainYellow;
+    config.disenableColor = KTextGray_999;;
+    config.normalBackgroundColor = [UIColor whiteColor];//[UIColor colorWithRed:240/255.0 green:240/255.0 blue:240/255.0 alpha:1];
+    config.selectBackgroundColor = [UIColor colorForHex:@"FFFAF2"];
+    config.titleStyle = WJMTagViewLabelStyleNormal;
+    config.viewHeight = [[model.params objectForKey:RiteFormModel_ValueViewH_ParamsKey] floatValue];
+    if (model.style == FormViewModelStyle_TitleAndRadio){
+        config.style = WJMTagViewStyleLeftRadio;
+        config.imageSize = 15;
+        config.selectImage = [UIImage imageNamed:@"Shoppinged"];
+        config.normalImage = [UIImage imageNamed:@"unShopping"];
+    } else {
+        config.imageSize = 20;
+        config.groupInsets = UIEdgeInsetsMake(10, 0, 0, 0);
+        config.style = WJMTagViewStyleRightBottomTick;
+        config.selectImage = [UIImage imageNamed:@"checkboxSelected"];
+    }
     for (int i = 0; i < model.simpleArray.count; i++){
         SimpleModel *simpleModel = model.simpleArray[i];
-        WJMCheckboxBtn *btn;
-        if (model.style == FormViewModelStyle_TitleAndRadio){
-            btn = [WJMCheckboxBtn radioBtnStyleWithTitle:simpleModel.title identifier:simpleModel.identifier];
-            btn.titleLabel.triangleSide = 15;
-            btn.titleLabel.selectImage = [UIImage imageNamed:@"radioSelected"];
-            btn.titleLabel.normalImage = [UIImage imageNamed:@"radioNormal"];
-            btn.titleLabel.textAlignment = NSTextAlignmentCenter;
-        } else {
-            btn = [WJMCheckboxBtn tickBtnStyleWithTitle:simpleModel.title identifier:simpleModel.identifier];
-            btn.titleLabel.style = WJMTagLabelStyle_RightBottomTickStyle;
-            btn.titleLabel.selectImage = [UIImage imageNamed:@"checkboxSelected"];
-            btn.titleLabel.triangleSide = 20;
-            btn.titleLabel.layer.borderWidth = 0;
-            btn.titleLabel.textAlignment = NSTextAlignmentCenter;
-        }
-        btn.identifier = simpleModel.identifier;
-        btn.titleLabel.font = self.labtlFont;
-        btn.titleLabel.adjustsFontSizeToFitWidth = YES;
-        btn.titleLabel.textColor = [UIColor colorForHex:@"333333"];
-        btn.titleLabel.normalTextColor = [UIColor colorForHex:@"333333"];
-        btn.titleLabel.selectTextColor = kMainYellow;
+        WJMCheckboxBtn *btn = [WJMCheckboxBtn radioBtnStyleWithTitle:simpleModel.title identifier:simpleModel.identifier];
+        btn.tagView.titleLabel.textAlignment = NSTextAlignmentCenter;
         btn.userInteractionEnabled = simpleModel.enable;
         if (!simpleModel.enable){
-            btn.titleLabel.textColor = [UIColor colorForHex:@"999999"];
-            btn.titleLabel.normalTextColor = [UIColor colorForHex:@"999999"];
+            btn.tagView.disenable = YES;
         }
         [checkBoxBtnArray addObject:btn];
 //        if (i == 0){
 //            selectIde = simpleModel.identifier;
 //        }
     }
-    
-    WJMCheckBoxView *checkBoxView = [[WJMCheckBoxView alloc] initCheckboxBtnBtns:checkBoxBtnArray];
+
+    WJMCheckBoxView *checkBoxView = [[WJMCheckBoxView alloc] initCheckboxBtnBtns:checkBoxBtnArray config:config];
     if (model.style == FormViewModelStyle_TitleAndRadio){
         checkBoxView.maximumValue = 1;
     }
@@ -1143,41 +1157,6 @@
 //    if (model.style == FormViewModelStyle_TitleAndRadio){
 //        [checkBoxView selectCheckBoxBtn:selectIde];
 //    }
-    CGFloat leftPadding = 12, rightPadding = 12;
-    NSInteger maxContentCount = 3;//model.radioArray.count > 4 ? 4 : model.radioArray.count;
-    if (model.style == FormViewModelStyle_TitleAndCheckbox){
-        leftPadding = 0;
-        rightPadding = 0;
-    }
-   
-    UIView *lastV = nil;
-    CGFloat secondVH = [[model.params objectForKey:RiteFormModel_ValueViewH_ParamsKey] floatValue];
-    for (int i = 0; i < checkBoxBtnArray.count; i++){
-        WJMCheckboxBtn *button = checkBoxBtnArray[i];
-        [button mas_makeConstraints:^(MASConstraintMaker *make) {
-            if (i == 0){
-                make.top.mas_equalTo(0);
-            } else if (i%maxContentCount == 0){
-                make.top.mas_equalTo(lastV.mas_bottom).mas_equalTo(10);
-            } else {
-                make.top.mas_equalTo(lastV.mas_top);
-            }
-            if (checkBoxBtnArray.count < maxContentCount && model.style == FormViewModelStyle_TitleAndRadio){
-                CGFloat offset = (i+1)*2.0/(checkBoxBtnArray.count+1);
-                make.centerX.mas_equalTo(checkBoxView).multipliedBy(offset);
-            } else if (i%maxContentCount == 0){
-                make.left.mas_equalTo(leftPadding);
-            } else {
-                make.left.mas_equalTo(lastV.mas_right).mas_offset(16);
-            }
-            make.height.mas_equalTo(secondVH);
-            make.width.mas_equalTo(checkBoxView.mas_width).multipliedBy(1.0/maxContentCount).offset(-(leftPadding + rightPadding + 16*2)/maxContentCount);
-            if (i == checkBoxBtnArray.count - 1){
-                make.bottom.mas_equalTo(0);
-            }
-        }];
-        lastV = button;
-    }
     return checkBoxView;
 }
 

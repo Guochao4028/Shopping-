@@ -27,6 +27,9 @@ typedef NS_ENUM(NSInteger, WJMTagLabelStyle) {
 
 @property (nonatomic, strong) UIColor *normalTextColor;
 @property (nonatomic, strong) UIColor *selectTextColor;
+
+@property (nonatomic, strong) UIColor *normalBackgroundColor;
+@property (nonatomic, strong) UIColor *selectBackgroundColor;
 @end
 
 NS_ASSUME_NONNULL_END

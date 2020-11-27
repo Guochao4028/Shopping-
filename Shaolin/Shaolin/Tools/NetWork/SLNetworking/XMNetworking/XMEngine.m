@@ -460,6 +460,12 @@ static OSStatus XMExtractIdentityAndTrustFromPKCS12(CFDataRef inPKCS12Data, CFSt
             //}
         }];
     }
+    
+    if ([request.api isEqualToString:@"/common/uploadImage"]) {
+        request.timeoutInterval = 120;
+    } else {
+        request.timeoutInterval = 30;
+    }
     urlRequest.timeoutInterval = request.timeoutInterval;
 }
 

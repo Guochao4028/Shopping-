@@ -28,14 +28,14 @@
     
     if (dropMenuModel.tagSeleted) {
         self.title.backgroundColor = [UIColor whiteColor];
-        self.title.textColor = [UIColor colorForHex:@"BE0000"];
+        self.title.textColor = kMainYellow;
         [self.title.layer setBorderWidth:1];
-        self.title.layer.borderColor = [UIColor colorForHex:@"BE0000"].CGColor;
+        self.title.layer.borderColor = kMainYellow.CGColor;
         self.title.backgroundColor = [UIColor colorForHex:@"FFFAFA"];
         
     }else{
-        self.title.backgroundColor = [UIColor colorForHex:@"F1F1F1"];
-        self.title.textColor = [UIColor colorForHex:@"333333"];
+        self.title.backgroundColor = KTextGray_F1;
+        self.title.textColor = KTextGray_333;
         [self.title.layer setBorderWidth:1];
         self.title.layer.borderColor = [UIColor whiteColor].CGColor;
     }

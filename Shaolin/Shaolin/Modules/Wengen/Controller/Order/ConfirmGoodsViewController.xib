@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina5_5" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17126"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ConfirmGoodsViewController">
+            <connections>
+                <outlet property="bottomConst" destination="d26-mg-PBC" id="ZMD-ta-z79"/>
+                <outlet property="btnSubmit" destination="kuo-Jl-gHw" id="5VT-lH-tjc"/>
+                <outlet property="mTableView" destination="j2V-GQ-T7w" id="uSv-xu-cdb"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="grouped" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="j2V-GQ-T7w">
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="651"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="v1o-e8-3F2"/>
+                        <outlet property="delegate" destination="-1" id="fWK-HW-RXw"/>
+                    </connections>
+                </tableView>
+                <button opaque="NO" userInteractionEnabled="NO" alpha="0.59999999999999998" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kuo-Jl-gHw">
+                    <rect key="frame" x="16" y="651" width="382" height="40"/>
+                    <color key="backgroundColor" red="0.75686274509999996" green="0.63921568630000003" blue="0.4549019608" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="40" id="bIf-ZW-Dx8"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                    <state key="normal" title="提交">
+                        <color key="titleColor" red="0.98039215690000003" green="0.98039215690000003" blue="0.98039215690000003" alpha="1" colorSpace="calibratedRGB"/>
+                    </state>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                            <integer key="value" value="20"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <action selector="submitAction:" destination="-1" eventType="touchUpInside" id="Jvd-xb-wXz"/>
+                    </connections>
+                </button>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="kuo-Jl-gHw" firstAttribute="top" secondItem="j2V-GQ-T7w" secondAttribute="bottom" id="Aih-OS-p80"/>
+                <constraint firstItem="j2V-GQ-T7w" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="EZ7-7G-uMf"/>
+                <constraint firstItem="Q5M-cg-NOt" firstAttribute="trailing" secondItem="j2V-GQ-T7w" secondAttribute="trailing" id="QAh-eD-DVg"/>
+                <constraint firstItem="Q5M-cg-NOt" firstAttribute="trailing" secondItem="kuo-Jl-gHw" secondAttribute="trailing" constant="16" id="VxH-1x-wxd"/>
+                <constraint firstItem="j2V-GQ-T7w" firstAttribute="top" secondItem="Q5M-cg-NOt" secondAttribute="top" id="c8m-gW-NGz"/>
+                <constraint firstItem="Q5M-cg-NOt" firstAttribute="bottom" secondItem="kuo-Jl-gHw" secondAttribute="bottom" constant="45" id="d26-mg-PBC"/>
+                <constraint firstItem="kuo-Jl-gHw" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="16" id="fig-gS-2a7"/>
+            </constraints>
+            <point key="canvasLocation" x="137.68115942028987" y="128.80434782608697"/>
+        </view>
+    </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

@@ -34,7 +34,7 @@
         
         // 设置引导视图的scrollview
         UIScrollView *guidePageView = [[UIScrollView alloc]initWithFrame:frame];
-        [guidePageView setBackgroundColor:[UIColor colorForHex:@"FFFFFF"]];
+        [guidePageView setBackgroundColor:UIColor.whiteColor];
         [guidePageView setContentSize:CGSizeMake(DDScreenW*imageNameArray.count, DDScreenH)];
         [guidePageView setBounces:NO];
         [guidePageView setPagingEnabled:YES];
@@ -77,12 +77,12 @@
                 skipBgView.alpha = 0.6;
                 [imageView addSubview:skipBgView];
                 
-                UIButton *skipButton = [[UIButton alloc]initWithFrame:CGRectMake(0, frame.size.height - 43, frame.size.width, 43)];
+                UIButton *skipButton = [[UIButton alloc]initWithFrame:CGRectMake(0, frame.size.height - 43 - kBottomSafeHeight, frame.size.width, 43)];
                        [skipButton setTitle:SLLocalizedString(@"开始体验") forState:UIControlStateNormal];
                        [skipButton.titleLabel setFont:[UIFont systemFontOfSize:14.0]];
                 [skipButton setBackgroundColor:UIColor.clearColor];
                        // [skipButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-                       [skipButton setTitleColor:[UIColor colorForHex:@"a26f53"] forState:UIControlStateNormal];
+                       [skipButton setTitleColor:kMainYellow forState:UIControlStateNormal];
                        // [skipButton.layer setCornerRadius:5.0];
 //                       [skipButton.layer setCornerRadius:(skipButton.frame.size.height * 0.5)];
 //                       skipButton.layer.borderWidth = 1;

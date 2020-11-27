@@ -65,6 +65,8 @@ lgf_SBViewControllerForM(LGFCenterPageChildVC, @"LGFCenterPageVC", @"LGFCenterPa
     header.bscrollView = self.lgf_PanScrollView;
     self.lgf_CenterChildPageCV.lgf_PageHeader = header;
     
+    
+    
     header.ignoredScrollViewContentInsetTop = self.lgf_HeaderHeight;
     
     /**
@@ -361,7 +363,7 @@ lgf_SBViewControllerForM(LGFCenterPageChildVC, @"LGFCenterPageVC", @"LGFCenterPa
         
         UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(image.frame) + 24, 184, 28)];
         label.textAlignment = NSTextAlignmentCenter;
-        [label setTextColor:[UIColor colorForHex:@"999999"]];
+        [label setTextColor:KTextGray_999];
         [label setFont:kRegular(20)];
         [label setText:strName];
         [view addSubview:label];

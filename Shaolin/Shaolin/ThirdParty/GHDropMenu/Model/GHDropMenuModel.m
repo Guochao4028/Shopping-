@@ -29,7 +29,7 @@
         dropMenuModel.model = model;
         dropMenuModel.isMultiple = YES;
         dropMenuModel.levelType = @"1";
-        dropMenuModel.optionSeletedColor = [UIColor colorForHex:@"BE0000"];
+        dropMenuModel.optionSeletedColor = kMainYellow;
         [duanRow addObject:dropMenuModel];
     }
     

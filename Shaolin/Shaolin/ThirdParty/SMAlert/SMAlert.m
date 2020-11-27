@@ -172,7 +172,7 @@ typedef void (^ShowaAtion)(void);
     [SMAlert setConfirmBtBackgroundColor:kMainYellow];
     [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
     [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
-    [SMAlert setCancleBtTitleColor:[UIColor colorForHex:@"333333"]];
+    [SMAlert setCancleBtTitleColor:KTextGray_333];
     [SMAlert setAlertBackgroundColor:[UIColor colorWithWhite:0 alpha:0.5]];
 }
 
@@ -209,14 +209,14 @@ typedef void (^ShowaAtion)(void);
     UIView *customView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 300, 100)];
     UILabel *title = [[UILabel alloc]initWithFrame:CGRectMake(0, 10, 300, 21)];
     [title setFont:kMediumFont(15)];
-    [title setTextColor:[UIColor colorForHex:@"333333"]];
+    [title setTextColor:KTextGray_333];
     title.text = titleStr;
     [title setTextAlignment:NSTextAlignmentCenter];
     [customView addSubview:title];
     
     UILabel *neirongLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, CGRectGetMaxY(title.frame)+10, 270, 38)];
     [neirongLabel setFont:kRegular(13)];
-    [neirongLabel setTextColor:[UIColor colorForHex:@"333333"]];
+    [neirongLabel setTextColor:KTextGray_333];
     neirongLabel.text = messageStr;
     neirongLabel.numberOfLines = 0;
     neirongLabel.textAlignment = NSTextAlignmentCenter;
@@ -232,14 +232,14 @@ typedef void (^ShowaAtion)(void);
     UIView *customView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 300, 100)];
     UILabel *title = [[UILabel alloc]initWithFrame:CGRectMake(0, 10, 300, 21)];
     [title setFont:kMediumFont(15)];
-    [title setTextColor:[UIColor colorForHex:@"333333"]];
+    [title setTextColor:KTextGray_333];
     title.text = titleStr;
     [title setTextAlignment:NSTextAlignmentCenter];
     [customView addSubview:title];
     
     UILabel *neirongLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, CGRectGetMaxY(title.frame)+10, 270, 38)];
     [neirongLabel setFont:kRegular(13)];
-    [neirongLabel setTextColor:[UIColor colorForHex:@"333333"]];
+    [neirongLabel setTextColor:KTextGray_333];
     neirongLabel.text = messageStr;
     neirongLabel.textAlignment = NSTextAlignmentCenter;
     neirongLabel.numberOfLines = 0;

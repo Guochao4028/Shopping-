@@ -8,11 +8,8 @@
 
 #import "WJMCheckBoxView.h"
 #import "Masonry.h"
+#import "WJMTagViewConfig.h"
 //#import "UILabel+Padding.h"
-
-@interface WJMCheckboxBtn()
-@property (nonatomic) WJMTagLabelStyle style;
-@end
 
 @implementation WJMCheckboxBtn
 + (instancetype)radioBtnStyleWithTitle:(NSString *)title identifier:(NSString *)identifier{
@@ -20,38 +17,19 @@
     return btn;
 }
 
-+ (instancetype)tickBtnStyleWithTitle:(NSString *)title identifier:(NSString *)identifier{
-    WJMCheckboxBtn *btn = [[WJMCheckboxBtn alloc] initTickBtnStyleWithTitle:title identifier:identifier];
-    return btn;
-}
-
 - (instancetype)initRadioBtnStyleWithTitle:(NSString *)title identifier:(NSString *)identifier{
     self = [self init];
     if (self){
         [self setUI];
-        self.titleLabel.backgroundColor = [UIColor clearColor];
-        self.titleLabel.style = WJMTagLabelStyle_RadioStyle;
-        [self setTitle:title andIdentifier:identifier];
-    }
-    return self;
-}
-
-- (instancetype)initTickBtnStyleWithTitle:(NSString *)title identifier:(NSString *)identifier{
-    self = [self init];
-    if (self){
-        [self setUI];
-        
-        self.titleLabel.backgroundColor = [UIColor colorWithRed:240/255.0 green:240/255.0 blue:240/255.0 alpha:1];
-        self.titleLabel.style = WJMTagLabelStyle_RightTopTickStyle;
-        self.titleLabel.layer.borderColor = [UIColor colorWithRed:227/255.0 green:227/255.0 blue:227/255.0 alpha:1].CGColor;
+        self.tagView.backgroundColor = [UIColor clearColor];
         [self setTitle:title andIdentifier:identifier];
     }
     return self;
 }
 
 - (void)setUI{
-    [self addSubview:self.titleLabel];
-    [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self addSubview:self.tagView];
+    [self.tagView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(self);//.insets(UIEdgeInsetsMake(5, 5, 5, 5));
     }];
 //    self.titleLabel.padding = UIEdgeInsetsMake(5, 5, 5, 5);
@@ -59,46 +37,43 @@
 
 - (void)setTitle:(NSString *)title andIdentifier:(NSString *)identifier{
     
-    self.titleLabel.text = title;
+    self.tagView.titleLabel.text = title;
     self.identifier = identifier;
 }
 
-- (WJMTagLabel *)titleLabel{
-    if (!_titleLabel){
-        _titleLabel = [[WJMTagLabel alloc] init];
-        _titleLabel.font = kRegular(15);
-        _titleLabel.textColor = [UIColor colorWithRed:165/255.0 green:166/255.0 blue:167/255.0 alpha:1];
-        _titleLabel.layer.cornerRadius = 6;
-        _titleLabel.layer.borderWidth = 1;
-        _titleLabel.layer.borderColor = [UIColor clearColor].CGColor;
-        _titleLabel.layer.masksToBounds = YES;
+- (WJMTagView *)tagView{
+    if (!_tagView){
+        _tagView = [[WJMTagView alloc] init];
+        _tagView.layer.cornerRadius = 6;
+        _tagView.clipsToBounds = YES;
     }
-    return _titleLabel;
+    return _tagView;
 }
 
 - (void)setSelected:(BOOL)selected{
     [super setSelected:selected];
-    self.titleLabel.selected = selected;
-    if (self.titleLabel.style == WJMTagLabelStyle_RightTopTickStyle || self.titleLabel.style == WJMTagLabelStyle_RightBottomTickStyle){
-        self.titleLabel.backgroundColor = selected ?
-        [UIColor colorWithRed:251/255.0 green:244/255.0 blue:241/255.0 alpha:1] :
-        [UIColor colorWithRed:240/255.0 green:240/255.0 blue:240/255.0 alpha:1];
-        
-        self.titleLabel.layer.borderColor = selected ?
-        [UIColor colorWithRed:237/255.0 green:169/255.0 blue:153/255.0 alpha:1].CGColor :
-        [UIColor colorWithRed:227/255.0 green:227/255.0 blue:227/255.0 alpha:1].CGColor;
-    }
+    self.tagView.selected = selected;
+//    if (self.titleLabel.style == WJMTagLabelStyle_RightTopTickStyle || self.titleLabel.style == WJMTagLabelStyle_RightBottomTickStyle){
+//        self.titleLabel Hex:@"FFFAF2"] : [UIColor colorWithRed:240/255.0 green:240/255.0 blue:240/255.0 alpha:1];
+//        [UIColor colorWithRed:251/255.0 green:244/255.0 blue:241/255.0 alpha:1] :
+//        [UIColor colorWithRed:240/255.0 green:240/255.0 blue:240/255.0 alpha:1];
+//        
+//        self.titleLabel.layer.borderColor = selected ?
+//        [UIColor colorWithRed:237/255.0 green:169/255.0 blue:153/255.0 alpha:1].CGColor :
+//        [UIColor colorWithRed:227/255.0 green:227/255.0 blue:227/255.0 alpha:1].CGColor;
+//    }
 }
 @end
 
 @interface WJMCheckBoxView()
 @property (nonatomic, strong) NSMutableArray *selectCheckboxBtns;
 @property (nonatomic, strong) NSMutableArray *allCheckboxBtns;
+@property (nonatomic, strong) WJMTagViewConfig *config;
 @end
 
 @implementation WJMCheckBoxView
 
-- (instancetype)initCheckboxBtnBtns:(NSArray <WJMCheckboxBtn *>*)btns{
+- (instancetype)initCheckboxBtnBtns:(NSArray <WJMCheckboxBtn *>*)btns config:(WJMTagViewConfig *)config {
     self = [self init];
     if (self){
         self.allCheckboxBtns = [btns mutableCopy];
@@ -106,11 +81,64 @@
         
         self.maximumValue = [btns count];
         for (WJMCheckboxBtn *btn in btns){
+            btn.tagView.config = config;
             [btn addTarget:self action:@selector(onButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
             [self addSubview:btn];
-        }
+        }        
+        self.config = config;
     }
     return self;
+}
+
+- (void)setConfig:(WJMTagViewConfig *)config{
+    _config = config;
+    [self reloadAutoLayout];
+}
+
+- (void)reloadAutoLayout{
+    if (!self.config.aotuLayout) return;
+    [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    CGFloat leftPadding = self.config.groupSpace, rightPadding = self.config.groupSpace;
+    NSInteger maxContentCount = self.config.groupCount;
+    UIView *lastV = nil, *lastBackV = nil;
+    for (int i = 0; i < self.allCheckboxBtns.count; i++){
+        if (i % maxContentCount == 0){
+            UIView *backV = [[UIView alloc] init];
+            [self addSubview:backV];
+
+            [backV mas_remakeConstraints:^(MASConstraintMaker *make) {
+                make.left.mas_equalTo(self.config.groupInsets.left);
+                make.right.mas_equalTo(-self.config.groupInsets.right);
+                if (lastBackV){
+                    make.top.mas_equalTo(lastBackV.mas_bottom).mas_offset(self.config.groupInsets.top + self.config.groupInsets.bottom);
+                } else {
+                    make.top.mas_equalTo(0);
+                }
+            }];
+            lastBackV = backV;
+        }
+        if (i == self.allCheckboxBtns.count - 1){
+            [lastBackV mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.bottom.mas_equalTo(-self.config.groupInsets.bottom);
+            }];
+        }
+        WJMCheckboxBtn *button = self.allCheckboxBtns[i];
+        [lastBackV addSubview:button];
+        
+        [button mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.width.mas_equalTo(self.mas_width).multipliedBy(1.0/maxContentCount).offset(-(self.config.groupInsets.left + self.config.groupInsets.right + leftPadding + rightPadding)/maxContentCount);
+            make.height.mas_greaterThanOrEqualTo(self.config.viewHeight);
+            make.top.mas_greaterThanOrEqualTo(0);
+            make.centerY.mas_equalTo(lastBackV);
+            make.bottom.mas_lessThanOrEqualTo(0);
+            if (i % maxContentCount == 0){
+                make.left.mas_equalTo(0);
+            } else {
+                make.left.mas_equalTo(lastV.mas_right).mas_equalTo(leftPadding);
+            }
+        }];
+        lastV = button;
+    }
 }
 
 - (void)selectCheckBoxBtn:(NSString *)identifier{

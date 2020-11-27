@@ -8,7 +8,7 @@
 
 #import "XHStarRateView.h"
 
-#define ForegroundStarImage @"stars_select"
+#define ForegroundStarImage @"focus_select_yellow"
 #define BackgroundStarImage @"stars_no"
 
 typedef void(^completeBlock)(CGFloat currentScore);

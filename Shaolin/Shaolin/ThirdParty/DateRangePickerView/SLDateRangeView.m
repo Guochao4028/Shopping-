@@ -114,6 +114,7 @@
     self.bgClearView.frame = self.bounds;
     self.bgBlackView.frame = CGRectMake(origin.x, origin.y + 10, self.width, kScreenHeight - origin.y);
     self.bgWhiteView.frame = CGRectMake(origin.x, origin.y, self.width, 0);
+    self.pickerView.alpha = 1;
     self.pickerView.frame = CGRectMake(0, 0, self.width, 0);
     self.chooseBtn.frame = CGRectMake(0, 158, self.width, 50);
     self.centerLineLabel.frame = CGRectMake(kScreenWidth/2 - 8, (76 - 5), 16, 10);
@@ -169,9 +170,12 @@
         self.bgBlackView.alpha = 0.0;
         self.chooseBtn.alpha = 0.0;
         self.bgWhiteView.height = 0.0;
-        self.pickerView.height = 0.0;
+        self.pickerView.alpha = 0.0;
     } completion:^(BOOL finished) {
-        if (finished) self.hidden = YES;
+        if (finished) {
+            self.pickerView.height = 0.0;
+            self.hidden = YES;
+        }
     }];
 }
 
@@ -241,9 +245,9 @@
         
         _pickerView.rowHeight = 50;
 //        _pickerView.isHiddenMiddleText = false;
-        _pickerView.lineBackgroundColor = [UIColor hexColor:@"EEEEEE"];
+        _pickerView.lineBackgroundColor = KTextGray_EEE;
         _pickerView.textColorOfSelectedRow = kMainYellow;
-        _pickerView.textColorOfOtherRow = [UIColor hexColor:@"333333"];
+        _pickerView.textColorOfOtherRow = KTextGray_333;
         
         _pickerView.textFontOfSelectedRow = kMediumFont(16);
         _pickerView.textFontOfOtherRow = kRegular(16);

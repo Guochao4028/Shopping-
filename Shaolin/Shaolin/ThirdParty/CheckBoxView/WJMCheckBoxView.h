@@ -8,20 +8,18 @@
 
 #import <UIKit/UIKit.h>
 #import "UIView+Identifier.h"
-#import "WJMTagLabel.h"
+#import "WJMTagView.h"
 
 NS_ASSUME_NONNULL_BEGIN
 @class WJMCheckBoxView;
-
+@class WJMTagViewConfig;
 @interface WJMCheckboxBtn : UIControl
 //label与imageView的间隔 default:0
 @property (nonatomic) CGFloat gap;
-@property (nonatomic, strong) WJMTagLabel *titleLabel;
+@property (nonatomic, strong) WJMTagView *tagView;
 + (instancetype)radioBtnStyleWithTitle:(NSString *)title identifier:(NSString *)identifier;
-+ (instancetype)tickBtnStyleWithTitle:(NSString *)title identifier:(NSString *)identifier;
 
 - (instancetype)initRadioBtnStyleWithTitle:(NSString *)title identifier:(NSString *)identifier;
-- (instancetype)initTickBtnStyleWithTitle:(NSString *)title identifier:(NSString *)identifier;
 @end
 
 
@@ -38,7 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
 /*! 如果实现block，则不会进入代理方法, identifier为button的identifier, WJMCheckBoxView的identifier需要自己获取*/
 @property (nonatomic, copy) void(^didSelectItemAtIdentifier)(NSString *identifier);
 @property (nonatomic, copy) void(^didDeselectItemAtIdentifier)(NSString *identifier);
-- (instancetype)initCheckboxBtnBtns:(NSArray <WJMCheckboxBtn *>*)btns;
+- (instancetype)initCheckboxBtnBtns:(NSArray <WJMCheckboxBtn *>*)btns config:(WJMTagViewConfig *)config;
 
 - (void)selectCheckBoxBtn:(NSString *)identifier;
 - (void)selectCheckBoxSingleBtn:(NSString *)identifier;

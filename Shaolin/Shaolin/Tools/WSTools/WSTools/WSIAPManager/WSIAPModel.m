@@ -20,7 +20,7 @@
         _checkType = [[aDecoder decodeObjectForKey:@"checkType"] integerValue];
         _payCode = [aDecoder decodeObjectForKey:@"payCode"];
         _payMoney =[aDecoder decodeObjectForKey:@"payMoney"];
-      
+        _customIdentifier =[aDecoder decodeObjectForKey:@"customIdentifier"];
     }
     return self;
 }
@@ -33,6 +33,8 @@
     [aCoder encodeObject:@(self.checkType) forKey:@"checkType"];
     [aCoder encodeObject:self.payCode forKey:@"payCode"];
     [aCoder encodeObject:self.payMoney forKey:@"payMoney"];
+    [aCoder encodeObject:self.customIdentifier forKey:@"customIdentifier"];
+    
 }
 
 

@@ -9,23 +9,32 @@
 #import "XLPagePictureAndTextTitleView.h"
 #import "XLPagePictureAndTextTitleCell.h"
 
+@interface XLPagePictureAndTextTitleView()
+@property (nonatomic, strong) XLPageViewControllerConfig *config;
+@end
+
 @implementation XLPagePictureAndTextTitleView
 
 //初始化方法
 - (instancetype)initWithConfig:(XLPageViewControllerConfig *)config {
+    config.scrollTitleView = YES;
+    config.titleViewInset = UIEdgeInsetsMake(21, 0, 0, 0);
     config.titleWidth = [XLPagePictureAndTextTitleCell cellSize].width;
-    config.titleViewHeight = [XLPagePictureAndTextTitleCell cellSize].height;
+    config.titleViewHeight = [XLPagePictureAndTextTitleCell cellSize].height + config.titleViewInset.top + config.titleViewInset.bottom;
 //    config.titleSpace = 20;
     config.titleNormalFont = kRegular(15);
     config.titleSelectedFont = kRegular(15);
-    config.titleViewInset = UIEdgeInsetsMake(0, 0, 0, 0);
     config.shadowLineHeight = 0;
-    config.titleSelectedColor = [UIColor colorForHex:@"C1A374"];// Main_Yellow;
-    config.titleNormalColor = [UIColor colorForHex:@"EBD4B1"];//Main_LightYellow;
+    config.titleSelectedColor = kMainYellow;
+    config.titleNormalColor = kMainLightYellow;
+    self.config = config;
     if (self = [super initWithConfig:config]) {
         
     }
     return self;
 }
 
+- (CGFloat)pictureHeight {
+    return self.config.titleViewInset.top + [XLPagePictureAndTextTitleCell pictureViewHeight];
+}
 @end

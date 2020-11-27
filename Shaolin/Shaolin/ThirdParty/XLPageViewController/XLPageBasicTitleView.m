@@ -412,4 +412,7 @@
     return cell;
 }
 
+- (CGFloat)pictureHeight {
+    return 0.0;
+}
 @end

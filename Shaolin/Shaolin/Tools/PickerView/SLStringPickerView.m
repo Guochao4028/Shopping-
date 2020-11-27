@@ -64,7 +64,7 @@
         _chooseBtn = [[UIButton alloc]initWithFrame:CGRectMake(SLChange(15), kHeight-SLChange(78)-NavBar_Height, kWidth-SLChange(30), SLChange(40))];
         [_chooseBtn setTitle:SLLocalizedString(@"确定") forState:(UIControlStateNormal)];
         [_chooseBtn addTarget:self action:@selector(chooseAction) forControlEvents:(UIControlEventTouchUpInside)];
-        [_chooseBtn setTitleColor:[UIColor colorForHex:@"FFFFFF"] forState:(UIControlStateNormal)];
+        [_chooseBtn setTitleColor:UIColor.whiteColor forState:(UIControlStateNormal)];
         _chooseBtn.titleLabel.font = kRegular(15);
         _chooseBtn.backgroundColor = kMainYellow;
         _chooseBtn.layer.cornerRadius = 4;

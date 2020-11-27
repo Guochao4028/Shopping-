@@ -44,17 +44,14 @@ typedef void (^ListBlock)(NSArray *list);
 /// @param productId 商品id
 /// @param success 说明苹果服务器有这个商品，可以继续使用此id购买
 /// @param failure 失败原因
-+ (void)checkProductWithProductId:(NSString *)productId
-                            success:(void (^)(void))success
-                            failure:(ErrorStringBlock)failure;
++ (void)checkProductWithProductId:(NSString *)productId success:(void (^)(NSArray *products))success failure:(void (^)(NSString * errorString))failure;
 
 /// 执行购买商品操作
 /// @param productId 商品id
+// @param userIdentifier 自己的标识，从苹果服务器获取订单时可以获取到（作废，不再使用）
 /// @param success 购买成功，只有购买状态为Purchased时才调用
 /// @param failure 失败原因
-+ (void)addPaymentWithProductId:(NSString *)productId
-                        success:(TransactionSuccessBlock)success
-                        failure:(ErrorStringBlock)failure;
++ (void)addPaymentWithProductId:(NSString *)productId success:(TransactionSuccessBlock)success failure:(void (^)(NSString * errorString))failure;
 
 /*
 *  获取所有本地存储的状态为未与服务器验证或与服务器验证失败的订单
@@ -69,10 +66,9 @@ typedef void (^ListBlock)(NSArray *list);
 /// 更新内购订单<WSIAPModel>至本地，首选保存至钥匙串，钥匙串保存失败的话会保存至UserDefault
 /// @param tran 内购订单
 /// @param checkType 订单的验证状态（与自家服务器的验证状态）
+/// @param customIdentifier 自己的标识，此项目中为订单号，保存在本地，苹果服务器取不到
 /// @param iapModelBlock 返回WSIAPModel
-+ (void) updateLocalTransaction:(SKPaymentTransaction *)tran
-                 checkType:(WSIAPCheckType)checkType
-             iapModelBlock:(_Nullable IAPModelBlock)iapModelBlock;
++ (void) updateLocalTransaction:(SKPaymentTransaction *)tran checkType:(WSIAPCheckType)checkType customIdentifier:(NSString *)customIdentifier iapModelBlock:(_Nullable IAPModelBlock)iapModelBlock;
 
 /// 更新内购订单<WSIAPModel>，此方法是刷新余额时从本地取出时更新用的
 /// 因为SKPaymentTransaction对象不能归档

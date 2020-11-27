@@ -38,16 +38,34 @@ static const CGFloat kPadding10 = 10;
             self.textColor = self.normalTextColor;
         }
     }
+    if (self.normalBackgroundColor && self.selectBackgroundColor){
+        if (selected){
+            self.backgroundColor = self.selectBackgroundColor;
+        } else {
+            self.backgroundColor = self.normalBackgroundColor;
+        }
+    }
 }
 
 - (void)setNormalImage:(UIImage *)normalImage{
     _normalImage = normalImage;
+    [self setSelected:self.selected];
 }
 
 - (void)setSelectImage:(UIImage *)selectImage{
     _selectImage = selectImage;
+    [self setSelected:self.selected];
 }
 
+- (void)setNormalBackgroundColor:(UIColor *)normalBackgroundColor{
+    _normalBackgroundColor = normalBackgroundColor;
+    [self setSelected:self.selected];
+}
+
+- (void)setSelectBackgroundColor:(UIColor *)selectBackgroundColor{
+    _selectBackgroundColor = selectBackgroundColor;
+    [self setSelected:self.selected];
+}
 #pragma mark -
 - (void)layoutSubviews{
     [super layoutSubviews];

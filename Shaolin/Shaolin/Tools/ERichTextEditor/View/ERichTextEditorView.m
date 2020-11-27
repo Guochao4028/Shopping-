@@ -53,7 +53,7 @@ static CGFloat const kItemHeight = 47;
 //    webView.dataDetectorTypes = UIDataDetectorTypeNone;
     webView.scrollView.bounces = NO;
     webView.userInteractionEnabled = YES;
-    webView.backgroundColor = [UIColor colorForHex:@"FFFFFF"];
+    webView.backgroundColor = UIColor.whiteColor;
     self.webView = webView;
     [self addSubview:webView];
     
@@ -363,7 +363,7 @@ static CGFloat const kItemHeight = 47;
     self = [super initWithFrame:frame];
     if (self) {
         _editView = editView;
-        self.backgroundColor = [UIColor colorForHex:@"FFFFFF"];
+        self.backgroundColor = UIColor.whiteColor;
         [self setupToolBar];
         [self setupColorBoard];
     }

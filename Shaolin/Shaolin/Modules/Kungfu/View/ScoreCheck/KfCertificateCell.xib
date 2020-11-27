@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="KGk-i7-Jjw" customClass="KfCertificateCell">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="223"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="375" height="223"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="cer_bgImg" translatesAutoresizingMaskIntoConstraints="NO" id="7D2-FG-P8C">
+                        <rect key="frame" x="12" y="0.0" width="351" height="223"/>
+                    </imageView>
+                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YWI-Ip-jJM">
+                        <rect key="frame" x="16" y="222" width="359" height="0.5"/>
+                        <color key="backgroundColor" red="0.89803921568627454" green="0.89803921568627454" blue="0.89803921568627454" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="0.5" id="7PM-Rz-NEc"/>
+                        </constraints>
+                    </view>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Kb5-6H-V5d">
+                        <rect key="frame" x="132" y="70" width="111" height="90"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="90" id="Hep-rL-6CX"/>
+                            <constraint firstAttribute="width" constant="111" id="eyq-DL-ODs"/>
+                        </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                <real key="value" value="4"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="证书" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Iwc-Hn-sI0">
+                        <rect key="frame" x="26" y="19" width="31" height="18"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="授段时间" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M00-US-A9Y">
+                        <rect key="frame" x="295.5" y="20" width="53.5" height="16"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                        <color key="textColor" red="0.49411764705882355" green="0.49411764705882355" blue="0.49411764705882355" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eT7-Ik-hPy">
+                        <rect key="frame" x="12" y="168" width="351" height="55"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="55" id="0Ka-v3-9BU"/>
+                        </constraints>
+                        <state key="normal" title="查看详情">
+                            <color key="titleColor" red="0.75686274509803919" green="0.63921568627450975" blue="0.45490196078431372" alpha="1" colorSpace="calibratedRGB"/>
+                        </state>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                <real key="value" value="4"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="lgf_BorderWidth">
+                                <real key="value" value="0.0"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="color" keyPath="lgf_BorderColor">
+                                <color key="value" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                        <connections>
+                            <action selector="detailHandle:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="09P-7b-ucE"/>
+                        </connections>
+                    </button>
+                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Dhr-uf-NZS">
+                        <rect key="frame" x="187.5" y="168" width="175.5" height="55"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <state key="normal" title="领取证书">
+                            <color key="titleColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
+                        </state>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                <real key="value" value="4"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="lgf_BorderWidth">
+                                <real key="value" value="0.0"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="color" keyPath="lgf_BorderColor">
+                                <color key="value" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                        <connections>
+                            <action selector="cerGetHandle:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="dWu-OA-cvk"/>
+                        </connections>
+                    </button>
+                    <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="已领取实物证书" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Uvf-T4-5ic">
+                        <rect key="frame" x="221.5" y="107" width="107.5" height="16"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="eT7-Ik-hPy" firstAttribute="bottom" secondItem="7D2-FG-P8C" secondAttribute="bottom" id="5t0-iR-cKT"/>
+                    <constraint firstAttribute="bottom" secondItem="7D2-FG-P8C" secondAttribute="bottom" id="AiG-8p-gLZ"/>
+                    <constraint firstItem="M00-US-A9Y" firstAttribute="centerY" secondItem="Iwc-Hn-sI0" secondAttribute="centerY" id="CMs-F4-gmo"/>
+                    <constraint firstItem="Kb5-6H-V5d" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="70" id="EVh-n5-qmu"/>
+                    <constraint firstItem="Kb5-6H-V5d" firstAttribute="centerX" secondItem="7D2-FG-P8C" secondAttribute="centerX" id="Io0-fM-ROM"/>
+                    <constraint firstItem="Iwc-Hn-sI0" firstAttribute="leading" secondItem="7D2-FG-P8C" secondAttribute="leading" constant="14" id="LSI-FY-Hqp"/>
+                    <constraint firstAttribute="trailing" secondItem="7D2-FG-P8C" secondAttribute="trailing" constant="12" id="XAI-HE-Kiv"/>
+                    <constraint firstItem="7D2-FG-P8C" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="Xqm-Ia-IaT"/>
+                    <constraint firstItem="YWI-Ip-jJM" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="dbf-2z-Zh3"/>
+                    <constraint firstItem="eT7-Ik-hPy" firstAttribute="leading" secondItem="7D2-FG-P8C" secondAttribute="leading" id="mBP-DE-6Yq"/>
+                    <constraint firstAttribute="trailing" secondItem="YWI-Ip-jJM" secondAttribute="trailing" id="nAh-ha-NJY"/>
+                    <constraint firstItem="Iwc-Hn-sI0" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="19" id="o30-16-Yp4"/>
+                    <constraint firstItem="7D2-FG-P8C" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="12" id="roB-w4-KoB"/>
+                    <constraint firstAttribute="bottom" secondItem="YWI-Ip-jJM" secondAttribute="bottom" constant="0.5" id="twI-Q1-kqf"/>
+                    <constraint firstItem="M00-US-A9Y" firstAttribute="trailing" secondItem="7D2-FG-P8C" secondAttribute="trailing" constant="-14" id="vzB-Z5-CAi"/>
+                    <constraint firstItem="eT7-Ik-hPy" firstAttribute="width" secondItem="7D2-FG-P8C" secondAttribute="width" id="zve-Wi-rKx"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="aW0-zy-SZf"/>
+            <connections>
+                <outlet property="cellLine" destination="YWI-Ip-jJM" id="hK1-Lx-eKB"/>
+                <outlet property="cerGetBtn" destination="Dhr-uf-NZS" id="kmc-Tz-Kfp"/>
+                <outlet property="cerImgv" destination="Kb5-6H-V5d" id="hiK-eP-zwY"/>
+                <outlet property="cerNameLabel" destination="Iwc-Hn-sI0" id="CFi-ZE-AF9"/>
+                <outlet property="detailBtn" destination="eT7-Ik-hPy" id="6E6-HC-AVa"/>
+                <outlet property="finishedLabel" destination="Uvf-T4-5ic" id="pAM-Xb-9xo"/>
+                <outlet property="timeLabel" destination="M00-US-A9Y" id="5mV-2O-Ni8"/>
+            </connections>
+            <point key="canvasLocation" x="131.15942028985509" y="82.03125"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="cer_bgImg" width="351" height="223"/>
+    </resources>
+</document>

@@ -31,8 +31,8 @@
     
     
     [self.chooseBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(15);
-        make.right.mas_equalTo(-15);
+        make.left.mas_equalTo(0);
+        make.right.mas_equalTo(0);
         make.bottom.mas_equalTo(-(5 + kBottomSafeHeight));
         make.height.mas_equalTo(40);
     }];
@@ -62,13 +62,13 @@
 
 - (UIButton *)chooseBtn {
     if (!_chooseBtn) {
-        _chooseBtn = [[UIButton alloc]initWithFrame:CGRectMake(SLChange(15), kHeight-SLChange(78)-NavBar_Height, kWidth-SLChange(30), SLChange(40))];
+        _chooseBtn = [[UIButton alloc]initWithFrame:CGRectMake(0, kHeight-SLChange(78)-NavBar_Height, kWidth, SLChange(40))];
         [_chooseBtn setTitle:SLLocalizedString(@"确定") forState:(UIControlStateNormal)];
         [_chooseBtn addTarget:self action:@selector(chooseAction) forControlEvents:(UIControlEventTouchUpInside)];
-        [_chooseBtn setTitleColor:[UIColor colorForHex:@"FFFFFF"] forState:(UIControlStateNormal)];
+        [_chooseBtn setTitleColor:UIColor.whiteColor forState:(UIControlStateNormal)];
         _chooseBtn.titleLabel.font = kRegular(15);
         _chooseBtn.backgroundColor = kMainYellow;
-        _chooseBtn.layer.cornerRadius = 4;
+//        _chooseBtn.layer.cornerRadius = 4;
         _chooseBtn.layer.masksToBounds = YES;
     }
     return _chooseBtn;

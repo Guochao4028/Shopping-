@@ -23,10 +23,12 @@
     if (self) {
         [self layoutView];
         // TODO:由于无法准确监听分享结果，所以这里就不出分享结果的提示框了
-//        [[ThirdpartyAuthorizationManager sharedInstance] receiveCompletionBlock:^(ThirdpartyAuthorizationMessageCode code, Message * _Nonnull message) {
-//            [ShaolinProgressHUD singleTextAutoHideHud:message.reason];
-//            NSLog(@"%@", message.reason);
-//        }];
+        [[ThirdpartyAuthorizationManager sharedInstance] receiveCompletionBlock:^(ThirdpartyAuthorizationMessageCode code, Message * _Nonnull message) {
+            if (code == ThirdpartyAuthorizationCode_AuthorizationTips){
+                [ShaolinProgressHUD singleTextAutoHideHud:message.reason];
+                NSLog(@"%@", message.reason);
+            }
+        }];
     }
     return self;
 }
@@ -44,9 +46,9 @@
     v.userInteractionEnabled = YES;
     [self addSubview:v];
     UIButton *cancleBtn = [[UIButton alloc]initWithFrame:CGRectMake(SLChange(16), SLChange(97), kWidth-SLChange(32), SLChange(50))];
-    cancleBtn.backgroundColor = [UIColor colorForHex:@"FFFFFF"];
+    cancleBtn.backgroundColor = UIColor.whiteColor;
     [cancleBtn setTitle:SLLocalizedString(@"取消") forState:(UIControlStateNormal)];
-    [cancleBtn setTitleColor:[UIColor colorForHex:@"333333"] forState:(UIControlStateNormal)];
+    [cancleBtn setTitleColor:KTextGray_333 forState:(UIControlStateNormal)];
     cancleBtn.titleLabel.font = kRegular(16);
     cancleBtn.layer.masksToBounds = YES;
     cancleBtn.layer.cornerRadius = 4;
@@ -54,7 +56,7 @@
     [v addSubview:cancleBtn];
     
     UIView *whiteView = [[UIView alloc]initWithFrame:CGRectMake(SLChange(16), 0, kWidth-SLChange(32), SLChange(90))];
-    whiteView.backgroundColor = [UIColor colorForHex:@"FFFFFF"];
+    whiteView.backgroundColor = UIColor.whiteColor;
     whiteView.userInteractionEnabled = YES;
     whiteView.layer.masksToBounds = YES;
     whiteView.layer.cornerRadius = 4;
@@ -66,7 +68,7 @@
     for (int i = 0; i<4; i++) {
         UIButton *button = [[UIButton alloc]initWithFrame:CGRectMake(SLChange(55)+(SLChange(40)+SLChange(37))*(i%4), SLChange(25), SLChange(40), SLChange(48))];
         [button setTitle:arr[i] forState:(UIControlStateNormal)];
-        [button setTitleColor:[UIColor colorForHex:@"333333"] forState:(UIControlStateNormal)];
+        [button setTitleColor:KTextGray_333 forState:(UIControlStateNormal)];
         [button setImage:[UIImage imageNamed:image[i]] forState:(UIControlStateNormal)];
         button.titleLabel.font =kRegular(13);
         button.identifier = identifierArray[i];
