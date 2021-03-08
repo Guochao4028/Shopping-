@@ -19,12 +19,12 @@
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
       if (self) {
-          [self setUI];
+          [self setupUI];
       }
       return self;
 }
 
-- (void)setUI{
+- (void)setupUI{
     [self.contentView addSubview:self.titleLabel];
     [self.contentView addSubview:self.nameLabel];
     

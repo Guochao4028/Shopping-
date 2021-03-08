@@ -83,7 +83,7 @@
     [super viewWillDisappear:animated];
 }
 
--(void)viewWillAppear:(BOOL)animated{
+- (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     if (self.isClearNavBar){
         [self setNavigationBarClearTintColorBlackStyle];
@@ -98,39 +98,48 @@
 
 #pragma mark - methods
 
--(void)initData{
+- (void)initData{
     
    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(refreshUI) name:WENGENMANAGER_GETORDERANDCARTCOUNT object:nil];
     
     self.isHasDefault = YES;
     
-    self.isGrid = YES;
+    
     
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
-    [[DataManager shareInstance]getStoreInfo:@{@"id":self.storeId} Callback:^(NSObject *object) {
+    [[DataManager shareInstance]getStoreInfo:@{@"clubId":self.storeId} Callback:^(NSObject *object) {
         self.storeInfoModel = (GoodsStoreInfoModel *)object;
         self.pageNumber = 1;
         
         self.isCollect = [self.storeInfoModel.collect boolValue];
+        [self.heardView setStoreInfoModel:self.storeInfoModel];
         NSMutableDictionary *param = [NSMutableDictionary dictionary];
         
-        [param setValue:self.storeInfoModel.storeId forKey:@"club_id"];
+        [param setValue:self.storeInfoModel.storeId forKey:@"clubId"];
+        [param setValue:[NSString stringWithFormat:@"%ld", self.pageNumber] forKey:@"pageNum"];
+        [param setValue:@"10" forKey:@"pageSize"];
         
-        [param setValue:@"desc" forKey:@"sort"];
+//        [param setValue:@"2" forKey:@"salesSort"];
         
-        self.sortingType = StoreListSortingTuiJianType;
+//        self.sortingType = StoreListSortingTuiJianType;
         
-        [self.dataArray removeAllObjects];
-        [[DataManager shareInstance]getGoodsList:param Callback:^(NSArray *result) {
-            [hud hideAnimated:YES];
+//        [self.dataArray removeAllObjects];
+        if ([self.dataArray count] == 0) {
+            [[DataManager shareInstance]getGoodsList:param Callback:^(NSArray *result) {
+                [hud hideAnimated:YES];
+                self.pageNumber ++;
+                [self.dataArray addObjectsFromArray:result];
+                [self.collectionView reloadData];
+            }];
+        }else{
             self.pageNumber ++;
-            [self.dataArray addObjectsFromArray:result];
-            [self.collectionView reloadData];
-        }];
+            [hud hideAnimated:YES];
+        }
+        
     }];
 }
 
--(void)initUI{
+- (void)initUI{
     
     [self.view setBackgroundColor:[UIColor whiteColor]];
     
@@ -140,9 +149,11 @@
     
     [self.view addSubview:self.carButton];
     
+    self.isGrid = YES;
+    
 }
 
--(void)refreshUI{
+- (void)refreshUI{
     NSString *carCountStr = [[ModelTool shareInstance]carCount];
        
     NSInteger carNumber = [carCountStr integerValue];
@@ -161,25 +172,27 @@
 #pragma mark - action
 
 //刷新
--(void)updata{
+- (void)updata{
     self.pageNumber = 1;
     [self.dataArray removeAllObjects];
     NSMutableDictionary *param = [NSMutableDictionary dictionary];
-    [param setValue:self.storeInfoModel.storeId forKey:@"club_id"];
+    [param setValue:self.storeInfoModel.storeId forKey:@"clubId"];
+    [param setValue:[NSString stringWithFormat:@"%ld", self.pageNumber] forKey:@"pageNum"];
+    [param setValue:@"10" forKey:@"pageSize"];
     
     if (self.sortingType == StoreListSortingXiaoLiangType) {
         [param setValue:@"1" forKey:@"num"];
-        [param setValue:@"desc" forKey:@"sort"];
+        [param setValue:@"2" forKey:@"salesSort"];
     }else if (self.sortingType == StoreListSortingJiaGeAscType) {
-        [param setValue:@"1" forKey:@"price"];
-        [param setValue:@"asc" forKey:@"sort"];
+        [param setValue:@"1" forKey:@"priceSort"];
+//        [param setValue:@"1" forKey:@"salesSort"];
     }else if (self.sortingType == StoreListSortingJiaGeDescType) {
-        [param setValue:@"1" forKey:@"price"];
-        [param setValue:@"desc" forKey:@"sort"];
+        [param setValue:@"2" forKey:@"priceSort"];
+//        [param setValue:@"2" forKey:@"salesSort"];
     }else if (self.sortingType == StoreListSortingOnlyHaveType) {
         [param setValue:@"1" forKey:@"stock"];
     }else if (self.sortingType == StoreListSortingTuiJianType) {
-        [param setValue:@"desc" forKey:@"sort"];
+        [param setValue:@"2" forKey:@"salesSort"];
     }
     
     
@@ -195,10 +208,27 @@
 }
 
 //加载更多
--(void)loadMoreData{
+- (void)loadMoreData{
     NSMutableDictionary *param = [NSMutableDictionary dictionary];
-    [param setValue:self.storeInfoModel.storeId forKey:@"club_id"];
-    [param setValue:[NSString stringWithFormat:@"%ld", self.pageNumber] forKey:@"page"];
+    [param setValue:self.storeInfoModel.storeId forKey:@"clubId"];
+    [param setValue:[NSString stringWithFormat:@"%ld", self.pageNumber] forKey:@"pageNum"];
+    [param setValue:@"10" forKey:@"pageSize"];
+    
+    if (self.sortingType == StoreListSortingXiaoLiangType) {
+        [param setValue:@"1" forKey:@"num"];
+        [param setValue:@"2" forKey:@"salesSort"];
+    }else if (self.sortingType == StoreListSortingJiaGeAscType) {
+        [param setValue:@"1" forKey:@"priceSort"];
+//        [param setValue:@"1" forKey:@"salesSort"];
+    }else if (self.sortingType == StoreListSortingJiaGeDescType) {
+        [param setValue:@"2" forKey:@"priceSort"];
+//        [param setValue:@"2" forKey:@"salesSort"];
+    }else if (self.sortingType == StoreListSortingOnlyHaveType) {
+        [param setValue:@"1" forKey:@"stock"];
+    }else if (self.sortingType == StoreListSortingTuiJianType) {
+        [param setValue:@"2" forKey:@"salesSort"];
+    }
+    
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
     [[DataManager shareInstance]getGoodsList:param Callback:^(NSArray *result) {
         [hud hideAnimated:YES];
@@ -215,12 +245,12 @@
     }];
 }
 
--(void)focusButtonAction:(UIButton *)sender{
+- (void)focusButtonAction:(UIButton *)sender{
     sender.selected = !sender.isSelected;
     if (sender.isSelected) {
         //关注
-        [[DataManager shareInstance]addCollect:@{@"club_id":self.storeId} Callback:^(Message *message) {
-            [self initData];
+        [[DataManager shareInstance]addCollect:@{@"clubId":self.storeId, @"type":@"1"} Callback:^(Message *message) {
+           
 
             if (message.isSuccess == YES) {
                 [sender setImage:[UIImage imageNamed:@""] forState:UIControlStateNormal];
@@ -231,12 +261,13 @@
                 sender.layer.cornerRadius = 30/2;
                 self.isCollect = YES;
             }
+            [self initData];
         }];
         
     }else{
         //取消关注
-        [[DataManager shareInstance]cancelCollect:@{@"club_id":self.storeId} Callback:^(Message *message) {
-             [self initData];
+        [[DataManager shareInstance]cancelCollect:@{@"clubId":self.storeId, @"type":@"1"} Callback:^(Message *message) {
+             
             if (message.isSuccess == YES) {
                 [sender setImage:[UIImage imageNamed:@"baiGuanzhu"] forState:UIControlStateNormal];
                 [sender setTitle:SLLocalizedString(@" 关注") forState:UIControlStateNormal];
@@ -246,15 +277,16 @@
                 sender.layer.cornerRadius = 30/2;
                 self.isCollect = NO;
             }
+            [self initData];
         }];
     }
 }
 
--(void)back{
+- (void)back{
     [self.navigationController popViewControllerAnimated:YES];
 }
 
--(void)jumpStoreDetailAction{
+- (void)jumpStoreDetailAction{
     self.isClearNavBar = YES;
     StoreDetailsViewController *stortDetailsVC = [[StoreDetailsViewController alloc]init];
     stortDetailsVC.isCollect = self.isCollect;
@@ -262,7 +294,7 @@
     [self.navigationController pushViewController:stortDetailsVC animated:YES];
 }
 
--(void)jumpGoodsCartAction{
+- (void)jumpGoodsCartAction{
     ShoppingCartViewController *shoppingCartVC = [[ShoppingCartViewController alloc]init];
     [self.navigationController pushViewController:shoppingCartVC animated:YES];
 }
@@ -338,7 +370,7 @@
 }
 
 
--(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     
     if ([self.dataArray count] > 0) {
         WengenGoodsModel *goodsModel = self.dataArray[indexPath.row];
@@ -399,14 +431,20 @@
 }
 
 #pragma mark - StoreCollectionReusableViewDelegate
--(void)collectionReusableView:(StoreCollectionReusableView *)view tapAction:(StoreListSortingType)storeSortingType{
+- (void)collectionReusableView:(StoreCollectionReusableView *)view tapAction:(StoreListSortingType)storeSortingType{
     self.sortingType = storeSortingType;
     self.isHasDefault = NO;
     [self updata];
 }
 
--(void)collectionReusableView:(StoreCollectionReusableView *)view tapGrid:(BOOL)isGrid{
+- (void)collectionReusableView:(StoreCollectionReusableView *)view tapGrid:(BOOL)isGrid{
     self.isGrid = !self.isGrid;
+    [self.collectionView setContentOffset:CGPointMake(0, oriOfftY)animated:NO];
+    
+    if (self.navgationView.isWhite) {
+        [self.collectionView setContentOffset:CGPointMake(0,0)animated:NO];
+    }
+    
     [self.collectionView reloadData];
 }
 
@@ -414,7 +452,7 @@
 /**
  点击搜索
  */
--(void)tapSearch{
+- (void)tapSearch{
     SearchViewController *searchVC = [[SearchViewController alloc]init];
     
     searchVC.storeId= self.storeId;
@@ -424,7 +462,7 @@
 
 #pragma mark - getter / setter
 
--(UICollectionView *)collectionView{
+- (UICollectionView *)collectionView{
     
     if (_collectionView == nil) {
         
@@ -492,7 +530,7 @@
     
 }
 
--(StoreHeardView *)heardView{
+- (StoreHeardView *)heardView{
     
     if (_heardView == nil) {
         
@@ -518,12 +556,12 @@
 
 }
 
--(void)setStoreInfoModel:(GoodsStoreInfoModel *)storeInfoModel{
+- (void)setStoreInfoModel:(GoodsStoreInfoModel *)storeInfoModel{
     _storeInfoModel = storeInfoModel;
     [self.heardView setStoreInfoModel:storeInfoModel];
 }
 
--(StoreNavgationView *)navgationView{
+- (StoreNavgationView *)navgationView{
     
     if (_navgationView == nil) {
         
@@ -547,7 +585,7 @@
 
 }
 
--(NSMutableArray *)dataArray{
+- (NSMutableArray *)dataArray{
     if (_dataArray == nil) {
         _dataArray = [NSMutableArray array];
     }
@@ -555,7 +593,7 @@
 }
 
 
--(UIButton *)carButton{
+- (UIButton *)carButton{
     
     if (_carButton == nil) {
         _carButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -583,7 +621,7 @@
     return _carButton;
 }
 
--(UILabel *)numberLabel{
+- (UILabel *)numberLabel{
     if (_numberLabel == nil) {
         CGFloat x = 52 - 21;
         CGFloat y = 0;
@@ -601,7 +639,7 @@
     return _numberLabel;
 }
 
--(void)dealloc{
+- (void)dealloc{
     //移除监听
      [[NSNotificationCenter defaultCenter]removeObserver:self];
 }

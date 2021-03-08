@@ -14,7 +14,7 @@
 @property(nonatomic,strong) UIButton *loadBtn;
 @end
 @implementation NoDataView
--(instancetype)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     

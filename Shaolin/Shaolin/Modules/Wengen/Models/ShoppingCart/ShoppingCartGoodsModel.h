@@ -13,29 +13,41 @@ NS_ASSUME_NONNULL_BEGIN
 @interface ShoppingCartGoodsModel : NSObject
 
 
-@property(nonatomic, copy)NSString *attr_name;
-@property(nonatomic, copy)NSString *attr_p_name;
-@property(nonatomic, copy)NSString *attr_p_value;
-@property(nonatomic, copy)NSString *attr_value;
-@property(nonatomic, copy)NSString *club_id;
-@property(nonatomic, copy)NSString *club_name;
-@property(nonatomic, copy)NSString *club_status;
-@property(nonatomic, copy)NSString *current_price;
+//@property(nonatomic, copy)NSString *attr_name;
+//@property(nonatomic, copy)NSString *attr_p_name;
+//@property(nonatomic, copy)NSString *attr_p_value;
+//@property(nonatomic, copy)NSString *attr_value;
+//@property(nonatomic, copy)NSString *club_id;
+//@property(nonatomic, copy)NSString *club_name;
+//@property(nonatomic, copy)NSString *club_status;
+//@property(nonatomic, copy)NSString *current_price;
 @property(nonatomic, copy)NSString *desc;
-@property(nonatomic, copy)NSString *goods_attr_id;
-@property(nonatomic, copy)NSString *goods_attr_pid;
-@property(nonatomic, copy)NSString *goods_id;
-@property(nonatomic, copy)NSArray *img_data;
-@property(nonatomic, copy)NSString *name;
+//@property(nonatomic, copy)NSString *goods_attr_id;
+//@property(nonatomic, copy)NSString *goods_attr_pid;
+@property(nonatomic, copy)NSString *goodsId;
+@property(nonatomic, copy)NSArray *imgDataList;
+//@property(nonatomic, copy)NSString *name;
+@property(nonatomic, copy)NSString *goodsName;
 @property(nonatomic, copy)NSString *num;
 @property(nonatomic, copy)NSString *price;
+
+@property(nonatomic, copy)NSString *isDiscount;
+@property(nonatomic, copy)NSString *oldPrice;
+@property(nonatomic, copy)NSString *clubId;
+@property(nonatomic, copy)NSString *goodsAttrId;
+@property(nonatomic, copy)NSString *goodsAttrStrName;
+
+
+
+
+
 //1 商品店铺，2 段品质店铺
 @property(nonatomic, copy)NSString *type;
 
 @property(nonatomic, copy)NSString *shipping_fee;
 @property(nonatomic, copy)NSString *stock;
 //1，商城 2 段品制
-@property(nonatomic, copy)NSString *store_type;
+@property(nonatomic, copy)NSString *storeType;
 @property(nonatomic, copy)NSString *user_num;
 @property(nonatomic, copy)NSString *cartid;
 @property(nonatomic, assign)BOOL isSelected;
@@ -51,7 +63,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, assign)BOOL isEditor;
 
 ///对应内购的商品id
-@property(nonatomic, copy)NSString *app_store_id;
+@property(nonatomic, copy)NSString *appStoreId;
 @end
 
 NS_ASSUME_NONNULL_END

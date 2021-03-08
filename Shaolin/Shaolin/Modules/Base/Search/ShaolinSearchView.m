@@ -29,7 +29,7 @@ static NSInteger const CenterSearchViewTag = 1000;
         self.placeholderColor = [UIColor colorForHex:@"D1D3DB"];
         
         [self setPlaceholder:self.placeholder];
-        [self setUI];
+        [self setupUI];
     }
     return self;
 }
@@ -38,7 +38,7 @@ static NSInteger const CenterSearchViewTag = 1000;
     return UILayoutFittingExpandedSize;
 }
 
-- (void)setUI{
+- (void)setupUI{
     [self addSubview:self.backView];
     [self.backView addSubview:self.leftView];
     [self.backView addSubview:self.centerView];

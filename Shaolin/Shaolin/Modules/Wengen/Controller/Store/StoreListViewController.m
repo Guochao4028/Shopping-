@@ -29,10 +29,10 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self initData];
-     [self setUI];
+     [self setupUI];
 }
 
--(void)setUI{
+- (void)setupUI{
     self.titleLabe.text = SLLocalizedString(@"店铺关注");
     self.titleLabe.textColor = [UIColor whiteColor];
     [self.leftBtn setImage:[UIImage imageNamed:@"real_left"] forState:(UIControlStateNormal)];
@@ -42,7 +42,7 @@
       
 }
 
--(void)initData{
+- (void)initData{
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
     [[DataManager shareInstance]getMyCollectCallback:^(NSArray *result) {
         [hud hideAnimated:YES];
@@ -51,12 +51,12 @@
     }];
 }
 
--(void)viewWillAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     //[self setNavigationBarYellowTintColor];
 }
--(void)viewWillDisappear:(BOOL)animated
+- (void)viewWillDisappear:(BOOL)animated
 {
      [super viewWillDisappear:animated];
 }
@@ -68,7 +68,7 @@
     return !self.dataArray.count;
 }
 
--(CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
+- (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
     return -50;
 }
 
@@ -82,7 +82,7 @@
     return [[NSAttributedString alloc] initWithString:text attributes:attributes];
 }
 
--(NSAttributedString *)descriptionForEmptyDataSet:(UIScrollView *)scrollView {
+- (NSAttributedString *)descriptionForEmptyDataSet:(UIScrollView *)scrollView {
     NSString *text = SLLocalizedString(@"快进商城浏览关注喜欢的店铺吧");
     
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont boldSystemFontOfSize:13.0f],
@@ -97,38 +97,38 @@
 
 #pragma mark - UITableViewDelegate & UITableViewDataSource
 
--(CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     return 10;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     return 0.01;
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     UIView *view = [[UIView alloc] init];
     view.backgroundColor = [UIColor clearColor];
     return view;
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
     
         UIView *view = [[UIView alloc] init];
         view.backgroundColor = KTextGray_FA;
         return view;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
    
     return self.dataArray.count;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     return 127;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell;
     
     StoreListTableViewCell *storeListCell = [tableView dequeueReusableCellWithIdentifier:@"StoreListTableViewCell"];
@@ -142,19 +142,19 @@
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
    GoodsStoreInfoModel *store =  self.dataArray[indexPath.row];
     StoreViewController *storeVC = [[StoreViewController alloc]init];
-    storeVC.storeId = store.storeId;
+    storeVC.storeId = store.clubId;
     [self.navigationController pushViewController:storeVC animated:YES];
 }
 
 #pragma mark - StoreListTableViewCellDelegate
--(void)storeListTableViewCell:(StoreListTableViewCell *)cell collectTap:(NSIndexPath *)indexPath{
+- (void)storeListTableViewCell:(StoreListTableViewCell *)cell collectTap:(NSIndexPath *)indexPath{
     GoodsStoreInfoModel *store =  self.dataArray[indexPath.row];
        if ([store.collect isEqualToString:@"1"] == YES) {
            //取消关注
-           [[DataManager shareInstance]cancelCollect:@{@"club_id":store.storeId} Callback:^(Message *message) {
+           [[DataManager shareInstance]cancelCollect:@{@"clubId":store.clubId, @"type":@"1"} Callback:^(Message *message) {
                if (message.isSuccess == YES) {
                    store.collect = @"0";
 //                   [self.tableView reloadData];
@@ -163,7 +163,7 @@
            }];
        }else{
            //关注
-           [[DataManager shareInstance]addCollect:@{@"club_id":store.storeId} Callback:^(Message *message) {
+           [[DataManager shareInstance]addCollect:@{@"clubId":store.clubId, @"type":@"1"} Callback:^(Message *message) {
                
                if (message.isSuccess == YES) {
                    store.collect = @"1";
@@ -175,7 +175,7 @@
 }
 
 #pragma mark - getter/ setter
--(UITableView *)tableView{
+- (UITableView *)tableView{
     
     if (_tableView == nil) {
         _tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, kWidth, kHeight - NavBar_Height)];

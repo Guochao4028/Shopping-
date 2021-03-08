@@ -23,8 +23,8 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @protocol RecommendTableCellDelegate <NSObject>
--(void)tapGoodsItem:(WengenGoodsModel *)model;
--(void)tapTitleItem;
+- (void)tapGoodsItem:(WengenGoodsModel *)model;
+- (void)tapTitleItem;
 @end
 
 

@@ -14,6 +14,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)sharedInstance;
 + (void)showAD;
 
+/// 获取磁盘缓存大小(单位：M)
++ (float)getDiskCacheSize;
 + (void)clearDiskCache;
 @end
 

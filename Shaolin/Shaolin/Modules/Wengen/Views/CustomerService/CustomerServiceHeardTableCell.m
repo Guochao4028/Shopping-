@@ -28,7 +28,7 @@
     // Configure the view for the selected state
 }
 
--(void)setModel:(CustomerServieListModel *)model{
+- (void)setModel:(CustomerServieListModel *)model{
     _model = model;
     [self.titleLabel setText:model.question];
 }

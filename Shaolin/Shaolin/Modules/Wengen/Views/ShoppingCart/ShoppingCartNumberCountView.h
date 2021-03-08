@@ -38,7 +38,7 @@ typedef void(^ShoppingCartNumberChangeBlock)(NSInteger count);
 
 @property(nonatomic, assign)BOOL isModifyStock;
 
--(void)refreshUI;
+- (void)refreshUI;
 
 
 @end

@@ -22,9 +22,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol StoreCollectionReusableViewDelegate<NSObject>
 
--(void)collectionReusableView:(StoreCollectionReusableView *)view tapAction:(StoreListSortingType)storeSortingType;
+- (void)collectionReusableView:(StoreCollectionReusableView *)view tapAction:(StoreListSortingType)storeSortingType;
 
--(void)collectionReusableView:(StoreCollectionReusableView *)view tapGrid:(BOOL)isGrid;
+- (void)collectionReusableView:(StoreCollectionReusableView *)view tapGrid:(BOOL)isGrid;
 
 @end
 

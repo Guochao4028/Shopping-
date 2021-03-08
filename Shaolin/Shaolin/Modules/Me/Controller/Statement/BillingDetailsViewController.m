@@ -17,6 +17,8 @@
 #import "DataManager.h"
 #import "OrderDetailsModel.h"
 
+#import "OrderDetailsNewModel.h"
+
 @interface BillingDetailsViewController ()
 
 @property(nonatomic, strong)BillingDetailsDataView *contentView;
@@ -65,9 +67,16 @@
 //        }
 //    }
     
-    __block OrderDetailsModel *orderDetailsModel = nil;
-    NSString *orderCode = model.orderCode;
-    NSArray *orderArray = [model.orderCode componentsSeparatedByString:@"_"];
+//    __block OrderDetailsModel *orderDetailsModel = nil;
+    
+    if (model.orderCarId == nil) {
+        [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"订单获取异常")];
+        return;
+    }
+    
+    __block OrderDetailsNewModel *orderDetailsModel = nil;
+    NSString *orderCode = model.orderCarId;
+    NSArray *orderArray = [model.orderCarId componentsSeparatedByString:@"_"];
     // TOOD: 多商品合并下单，退款单个商品，获取详情使用子订单号
     if (orderArray.count > 1){
         if ([orderArray.lastObject length]){
@@ -80,12 +89,19 @@
     dispatch_group_t group = dispatch_group_create();
     dispatch_group_enter(group);//手动在group中加入一个任务
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
-    [[DataManager shareInstance] getOrderInfo:@{@"order_id":orderCode} Callback:^(id object) {
+    [[DataManager shareInstance] getOrderInfo:@{@"id":orderCode} Callback:^(id object) {
         [hud hideAnimated:YES];
         dispatch_group_leave(group);//手动在group移除一个任务
-        if([object isKindOfClass:[NSArray class]] == YES && [object count]){
-            NSArray *tmpArray = (NSArray *)object;
-            orderDetailsModel = tmpArray[0];
+        if([object isKindOfClass:[OrderDetailsNewModel class]] == YES){
+//            NSArray *tmpArray = (NSArray *)object;
+//            orderDetailsModel = tmpArray[0];
+            
+            OrderDetailsNewModel *derailsNewModel = (OrderDetailsNewModel *)object;
+           if (derailsNewModel.goods.count == 0){
+               [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"订单获取异常")];
+           }
+            orderDetailsModel = derailsNewModel;
+            
         } else if ([object isKindOfClass:[NSString class]]){
             [ShaolinProgressHUD singleTextAutoHideHud:object];
         } else {
@@ -97,7 +113,8 @@
         NSInteger orderDetailsType = 0;
         
         if (orderDetailsModel){
-            orderDetailsType = [orderDetailsModel.type integerValue];
+            OrderDetailsGoodsModel *goodsModel = [orderDetailsModel.goods firstObject];
+            orderDetailsType = [goodsModel.type integerValue];
             ///1：实物，2：教程，3：报名，5:法事佛事类型-法会，6:法事佛事类型-佛事， 7:法事佛事类型-建寺供僧 8:普通法会 4:交流会
         } else {
             return;
@@ -133,11 +150,11 @@
 }
 #pragma mark - getter / setter
 
--(void)setModel:(StatementValueModel *)model{
+- (void)setModel:(StatementValueModel *)model{
     _model = model;
 }
 
--(BillingDetailsDataView *)contentView{
+- (BillingDetailsDataView *)contentView{
     
     if (_contentView == nil) {
         WEAKSELF

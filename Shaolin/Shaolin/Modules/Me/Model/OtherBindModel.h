@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface OtherBindModel : NSObject
 @property (nonatomic) BOOL bindStatus;
+
+// 1.微信 2.微博 3.QQ 4.苹果
 @property (nonatomic, copy) NSString *type;
 @end
 

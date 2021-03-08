@@ -32,7 +32,7 @@
 }
 
 
--(void)setModelDic:(NSDictionary *)modelDic{
+- (void)setModelDic:(NSDictionary *)modelDic{
     _modelDic = modelDic;
     NSString *titleStr = modelDic[@"title"];
     NSString *placeholderStr = modelDic[@"placeholder"];

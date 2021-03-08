@@ -78,19 +78,19 @@ static int CollectionViewALineCellCount = 4;
 @implementation MeViewController
 
 #pragma mark - life cycle
--(void)viewWillAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [self setStatusBarWhiteTextColor];
     [self getUserDataSuccess:nil failure:nil showHUD:NO];
     [self getUserStoreOpenInformation];
-    [self getUserBalance];
+//    [self getUserBalance];
     [self setupUnreadMessageCount];
     
     [[DataManager shareInstance] getOrderAndCartCount];
 }
 
--(void)viewWillDisappear:(BOOL)animated
+- (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
     
@@ -104,11 +104,11 @@ static int CollectionViewALineCellCount = 4;
     [self initUI];
     
     [self.navigationController setDelegate:self];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getUserData) name:@"MeViewController_ReloadUserData" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getUserStoreOpenInformation) name:@"MeViewController_reloadUserStoreOpenInformation" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getUserData) name:@"MeViewControllerDidReloadUserDataNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getUserStoreOpenInformation) name:@"MeViewControllerDidReloadUserStoreOpenInformationDataNotfication" object:nil];
 }
 
--(void)initUI {
+- (void)initUI {
     
     [self.view addSubview:self.bgScrollerView];
     [self.bgScrollerView addSubview:self.bgView];
@@ -183,6 +183,8 @@ static int CollectionViewALineCellCount = 4;
     }];
     
     self.bgScrollerView.contentSize = CGSizeMake(0, 780 + kBottomSafeHeight);
+    
+//    [self.messageBtn setHidden:YES];
 }
 
 - (void)setupUnreadMessageCount {
@@ -197,6 +199,7 @@ static int CollectionViewALineCellCount = 4;
     } else {
         [self.messageBtn setImage:[UIImage imageNamed:@"xiaoxi"] forState:(UIControlStateNormal)];
     }
+    
     
 }
 
@@ -216,7 +219,7 @@ static int CollectionViewALineCellCount = 4;
         NSDictionary *dic = responseObject;
         if (dic && [dic isKindOfClass:[NSDictionary class]]){
             NSMutableDictionary *userDic =  [[NSMutableDictionary alloc]initWithDictionary:dic];
-            [userDic setObject:[SLAppInfoModel sharedInstance].access_token forKey:kToken];
+            [userDic setObject:[SLAppInfoModel sharedInstance].accessToken forKey:kToken];
             
             NSDictionary *allDic = [[NSDictionary alloc]initWithDictionary:userDic];
             NSLog(@"%@",allDic);
@@ -240,22 +243,22 @@ static int CollectionViewALineCellCount = 4;
 }
 
 //查询余额
-- (void)getUserBalance {
-    [[MeManager sharedInstance] getUserBalanceSuccess:^(id  _Nonnull responseObject) {
-        NSDictionary *dict = responseObject;
-        if ([dict isKindOfClass:[NSDictionary class]] && [dict objectForKey:@"balance"]){
-            self->_personView.balanceNumber = [dict objectForKey:@"balance"];//[NSString stringWithFormat:@"%@",[dict objectForKey:@"balance"]];
-        } else {
-            self->_personView.balanceNumber = @(0);
-        }
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"GetUserBalance" object:nil];
-    } failure:^(NSString * _Nonnull errorReason) {
-        NSLog(@"getUserBalance-errorReason:%@",errorReason);
-    } finish:nil];
-}
+//- (void)getUserBalance {
+//    [[MeManager sharedInstance] getUserBalanceSuccess:^(id  _Nonnull responseObject) {
+//        NSDictionary *dict = responseObject;
+//        if ([dict isKindOfClass:[NSDictionary class]] && [dict objectForKey:@"balance"]){
+//            self->_personView.balanceNumber = [dict objectForKey:@"balance"];//[NSString stringWithFormat:@"%@",[dict objectForKey:@"balance"]];
+//        } else {
+//            self->_personView.balanceNumber = @(0);
+//        }
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"GetUserBalance" object:nil];
+//    } failure:^(NSString * _Nonnull errorReason) {
+//        NSLog(@"getUserBalance-errorReason:%@",errorReason);
+//    } finish:nil];
+//}
 
 #pragma mark - event
--(void)messageAction
+- (void)messageAction
 {
     EMConversationsViewController *conversationsVC = [[EMConversationsViewController alloc] init];
     conversationsVC.hidesBottomBarWhenPushed = YES;
@@ -265,14 +268,14 @@ static int CollectionViewALineCellCount = 4;
 
 
 #pragma mark - 获取用户开店详情
--(void)getUserStoreOpenInformationSuccess:(void (^)(void))success failure:(void (^)(void))failure{
+- (void)getUserStoreOpenInformationSuccess:(void (^)(void))success failure:(void (^)(void))failure{
     [[MeManager sharedInstance] postUserStoreInformationSuccess:nil failure:nil finish:^(id  _Nonnull responseObject, NSString * _Nonnull errorReason) {
         if ([ModelTool checkResponseObject:responseObject]) {
-            self.stepStr = [NSString stringWithFormat:@"%@",[[responseObject objectForKey:@"data"] objectForKey:@"step"]];
-            self.statusStr = [NSString stringWithFormat:@"%@",[[responseObject objectForKey:@"data"] objectForKey:@"status"]];
-            self.checkMessage = [NSString stringWithFormat:@"%@",[[responseObject objectForKey:@"data"] objectForKey:@"check_message"]];
             self.dataDic = [responseObject objectForKey:@"data"];
             self.model = [StoreInformationModel mj_objectWithKeyValues:self.dataDic];
+            self.stepStr = self.model.step;
+            self.statusStr = self.model.status;
+            self.checkMessage = self.model.checkMessage;
             if (success) success();
             for (UIViewController *controller in self.navigationController.viewControllers) {
                 if ([controller isKindOfClass:[StoreOneViewController class]] ||
@@ -335,10 +338,10 @@ static int CollectionViewALineCellCount = 4;
         threeVc.model = self.model;
         threeVc.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:threeVc animated:YES];
-    }else if ([self.stepStr isEqualToString:@"7"] && [self.statusStr isEqualToString:@"3"]) {
+    }else if ([self.stepStr isEqualToString:@"7"] && [self.statusStr isEqualToString:@"3"]) { //店铺被拒绝
         StoreOneViewController *oneVc = [[StoreOneViewController alloc]init];
         oneVc.stepStr = self.stepStr;
-        oneVc.statusStr = @"3";
+        oneVc.statusStr = self.statusStr;
         oneVc.checkStr = self.checkMessage;
         oneVc.model = self.model;
         oneVc.hidesBottomBarWhenPushed = YES;
@@ -378,7 +381,7 @@ static int CollectionViewALineCellCount = 4;
     }
     return cell;
 }
--(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     NSString *title = @"";
     if (collectionView == self.collectionViewOne) {
@@ -439,7 +442,7 @@ static int CollectionViewALineCellCount = 4;
 
 
 #pragma mark - getter
--(PersonalDataView *)personView
+- (PersonalDataView *)personView
 {
     WEAKSELF
     if (!_personView) {
@@ -484,7 +487,7 @@ static int CollectionViewALineCellCount = 4;
     return _personView;
 }
 
--(UIImageView *)bgView
+- (UIImageView *)bgView
 {
     if (!_bgView) {
         _bgView = [[UIImageView alloc]init];
@@ -494,7 +497,7 @@ static int CollectionViewALineCellCount = 4;
     return _bgView;
 }
 
--(UIScrollView *)bgScrollerView {
+- (UIScrollView *)bgScrollerView {
     if (!_bgScrollerView) {
         _bgScrollerView = [[UIScrollView alloc] initWithFrame:CGRectZero];
         _bgScrollerView.showsVerticalScrollIndicator = NO;
@@ -508,7 +511,7 @@ static int CollectionViewALineCellCount = 4;
     return _bgScrollerView;
 }
 
--(UIButton *)messageBtn
+- (UIButton *)messageBtn
 {
     if (!_messageBtn) {
         _messageBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
@@ -520,7 +523,7 @@ static int CollectionViewALineCellCount = 4;
     return _messageBtn;
 }
 
--(UIView *)whiteView1
+- (UIView *)whiteView1
 {
     if (!_whiteView1) {
         _whiteView1 = [[UIView alloc] init];
@@ -530,7 +533,7 @@ static int CollectionViewALineCellCount = 4;
     return _whiteView1;
 }
 
--(UIView *)whiteView2
+- (UIView *)whiteView2
 {
     if (!_whiteView2) {
         _whiteView2 = [[UIView alloc] init];
@@ -540,7 +543,7 @@ static int CollectionViewALineCellCount = 4;
     return _whiteView2;
 }
 
--(UILabel *)moduleTitle1 {
+- (UILabel *)moduleTitle1 {
     if (!_moduleTitle1) {
         _moduleTitle1 = [UILabel new];
         _moduleTitle1.font = kMediumFont(16);
@@ -550,7 +553,7 @@ static int CollectionViewALineCellCount = 4;
     return _moduleTitle1;
 }
 
--(UILabel *)moduleTitle2 {
+- (UILabel *)moduleTitle2 {
     if (!_moduleTitle2) {
         _moduleTitle2 = [UILabel new];
         _moduleTitle2.font = kMediumFont(16);
@@ -560,7 +563,7 @@ static int CollectionViewALineCellCount = 4;
     return _moduleTitle2;
 }
 
--(UICollectionView *)collectionViewOne
+- (UICollectionView *)collectionViewOne
 {
     if (!_collectionViewOne) {
         
@@ -568,12 +571,13 @@ static int CollectionViewALineCellCount = 4;
         _collectionViewOne.dataSource = self;
         _collectionViewOne.delegate = self;
         _collectionViewOne.backgroundColor = [UIColor clearColor];
+        _collectionViewOne.scrollEnabled = NO;
         [_collectionViewOne registerClass:[MeCollectionViewCell class] forCellWithReuseIdentifier:@"MeCollectionViewCell"];
     }
     return _collectionViewOne;
 }
 
--(UICollectionView *)collectionViewTwo
+- (UICollectionView *)collectionViewTwo
 {
     if (!_collectionViewTwo) {
         
@@ -581,12 +585,13 @@ static int CollectionViewALineCellCount = 4;
         _collectionViewTwo.dataSource = self;
         _collectionViewTwo.delegate = self;
         _collectionViewTwo.backgroundColor = [UIColor clearColor];
+        _collectionViewTwo.scrollEnabled = NO;
         [_collectionViewTwo registerClass:[MeCollectionViewCell class] forCellWithReuseIdentifier:@"MeCollectionViewCell"];
     }
     return _collectionViewTwo;
 }
 
--(UICollectionViewFlowLayout *)layout
+- (UICollectionViewFlowLayout *)layout
 {
     if (!_layout) {
         _layout = [UICollectionViewFlowLayout new];
@@ -597,7 +602,7 @@ static int CollectionViewALineCellCount = 4;
     return _layout;
 }
 
--(UICollectionViewFlowLayout *)layoutTwo
+- (UICollectionViewFlowLayout *)layoutTwo
 {
     if (!_layoutTwo) {
         _layoutTwo = [UICollectionViewFlowLayout new];
@@ -641,7 +646,7 @@ static int CollectionViewALineCellCount = 4;
     return @"";
 }
 
--(NSArray *)collectionViewOneDataArray {
+- (NSArray *)collectionViewOneDataArray {
     return @[
         SLLocalizedString(@"我的证书"),
         SLLocalizedString(@"我的教程"),
@@ -650,14 +655,14 @@ static int CollectionViewALineCellCount = 4;
     ];
 }
 
--(NSArray *)collectionViewOneImageArray {
+- (NSArray *)collectionViewOneImageArray {
     return @[@"new_me_certificate_icon",
              @"new_me_tutorial_icon",
              @"new_me_activity_icon",
              @"new_my_achieveIcon"];
 }
 
--(NSArray *)collectionViewTwoDataArray {
+- (NSArray *)collectionViewTwoDataArray {
     return @[
         SLLocalizedString(@"报名信息"),
         SLLocalizedString(@"发文管理"),
@@ -673,7 +678,7 @@ static int CollectionViewALineCellCount = 4;
     ];
 }
 
--(NSArray *)collectionViewTwoImageArray {
+- (NSArray *)collectionViewTwoImageArray {
     return @[
         @"new_me_submitted_name",
         @"new_me_postmanagement_icon",

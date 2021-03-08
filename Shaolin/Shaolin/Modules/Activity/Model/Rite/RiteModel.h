@@ -12,8 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface RiteModel : NSObject
 
-@property (nonatomic, copy) NSString * startDate;
-@property (nonatomic, copy) NSString * endDate;
+@property (nonatomic, copy) NSString * startTime;
+@property (nonatomic, copy) NSString * endTime;
 @property (nonatomic, copy) NSString * lunarTime;
 @property (nonatomic, copy) NSString * name;
 @property (nonatomic, copy) NSString * code;

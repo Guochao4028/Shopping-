@@ -39,7 +39,7 @@
 
 @implementation OrderExchangeInvoiceHeardView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [[NSBundle mainBundle] loadNibNamed:@"OrderExchangeInvoiceHeardView" owner:self options:nil];
@@ -48,7 +48,7 @@
     return self;
 }
 
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.contentView];
     
     [UIButton setupButtonDisabled:self.electronicInvoiceButton];
@@ -100,7 +100,7 @@
     
 }
 
--(void)setIsPersonal:(BOOL)isPersonal{
+- (void)setIsPersonal:(BOOL)isPersonal{
     _isPersonal = isPersonal;
     if (isPersonal) {
         [UIButton setupButtonSelected:self.personalButton];

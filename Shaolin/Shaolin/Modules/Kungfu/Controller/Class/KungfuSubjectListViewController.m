@@ -15,6 +15,8 @@
 #import "KungfuManager.h"
 #import "SubjectModel.h"
 #import "UIScrollView+EmptyDataSet.h"
+#import "KungfuSubjectLeftTableViewCell.h"
+#import "LevelModel.h"
 
 
 // 位阶、时长筛选点击时另一个重置，但不重置类型筛选
@@ -34,7 +36,7 @@ static NSString *const curricuCellId = @"KungfuCurriculumCell";
 
 @interface KungfuSubjectListViewController () <UITableViewDelegate,UITableViewDataSource,DZNEmptyDataSetSource,DZNEmptyDataSetDelegate>
 
-@property (nonatomic, strong) UITableView * tableView;
+@property (nonatomic, strong) UITableView * contentTableView;
 
 @property (nonatomic, strong) UIView   * tableHeaderView;
 
@@ -50,6 +52,12 @@ static NSString *const curricuCellId = @"KungfuCurriculumCell";
 @property (nonatomic, strong) NSArray *subjectList;
 @property (nonatomic, assign) NSInteger page;
 
+@property(nonatomic, strong)UITableView *leftTableView;
+
+@property(nonatomic, strong)NSArray *leftDataArray;
+
+@property(nonatomic, strong)LevelModel *currentLevelModel;
+
 @end
 
 @implementation KungfuSubjectListViewController
@@ -60,6 +68,7 @@ static NSString *const curricuCellId = @"KungfuCurriculumCell";
     self.page = 1;
     
     [self initUI];
+    [self initData];
     [self requestData];
 }
 
@@ -67,7 +76,10 @@ static NSString *const curricuCellId = @"KungfuCurriculumCell";
 
     self.view.backgroundColor = UIColor.whiteColor;
 //    [self.view addSubview:self.buttonBottomLine];
-    [self.view addSubview:self.tableView];
+    [self.view addSubview:self.tableHeaderView];
+    [self.view addSubview:self.leftTableView];
+    [self.view addSubview:self.contentTableView];
+    
 
 //    [self.learnScore mas_makeConstraints:^(MASConstraintMaker *make) {
 //        make.centerX.mas_equalTo(self.tableHeaderView);
@@ -88,12 +100,74 @@ static NSString *const curricuCellId = @"KungfuCurriculumCell";
 //        make.height.mas_equalTo(0.5);
 //    }];
     
-    [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.mas_equalTo(0);
-//        make.left.right.mas_equalTo(self.view);
-//        make.bottom.mas_equalTo(self.view);
-    }];
+    [self.leftTableView mas_makeConstraints:^(MASConstraintMaker *make) {
 
+           make.top.mas_equalTo(self.tableHeaderView.mas_bottom).mas_offset(5);
+           make.left.mas_equalTo(self.view);
+           make.width.mas_equalTo(105);
+           make.bottom.mas_equalTo(self.view);
+    
+       }];
+
+    
+    [self.contentTableView mas_makeConstraints:^(MASConstraintMaker *make) {
+        
+        make.top.mas_equalTo(self.leftTableView.mas_top);
+        make.right.mas_equalTo(self.view);
+        make.left.mas_equalTo(self.leftTableView.mas_right);
+        make.bottom.mas_equalTo(self.leftTableView.mas_bottom);
+    }];
+    
+   
+}
+
+- (void)initData{
+    NSArray *duanArray = [[ModelTool shareInstance] select:[LevelModel class] tableName:@"level" where:@"levelType = 1"];
+    
+    NSArray *pinjieArray = [[ModelTool shareInstance] select:[LevelModel class] tableName:@"level" where:@"levelType = 2"];
+    
+    NSMutableArray *temArray = [NSMutableArray array];
+    [temArray addObjectsFromArray:duanArray];
+    [temArray addObjectsFromArray:pinjieArray];
+    
+    self.leftDataArray = [NSArray arrayWithArray:temArray];
+    [self.leftTableView reloadData];
+    
+    NSInteger  levelId = [[SLAppInfoModel sharedInstance].levelId integerValue];
+    
+  
+    
+    if (levelId == 0 || levelId == 62) {
+        if (levelId == 0) {
+            self.currentLevelModel = [self.leftDataArray firstObject];
+            
+            [self.leftTableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:YES scrollPosition:UITableViewScrollPositionTop];
+        }else{
+            self.currentLevelModel = [self.leftDataArray lastObject];
+            
+            [self.leftTableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:[self.leftDataArray count] - 1 inSection:0] animated:YES scrollPosition:UITableViewScrollPositionTop];
+        }
+    }else{
+        
+        for (NSInteger i = 0; i< [self.leftDataArray count]; i++) {
+            
+            LevelModel *model = self.leftDataArray[i];
+            if (levelId == [model.levelId integerValue]) {
+                self.currentLevelModel = [self.leftDataArray objectAtIndex:i+1];
+                
+                [self.leftTableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:i+1 inSection:0] animated:YES scrollPosition:UITableViewScrollPositionTop];
+                
+                
+                
+                CGRect rectintableview=[self.leftTableView rectForRowAtIndexPath:[NSIndexPath indexPathForRow:i+1 inSection:0]];
+             
+                [self.leftTableView setContentOffset:CGPointMake(self.leftTableView.contentOffset.x,((rectintableview.origin.y-self.leftTableView.contentOffset.y)-150)+self.leftTableView.contentOffset.y) animated:YES];
+                
+            }
+        }
+        
+    }
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -101,7 +175,7 @@ static NSString *const curricuCellId = @"KungfuCurriculumCell";
     [self hideNavigationBarShadow];
 }
 
--(void)viewDidAppear:(BOOL)animated {
+- (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
     NSString * kungfuLearn = [SLAppInfoModel sharedInstance].kungfu_learn;
@@ -119,7 +193,7 @@ static NSString *const curricuCellId = @"KungfuCurriculumCell";
     [self.timeSortBtn horizontalCenterTitleAndImage];
 }
 
--(void)viewDidDisappear:(BOOL)animated {
+- (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     
 }
@@ -127,19 +201,10 @@ static NSString *const curricuCellId = @"KungfuCurriculumCell";
 #pragma mark - request
 - (NSDictionary *)getDownloadClassDataParams{
     NSMutableDictionary *mDict = [@{} mutableCopy];
-    if (self.sortType == KfClassLevel_desc || self.sortType == KfClassTime_desc){
-        mDict[@"sort"] = @"desc";
-    } else if (self.sortType == KfClassLevel_asc || self.sortType == KfClassTime_asc){
-        mDict[@"sort"] = @"asc";
-    }
-    // 按时长@"time":1, 按级别@@"level":@"1"
-    if (self.sortType == KfClassLevel_desc || self.sortType == KfClassLevel_asc){
-        mDict[@"level"] = @"1";
-    } else if (self.sortType == KfClassTime_desc || self.sortType == KfClassTime_asc){
-        mDict[@"time"] = @"1";
-    }
-  
-    mDict[@"page"] = @(self.page);
+ 
+    mDict[@"level"] = self.currentLevelModel.levelId;
+    mDict[@"pageNum"] = @(self.page);
+    mDict[@"pageSize"] = @(10);
     
     return mDict;
 }
@@ -151,20 +216,25 @@ static NSString *const curricuCellId = @"KungfuCurriculumCell";
     
     [[KungfuManager sharedInstance] getSubjectList:params success:^(NSDictionary * _Nullable resultDic) {
         
+        NSArray * list;
         if ([resultDic isKindOfClass:[NSArray class]]) {
-            NSArray *dataList = [SubjectModel mj_objectArrayWithKeyValuesArray:(NSArray *)resultDic];
-            self.subjectList = [self.subjectList arrayByAddingObjectsFromArray:dataList];
-            
-            [self.tableView reloadData];
+            list = (NSArray*)resultDic;
+        } else {
+            list = resultDic[@"data"];
         }
+        
+        NSArray *dataList = [SubjectModel mj_objectArrayWithKeyValuesArray:list];
+        self.subjectList = [self.subjectList arrayByAddingObjectsFromArray:dataList];
+        
+        [self.contentTableView reloadData];
         
     } failure:^(NSString * _Nullable errorReason) {
         
         [ShaolinProgressHUD singleTextAutoHideHud:errorReason];
     } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
         
-        [self.tableView.mj_header endRefreshing];
-        [self.tableView.mj_footer endRefreshing];
+        [self.contentTableView.mj_header endRefreshing];
+        [self.contentTableView.mj_footer endRefreshing];
         
         [hud hideAnimated:YES];
     }];
@@ -183,32 +253,8 @@ static NSString *const curricuCellId = @"KungfuCurriculumCell";
 
 #pragma mark - event
 
-- (void) levelSortHandle {
-    // 按段品制等级筛
-    // 本来是升序或降序改成相反的，否则表示重新按段品制排序
-    if (self.sortType == KfClassLevel_asc) {
-        self.sortType = KfClassLevel_desc;
-    } else if (self.sortType == KfClassLevel_desc) {
-        self.sortType = KfClassLevel_asc;
-    } else {
-        self.sortType = KfClassLevel_asc;
-    }
-    
-    [self.tableView.mj_header beginRefreshing];
-}
 
-- (void) timeSortHandle {
-    // 按时间筛
-    if (self.sortType == KfClassTime_asc) {
-        self.sortType = KfClassTime_desc;
-    } else if (self.sortType == KfClassTime_desc) {
-        self.sortType = KfClassTime_asc;
-    } else {
-        self.sortType = KfClassTime_desc;
-    }
 
-    [self.tableView.mj_header beginRefreshing];
-}
 
 #pragma mark - DZNEmptyDataSetDelegate && dataSource
 - (BOOL)emptyDataSetShouldDisplay:(UIScrollView *)scrollView {
@@ -216,13 +262,13 @@ static NSString *const curricuCellId = @"KungfuCurriculumCell";
     return !self.subjectList.count;
 }
 
--(CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
+- (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
     return -30;
 }
 
 - (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView
 {
-    NSString *text = SLLocalizedString(@"暂无教程");
+    NSString *text = SLLocalizedString(@"暂无科目");
     
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont boldSystemFontOfSize:15.0f],
                                  NSForegroundColorAttributeName: KTextGray_999};
@@ -236,32 +282,30 @@ static NSString *const curricuCellId = @"KungfuCurriculumCell";
 
 #pragma mark - tableView delegate && dataSource
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    
+    if (tableView == self.leftTableView) {
+        return self.leftDataArray.count;
+    }
     
     return self.subjectList.count;
 }
 
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    
-    UIView *view = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWidth, 45)];
-    [view addSubview:self.levelSortBtn];
-    [view addSubview:self.timeSortBtn];
-    [view addSubview:self.buttonBottomLine];
-    
-    [self.buttonBottomLine mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(35);
-        make.height.mas_equalTo(0.5);
-        make.width.mas_equalTo(view);
-    }];
-    view.backgroundColor = UIColor.whiteColor;
-    return view;
-}
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (tableView == self.leftTableView) {
+        
+         KungfuSubjectLeftTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"KungfuSubjectLeftTableViewCell"];
+         
+         [cell setModel:self.leftDataArray[indexPath.row]];
+         
+         return cell;
+    }
     
     KungfuCurriculumCell *cell = [tableView dequeueReusableCellWithIdentifier:curricuCellId];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -269,115 +313,95 @@ static NSString *const curricuCellId = @"KungfuCurriculumCell";
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    SubjectModel * subject = self.subjectList[indexPath.row];
-    
-    KungfuClassListViewController * vc = [KungfuClassListViewController new];
-    vc.subjectModel = subject;
-    vc.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:vc animated:YES];
+    if (tableView == self.leftTableView) {
+            
+        LevelModel *levelModel = self.leftDataArray[indexPath.row];
+        
+        if (self.currentLevelModel ==  levelModel) {
+            return;
+        }
+        self.currentLevelModel = levelModel;
+        [self dataRefresh];
+        [tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
 
+    }else{
+        SubjectModel * subject = self.subjectList[indexPath.row];
+        
+        KungfuClassListViewController * vc = [KungfuClassListViewController new];
+        vc.subjectModel = subject;
+        vc.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:vc animated:YES];
+    }
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    CGFloat imgWidth = (kScreenWidth-32);
-    CGFloat imgHeight = imgWidth*150/343;
+    if (tableView == self.leftTableView) {
+        return 50;
+    }else{
+        return 113;
+    }
     
-    return imgHeight;
+//    CGFloat imgWidth = (kScreenWidth-32);
+//    CGFloat imgHeight = imgWidth*150/343;
+//
+//    return imgHeight;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 45;
-}
+
 
 #pragma mark - setter
--(void)setSortType:(KfClassSortType)sortType {
-    _sortType = sortType;
-    
-    if (_sortType == KfClassLevel_asc || _sortType == KfClassLevel_desc) {
-        [self.timeSortBtn setTitleColor:ButtonTextColor forState:UIControlStateNormal];
-        [self.timeSortBtn setImage:[UIImage imageNamed:@"kungfu_dan_normal"] forState:UIControlStateNormal];
-        [self.levelSortBtn setTitleColor:kMainYellow forState:UIControlStateNormal];
-        
-        if (_sortType == KfClassLevel_asc) {
-            [self.levelSortBtn setImage:[UIImage imageNamed:@"new_kf_asc"] forState:UIControlStateNormal];
-        } else {
-            [self.levelSortBtn setImage:[UIImage imageNamed:@"new_kf_desc"] forState:UIControlStateNormal];
-        }
-    }
-    if (_sortType == KfClassTime_asc || _sortType == KfClassTime_desc) {
-        [self.levelSortBtn setTitleColor:ButtonTextColor forState:UIControlStateNormal];
-        [self.levelSortBtn setImage:[UIImage imageNamed:@"kungfu_dan_normal"] forState:UIControlStateNormal];
-        [self.timeSortBtn setTitleColor:kMainYellow forState:UIControlStateNormal];
-        
-        if (_sortType == KfClassTime_asc) {
-            [self.timeSortBtn setImage:[UIImage imageNamed:@"new_kf_asc"] forState:UIControlStateNormal];
-        } else {
-            [self.timeSortBtn setImage:[UIImage imageNamed:@"new_kf_desc"] forState:UIControlStateNormal];
-        }
-    }
-}
 
 #pragma mark - getter
-- (UITableView *)tableView {
+- (UITableView *)contentTableView {
     WEAKSELF
-    if (!_tableView) {
-        _tableView = [[UITableView alloc]initWithFrame:CGRectZero style:UITableViewStylePlain];
-        _tableView.dataSource = self;
-        _tableView.delegate = self;
-        _tableView.emptyDataSetSource = self;
-        _tableView.emptyDataSetDelegate = self;
-        _tableView.showsVerticalScrollIndicator = NO;
-        _tableView.showsHorizontalScrollIndicator = NO;
-        _tableView.backgroundColor = UIColor.whiteColor;
-        _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    if (!_contentTableView) {
+        _contentTableView = [[UITableView alloc]initWithFrame:CGRectZero style:UITableViewStylePlain];
+        _contentTableView.dataSource = self;
+        _contentTableView.delegate = self;
+        _contentTableView.emptyDataSetSource = self;
+        _contentTableView.emptyDataSetDelegate = self;
+        _contentTableView.showsVerticalScrollIndicator = NO;
+        _contentTableView.showsHorizontalScrollIndicator = NO;
+        _contentTableView.backgroundColor = UIColor.whiteColor;
+        _contentTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         
-        _tableView.tableHeaderView = self.tableHeaderView;
+//        _contentTableView.tableHeaderView = self.tableHeaderView;
         
-        [_tableView registerClass:[KungfuCurriculumCell class] forCellReuseIdentifier:curricuCellId];
+        [_contentTableView registerClass:[KungfuCurriculumCell class] forCellReuseIdentifier:curricuCellId];
         
-        _tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+        _contentTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
             [weakSelf dataRefresh];
         }];
         
-        _tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
+        _contentTableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
                // 上拉加载
             [weakSelf loadMore];
         }];
     }
-    return _tableView;
+    return _contentTableView;
 }
 
--(UIButton *)levelSortBtn {
-    if (!_levelSortBtn) {
-        _levelSortBtn = [[UIButton alloc]initWithFrame:
-                            CGRectMake(45, 0, (kScreenWidth - 90)/2, 34)];
-        [_levelSortBtn setImage:[UIImage imageNamed:@"kungfu_dan_normal"] forState:UIControlStateNormal];
-        [_levelSortBtn setTitle:SLLocalizedString(@"位阶") forState:(UIControlStateNormal)];
-        [_levelSortBtn addTarget:self action:@selector(levelSortHandle) forControlEvents:(UIControlEventTouchUpInside)];
-        [_levelSortBtn horizontalCenterTitleAndImageRight];
-        _levelSortBtn.titleLabel.font = ButtonTextFont;
-        [_levelSortBtn setTitleColor:ButtonTextColor forState:(UIControlStateNormal)];
+- (UITableView *)leftTableView{
+    if (_leftTableView == nil) {
+        _leftTableView = [[UITableView alloc]initWithFrame:CGRectZero];
+        [_leftTableView setDelegate:self];
+        [_leftTableView setDataSource:self];
+        [_leftTableView registerClass:[KungfuSubjectLeftTableViewCell class] forCellReuseIdentifier:@"KungfuSubjectLeftTableViewCell"];
+        _leftTableView.showsHorizontalScrollIndicator  = NO;
+        _leftTableView.showsVerticalScrollIndicator = NO;
+        [_leftTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+        _leftTableView.estimatedRowHeight = 0;
+        _leftTableView.estimatedSectionHeaderHeight = 0;
+        _leftTableView.estimatedSectionFooterHeight = 0;
     }
-    return _levelSortBtn;
+    return _leftTableView;
 }
 
--(UIButton *)timeSortBtn {
-    if (!_timeSortBtn) {
-        _timeSortBtn = [[UIButton alloc]initWithFrame:CGRectMake(45 + (kScreenWidth - 90)/2, 0, (kScreenWidth - 90)/2, 34)];
-        [_timeSortBtn setImage:[UIImage imageNamed:@"kungfu_dan_normal"] forState:(UIControlStateNormal)];
-        [_timeSortBtn setTitle:SLLocalizedString(@"时长") forState:(UIControlStateNormal)];
-        [_timeSortBtn addTarget:self action:@selector(timeSortHandle) forControlEvents:(UIControlEventTouchUpInside)];
-        [_timeSortBtn horizontalCenterTitleAndImageRight];
-        _timeSortBtn.titleLabel.font = ButtonTextFont;
-        [_timeSortBtn setTitleColor:ButtonTextColor forState:UIControlStateNormal];
-    }
-    return _timeSortBtn;
-}
 
--(UIView *)buttonBottomLine {
+- (UIView *)buttonBottomLine {
     if (!_buttonBottomLine) {
         _buttonBottomLine = [[UIView alloc]init];
         _buttonBottomLine.backgroundColor = KTextGray_E5;
@@ -385,7 +409,7 @@ static NSString *const curricuCellId = @"KungfuCurriculumCell";
     return _buttonBottomLine;
 }
 
--(UIView *)tableHeaderView {
+- (UIView *)tableHeaderView {
     if (!_tableHeaderView) {
         _tableHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidth, 40)];
         
@@ -397,17 +421,18 @@ static NSString *const curricuCellId = @"KungfuCurriculumCell";
 
 
 
--(UIImageView *)learnScoreImgV {
+- (UIImageView *)learnScoreImgV {
     if (!_learnScoreImgV) {
-        _learnScoreImgV = [[UIImageView alloc] initWithFrame:CGRectMake(15, 0, kScreenWidth - 30, 40)];
+        _learnScoreImgV = [[UIImageView alloc] initWithFrame:CGRectMake(16, 0, kScreenWidth - 32, 40)];
         _learnScoreImgV.image = [UIImage imageNamed:@"kungfu_score_bg"];
         _learnScoreImgV.clipsToBounds = YES;
         _learnScoreImgV.contentMode = UIViewContentModeScaleAspectFill;
+        _learnScoreImgV.layer.cornerRadius = 4;
     }
     return _learnScoreImgV;
 }
 
--(UILabel *)learnScore {
+- (UILabel *)learnScore {
     if (!_learnScore) {
         _learnScore = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, kScreenWidth - 30, 40)];
         _learnScore.textColor = UIColor.whiteColor;

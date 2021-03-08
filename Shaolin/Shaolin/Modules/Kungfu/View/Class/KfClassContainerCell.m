@@ -30,7 +30,7 @@ static NSString *const classSubCellId = @"KungfuClassSubCell";
     // Initialization code
 }
 
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         
@@ -62,7 +62,7 @@ static NSString *const classSubCellId = @"KungfuClassSubCell";
     self.tableView.frame = CGRectMake(0, 0, kWidth, CGRectGetHeight(self.frame));
 }
 
--(void)setCurrentClassIndex:(NSInteger)currentClassIndex {
+- (void)setCurrentClassIndex:(NSInteger)currentClassIndex {
     _currentClassIndex = currentClassIndex;
     
     if (_currentClassIndex != 999) {
@@ -76,7 +76,7 @@ static NSString *const classSubCellId = @"KungfuClassSubCell";
     _model = model;
     [self.dataSource removeAllObjects];
     if (model){
-        [self.dataSource addObjectsFromArray:model.goods_next];
+        [self.dataSource addObjectsFromArray:model.goodsNext];
         [self.tableView reloadData];
     }
 }
@@ -93,12 +93,12 @@ static NSString *const classSubCellId = @"KungfuClassSubCell";
 
 #pragma mark - delegate && dataSources
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return self.dataSource.count;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     KungfuClassSubCell * cell = [tableView dequeueReusableCellWithIdentifier:classSubCellId forIndexPath:indexPath];
     ClassGoodsModel *model = self.dataSource[indexPath.row];
@@ -121,7 +121,7 @@ static NSString *const classSubCellId = @"KungfuClassSubCell";
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
 //    if (self.currentClassIndex == indexPath.row) {
@@ -135,28 +135,28 @@ static NSString *const classSubCellId = @"KungfuClassSubCell";
     }
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return tableView.rowHeight;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
     return 0.001;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     return .001;
 }
 
--(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
     UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 0, 0)];
     return v;
 }
 
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 0, 0)];
     return v;

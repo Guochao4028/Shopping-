@@ -9,7 +9,7 @@
 #import "BusinessLicenseVc.h"
 #import "BusinessHeadView.h"
 #import "BusinessFooterView.h"
-#import "UICustomDatePicker.h"
+//#import "UICustomDatePicker.h"
 #import "HomeManager.h"
 #import "MeManager.h"
 #import "GCTextField.h"
@@ -34,7 +34,7 @@
 @property(nonatomic,strong) UITextField *startTf;//营业期限---开始日期
 @property(nonatomic,strong) UITextField *endTf;//营业期限---结束日期
 @property(nonatomic,strong) UIButton *longTimeBtn;//长期
-@property(nonatomic,assign) NSInteger selectLongTime; //判断是否是长期
+@property(nonatomic,assign) BOOL selectLongTime; //判断是否是长期
 @property(nonatomic,strong) GCTextField *capitalTf;//注册资本
 
 
@@ -64,7 +64,7 @@
     return self;
 }
 
--(void)viewWillAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     //[self setNavigationBarYellowTintColor];   
 }
@@ -74,7 +74,7 @@
     self.titleLabe.text = SLLocalizedString(@"营业执照");
     self.titleLabe.textColor = [UIColor whiteColor];
     [self.leftBtn setImage:[UIImage imageNamed:@"real_left"] forState:(UIControlStateNormal)];
-    self.selectLongTime = 0;
+//    self.selectLongTime = 0;
     
     self.view.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:self.tableView];
@@ -101,62 +101,66 @@
 
 - (void)setModel:(StoreInformationModel *)model{
     _model = model;
-    if (model.business_license_img.length){
-        self.licenseImageStr = model.business_license_img;
-        [self.headerView.photoView sd_setImageWithURL:[NSURL URLWithString:model.business_license_img]];
+    if (model.businessLicenseImg.length){
+        self.licenseImageStr = model.businessLicenseImg;
+        [self.headerView.photoView sd_setImageWithURL:[NSURL URLWithString:model.businessLicenseImg]];
     }
-    if (model.business_license_type.length){
-        NSInteger idx = [model.business_license_type integerValue] - 1;
+    if (model.businessLicenseType.length){
+        NSInteger idx = [model.businessLicenseType integerValue] - 1;
         self.licenseTf.text = self.licenseTypeArray[idx];
-        self.licenseStr = model.business_license_type;
+        self.licenseStr = model.businessLicenseType;
     }
-    if (model.business_name.length){
-        self.companyTf.text = model.business_name;
+    if (model.businessName.length){
+        self.companyTf.text = model.businessName;
     }
-    if (model.business_license_number.length){
-        self.licenseNumTf.text = model.business_license_number;
+    if (model.businessLicenseNumber.length){
+        self.licenseNumTf.text = model.businessLicenseNumber;
     }
-    if (model.business_location.length){
-        self.licenseAddressTf.text = model.business_location;
+    if (model.businessLocation.length){
+        self.licenseAddressTf.text = model.businessLocation;
     }
-    if (model.business_address.length){
-        self.licenseDetailedAddress.text = model.business_address;
+    if (model.businessAddress.length){
+        self.licenseDetailedAddress.text = model.businessAddress;
     }
-    if (model.start_time.length){
-        self.createTf.text = model.start_time;
+    if (model.startTime.length){
+        self.createTf.text = model.startTime;
     }
-    if (model.business_start_time.length){
-        self.startTf.text = model.business_start_time;
+    if (model.businessStartTime.length){
+        self.startTf.text = model.businessStartTime;
     }
-    if (model.business_end_time.length){
-        self.endTf.text = model.business_end_time;
+    if (model.businessEndTime.length){
+        self.endTf.text = model.businessEndTime;
     }
-    if (model.business_time_long.length){
-        self.selectLongTime = [model.business_time_long integerValue];
+    if (model.businessTimeLong.length){
+        self.selectLongTime = [model.businessTimeLong boolValue];
         [self.longTimeBtn setSelected:self.selectLongTime];
     }
-    if (model.registered_capital.length){
-        self.capitalTf.text = model.registered_capital;
+    if (model.registeredCapital.length){
+        self.capitalTf.text = model.registeredCapital;
     }
-    if (model.business_range.length){
-        self.scopeBusinessTf.text = model.business_range;
+    if (model.businessRange.length){
+        self.scopeBusinessTf.text = model.businessRange;
     }
-    if (model.company_address.length){
-        self.companyAddressTf.text = model.company_address;
+    if (model.companyAddress.length){
+        self.companyAddressTf.text = model.companyAddress;
     }
-    if (model.company_address_info.length){
-        self.companyDetailedAddressTf.text = model.company_address_info;
+    if (model.companyAddressInfo.length){
+        self.companyDetailedAddressTf.text = model.companyAddressInfo;
     }
-    if (model.company_phone){
-        self.companyPhone.text = model.company_phone;
+    if (model.companyPhone.length){
+        self.companyPhone.text = model.companyPhone;
     }
-    if (model.urgent_name){
-        self.emergencyPersonNameTf.text = model.urgent_name;
+    if (model.urgentName.length){
+        self.emergencyPersonNameTf.text = model.urgentName;
     }
-    if (model.urgent_phone){
-        self.emergencyPersonPhoneTf.text = model.urgent_phone;
+    if (model.urgentPhone.length){
+        self.emergencyPersonPhoneTf.text = model.urgentPhone;
     }
-    
+    if (model.bankLicense.length) {
+        self.bankImageStr = model.bankLicense;
+        [self.footerView.photoView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.bankImageStr]] placeholderImage:[UIImage imageNamed:@"default_big"]];
+        self.footerView.photoCameraImage.hidden = YES;
+    }
 }
 
 - (void)registerForKeyboardNotifications {
@@ -187,24 +191,24 @@
 
 
 
--(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
     [self hiddenKeyboardText];
     [self hiddenPickerView];
     
 }
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return 2;
 }
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (section == 0) {
         return 9;
     }
     return 6;
 }
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
@@ -269,7 +273,7 @@
     
     return cell;
 }
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section ==0) {
         if (indexPath.row == 4) {
@@ -285,13 +289,13 @@
     }
     return SLChange(53);
 }
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [self hiddenKeyboardText];
     [self hiddenPickerView];
 }
 
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     if (section == 1) {
         UIView *view = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWidth, 48)];
@@ -306,16 +310,16 @@
     UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 0, 0)];
     return v;
 }
--(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
     UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 0, 0)];
     return v;
 }
--(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
     return 0.001;
 }
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     if (section == 1) {
         return 48;
@@ -385,7 +389,7 @@
     }
     return _footerView;
 }
--(SLStringPickerView *)stringPickerView {
+- (SLStringPickerView *)stringPickerView {
     WEAKSELF
     if (!_stringPickerView) {
         _stringPickerView = [[SLStringPickerView alloc] init];
@@ -479,14 +483,23 @@
                  [hud hideAnimated:YES];
                  if ([[dic objectForKey:@"code"] isEqualToString:@"200"]) {
                      if ([type isEqualToString:@"header"]) {
-                         self.licenseImageStr = [NSString stringWithFormat:@"%@",[dic objectForKey:@"data"]];
-                         [self.headerView.photoView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.licenseImageStr]]];
-                         self.headerView.photoCameraImage.hidden = YES;
+                       
+                         dispatch_async(dispatch_get_main_queue(), ^{
+                             self.licenseImageStr = [NSString stringWithFormat:@"%@",[dic objectForKey:@"data"]];
+                             [self.headerView.photoView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.licenseImageStr]] placeholderImage:[UIImage imageNamed:@"default_big"]];
+                             self.headerView.photoCameraImage.hidden = YES;
+                        });
+                         
                      }else
                      {
-                         self.bankImageStr = [NSString stringWithFormat:@"%@",[dic objectForKey:@"data"]];
-                         [self.footerView.photoView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.bankImageStr]]];
-                         self.footerView.photoCameraImage.hidden = YES;
+                         
+                         dispatch_async(dispatch_get_main_queue(), ^{
+                             self.bankImageStr = [NSString stringWithFormat:@"%@",[dic objectForKey:@"data"]];
+                             [self.footerView.photoView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.bankImageStr]] placeholderImage:[UIImage imageNamed:@"default_big"]];
+                             self.footerView.photoCameraImage.hidden = YES;
+                        });
+                         
+                        
                      }
                      
                      
@@ -538,7 +551,7 @@
         return;
     }
     
-    if (self.selectLongTime == 0) { // 不是长期需要填写结束日期
+    if (!self.selectLongTime) { // 不是长期需要填写结束日期
         if (self.endTf.text.length == 0) {
             [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请选择结束日期") view:self.view afterDelay:TipSeconds];
             return;
@@ -623,7 +636,7 @@
                                           CreatDate:self.createTf.text
                                           StartDate:self.startTf.text
                                             EndDate:self.endTf.text
-                                           LongTime:[NSString stringWithFormat:@"%ld",self.selectLongTime]
+                                           LongTime:[NSString stringWithFormat:@"%d",self.selectLongTime]
                                             Capital:self.capitalTf.text
                                       ScopeBusiness:self.scopeBusinessTf.text
                                      CompanyAddress:self.companyAddressTf.text
@@ -635,6 +648,7 @@
                                         BankLicense:self.bankImageStr success:nil failure:nil finish:^(id  _Nonnull responseObject, NSString * _Nonnull errorReason) {
         [hud hideAnimated:YES];
         if ([ModelTool checkResponseObject:responseObject]) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"MeViewControllerDidReloadUserStoreOpenInformationDataNotfication" object:nil];
             [ShaolinProgressHUD singleTextAutoHideHud:[responseObject objectForKey:@"msg"]];
             if (weakSelf.BusinessBlock) {
                 weakSelf.BusinessBlock(@"1", self.licenseNumTf.text);
@@ -681,7 +695,7 @@
     
 }
 #pragma mark - 执照类型
--(UITextField *)licenseTf
+- (UITextField *)licenseTf
 {
     if (!_licenseTf) {
         _licenseTf = [[UITextField alloc] initWithFrame:CGRectMake(SLChange(123),0, kWidth -SLChange(123) - SLChange(16) , SLChange(53))];
@@ -721,7 +735,7 @@
 //    [self.pickerView show];
 }
 #pragma mark - 公司名称
--(UITextField *)companyTf
+- (UITextField *)companyTf
 {
     if (!_companyTf) {
         _companyTf = [[GCTextField alloc] initWithFrame:CGRectMake(SLChange(123),0, kWidth -SLChange(123) - SLChange(16), SLChange(53))];
@@ -741,7 +755,7 @@
     return _companyTf;
 }
 #pragma mark - 营业执照号
--(UITextField *)licenseNumTf
+- (UITextField *)licenseNumTf
 {
     if (!_licenseNumTf) {
         _licenseNumTf = [[GCTextField alloc] initWithFrame:CGRectMake(SLChange(123),0, kWidth -SLChange(123) - SLChange(16), SLChange(53))];
@@ -761,7 +775,7 @@
     return _licenseNumTf;
 }
 #pragma mark - 营业执照所在地
--(UITextField *)licenseAddressTf
+- (UITextField *)licenseAddressTf
 {
     if (!_licenseAddressTf) {
         _licenseAddressTf = [[GCTextField alloc] initWithFrame:CGRectMake(SLChange(123),0, kWidth -SLChange(123) - SLChange(16), SLChange(53))];
@@ -781,7 +795,7 @@
     return _licenseAddressTf;
 }
 #pragma mark - 营业执照详细地址
--(UITextField *)licenseDetailedAddress
+- (UITextField *)licenseDetailedAddress
 {
     if (!_licenseDetailedAddress) {
         _licenseDetailedAddress = [[GCTextField alloc] initWithFrame:CGRectMake(SLChange(123),0, kWidth -SLChange(123) - SLChange(16), SLChange(53))];
@@ -801,7 +815,7 @@
     return _licenseDetailedAddress;
 }
 #pragma mark - 成立日期
--(UITextField *)createTf
+- (UITextField *)createTf
 {
     if (!_createTf) {
         _createTf = [[UITextField alloc] initWithFrame:CGRectMake(SLChange(123),0, kWidth -SLChange(123) - SLChange(16), SLChange(53))];
@@ -834,7 +848,7 @@
     [self.datePickerView show];
 }
 #pragma mark - 营业期限--开始日期
--(UITextField *)startTf
+- (UITextField *)startTf
 {
     if (!_startTf) {
         _startTf = [[UITextField alloc] initWithFrame:CGRectMake(SLChange(123),SLChange(15), kWidth -SLChange(123) - SLChange(16), SLChange(21))];
@@ -865,7 +879,7 @@
     [self.datePickerView show];
 }
 #pragma mark - 营业期限--结束日期
--(UITextField *)endTf
+- (UITextField *)endTf
 {
     if (!_endTf) {
         _endTf = [[UITextField alloc] initWithFrame:CGRectMake(SLChange(123),SLChange(49), kWidth -SLChange(123) - SLChange(16), SLChange(21))];
@@ -914,17 +928,17 @@
     [self hiddenKeyboardText];
     button.selected = !button.selected;
     if (button.selected) {
-        self.selectLongTime = 1;
+        self.selectLongTime = YES;
         self.endTf.text = @"";
         self.endTf.enabled = NO;
     }else
     {
         self.endTf.enabled = YES;
-        self.selectLongTime = 0;
+        self.selectLongTime = NO;
     }
 }
 #pragma mark - 注册资本
--(UITextField *)capitalTf
+- (UITextField *)capitalTf
 {
     if (!_capitalTf) {
         _capitalTf = [[GCTextField alloc] initWithFrame:CGRectMake(SLChange(123),SLChange(16), kWidth -SLChange(123) - SLChange(16), SLChange(21))];
@@ -944,7 +958,7 @@
     return _capitalTf;
 }
 #pragma mark - 经营范围
--(UITextField *)scopeBusinessTf
+- (UITextField *)scopeBusinessTf
 {
     if (!_scopeBusinessTf) {
         _scopeBusinessTf = [[GCTextField alloc] initWithFrame:CGRectMake(SLChange(123),0, kWidth -SLChange(123) - SLChange(16), SLChange(53))];
@@ -965,7 +979,7 @@
     return _scopeBusinessTf;
 }
 #pragma mark - 公司所在地
--(UITextField *)companyAddressTf
+- (UITextField *)companyAddressTf
 {
     if (!_companyAddressTf) {
         _companyAddressTf = [[GCTextField alloc] initWithFrame:CGRectMake(SLChange(123),0, kWidth -SLChange(123) - SLChange(16), SLChange(53))];
@@ -985,7 +999,7 @@
     return _companyAddressTf;
 }
 #pragma mark - 公司所在地的详细地址
--(UITextField *)companyDetailedAddressTf
+- (UITextField *)companyDetailedAddressTf
 {
     if (!_companyDetailedAddressTf) {
         _companyDetailedAddressTf = [[GCTextField alloc] initWithFrame:CGRectMake(SLChange(123),0, kWidth -SLChange(123) - SLChange(16), SLChange(53))];
@@ -1005,7 +1019,7 @@
     return _companyDetailedAddressTf;
 }
 #pragma mark - 公司电话
--(UITextField *)companyPhone
+- (UITextField *)companyPhone
 {
     if (!_companyPhone) {
         _companyPhone = [[GCTextField alloc] initWithFrame:CGRectMake(SLChange(123),0, kWidth -SLChange(123) - SLChange(16), SLChange(53))];
@@ -1027,7 +1041,7 @@
     return _companyPhone;
 }
 #pragma mark - 紧急联系人
--(UITextField *)emergencyPersonNameTf
+- (UITextField *)emergencyPersonNameTf
 {
     if (!_emergencyPersonNameTf) {
         _emergencyPersonNameTf = [[GCTextField alloc] initWithFrame:CGRectMake(SLChange(123),0, kWidth -SLChange(123) - SLChange(16), SLChange(53))];
@@ -1047,7 +1061,7 @@
     return _emergencyPersonNameTf;
 }
 #pragma mark - 紧急联系人电话
--(UITextField *)emergencyPersonPhoneTf
+- (UITextField *)emergencyPersonPhoneTf
 {
     if (!_emergencyPersonPhoneTf) {
         _emergencyPersonPhoneTf = [[GCTextField alloc] initWithFrame:CGRectMake(SLChange(123),0, kWidth -SLChange(123) - SLChange(16), SLChange(53))];
@@ -1084,7 +1098,7 @@
     }
     return _nextBtn;
 }
--(void)textFieldDidBeginEditing:(UITextField*)textField
+- (void)textFieldDidBeginEditing:(UITextField*)textField
 {
     NSIndexPath *indexPath = [self.tableView indexPathForCell:(UITableViewCell *)textField.superview.superview];
     _indexPath = indexPath;
@@ -1121,7 +1135,7 @@
     }
     
 }
--(BOOL)textFieldShouldReturn:(UITextField *)textField
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     [textField resignFirstResponder];
     return YES;

@@ -17,21 +17,21 @@
 }
 
 + (NSDictionary *)mj_objectClassInArray{
-    return @{@"goods_next" : @"ClassGoodsModel",
-             @"img_data" : @"NSString"
+    return @{@"goodsNext" : @"ClassGoodsModel",
+             @"imgData" : @"NSString"
     };
 }
 
 - (BOOL) isFreeClass {
-    return [self.pay_type isEqualToString:@"1"];
+    return [self.payType isEqualToString:@"1"];
 }
 
 - (BOOL) isVIPClass {
-    return [self.pay_type isEqualToString:@"2"];
+    return [self.payType isEqualToString:@"2"];
 }
 
 - (BOOL) isPayClass {
-    return [self.pay_type isEqualToString:@"3"];
+    return [self.payType isEqualToString:@"3"];
 }
 
 @end
@@ -39,7 +39,7 @@
 @implementation ClassDetailHistoryModel
 + (NSDictionary *)mj_replacedKeyFromPropertyName{
     return @{
-             @"history_id" : @"id",
+             @"historyId" : @"id",
              };
 }
 

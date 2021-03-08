@@ -28,6 +28,8 @@
 
 #import "OrderHomePageViewController.h"
 
+#import "OrderDetailsNewModel.h"
+
 @interface AfterSalesDetailsViewController ()<WengenNavgationViewDelegate, UITableViewDelegate, UITableViewDataSource, AfterSalesApplyReasonTableCellDelegate,TZImagePickerControllerDelegate>
 
 @property(nonatomic, strong)WengenNavgationView *navgationView;
@@ -55,15 +57,15 @@
     
 }
 
--(void)viewWillAppear:(BOOL)animated{
+- (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
 }
 
--(void)initData{
+- (void)initData{
         
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
 
-    [[DataManager shareInstance] getStoreInfo:@{@"id":self.model.club_id} Callback:^(NSObject *object) {
+    [[DataManager shareInstance] getStoreInfo:@{@"clubId":self.model.clubId} Callback:^(NSObject *object) {
         self.storeInfoModel = (GoodsStoreInfoModel *)object;
         
         if (NotNilAndNull(self.storeInfoModel)) {
@@ -92,7 +94,7 @@
 
 #pragma mark - methods
 
--(void)initUI{
+- (void)initUI{
     [self.view setBackgroundColor:[UIColor whiteColor]];
     [self.view addSubview:self.navgationView];
     [self.view addSubview:self.tableView];
@@ -101,7 +103,9 @@
 
 
 #pragma mark - action
--(void)comittAction{
+- (void)comittAction{
+    
+    [self.view endEditing:YES];
     
     [SMAlert setConfirmBtBackgroundColor:kMainYellow];
     [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
@@ -125,10 +129,11 @@
     [SMAlert showCustomView:customView stroke:YES confirmButton:[SMButton initWithTitle:SLLocalizedString(@"确定") clickAction:^{
         NSMutableDictionary *param = [NSMutableDictionary dictionary];
          
-         [param setValue:self.model.order_no forKey:@"order_id"];
-         
-         [param setValue:self.potoArray forKey:@"img_data"];
-         
+         [param setValue:self.model.orderId forKey:@"orderId"];
+        NSString *imgDataStr = [self.potoArray componentsJoinedByString:@","];
+//        [param setValue:self.potoArray forKey:@"imgData"];
+        [param setValue:imgDataStr forKey:@"imgData"];
+
          if (self.type == AfterSalesDetailsTuiQianType) {
              [param setValue:@"1" forKey:@"type"];
          }else{
@@ -139,7 +144,7 @@
         cell.afterType = self.type;
 
          [param setValue:cell.reason forKey:@"content"];
-         [param setValue:cell.goods_status forKey:@"goods_status"];
+         [param setValue:cell.goods_status forKey:@"goodsStatus"];
 
          [[DataManager shareInstance]addRefund:param Callback:^(Message *message) {
              if (message.isSuccess) {
@@ -164,41 +169,41 @@
 }
 
 #pragma mark - WengenNavgationViewDelegate
--(void)tapBack{
+- (void)tapBack{
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - UITableViewDelegate && UITableViewDataSource
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return 3;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     return 10;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     return 0.01;
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     UIView *view = [[UIView alloc] init];
     view.backgroundColor = [UIColor clearColor];
     return view;
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
     UIView *view = [[UIView alloc] init];
     view.backgroundColor = KTextGray_FA;
     return view;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return 1;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     CGFloat tableViewH = 0;
     
     switch (indexPath.section) {
@@ -240,7 +245,7 @@
     return tableViewH;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell;
     
 //    cell = [[UITableViewCell alloc]init];
@@ -287,7 +292,7 @@
 }
 
 #pragma mark - AfterSalesApplyReasonTableCellDelegate
--(void)applyReasonTableCell:(AfterSalesApplyReasonTableCell *)cell tapSelectPoto:(BOOL)istap{
+- (void)applyReasonTableCell:(AfterSalesApplyReasonTableCell *)cell tapSelectPoto:(BOOL)istap{
     NSLog(@"%s", __func__);
     
 //    PhotoPickerViewController *photoPickerVC = [[PhotoPickerViewController alloc]init];
@@ -383,7 +388,7 @@
 }
 
 
--(void)applyReasonTableCell:(AfterSalesApplyReasonTableCell *)cell tapDeleteLocation:(NSInteger)location{
+- (void)applyReasonTableCell:(AfterSalesApplyReasonTableCell *)cell tapDeleteLocation:(NSInteger)location{
     [self.potoArray removeObjectAtIndex:location];
     [self.tableView reloadData];
 }
@@ -391,7 +396,7 @@
 
 #pragma mark - getter / setter
 
--(WengenNavgationView *)navgationView{
+- (WengenNavgationView *)navgationView{
     
     if (_navgationView == nil) {
         //状态栏高度
@@ -413,11 +418,11 @@
 }
 
 
--(UITableView *)tableView{
+- (UITableView *)tableView{
     
     if (_tableView == nil) {
         
-        CGFloat height = ScreenHeight - 49 - kBottomSafeHeight - 44 ;
+        CGFloat height = ScreenHeight - 49 - kBottomSafeHeight - 44  - 20;
         CGFloat y = CGRectGetMaxY(self.navgationView.frame);
         _tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, y, ScreenWidth, height)style:UITableViewStyleGrouped];
         _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -443,12 +448,12 @@
 
 }
 
--(void)keyboardHide:(UITapGestureRecognizer*)tap{
+- (void)keyboardHide:(UITapGestureRecognizer*)tap{
     [[[UIApplication sharedApplication] keyWindow] endEditing:YES];
 }
 
 
--(OrderFillFooterView *)footerView{
+- (OrderFillFooterView *)footerView{
     
     if (_footerView == nil) {
         
@@ -465,12 +470,12 @@
 
 }
 
--(void)setModel:(OrderDetailsModel *)model{
+- (void)setModel:(OrderDetailsGoodsModel *)model{
     _model = model;
-    [self.footerView setGoodsAmountTotal:[NSString stringWithFormat:@"¥%@", model.money]];
+    [self.footerView setGoodsAmountTotal:[NSString stringWithFormat:@"¥%@", model.goodsPrice]];
 }
 
--(NSMutableArray *)potoArray{
+- (NSMutableArray *)potoArray{
     
     if (_potoArray == nil) {
         _potoArray = [NSMutableArray array];

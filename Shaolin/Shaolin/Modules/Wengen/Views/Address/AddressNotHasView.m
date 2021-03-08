@@ -17,7 +17,7 @@
 
 @implementation AddressNotHasView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [[NSBundle mainBundle] loadNibNamed:@"AddressNotHasView" owner:self options:nil];
@@ -27,13 +27,13 @@
 }
 
 /// 初始化UI
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.contentView];
     [self.contentView setFrame:self.bounds];
 }
 
 /// 重写系统方法
--(void)setFrame:(CGRect)frame{
+- (void)setFrame:(CGRect)frame{
     [super setFrame:frame];
     [self.contentView setFrame:self.bounds];
 }

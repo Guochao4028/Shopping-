@@ -9,10 +9,15 @@
 #import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
-@class OrderDetailsModel;
+//@class OrderDetailsModel;
+@class OrderDetailsNewModel;
 @interface OrderLogisticsTableViewCell : UITableViewCell
-@property(nonatomic, strong)OrderDetailsModel *goodsModel;
-@property (nonatomic , copy) void (^ lookLogisticsBlock)(OrderDetailsModel *goodsModel);
+
+//@property(nonatomic, strong)OrderDetailsModel *goodsModel;
+//@property (nonatomic , copy) void (^ lookLogisticsBlock)(OrderDetailsModel *goodsModel);
+
+@property(nonatomic, strong)OrderDetailsNewModel *goodsModel;
+@property (nonatomic , copy) void (^ lookLogisticsBlock)(OrderDetailsNewModel *goodsModel);
 @end
 
 NS_ASSUME_NONNULL_END

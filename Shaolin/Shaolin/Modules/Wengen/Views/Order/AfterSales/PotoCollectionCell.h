@@ -25,7 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol PotoCollectionCellDelegate <NSObject>
 
--(void)potoCollectionCell:(PotoCollectionCell *)cell tapDeletePoto:(BOOL)istap location:(NSInteger)loction;
+- (void)potoCollectionCell:(PotoCollectionCell *)cell tapDeletePoto:(BOOL)istap location:(NSInteger)loction;
 
 @end
 

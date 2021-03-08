@@ -18,6 +18,7 @@
 #import "RiteThreeLevelModel.h"
 #import "RiteRegistrationFormViewControllerNew.h"
 #import "RiteSecondLevelModel.h"
+#import "ThumbFollowShareManager.h"
 
 @interface MyRiteCollectViewController () <UITableViewDelegate,UITableViewDataSource,DZNEmptyDataSetSource,DZNEmptyDataSetDelegate>
 @property (nonatomic) NSInteger pageNum;
@@ -72,6 +73,7 @@
     [[MeManager sharedInstance] getMyCollectRite:params success:^(NSDictionary * _Nullable resultDic) {
         NSArray *data = resultDic[DATAS];
         if (data && [data isKindOfClass:[NSArray class]]){
+            data = [ThumbFollowShareManager deleteLocalCacheData:data modelItemType:WorkItemType modelType:CollectionType modelItemKind:ImageText];
             NSArray *array = [MyRiteCollectModel mj_objectArrayWithKeyValuesArray:data];
             [weakSelf.dataArray addObjectsFromArray:array];
             if (finish) finish(array);
@@ -178,20 +180,20 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     MyRiteCollectModel *model = self.dataArray[indexPath.row];
     
-    if ([model.classif isEqualToString:@"1"]) {
+    if ([model.classIf isEqualToString:@"1"]) {
         //法会
         
-        KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteDetail(model.pujaCode, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_rite];
+        KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteDetail(model.pujaCode, [SLAppInfoModel sharedInstance].accessToken) type:KfWebView_rite];
         webVC.fillToView = YES;
         [self.navigationController pushViewController:webVC animated:YES];
     }
     
-    if ([model.classif isEqualToString:@"2"]) {
+    if ([model.classIf isEqualToString:@"2"]) {
         //事项
         self.selectedModel = model;
         NSString *type = model.pujaType ? model.pujaType : @"";
         NSString *code = model.pujaCode ? model.pujaCode : @"";
-        KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteThreeDetail(type, code, model.buddhismTypeId, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_rite];
+        KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteThreeDetail(type, code, model.buddhismTypeId, [SLAppInfoModel sharedInstance].accessToken) type:KfWebView_rite];
         webVC.fillToView = YES;
         WEAKSELF
         webVC.receiveScriptMessageBlock = ^(NSDictionary * _Nonnull messageDict) {

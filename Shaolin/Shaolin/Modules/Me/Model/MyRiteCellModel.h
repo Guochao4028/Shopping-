@@ -25,9 +25,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString * introduction;
 @property (nonatomic, copy) NSNumber * actuallyPaidMoney;
 @property (nonatomic, copy) NSString * orderCode;
-@property (nonatomic, copy) NSString * code;
-@property (nonatomic, copy) NSString * name;
-@property (nonatomic, copy) NSString * type;
+@property (nonatomic, copy) NSString * pujaCode;
+@property (nonatomic, copy) NSString * pujaName;
+@property (nonatomic, copy) NSString * pujaType;
 @property (nonatomic, copy) NSString * thumbnailUrl;
 
 @end

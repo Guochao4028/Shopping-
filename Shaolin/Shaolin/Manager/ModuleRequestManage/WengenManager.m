@@ -26,6 +26,13 @@
 #import "DefinedURLs.h"
 #import "CustomerServieListModel.h"
 
+#import "OrderDetailsNewModel.h"
+
+#import "OrderAfterSalesModel.h"
+#import "ThumbFollowShareManager.h"
+
+#import "OrderH5InvoiceModel.h"
+
 @interface WengenManager ()
 
 @property(strong, nonatomic)AFHTTPSessionManager *manager;
@@ -38,15 +45,15 @@
 #pragma mark - methods
 
 ///文创商城 获取商品全部分类
--(void)getAllGoodsCateList:(NSArrayCallBack)call{
+- (void)getAllGoodsCateList:(NSArrayCallBack)call{
     
-    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_GOODS_CATE_GETALLGOODSCATELIST parameters:@{} success:^(NSDictionary * _Nullable resultDic) {
+    [SLRequest getRequestWithApi:URL_POST_SHOPAPI_COMMON_GOODS_CATE_GETALLGOODSCATELIST parameters:@{} success:^(NSDictionary * _Nullable resultDic) {
         
         NSArray *dataArray;
         if ([resultDic isKindOfClass:[NSArray class]] == YES) {
             dataArray = (NSArray *)resultDic;
         }else{
-            dataArray =  resultDic[LIST];
+            dataArray =  resultDic[DATAS];
         }
         if (dataArray.count > 0) {
             NSArray *dataList = [WengenEnterModel mj_objectArrayWithKeyValuesArray:dataArray];
@@ -57,9 +64,15 @@
         
     } failure:^(NSString * _Nullable errorReason) {
         
+        if (call) call(nil);
+        
     } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
         
     }];
+
+   
+    
+    
     
     //    [self.manager POST:ADD(URL_POST_SHOPAPI_COMMON_GOODS_CATE_GETALLGOODSCATELIST) parameters:nil headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
     //        NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
@@ -83,21 +96,31 @@
 }
 
 ///文创商城 首页 banner
--(void)getBanner:(NSDictionary *)param Callback:(NSArrayCallBack)call{
-    
-    [SLRequest postJsonRequestWithApi:URL_POST_BANNERURL parameters:param success:^(NSDictionary * _Nullable resultDic) {
-        
-        NSArray *array = resultDic[@"bannerurl"];
+- (void)getBanner:(NSDictionary *)param Callback:(NSArrayCallBack)call{
+    [SLRequest getRequestWithApi:URL_POST_BANNERURL parameters:param success:^(NSDictionary * _Nullable resultDic) {
+        NSArray *array = resultDic[@"bannerUrl"];
         
         NSArray *dataList = [WengenBannerModel mj_objectArrayWithKeyValuesArray:array];
         
         if (call) call(dataList);
-        
     } failure:^(NSString * _Nullable errorReason) {
         if (call) call(nil);
     } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
         
     }];
+//    [SLRequest postJsonRequestWithApi:URL_POST_BANNERURL parameters:param success:^(NSDictionary * _Nullable resultDic) {
+//
+//        NSArray *array = resultDic[@"bannerUrl"];
+//
+//        NSArray *dataList = [WengenBannerModel mj_objectArrayWithKeyValuesArray:array];
+//
+//        if (call) call(dataList);
+//
+//    } failure:^(NSString * _Nullable errorReason) {
+//        if (call) call(nil);
+//    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
+//
+//    }];
     
     //    [self.manager POST:ADD(URL_POST_BANNERURL) parameters:param headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
     //        NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
@@ -122,15 +145,15 @@
 }
 
 ///新人推荐 商品
--(void)getRecommendGoodsCallback:(NSArrayCallBack)call{
+- (void)getRecommendGoodsCallback:(NSArrayCallBack)call{
     
-    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_GOODS_GETNEW parameters:@{} success:^(NSDictionary * _Nullable resultDic) {
+    [SLRequest getRequestWithApi:URL_POST_SHOPAPI_COMMON_GOODS_GETNEW parameters:@{} success:^(NSDictionary * _Nullable resultDic) {
         
         NSArray *dataArray;
         if ([resultDic isKindOfClass:[NSArray class]] == YES) {
             dataArray = (NSArray *)resultDic;
         }else{
-            dataArray =  resultDic[LIST];
+            dataArray =  resultDic[DATAS];
         }
         if (dataArray.count > 0) {
             NSArray *dataList = [WengenGoodsModel mj_objectArrayWithKeyValuesArray:dataArray];
@@ -144,6 +167,8 @@
     } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
         
     }];
+    
+    
     //
     //    [self.manager POST:ADD(URL_POST_SHOPAPI_COMMON_GOODS_GETNEW) parameters:nil headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
     //        NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
@@ -165,17 +190,21 @@
     //    }];
 }
 
+
+static NSString *extracted() {
+    return URL_POST_SHOPAPI_COMMON_GOODS_GETNEW;
+}
 
 ///新人推荐 商品
--(void)getRecommendGoods:(NSDictionary *)param Callback:(NSArrayCallBack)call{
+- (void)getRecommendGoods:(NSDictionary *)param Callback:(NSArrayCallBack)call{
     
-    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_GOODS_GETNEW parameters:param success:^(NSDictionary * _Nullable resultDic) {
+    [SLRequest getRequestWithApi:extracted() parameters:param success:^(NSDictionary * _Nullable resultDic) {
         
         NSArray *dataArray;
         if ([resultDic isKindOfClass:[NSArray class]] == YES) {
             dataArray = (NSArray *)resultDic;
         }else{
-            dataArray =  resultDic[LIST];
+            dataArray =  resultDic[DATAS];
         }
         if (dataArray.count > 0) {
             NSArray *dataList = [WengenGoodsModel mj_objectArrayWithKeyValuesArray:dataArray];
@@ -189,6 +218,9 @@
     } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
         
     }];
+    
+    
+    
     //
     //    [self.manager POST:ADD(URL_POST_SHOPAPI_COMMON_GOODS_GETNEW) parameters:nil headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
     //        NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
@@ -214,16 +246,16 @@
 
 
 ///(文创 商城 首页)严选 商品
--(void)getStrictSelectionGoods:(NSDictionary *)param Callback:(NSArrayCallBack)call{
+- (void)getStrictSelectionGoods:(NSDictionary *)param Callback:(NSArrayCallBack)call{
     
     
-    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_GOODS_GETDELICATE parameters:param success:^(NSDictionary * _Nullable resultDic) {
+    [SLRequest getRequestWithApi:URL_POST_SHOPAPI_COMMON_GOODS_GETDELICATE parameters:param success:^(NSDictionary * _Nullable resultDic) {
         
         NSArray *dataArray;
         if ([resultDic isKindOfClass:[NSArray class]] == YES) {
             dataArray = (NSArray *)resultDic;
         }else{
-            dataArray =  resultDic[LIST];
+            dataArray =  resultDic[DATAS];
         }
         if (dataArray.count > 0) {
             NSArray *dataList = [WengenGoodsModel mj_objectArrayWithKeyValuesArray:dataArray];
@@ -241,7 +273,7 @@
 }
 
 ///(文创 商城 首页)严选 商品
--(void)getStrictSelectionGoodsCallback:(NSArrayCallBack)call{
+- (void)getStrictSelectionGoodsCallback:(NSArrayCallBack)call{
     
     
     [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_GOODS_GETDELICATE parameters:@{} success:^(NSDictionary * _Nullable resultDic) {
@@ -294,17 +326,65 @@
 
 
 
+/////文创商城 首页 分类
+//
+//- (void)getIndexClassification:(NSArrayCallBack)call{
+//
+//
+//    [SLRequest getRequestWithApi:URL_POST_SHOPAPI_COMMON_GOODS_CATE_GETGOODSCATELIST parameters:@{} success:^(NSDictionary * _Nullable resultDic) {
+//
+//        NSArray *dataArray;
+//        if ([resultDic isKindOfClass:[NSArray class]] == YES) {
+//            dataArray = (NSArray *)resultDic;
+//        }else{
+//            dataArray =  resultDic[LIST];
+//        }
+//        if (dataArray.count > 0) {
+//            NSArray *dataList = [WengenEnterModel mj_objectArrayWithKeyValuesArray:dataArray];
+//            if (call) call(dataList);
+//        }else{
+//            if (call) call(nil);
+//        }
+//
+//    } failure:^(NSString * _Nullable errorReason) {
+//        if (call) call(nil);
+//    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
+//
+//    }];
+//
+//
+//
+//    //    [self.manager POST:ADD(URL_POST_SHOPAPI_COMMON_GOODS_CATE_GETGOODSCATELIST) parameters:nil headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+//    //        NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+//    //
+//    //        NSArray *dataArray;
+//    //        if ([dic[DATAS] isKindOfClass:[NSArray class]] == YES) {
+//    //            dataArray = dic[DATAS];
+//    //        }else{
+//    //            dataArray =  dic[DATAS][LIST];
+//    //        }
+//    //        if (dataArray.count > 0) {
+//    //            NSArray *dataList = [WengenEnterModel mj_objectArrayWithKeyValuesArray:dataArray];
+//    //            if (call) call(dataList);
+//    //        }else{
+//    //            if (call) call(nil);
+//    //        }
+//    //
+//    //    }failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+//    //        if (call) call(nil);
+//    //    }];
+//}
+
+
 ///文创商城 首页 分类
--(void)getIndexClassification:(NSArrayCallBack)call{
-    
-    
-    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_GOODS_CATE_GETGOODSCATELIST parameters:@{} success:^(NSDictionary * _Nullable resultDic) {
-        
+- (void)getCateLevelList:(NSDictionary *)param Callback:(NSArrayCallBack)call{
+    [SLRequest getRequestWithApi:URL_POST_SHOPAPI_COMMON_GOODS_CATE_GETGOODSCATELIST parameters:param success:^(NSDictionary * _Nullable resultDic) {
+
         NSArray *dataArray;
         if ([resultDic isKindOfClass:[NSArray class]] == YES) {
             dataArray = (NSArray *)resultDic;
         }else{
-            dataArray =  resultDic[LIST];
+            dataArray =  resultDic[DATAS];
         }
         if (dataArray.count > 0) {
             NSArray *dataList = [WengenEnterModel mj_objectArrayWithKeyValuesArray:dataArray];
@@ -312,46 +392,25 @@
         }else{
             if (call) call(nil);
         }
-        
+
     } failure:^(NSString * _Nullable errorReason) {
         if (call) call(nil);
     } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
-        
+
     }];
-    
-    
-    //    [self.manager POST:ADD(URL_POST_SHOPAPI_COMMON_GOODS_CATE_GETGOODSCATELIST) parameters:nil headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-    //        NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-    //
-    //        NSArray *dataArray;
-    //        if ([dic[DATAS] isKindOfClass:[NSArray class]] == YES) {
-    //            dataArray = dic[DATAS];
-    //        }else{
-    //            dataArray =  dic[DATAS][LIST];
-    //        }
-    //        if (dataArray.count > 0) {
-    //            NSArray *dataList = [WengenEnterModel mj_objectArrayWithKeyValuesArray:dataArray];
-    //            if (call) call(dataList);
-    //        }else{
-    //            if (call) call(nil);
-    //        }
-    //
-    //    }failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-    //        if (call) call(nil);
-    //    }];
 }
 
 ///(文创 商城) 商品商品列表
--(void)getGoodsList:(NSDictionary *)param Callback:(NSArrayCallBack)call{
+- (void)getGoodsList:(NSDictionary *)param Callback:(NSArrayCallBack)call{
     
     
-    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_GOODS_GETGOODSLIST parameters:param success:^(NSDictionary * _Nullable resultDic) {
+    [SLRequest getRequestWithApi:URL_POST_SHOPAPI_COMMON_GOODS_GETGOODSLIST parameters:param success:^(NSDictionary * _Nullable resultDic) {
         
         NSArray *dataArray;
         if ([resultDic isKindOfClass:[NSArray class]] == YES) {
             dataArray = (NSArray *)resultDic;
         }else{
-            dataArray =  resultDic[LIST];
+            dataArray =  resultDic[DATAS];
         }
         if (dataArray.count > 0) {
             NSArray *dataList = [WengenGoodsModel mj_objectArrayWithKeyValuesArray:dataArray];
@@ -390,12 +449,12 @@
 }
 
 ///(文创 商城) 商品详情
--(void)getGoodsInfo:(NSDictionary *)param Callback:(NSObjectCallBack)call{
+- (void)getGoodsInfo:(NSDictionary *)param Callback:(NSObjectCallBack)call{
     
     
-    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_GOODS_GETGOODSINFO parameters:param success:^(NSDictionary * _Nullable resultDic) {
+    [SLRequest getRequestWithApi:URL_POST_SHOPAPI_COMMON_GOODS_GETGOODSINFO parameters:param success:^(NSDictionary * _Nullable resultDic) {
         
-        GoodsInfoModel *mode =[GoodsInfoModel mj_objectWithKeyValues:resultDic];
+        GoodsInfoModel *mode =[GoodsInfoModel mj_objectWithKeyValues:resultDic[DATAS]];
         if (call) call(mode);
         
     } failure:^(NSString * _Nullable errorReason) {
@@ -403,6 +462,7 @@
     } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
         
     }];
+    
     
     //    [self.manager POST:ADD(URL_POST_SHOPAPI_COMMON_GOODS_GETGOODSINFO) parameters:param headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
     //
@@ -423,12 +483,13 @@
 }
 
 ///(文创 商城) 店铺信息
--(void)getStoreInfo:(NSDictionary *)param Callback:(NSObjectCallBack)call{
+- (void)getStoreInfo:(NSDictionary *)param Callback:(NSObjectCallBack)call{
     
     
-    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_CLUB_GETCLUBINFO parameters:param success:^(NSDictionary * _Nullable resultDic) {
-        
-        GoodsStoreInfoModel *mode =[GoodsStoreInfoModel mj_objectWithKeyValues:resultDic];
+    [SLRequest getRequestWithApi:URL_POST_SHOPAPI_COMMON_CLUB_GETCLUBINFO parameters:param success:^(NSDictionary * _Nullable resultDic) {
+        NSDictionary *dic = resultDic[DATAS];
+        dic = [ThumbFollowShareManager reloadDictByLocalCache:dic modelItemType:ShopItemType modelItemKind:ImageText];
+        GoodsStoreInfoModel *mode =[GoodsStoreInfoModel mj_objectWithKeyValues:dic];
         if (call) call(mode);
         
     } failure:^(NSString * _Nullable errorReason) {
@@ -437,6 +498,7 @@
         
     }];
     
+  
     
     
     
@@ -459,15 +521,28 @@
 }
 
 ///(文创 商城) 收货地址列表
--(void)getAddressListCallback:(NSArrayCallBack)call{
+- (void)getAddressListCallback:(NSArrayCallBack)call{
     
     
     
-    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_ADDRESS_ADDRESSLIST parameters:@{} success:^(NSDictionary * _Nullable resultDic) {
+//    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_ADDRESS_ADDRESSLIST parameters:@{} success:^(NSDictionary * _Nullable resultDic) {
+//
+//        NSArray *dataList = [AddressListModel mj_objectArrayWithKeyValuesArray:resultDic[@"list"]];
+//        if (call) call(dataList);
+//
+//    } failure:^(NSString * _Nullable errorReason) {
+//        if (call) call(nil);
+//    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
+//
+//    }];
+    
+    [SLRequest getRequestWithApi:URL_POST_SHOPAPI_COMMON_ADDRESS_ADDRESSLIST parameters:@{} success:^(NSDictionary * _Nullable resultDic) {
         
-        NSArray *dataList = [AddressListModel mj_objectArrayWithKeyValuesArray:resultDic[@"list"]];
+//        NSArray *dataList = [AddressListModel mj_objectArrayWithKeyValuesArray:resultDic[@"list"]];
+        
+        NSArray *dataList = [AddressListModel mj_objectArrayWithKeyValuesArray:resultDic[DATAS]];
+        
         if (call) call(dataList);
-        
     } failure:^(NSString * _Nullable errorReason) {
         if (call) call(nil);
     } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
@@ -493,7 +568,7 @@
 }
 
 ///(文创 商城) 新建收货地址文件
--(void)getAddressListFile{
+- (void)getAddressListFile{
     /* 创建网络下载对象 */
 //    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
     
@@ -525,8 +600,14 @@
     } failure:^(NSString * _Nullable errorReason) {
         
     } finish:^(id  _Nullable responseObject, NSError * _Nullable error) {
-        NSLog(@"下载完成");
-        [ModelTool processingAddressData:filePath];
+        if (error == nil) {
+            NSLog(@"下载完成");
+            [ModelTool processingAddressData:filePath];
+        }else{
+            
+            [ModelTool processingAddressData:@""];
+        }
+        
     }];
     
 
@@ -535,7 +616,7 @@
 }
 
 ///(文创 商城) 添加收货地址
--(void)addAddress:(NSDictionary *)param Callback:(MessageCallBack)call{
+- (void)addAddress:(NSDictionary *)param Callback:(MessageCallBack)call{
     
     
     [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_ADDRESS_ADDADDRESS parameters:param success:^(NSDictionary * _Nullable resultDic) {
@@ -579,7 +660,7 @@
 }
 
 ///(文创 商城) 计算商品运费
--(void)computeGoodsFee:(NSDictionary *)param Callback:(NSDictionaryCallBack)call{
+- (void)computeGoodsFee:(NSDictionary *)param Callback:(NSDictionaryCallBack)call{
     
     [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_ORDER_COMPUTEGOODSFEE parameters:param success:^(NSDictionary * _Nullable resultDic) {
     } failure:^(NSString * _Nullable errorReason) {
@@ -593,6 +674,7 @@
         }
         
     }];
+    
     
     //    [self.manager POST:ADD(URL_POST_SHOPAPI_COMMON_ORDER_COMPUTEGOODSFEE) parameters:param headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
     //        NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
@@ -615,7 +697,7 @@
 
 
 ///(文创 商城) 收货地址详情
--(void)getAddressInfo:(NSDictionary *)param Callback:(NSObjectCallBack)call{
+- (void)getAddressInfo:(NSDictionary *)param Callback:(NSObjectCallBack)call{
     
     [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_ADDRESS_GETADDRESSINFO parameters:param success:^(NSDictionary * _Nullable resultDic) {
     } failure:^(NSString * _Nullable errorReason) {
@@ -658,7 +740,7 @@
 }
 
 ///(文创 商城) 修改收货地址
--(void)editAddress:(NSDictionary *)param Callback:(MessageCallBack)call{
+- (void)editAddress:(NSDictionary *)param Callback:(MessageCallBack)call{
     
     [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_ADDRESS_EDITADDRESS parameters:param success:^(NSDictionary * _Nullable resultDic) {
     } failure:^(NSString * _Nullable errorReason) {
@@ -699,7 +781,7 @@
 }
 
 ///(文创 商城) 删除收货地址
--(void)delAddress:(NSDictionary *)param Callback:(MessageCallBack)call{
+- (void)delAddress:(NSDictionary *)param Callback:(MessageCallBack)call{
     
     
     [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_ADDRESS_DELADDRESS parameters:param success:^(NSDictionary * _Nullable resultDic) {
@@ -709,12 +791,12 @@
         BOOL isSuccess = NO;
         if ([ModelTool checkResponseObject:resultDic]){
             isSuccess = YES;
-            NSArray *tem =resultDic[DATAS];
+//            NSArray *tem =resultDic[DATAS];
+//            
+//            NSDictionary *dataDic =  [tem lastObject];
             
-            NSDictionary *dataDic =  [tem lastObject];
-            
-            [[ModelTool shareInstance]setCarCount:[NSString stringWithFormat:@"%@",dataDic[@"carCount"]]];
-            [[NSNotificationCenter defaultCenter]postNotificationName:WENGENMANAGER_GETORDERANDCARTCOUNT object:nil userInfo:dataDic];
+//            [[ModelTool shareInstance]setCarCount:[NSString stringWithFormat:@"%@",dataDic[@"carCount"]]];
+//            [[NSNotificationCenter defaultCenter]postNotificationName:WENGENMANAGER_GETORDERANDCARTCOUNT object:nil userInfo:dataDic];
         }else{
             isSuccess = NO;
         }
@@ -753,7 +835,7 @@
 }
 
 ///(文创 商城) 添加购物车
--(void)addCar:(NSDictionary *)param Callback:(MessageCallBack)call{
+- (void)addCar:(NSDictionary *)param Callback:(MessageCallBack)call{
     
     [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_GOODS_CAR_ADDCAR parameters:param success:^(NSDictionary * _Nullable resultDic) {
     } failure:^(NSString * _Nullable errorReason) {
@@ -762,22 +844,28 @@
         BOOL isSuccess = NO;
         if ([ModelTool checkResponseObject:resultDic]){
             isSuccess = YES;
-            NSArray *tem = resultDic[DATAS];
+            NSDictionary *dic = resultDic[DATAS];
             
-            NSDictionary *dataDic =  [tem lastObject];
+            NSString *numberStr =  dic[DATAS];
             
-            [[ModelTool shareInstance]setCarCount:[NSString stringWithFormat:@"%@",dataDic[@"carCount"]]];
+            [[ModelTool shareInstance]setCarCount:[NSString stringWithFormat:@"%@",numberStr]];
             
-            [[NSNotificationCenter defaultCenter]postNotificationName:WENGENMANAGER_GETORDERANDCARTCOUNT object:nil userInfo:dataDic];
+            
+            [[NSNotificationCenter defaultCenter]postNotificationName:WENGENMANAGER_GETORDERANDCARTCOUNT object:nil userInfo:nil];
+            message.reason = resultDic[MSG];
+            message.reason = @"添加购物车成功";
         }else{
             isSuccess = NO;
+            message.reason = errorReason;
         }
         message.isSuccess = isSuccess;
-        message.reason = resultDic[MSG];
+       
         
         if (call) call(message);
         
     }];
+    
+   
     
     
     //    [self.manager POST:ADD(URL_POST_SHOPAPI_COMMON_GOODS_CAR_ADDCAR) parameters:param headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -810,16 +898,16 @@
 
 
 ///(文创 商城) 购物车列表
--(void)getCartList:(NSDictionary *)param Callback:(NSArrayCallBack)call{
+- (void)getCartList:(NSDictionary *)param Callback:(NSArrayCallBack)call{
     
     
     
-    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_GOODS_CAR_CARLIST parameters:param success:^(NSDictionary * _Nullable resultDic) {
+    [SLRequest getRequestWithApi:URL_POST_SHOPAPI_COMMON_GOODS_CAR_CARLIST parameters:param success:^(NSDictionary * _Nullable resultDic) {
     } failure:^(NSString * _Nullable errorReason) {
     } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
         if ([ModelTool checkResponseObject:resultDic]){
             
-            NSArray *dicArray = resultDic[DATAS][LIST];
+            NSArray *dicArray = resultDic[DATAS][DATAS];
             NSArray *dataList = [ShoppingCartListModel mj_objectArrayWithKeyValuesArray:dicArray];
             if (call) call(dataList);
         }else{
@@ -850,10 +938,11 @@
 }
 
 ///(文创 商城) 删除购物车
--(void)delCar:(NSDictionary *)param Callback:(MessageCallBack)call{
+- (void)delCar:(NSDictionary *)param Callback:(MessageCallBack)call{
     
+    NSArray *goodsIdArray = param[@"goodsId"];
     
-    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_GOODS_CAR_DELCAR parameters:param success:^(NSDictionary * _Nullable resultDic) {
+    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_GOODS_CAR_DELCAR parameters:goodsIdArray success:^(NSDictionary * _Nullable resultDic) {
     } failure:^(NSString * _Nullable errorReason) {
     } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
         
@@ -861,11 +950,13 @@
         BOOL isSuccess = NO;
         if ([ModelTool checkResponseObject:resultDic]){
             isSuccess = YES;
+            message.reason = @"删除成功";
         }else{
             isSuccess = NO;
+            message.reason = resultDic[MSG];
         }
         message.isSuccess = isSuccess;
-        message.reason = resultDic[MSG];
+       
         
         if (call) call(message);
         
@@ -895,101 +986,134 @@
     //    }];
 }
 
-///(文创 商城) 购物车减少商品数量
--(void)decrCarNum:(NSDictionary *)param Callback:(MessageCallBack)call{
-    
-    
-    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_GOODS_CAR_DECRCARNUM parameters:param success:^(NSDictionary * _Nullable resultDic) {
-    } failure:^(NSString * _Nullable errorReason) {
-    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
-        
-        Message *message = [[Message alloc]init];
-        BOOL isSuccess = NO;
-        if ([ModelTool checkResponseObject:resultDic]){
-            isSuccess = YES;
-        }else{
-            isSuccess = NO;
-        }
-        message.isSuccess = isSuccess;
-        message.reason = resultDic[MSG];
-        
-        if (call) call(message);
-        
-    }];
-    
-    
-    //    [self.manager POST:ADD(URL_POST_SHOPAPI_COMMON_GOODS_CAR_DECRCARNUM) parameters:param headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-    //        NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-    //
-    //        Message *message = [[Message alloc]init];
-    //        BOOL isSuccess = NO;
-    //        if ([ModelTool checkResponseObject:dic]){
-    //            isSuccess = YES;
-    //        }else{
-    //            isSuccess = NO;
-    //        }
-    //        message.isSuccess = isSuccess;
-    //        message.reason = dic[MSG];
-    //
-    //        if (call) call(message);
-    //
-    //    }failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-    //        if (call) call(nil);
-    //    }];
-}
+/////(文创 商城) 购物车减少商品数量
+//- (void)decrCarNum:(NSDictionary *)param Callback:(MessageCallBack)call{
+//    
+//    
+//    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_GOODS_CAR_DECRCARNUM parameters:param success:^(NSDictionary * _Nullable resultDic) {
+//    } failure:^(NSString * _Nullable errorReason) {
+//    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
+//        
+//        Message *message = [[Message alloc]init];
+//        BOOL isSuccess = NO;
+//        if ([ModelTool checkResponseObject:resultDic]){
+//            isSuccess = YES;
+//        }else{
+//            isSuccess = NO;
+//        }
+//        message.isSuccess = isSuccess;
+//        message.reason = resultDic[MSG];
+//        
+//        if (call) call(message);
+//        
+//    }];
+//    
+//    
+//    //    [self.manager POST:ADD(URL_POST_SHOPAPI_COMMON_GOODS_CAR_DECRCARNUM) parameters:param headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+//    //        NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+//    //
+//    //        Message *message = [[Message alloc]init];
+//    //        BOOL isSuccess = NO;
+//    //        if ([ModelTool checkResponseObject:dic]){
+//    //            isSuccess = YES;
+//    //        }else{
+//    //            isSuccess = NO;
+//    //        }
+//    //        message.isSuccess = isSuccess;
+//    //        message.reason = dic[MSG];
+//    //
+//    //        if (call) call(message);
+//    //
+//    //    }failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+//    //        if (call) call(nil);
+//    //    }];
+//}
+//
+/////(文创 商城) 购物车添加商品数量
+//- (void)incrCarNum:(NSDictionary *)param Callback:(MessageCallBack)call{
+//    
+//    
+//    
+//    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_GOODS_CAR_INCRCARNUM parameters:param success:^(NSDictionary * _Nullable resultDic) {
+//    } failure:^(NSString * _Nullable errorReason) {
+//    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
+//        
+//        Message *message = [[Message alloc]init];
+//        BOOL isSuccess = NO;
+//        if ([ModelTool checkResponseObject:resultDic]){
+//            isSuccess = YES;
+//        }else{
+//            isSuccess = NO;
+//            message.extension = resultDic[DATAS][@"stock"];
+//        }
+//        message.isSuccess = isSuccess;
+//        message.reason = resultDic[MSG];
+//        
+//        if (call) call(message);
+//        
+//    }];
+//    
+//    
+//    
+//    
+//    //    [self.manager POST:ADD(URL_POST_SHOPAPI_COMMON_GOODS_CAR_INCRCARNUM) parameters:param headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+//    //        NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+//    //
+//    //        NSLog(@"dic : %@", dic);
+//    //
+//    //        Message *message = [[Message alloc]init];
+//    //        BOOL isSuccess = NO;
+//    //        if ([ModelTool checkResponseObject:dic]){
+//    //            isSuccess = YES;
+//    //        }else{
+//    //            isSuccess = NO;
+//    //            message.extension = dic[DATAS][@"stock"];
+//    //        }
+//    //        message.isSuccess = isSuccess;
+//    //        message.reason = dic[MSG];
+//    //
+//    //        if (call) call(message);
+//    //
+//    //    }failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+//    //        if (call) call(nil);
+//    //    }];
+//}
 
-///(文创 商城) 购物车添加商品数量
--(void)incrCarNum:(NSDictionary *)param Callback:(MessageCallBack)call{
-    
-    
-    
-    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_GOODS_CAR_INCRCARNUM parameters:param success:^(NSDictionary * _Nullable resultDic) {
-    } failure:^(NSString * _Nullable errorReason) {
-    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
-        
-        Message *message = [[Message alloc]init];
-        BOOL isSuccess = NO;
-        if ([ModelTool checkResponseObject:resultDic]){
-            isSuccess = YES;
-        }else{
-            isSuccess = NO;
-            message.extension = resultDic[DATAS][@"stock"];
-        }
-        message.isSuccess = isSuccess;
-        message.reason = resultDic[MSG];
-        
-        if (call) call(message);
-        
-    }];
-    
-    
-    
-    
-    //    [self.manager POST:ADD(URL_POST_SHOPAPI_COMMON_GOODS_CAR_INCRCARNUM) parameters:param headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-    //        NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-    //
-    //        NSLog(@"dic : %@", dic);
-    //
-    //        Message *message = [[Message alloc]init];
-    //        BOOL isSuccess = NO;
-    //        if ([ModelTool checkResponseObject:dic]){
-    //            isSuccess = YES;
-    //        }else{
-    //            isSuccess = NO;
-    //            message.extension = dic[DATAS][@"stock"];
-    //        }
-    //        message.isSuccess = isSuccess;
-    //        message.reason = dic[MSG];
-    //
-    //        if (call) call(message);
-    //
-    //    }failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-    //        if (call) call(nil);
-    //    }];
+///(文创 商城) 购物车修改商品数量
+- (void)changeGoodsNum:(NSDictionary *)param Callback:(MessageCallBack)call{
+    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_GOODS_CAR_UPDATENUM parameters:param success:^(NSDictionary * _Nullable resultDic) {
+       } failure:^(NSString * _Nullable errorReason) {
+       } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
+           
+           NSString *stock = resultDic[DATAS][DATAS];
+           NSString *number = param[@"num"];
+           
+           Message *message = [[Message alloc]init];
+           BOOL isSuccess = NO;
+           if ([stock integerValue] > 0) {
+               if (([stock integerValue] - [number integerValue]) > 0){
+                   
+                   isSuccess = YES;
+                   message.reason = @"";
+               }else{
+                   isSuccess = NO;
+                   message.reason = resultDic[MSG];
+                   message.extension = stock;
+               }
+           }else{
+               isSuccess = YES;
+           }
+          
+           message.isSuccess = isSuccess;
+   
+   
+           if (call) call(message);
+   
+       }];
 }
 
 ///(文创 商城) 购物车修改规格
--(void)changeGoodsAttr:(NSDictionary *)param Callback:(MessageCallBack)call{
+- (void)changeGoodsAttr:(NSDictionary *)param Callback:(MessageCallBack)call{
     
     
     [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_GOODS_CAR_CHANGEGOODSATTR parameters:param success:^(NSDictionary * _Nullable resultDic) {
@@ -1034,28 +1158,38 @@
 }
 
 ///(文创 商城) 检查商品库存
--(void)checkStock:(NSDictionary *)param Callback:(MessageCallBack)call{
+- (void)checkStock:(NSDictionary *)param Callback:(MessageCallBack)call{
     
-    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_GOODS_CHECKSTOCK parameters:param success:^(NSDictionary * _Nullable resultDic) {
+    [SLRequest getRequestWithApi:URL_POST_SHOPAPI_COMMON_GOODS_CHECKSTOCK parameters:param success:^(NSDictionary * _Nullable resultDic) {
     } failure:^(NSString * _Nullable errorReason) {
     } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
+        NSString *stock = resultDic[DATAS][DATAS];
+        NSString *number = param[@"num"];
+        
         
         
         Message *message = [[Message alloc]init];
         BOOL isSuccess = NO;
-        if ([ModelTool checkResponseObject:resultDic]){
+        if (([stock integerValue] - [number integerValue]) > 0){
+            
             isSuccess = YES;
+            message.reason = @"";
         }else{
             isSuccess = NO;
+            message.reason = resultDic[MSG];
+            message.extension = stock;
         }
         message.isSuccess = isSuccess;
-        message.reason = resultDic[MSG];
-        NSArray *data = resultDic[DATAS];
-        NSDictionary *dictionary = [data firstObject];
-        message.extension = dictionary[@"stock"];
+        
+//        NSArray *data = resultDic[DATAS];
+        
+//        NSDictionary *dictionary = [data firstObject];
+//        message.extension = dictionary[@"stock"];
         
         if (call) call(message);
     }];
+    
+    
     
     
     
@@ -1083,7 +1217,7 @@
 }
 
 ///(文创 商城) 生成订单
--(void)creatOrder:(NSDictionary *)param Callback:(MessageCallBack)call{
+- (void)creatOrder:(NSDictionary *)param Callback:(MessageCallBack)call{
     
     
     
@@ -1094,9 +1228,16 @@
         
         Message *message = [[Message alloc]init];
         BOOL isSuccess = NO;
+        
         if ([ModelTool checkResponseObject:resultDic]){
-            isSuccess = YES;
-            message.extension = resultDic[DATAS][@"order_no"];
+            if (IsNilOrNull(resultDic[DATAS])) {
+                isSuccess = NO;
+                message.reason = resultDic[MSG];
+            }else{
+                isSuccess = YES;
+                message.extension = resultDic[DATAS][@"order_no"];
+                message.extensionDic = resultDic[DATAS];
+            }
         }else{
             isSuccess = NO;
         }
@@ -1106,7 +1247,6 @@
         }else{
             message.reason = errorReason;
         }
-        
         
         if (call) call(message);
     }];
@@ -1135,13 +1275,12 @@
     //    }];
 }
 
-///(文创 商城) 添加收藏
--(void)addCollect:(NSDictionary *)param Callback:(MessageCallBack)call{
+///(文创 商城) 申请开发票
+- (void)creatInvoice:(NSDictionary *)param Callback:(MessageCallBack)call{
     
-    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_COLLECT_ADDCOLLECT parameters:param success:^(NSDictionary * _Nullable resultDic) {
+    [SLRequest postJsonRequestWithApi:URL_POST_INVOICE_ADD parameters:param success:^(NSDictionary * _Nullable resultDic) {
     } failure:^(NSString * _Nullable errorReason) {
     } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
-        
         
         Message *message = [[Message alloc]init];
         BOOL isSuccess = NO;
@@ -1151,11 +1290,88 @@
             isSuccess = NO;
         }
         message.isSuccess = isSuccess;
-        message.reason = resultDic[MSG];
+        if (resultDic != nil) {
+            message.reason = resultDic[MSG];
+        }else{
+            message.reason = errorReason;
+        }
         
         if (call) call(message);
     }];
+}
+
+///发票列表
+- (void)getInvoiceList:(NSDictionary *)param Callback:(NSObjectCallBack)call{
     
+    [SLRequest getRequestWithApi:URL_GET_SHOPAPI_COMMON_INVOICE_LIST parameters:param success:^(NSDictionary * _Nullable resultDic) {
+    } failure:^(NSString * _Nullable errorReason) {
+    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
+        
+        if ([ModelTool checkResponseObject:resultDic]) {
+            
+            OrderDetailsNewModel *model = [OrderDetailsNewModel mj_objectWithKeyValues:resultDic[DATAS]];
+            
+            if (call) call(model);
+        } else {
+            if (call) call(errorReason);
+        }
+    }];
+}
+
+
+///发票列表
+- (void)getInvoiceInfo:(NSDictionary *)param Callback:(NSObjectCallBack)call{
+    
+    [SLRequest postHttpRequestWithApi:URL_POST_SHOPAPI_COMMON_INVOICE_INFO parameters:param success:^(NSDictionary * _Nullable resultDic) {
+        
+    } failure:^(NSString * _Nullable errorReason) {
+        
+    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
+        
+        if ([ModelTool checkResponseObject:resultDic]) {
+            
+            OrderH5InvoiceModel *model = [OrderH5InvoiceModel mj_objectWithKeyValues:resultDic[DATAS]];
+            
+            if (call) call(model);
+        } else {
+            if (call) call(errorReason);
+        }
+    }];
+    
+  
+}
+
+///(文创 商城) 添加收藏
+- (void)addCollect:(NSDictionary *)param Callback:(MessageCallBack)call{
+    NSString *type = param[@"type"];
+    ModelItemType modelItemType = ClassItemType;
+    if ([type isEqualToString:@"1"]){
+        modelItemType = ShopItemType;
+    }
+    ThumbFollowShareModel *model = [ThumbFollowShareModel thumbFollowShareModelByDict:param modelType:CollectionType modelItemType:modelItemType];
+    [ThumbFollowShareManager insertThumbFollowShareModel:model];
+    
+    Message *message = [[Message alloc]init];
+    message.isSuccess = YES;
+    if (call) call(message);
+    
+//    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_COLLECT_ADDCOLLECT parameters:param success:^(NSDictionary * _Nullable resultDic) {
+//    } failure:^(NSString * _Nullable errorReason) {
+//    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
+//
+//
+//        Message *message = [[Message alloc]init];
+//        BOOL isSuccess = NO;
+//        if ([ModelTool checkResponseObject:resultDic]){
+//            isSuccess = YES;
+//        }else{
+//            isSuccess = NO;
+//        }
+//        message.isSuccess = isSuccess;
+//        message.reason = resultDic[MSG];
+//
+//        if (call) call(message);
+//    }];
     
     
     //    [self.manager POST:ADD(URL_POST_SHOPAPI_COMMON_COLLECT_ADDCOLLECT) parameters:param headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -1179,26 +1395,39 @@
 }
 
 ///(文创 商城) 取消收藏
--(void)cancelCollect:(NSDictionary *)param Callback:(MessageCallBack)call{
-    
-    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_COLLECT_CANCELCOLLECT parameters:param success:^(NSDictionary * _Nullable resultDic) {
-    } failure:^(NSString * _Nullable errorReason) {
-    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
-        
+- (void)cancelCollect:(NSDictionary *)param Callback:(MessageCallBack)call{
+    NSString *type = param[@"type"];
+    if (type.length){
+        ModelItemType modelItemType = ClassItemType;
+        if ([type isEqualToString:@"1"]){
+            modelItemType = ShopItemType;
+        }
+        ThumbFollowShareModel *model = [ThumbFollowShareModel thumbFollowShareModelByDict:param modelType:CancelCollectionType modelItemType:modelItemType];
+        [ThumbFollowShareManager insertThumbFollowShareModel:model];
         
         Message *message = [[Message alloc]init];
-        BOOL isSuccess = NO;
-        if ([ModelTool checkResponseObject:resultDic]){
-            isSuccess = YES;
-        }else{
-            isSuccess = NO;
-        }
-        message.isSuccess = isSuccess;
-        message.reason = resultDic[MSG];
+        message.isSuccess = YES;
         
         if (call) call(message);
-    }];
-    
+    } else {
+        [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_COLLECT_CANCELCOLLECT parameters:param success:^(NSDictionary * _Nullable resultDic) {
+        } failure:^(NSString * _Nullable errorReason) {
+        } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
+            
+            
+            Message *message = [[Message alloc]init];
+            BOOL isSuccess = NO;
+            if ([ModelTool checkResponseObject:resultDic]){
+                isSuccess = YES;
+            }else{
+                isSuccess = NO;
+            }
+            message.isSuccess = isSuccess;
+            message.reason = resultDic[MSG];
+            
+            if (call) call(message);
+        }];
+    }
     
     //    [self.manager POST:ADD(URL_POST_SHOPAPI_COMMON_COLLECT_CANCELCOLLECT) parameters:param headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
     //
@@ -1222,16 +1451,16 @@
 }
 
 ///(文创 商城) 查看店铺证照信息
--(void)getBusiness:(NSDictionary *)param Callback:(NSDictionaryCallBack)call{
-    
-    
-    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_CLUB_GETBUSINESS parameters:param success:^(NSDictionary * _Nullable resultDic) {
-    } failure:^(NSString * _Nullable errorReason) {
-    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
-        
-        
-        if (call) call(resultDic[DATAS]);
-    }];
+//- (void)getBusiness:(NSDictionary *)param Callback:(NSDictionaryCallBack)call{
+//
+//
+//    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_CLUB_GETBUSINESS parameters:param success:^(NSDictionary * _Nullable resultDic) {
+//    } failure:^(NSString * _Nullable errorReason) {
+//    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
+//
+//
+//        if (call) call(resultDic[DATAS]);
+//    }];
     
     
     
@@ -1244,20 +1473,20 @@
     //    }failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
     //        if (call) call(nil);
     //    }];
-}
+//}
 
 ///(文创 商城) 我的订单
--(void)userOrderList:(NSDictionary *)param Callback:(NSArrayCallBack)call{
+- (void)userOrderList:(NSDictionary *)param Callback:(NSArrayCallBack)call{
     
     
-    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_ORDER_USERORDERLIST_NEW parameters:param success:^(NSDictionary * _Nullable resultDic) {
+    [SLRequest getRequestWithApi:URL_POST_SHOPAPI_COMMON_ORDER_USERORDERLIST parameters:param success:^(NSDictionary * _Nullable resultDic) {
     } failure:^(NSString * _Nullable errorReason) {
     } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
         
         
         if ([ModelTool checkResponseObject:resultDic]){
             NSLog(@"%@",resultDic);
-            NSArray *dicArray = resultDic[DATAS][LIST];
+            NSArray *dicArray = resultDic[DATAS][DATAS];
             NSArray *dataList = [OrderListModel mj_objectArrayWithKeyValuesArray:dicArray];
             
             NSArray *finishingArray = [ModelTool calculateHeight:dataList];
@@ -1268,6 +1497,7 @@
             if (call) call(nil);
         }
     }];
+    
     
     //    [self.manager POST:ADD(URL_POST_SHOPAPI_COMMON_ORDER_USERORDERLIST_NEW) parameters:param headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
     //        NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
@@ -1290,8 +1520,32 @@
     //    }];
 }
 
+
+///(文创 商城) 售后
+- (void)userAfterSalesList:(NSDictionary *)param Callback:(NSArrayCallBack)call{
+    
+    
+    [SLRequest getRequestWithApi:URL_POST_SHOPAPI_COMMON_REFUND_LIST parameters:param success:^(NSDictionary * _Nullable resultDic) {
+    } failure:^(NSString * _Nullable errorReason) {
+    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
+        
+        
+        if ([ModelTool checkResponseObject:resultDic]){
+            NSLog(@"%@",resultDic);
+            NSArray *dicArray = resultDic[DATAS][DATAS];
+            NSArray *dataList = [OrderAfterSalesModel mj_objectArrayWithKeyValuesArray:dicArray];
+            
+            if (call) call(dataList);
+            
+        }else{
+            if (call) call(nil);
+        }
+    }];
+}
+
+
 ///(文创 商城) 订单统计
--(void)getOrderAndCartCount{
+- (void)getOrderAndCartCount{
     
     
     
@@ -1346,7 +1600,7 @@
 
 
 ///(文创 商城) 删除订单
--(void)delOrder:(NSDictionary *)param Callback:(MessageCallBack)call{
+- (void)delOrder:(NSDictionary *)param Callback:(MessageCallBack)call{
     
     
     
@@ -1394,21 +1648,27 @@
 }
 
 ///(文创 商城) 订单详情
--(void)getOrderInfo:(NSDictionary *)param Callback:(NSObjectCallBack)call{
+- (void)getOrderInfo:(NSDictionary *)param Callback:(NSObjectCallBack)call{
     
     
-    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_ORDER_ORDERINFONEW parameters:param success:^(NSDictionary * _Nullable resultDic) {
+    [SLRequest getRequestWithApi:URL_POST_SHOPAPI_COMMON_ORDER_ORDERINFO parameters:param success:^(NSDictionary * _Nullable resultDic) {
     } failure:^(NSString * _Nullable errorReason) {
     } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
         
         if ([ModelTool checkResponseObject:resultDic]) {
-            NSArray *dicArray = resultDic[DATAS][LIST];
-            NSArray *dataList = [OrderDetailsModel mj_objectArrayWithKeyValuesArray:dicArray];
-            if (call) call(dataList);
+//            NSArray *dicArray = resultDic[DATAS][LIST];
+//            NSArray *dataList = [OrderDetailsModel mj_objectArrayWithKeyValuesArray:dicArray];
+            
+            OrderDetailsNewModel *model = [OrderDetailsNewModel mj_objectWithKeyValues:resultDic[DATAS]];
+            
+            if (call) call(model);
+//            if (call) call(dataList);
         } else {
             if (call) call(errorReason);
         }
     }];
+    
+
     
     
     
@@ -1426,9 +1686,9 @@
 }
 
 ///(文创 商城) 订单详情
--(void)getOrderInfoNew:(NSDictionary *)param Callback:(NSObjectCallBack)call{
+- (void)getOrderInfoNew:(NSDictionary *)param Callback:(NSObjectCallBack)call{
     
-    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_ORDER_ORDERINFONEW parameters:param success:^(NSDictionary * _Nullable resultDic) {
+    [SLRequest getRequestWithApi:URL_POST_SHOPAPI_COMMON_ORDER_ORDERINFO parameters:param success:^(NSDictionary * _Nullable resultDic) {
     } failure:^(NSString * _Nullable errorReason) {
     } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
         
@@ -1442,6 +1702,8 @@
         }
     }];
     
+    
+  
     
     //    [self.manager POST:ADD(URL_POST_SHOPAPI_COMMON_ORDER_ORDERINFONEW) parameters:param headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
     //        NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
@@ -1461,7 +1723,7 @@
 }
 
 ///(文创 商城) 确认订单
--(void)confirmReceipt:(NSDictionary *)param Callback:(MessageCallBack)call{
+- (void)confirmReceipt:(NSDictionary *)param Callback:(MessageCallBack)call{
     
     [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_ORDER_CONFIRMRECEIPT parameters:param success:^(NSDictionary * _Nullable resultDic) {
     } failure:^(NSString * _Nullable errorReason) {
@@ -1503,7 +1765,7 @@
 }
 
 ///(文创 商城) 添加评论订单
--(void)addEvaluate:(NSDictionary *)param Callback:(MessageCallBack)call{
+- (void)addEvaluate:(NSDictionary *)param Callback:(MessageCallBack)call{
     
     
     [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_EVALUATE_ADDEVALUATE parameters:param success:^(NSDictionary * _Nullable resultDic) {
@@ -1549,7 +1811,7 @@
 }
 
 ///(文创 商城) 取消订单
--(void)cancelOrder:(NSDictionary *)param Callback:(MessageCallBack)call{
+- (void)cancelOrder:(NSDictionary *)param Callback:(MessageCallBack)call{
     
     
     [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_ORDER_CANCELORDER parameters:param success:^(NSDictionary * _Nullable resultDic) {
@@ -1568,7 +1830,6 @@
         
         if (call) call(message);
     }];
-    
     
     
     
@@ -1594,7 +1855,7 @@
 }
 
 ///(文创 商城) 订单申请售后
--(void)addRefund:(NSDictionary *)param Callback:(MessageCallBack)call{
+- (void)addRefund:(NSDictionary *)param Callback:(MessageCallBack)call{
     
     
     
@@ -1641,11 +1902,10 @@
 }
 
 ///(文创 商城) 订单取消售后
--(void)cannelRefund:(NSDictionary *)param Callback:(MessageCallBack)call{
+- (void)cannelRefund:(NSDictionary *)param Callback:(MessageCallBack)call{
     
     
-    
-    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_REFUND_CANNELREFUND parameters:param success:^(NSDictionary * _Nullable resultDic) {
+    [SLRequest postHttpRequestWithApi:URL_POST_SHOPAPI_COMMON_REFUND_CANNELREFUND parameters:param success:^(NSDictionary * _Nullable resultDic) {
     } failure:^(NSString * _Nullable errorReason) {
     } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
         
@@ -1687,17 +1947,17 @@
 }
 
 ///(文创 商城) 售后申请详情
--(void)getRefundInfo:(NSDictionary *)param Callback:(NSObjectCallBack)call{
+- (void)getRefundInfo:(NSDictionary *)param Callback:(NSObjectCallBack)call{
     
     
-    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_REFUND_GETREFUNINFO parameters:param success:^(NSDictionary * _Nullable resultDic) {
+    [SLRequest postHttpRequestWithApi:URL_POST_SHOPAPI_COMMON_REFUND_GETREFUNINFO parameters:param success:^(NSDictionary * _Nullable resultDic) {
     } failure:^(NSString * _Nullable errorReason) {
     } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
         
         if ([ModelTool checkResponseObject:resultDic]) {
             NSDictionary *dataDic = resultDic[DATAS];
             
-            OrderRefundInfoModel *model = [OrderRefundInfoModel mj_objectWithKeyValues:dataDic[@"list"]];
+            OrderRefundInfoModel *model = [OrderRefundInfoModel mj_objectWithKeyValues:dataDic];
             
             if (call) call(model);
         } else {
@@ -1705,9 +1965,7 @@
         }
     }];
     
-    
-    
-    
+
     
     //    [self.manager POST:ADD(URL_POST_SHOPAPI_COMMON_REFUND_GETREFUNINFO) parameters:param headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
     //        NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
@@ -1729,7 +1987,7 @@
 
 
 ///(文创 商城) 支付密码校验
--(void)payPasswordCheck:(NSDictionary *)param Callback:(MessageCallBack)call{
+- (void)payPasswordCheck:(NSDictionary *)param Callback:(MessageCallBack)call{
     
     [SLRequest postJsonRequestWithApi:URL_POST_USER_PAYPASSWORDCHECK parameters:param success:^(NSDictionary * _Nullable resultDic) {
         
@@ -1795,7 +2053,7 @@
 }
 
 ///(文创 商城) 支付
--(void)orderPay:(NSDictionary *)param Callback:(MessageCallBack)call{
+- (void)orderPay:(NSDictionary *)param Callback:(MessageCallBack)call{
     
     
     
@@ -1814,6 +2072,9 @@
         }
         message.isSuccess = isSuccess;
         message.reason = resultDic[MSG];
+        if (errorReason && errorReason.length){
+            message.reason = errorReason;
+        }
         message.extensionDic = resultDic;
         if (call) call(message);
     }];
@@ -1842,10 +2103,7 @@
 }
 
 - (void)checkPay:(NSDictionary *)param Callback:(MessageCallBack)call {
-    [SLRequest postJsonRequestWithApi:URL_POST_USER_PAY_CHECK parameters:param success:^(NSDictionary * _Nullable resultDic) {
-    } failure:^(NSString * _Nullable errorReason) {
-    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
-        
+    [SLRequest getRequestWithApi:URL_POST_USER_PAY_CHECK parameters:param success:nil failure:nil finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
         Message *message = [[Message alloc]init];
         BOOL isSuccess = NO;
         if ([ModelTool checkResponseObject:resultDic]){
@@ -1861,27 +2119,27 @@
 }
 
 ///(文创 商城) 获取余额
--(void)userBalanceCallback:(MessageCallBack)call{
-    
-    
-    [SLRequest postJsonRequestWithApi:URL_POST_USER_BALANCE parameters:@{} success:^(NSDictionary * _Nullable resultDic) {
-    } failure:^(NSString * _Nullable errorReason) {
-    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
-        
-        Message *message = [[Message alloc]init];
-        BOOL isSuccess = NO;
-        if ([ModelTool checkResponseObject:resultDic]){
-            isSuccess = YES;
-            message.extensionDic = resultDic[DATAS];
-        }else{
-            isSuccess = NO;
-        }
-        message.isSuccess = isSuccess;
-        message.reason = resultDic[MSG];
-        
-        
-        if (call) call(message);
-    }];
+//- (void)userBalanceCallback:(MessageCallBack)call{
+//
+//
+//    [SLRequest postJsonRequestWithApi:URL_POST_USER_BALANCE parameters:@{} success:^(NSDictionary * _Nullable resultDic) {
+//    } failure:^(NSString * _Nullable errorReason) {
+//    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
+//
+//        Message *message = [[Message alloc]init];
+//        BOOL isSuccess = NO;
+//        if ([ModelTool checkResponseObject:resultDic]){
+//            isSuccess = YES;
+//            message.extensionDic = resultDic[DATAS];
+//        }else{
+//            isSuccess = NO;
+//        }
+//        message.isSuccess = isSuccess;
+//        message.reason = resultDic[MSG];
+//
+//
+//        if (call) call(message);
+//    }];
     
     
     
@@ -1907,22 +2165,43 @@
     //    }failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
     //        if (call) call(nil);
     //    }];
-}
+//}
 
 ///收藏店铺列表
--(void)getMyCollectCallback:(NSArrayCallBack)call{
+- (void)getMyCollectCallback:(NSArrayCallBack)call{
     
     
-    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_COLLECT_MYCOLLECT parameters:@{} success:^(NSDictionary * _Nullable resultDic) {
-    } failure:^(NSString * _Nullable errorReason) {
-    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
-        
+//    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_COLLECT_MYCOLLECT parameters:@{} success:^(NSDictionary * _Nullable resultDic) {
+//    } failure:^(NSString * _Nullable errorReason) {
+//    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
+//        NSArray *dataArray;
+//        if ([resultDic[DATAS] isKindOfClass:[NSArray class]] == YES) {
+//            dataArray = resultDic[DATAS];
+//        }else{
+//            dataArray =  resultDic[DATAS][LIST];
+//        }
+//        if (dataArray.count > 0) {
+//            NSArray *dataList = [GoodsStoreInfoModel mj_objectArrayWithKeyValuesArray:dataArray];
+//
+//            for (GoodsStoreInfoModel *itme in dataList) {
+//                itme.collect = @"1";
+//            }
+//
+//            if (call) call(dataList);
+//        }else{
+//            if (call) call(nil);
+//        }
+//
+//    }];
+    
+    [SLRequest getRequestWithApi:URL_POST_SHOPAPI_COMMON_COLLECT_MYCOLLECT parameters:@{@"type" : @"1"}  success:nil failure:nil finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
         NSArray *dataArray;
         if ([resultDic[DATAS] isKindOfClass:[NSArray class]] == YES) {
             dataArray = resultDic[DATAS];
         }else{
-            dataArray =  resultDic[DATAS][LIST];
+            dataArray =  resultDic[DATAS][DATAS];
         }
+        dataArray = [ThumbFollowShareManager deleteLocalCacheData:dataArray modelItemType:ShopItemType modelType:CollectionType modelItemKind:ImageText];
         if (dataArray.count > 0) {
             NSArray *dataList = [GoodsStoreInfoModel mj_objectArrayWithKeyValuesArray:dataArray];
             
@@ -1935,7 +2214,6 @@
             if (call) call(nil);
         }
     }];
-    
     
     
     
@@ -1968,7 +2246,7 @@
 }
 
 ///(文创 商城) 申请售后发货
--(void)sendRefundGoods:(NSDictionary *)param Callback:(MessageCallBack)call{
+- (void)sendRefundGoods:(NSDictionary *)param Callback:(MessageCallBack)call{
     
     
     
@@ -2011,11 +2289,9 @@
 }
 
 ///(文创 商城) 删除售后
--(void)delRefundOrder:(NSDictionary *)param Callback:(MessageCallBack)call{
+- (void)delRefundOrder:(NSDictionary *)param Callback:(MessageCallBack)call{
     
-    
-    
-    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_ORDER_DELREFUNDORDER parameters:param success:^(NSDictionary * _Nullable resultDic) {
+    [SLRequest postHttpRequestWithApi:URL_POST_SHOPAPI_COMMON_ORDER_DELREFUNDORDER parameters:param success:^(NSDictionary * _Nullable resultDic) {
     } failure:^(NSString * _Nullable errorReason) {
     } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
         
@@ -2059,7 +2335,7 @@
 }
 
 ///(文创 商城) 用户资质信息
--(void)userQualifications:(NSDictionary *)param Callback:(NSObjectCallBack)call{
+- (void)userQualifications:(NSDictionary *)param Callback:(NSObjectCallBack)call{
     
     
     
@@ -2104,13 +2380,8 @@
 
 
 ///(文创 商城) 添加用户资质
--(void)addQualifications:(NSDictionary *)param Callback:(MessageCallBack)call{
-    
-    
-    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_INVOICE_ADDQUALIFICATIONS parameters:param success:^(NSDictionary * _Nullable resultDic) {
-    } failure:^(NSString * _Nullable errorReason) {
-    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
-        
+- (void)addQualifications:(NSDictionary *)param Callback:(MessageCallBack)call{
+    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_INVOICE_ADDQUALIFICATIONS parameters:param success:nil failure:nil finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
         Message *message = [[Message alloc]init];
         BOOL isSuccess = NO;
         if ([ModelTool checkResponseObject:resultDic]){
@@ -2119,8 +2390,8 @@
             isSuccess = NO;
         }
         message.isSuccess = isSuccess;
-        message.reason = resultDic[MSG];
-        
+        message.reason = errorReason.length ? errorReason : resultDic[MSG];
+
         if (call) call(message);
     }];
     
@@ -2147,14 +2418,8 @@
 }
 
 ///(文创 商城) 申请开发票
--(void)invoicing:(NSDictionary *)param Callback:(MessageCallBack)call{
-    
-    
-    
-    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_INVOICE_INVOICING parameters:param success:^(NSDictionary * _Nullable resultDic) {
-    } failure:^(NSString * _Nullable errorReason) {
-    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
-        
+- (void)invoicing:(NSDictionary *)param Callback:(MessageCallBack)call{
+    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_INVOICE_INVOICING parameters:param success:nil failure:nil finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
         Message *message = [[Message alloc]init];
         BOOL isSuccess = NO;
         if ([ModelTool checkResponseObject:resultDic]){
@@ -2164,13 +2429,11 @@
         }
         message.isSuccess = isSuccess;
         message.reason = resultDic[MSG];
-        
+        if (errorReason.length) {
+            message.reason = errorReason;
+        }
         if (call) call(message);
     }];
-    
-    
-    
-    
     
     
     //    [self.manager POST:ADD(URL_POST_SHOPAPI_COMMON_INVOICE_INVOICING) parameters:param headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -2195,31 +2458,56 @@
 }
 
 ///(文创 商城) ahq 列表
--(void)getAhqList:(NSDictionary *)param Callback:(NSArrayCallBack)call{
+- (void)getAhqList:(NSDictionary *)param Callback:(NSArrayCallBack)call{
     
     
     
-    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_AHP_GETAHQLIST parameters:param success:^(NSDictionary * _Nullable resultDic) {
-    } failure:^(NSString * _Nullable errorReason) {
-    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
-        
+//    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_AHP_GETAHQLIST parameters:param success:^(NSDictionary * _Nullable resultDic) {
+//    } failure:^(NSString * _Nullable errorReason) {
+//    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
+//
+//        if ([ModelTool checkResponseObject:resultDic]) {
+//
+//            NSLog(@"dic : %@", resultDic);
+//
+//            NSArray *dataArray;
+//            if ([resultDic[DATAS] isKindOfClass:[NSArray class]] == YES) {
+//                dataArray = resultDic[DATAS];
+//            }else{
+//                dataArray =  resultDic[DATAS][LIST];
+//            }
+//
+//            NSArray *dataList = [CustomerServieListModel mj_objectArrayWithKeyValuesArray:dataArray];
+//
+//            if (call) {
+//                call(dataList);
+//            }
+//
+//        }else{
+//            if (call) {
+//                call(nil);
+//            }
+//        }
+//    }];
+//
+    [SLRequest getRequestWithApi:URL_POST_SHOPAPI_COMMON_AHP_GETAHQLIST parameters:param success:nil failure:nil finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
         if ([ModelTool checkResponseObject:resultDic]) {
-            
+
             NSLog(@"dic : %@", resultDic);
-            
+
             NSArray *dataArray;
             if ([resultDic[DATAS] isKindOfClass:[NSArray class]] == YES) {
                 dataArray = resultDic[DATAS];
             }else{
-                dataArray =  resultDic[DATAS][LIST];
+                dataArray =  resultDic[DATAS][DATAS];
             }
-            
+
             NSArray *dataList = [CustomerServieListModel mj_objectArrayWithKeyValuesArray:dataArray];
-            
+
             if (call) {
                 call(dataList);
             }
-            
+
         }else{
             if (call) {
                 call(nil);
@@ -2263,20 +2551,44 @@
 }
 
 ///(文创 商城) ahq 猜你想问 列表
--(void)getGuessList:(NSDictionary *)param Callback:(NSArrayCallBack)call{
-    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_AHP_GUESSLIST parameters:param success:^(NSDictionary * _Nullable resultDic) {
-    } failure:^(NSString * _Nullable errorReason) {
-    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
-        
+- (void)getGuessList:(NSDictionary *)param Callback:(NSArrayCallBack)call{
+    
+//    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_AHP_GUESSLIST parameters:param success:^(NSDictionary * _Nullable resultDic) {
+//    } failure:^(NSString * _Nullable errorReason) {
+//    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
+//
+//        if ([ModelTool checkResponseObject:resultDic]) {
+//
+//            NSLog(@"dic : %@", resultDic);
+//
+//            NSArray *dataArray;
+//            if ([resultDic[DATAS] isKindOfClass:[NSArray class]] == YES) {
+//                dataArray = resultDic[DATAS];
+//            }else{
+//                dataArray =  resultDic[DATAS][LIST];
+//            }
+//
+//            NSArray *dataList = [CustomerServieListModel mj_objectArrayWithKeyValuesArray:dataArray];
+//
+//            if (call) {
+//                call(dataList);
+//            }
+//
+//        }else{
+//            if (call) {
+//                call(nil);
+//            }
+//        }
+//    }];
+    
+    [SLRequest getRequestWithApi:URL_POST_SHOPAPI_COMMON_AHP_GUESSLIST parameters:param success:nil failure:nil finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
         if ([ModelTool checkResponseObject:resultDic]) {
-            
-            NSLog(@"dic : %@", resultDic);
             
             NSArray *dataArray;
             if ([resultDic[DATAS] isKindOfClass:[NSArray class]] == YES) {
                 dataArray = resultDic[DATAS];
             }else{
-                dataArray =  resultDic[DATAS][LIST];
+                dataArray =  resultDic[DATAS][DATAS];
             }
             
             NSArray *dataList = [CustomerServieListModel mj_objectArrayWithKeyValuesArray:dataArray];
@@ -2296,17 +2608,17 @@
 
 
 
--(void)getGoodsInvoice:(NSDictionary *)param Callback:(NSDictionaryCallBack)call{
-    
-    [SLRequest postJsonRequestWithApi:URL_GET_SHOPAPI_COMMON_GOODS_GETGOODSINVOICE parameters:param success:^(NSDictionary * _Nullable resultDic) {
-        
-    } failure:^(NSString * _Nullable errorReason) {
-        
-    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
-        if (call) {
-            call(resultDic[DATAS]);
-        }
-    }];
+//- (void)getGoodsInvoice:(NSDictionary *)param Callback:(NSDictionaryCallBack)call{
+//
+//    [SLRequest postJsonRequestWithApi:URL_GET_SHOPAPI_COMMON_GOODS_GETGOODSINVOICE parameters:param success:^(NSDictionary * _Nullable resultDic) {
+//
+//    } failure:^(NSString * _Nullable errorReason) {
+//
+//    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
+//        if (call) {
+//            call(resultDic[DATAS]);
+//        }
+//    }];
     
 //    [SLRequest postRequestWithApi:URL_GET_SHOPAPI_COMMON_GOODS_GETGOODSINVOICE parameters:param success:^(NSDictionary * _Nullable resultDic) {
 //    } failure:^(NSString * _Nullable errorReason) {
@@ -2317,16 +2629,11 @@
 //        }
 //
 //    }];
-}
+//}
 
-
--(void)changeInvoice:(NSDictionary *)param Callback:(MessageCallBack)call{
-    
-    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_INVOICE_CHANGEINVOICE parameters:param success:^(NSDictionary * _Nullable resultDic) {
-        
-    } failure:^(NSString * _Nullable errorReason) {
-        
-    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
+/// 换开发票
+- (void)changeInvoice:(NSDictionary *)param Callback:(MessageCallBack)call{
+    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_INVOICE_CHANGEINVOICE parameters:param success:nil failure:nil finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
         if (call) {
             Message *message = [[Message alloc]init];
             BOOL isSuccess = YES;
@@ -2345,13 +2652,8 @@
 }
 
 ///修改发票信息
--(void)editInvoice:(NSDictionary *)param Callback:(MessageCallBack)call{
-    
-    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_INVOICE_EDITINVOICE parameters:param success:^(NSDictionary * _Nullable resultDic) {
-        
-    } failure:^(NSString * _Nullable errorReason) {
-        
-    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
+- (void)editInvoice:(NSDictionary *)param Callback:(MessageCallBack)call{
+    [SLRequest postJsonRequestWithApi:URL_POST_SHOPAPI_COMMON_INVOICE_EDITINVOICE parameters:param success:nil failure:nil finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
         if (call) {
             Message *message = [[Message alloc]init];
             BOOL isSuccess = YES;
@@ -2370,7 +2672,7 @@
 }
 
 
--(void)sendMail:(NSDictionary *)param Callback:(MessageCallBack)call{
+- (void)sendMail:(NSDictionary *)param Callback:(MessageCallBack)call{
  
     [SLRequest postHttpRequestWithApi:URL_POST_SHOPAPI_COMMON_SENDMAIL parameters:param success:^(NSDictionary * _Nullable resultDic) {
         
@@ -2410,26 +2712,26 @@
     return [WengenManager shareInstance];
 }
 
--(id)copyWithZone:(nullable NSZone *)zone {
+- (id)copyWithZone:(nullable NSZone *)zone {
     return [WengenManager shareInstance];
 }
 
--(id)mutableCopyWithZone:(nullable NSZone *)zone {
+- (id)mutableCopyWithZone:(nullable NSZone *)zone {
     return [WengenManager shareInstance];;
 }
 
--(void)updateToken{
+- (void)updateToken{
     SLAppInfoModel *appInfoModel = [[SLAppInfoModel sharedInstance] getCurrentUserInfo];
     
     
     
-    if (appInfoModel != nil && appInfoModel.access_token != nil) {
+    if (appInfoModel != nil && appInfoModel.accessToken != nil) {
         
-        //        [_manager.requestSerializer setValue:@"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7cGFzZXRpbWU9MTU4OTA3OTIzNTM4NiwgaWQ9Mn0iLCJleHAiOjE1ODkwMjE2MzUsIm5iZiI6MTU4ODk5MjgzNX0.v56m__nUqo7Tw7rZlnwcLtSazKUdJPKggZwbx3wwFRg" forHTTPHeaderField:@"access_token"];
+        //        [_manager.requestSerializer setValue:@"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7cGFzZXRpbWU9MTU4OTA3OTIzNTM4NiwgaWQ9Mn0iLCJleHAiOjE1ODkwMjE2MzUsIm5iZiI6MTU4ODk5MjgzNX0.v56m__nUqo7Tw7rZlnwcLtSazKUdJPKggZwbx3wwFRg" forHTTPHeaderField:@"accessToken"];
         //        struct utsname systemInfo;
         //        uname(&systemInfo);
         //        NSString *deviceString = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
-        [_manager.requestSerializer setValue:appInfoModel.access_token forHTTPHeaderField:@"token"];
+        [_manager.requestSerializer setValue:appInfoModel.accessToken forHTTPHeaderField:@"token"];
         [_manager.requestSerializer setValue:@"iOS" forHTTPHeaderField:@"cellphoneType"];
         [_manager.requestSerializer setValue:BUILD_STR forHTTPHeaderField:@"version"];
         [_manager.requestSerializer setValue:VERSION_STR forHTTPHeaderField:@"versionName"];
@@ -2441,7 +2743,7 @@
 }
 
 #pragma mark - gettet / setter
--(AFHTTPSessionManager *)manager{
+- (AFHTTPSessionManager *)manager{
     if (_manager == nil) {
         //获取请求对象
         _manager= [AFHTTPSessionManager manager];
@@ -2466,3 +2768,5 @@
 
 
 @end
+
+

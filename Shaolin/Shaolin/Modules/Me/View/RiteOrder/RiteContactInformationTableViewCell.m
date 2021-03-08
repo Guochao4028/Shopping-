@@ -39,11 +39,11 @@
     // Configure the view for the selected state
 }
 
--(void)setTitleStr:(NSString *)titleStr{
+- (void)setTitleStr:(NSString *)titleStr{
     [self.titleLabel setText:titleStr];
 }
 
--(void)setContentStr:(NSString *)contentStr{
+- (void)setContentStr:(NSString *)contentStr{
      NSArray  *array = [contentStr componentsSeparatedByString:@"|"];
     
     NSString *name = array[0];
@@ -64,7 +64,7 @@
 }
 
 
--(void)pujaContactAction{
+- (void)pujaContactAction{
     
     if (self.phoneStr.length){
         NSString *phone = [NSString stringWithFormat:@"telprompt://%@", self.phoneStr];
@@ -73,7 +73,7 @@
     
 }
 
--(void)ritePhoneAction{
+- (void)ritePhoneAction{
         NSString *phone = [NSString stringWithFormat:@"telprompt://%@", @"0371-62745166"];
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:phone] options:@{} completionHandler:nil];
     

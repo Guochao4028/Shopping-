@@ -16,6 +16,8 @@
 
 #import "OrdeItemImageCollectionViewCell.h"
 
+#import "NSString+Tool.h"
+
 @interface OrdeMoreItmeTableViewCell ()<UICollectionViewDataSource, UICollectionViewDelegate>
 
 //服务订单号
@@ -123,15 +125,17 @@
 
 @implementation OrdeMoreItmeTableViewCell
 
--(void)layoutSubviews {
+- (void)layoutSubviews {
     [super layoutSubviews];
     
-    if ([self.listModel.num_type isEqualToString:@"1"]) {
+    if ([self.listModel.amount isEqualToString:@"1"]) {
         self.priceLabel.textAlignment = NSTextAlignmentCenter;
-    }
-    if ([self.listModel.num_type isEqualToString:@"2"]) {
+    }else{
         self.priceLabel.textAlignment = NSTextAlignmentRight;
     }
+//   if ([self.listModel.num_type isEqualToString:@"2"]) {
+//        self.priceLabel.textAlignment = NSTextAlignmentRight;
+//    }
 }
 
 - (void)awakeFromNib {
@@ -198,7 +202,7 @@
 
 #pragma mark - UICollectionViewDataSource & UICollectionViewDelegate
 
--(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
     return self.goodsImagesArray.count;
 }
 
@@ -206,7 +210,7 @@
     return CGSizeMake(110, 110);
 }
 
--(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     OrdeItemImageCollectionViewCell * cell  = [collectionView dequeueReusableCellWithReuseIdentifier:@"OrdeItemImageCollectionViewCell" forIndexPath:indexPath];
 
     cell.imageStr = self.goodsImagesArray[indexPath.row];
@@ -214,7 +218,7 @@
     return cell;
 }
 
--(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     if ([self.delegate respondsToSelector:@selector(ordeMoreItmeTableViewCell:tapCell:)] == YES) {
         [self.delegate ordeMoreItmeTableViewCell:self tapCell:self.listModel];
     }
@@ -222,24 +226,17 @@
 
 
 ///更新布局
--(void)updateLayout:(OrderListModel *)listModel{
+- (void)updateLayout:(OrderListModel *)listModel{
+    
+    [self.obligationCheckInvoiceButton setHidden:YES];
     
     self.completeOperationViewW.constant = (ScreenWidth - 32);
-   
-    [self.orderNoLabel setText:[NSString stringWithFormat:SLLocalizedString(@"订单编号：%@"), listModel.order_car_sn]];
-    NSArray *orderStoreArray = listModel.order_goods;
-//
-//
-//
-    OrderStoreModel *storeModel = [orderStoreArray firstObject];
-
-    NSArray *orderGoodsArray = storeModel.goods;
-
-    OrderGoodsModel *goodsModel = [orderGoodsArray firstObject];
     
-
+    [self.orderNoLabel setText:[NSString stringWithFormat:SLLocalizedString(@"订单编号：%@"), listModel.orderCarSn]];
+    
+    
     NSString *status = listModel.status;
-
+    
     if ([status isEqualToString:@"1"] == YES) {
         [self obligationLayout];
     }else if ([status isEqualToString:@"2"] == YES){
@@ -254,7 +251,7 @@
     }else if ([status isEqualToString:@"4"] == YES ||[status isEqualToString:@"5"] == YES) {
         [self completeLayout];
         [self.cancelLabel setText:SLLocalizedString(@"已完成")];
-        NSString *evaluate_status = listModel.evaluate_status;
+        NSString *evaluate_status = listModel.evaluateStatus;
         //收货
         //是否评星  未评星显示，已评星隐藏
         if([evaluate_status isEqualToString:@"0"] == YES){
@@ -264,64 +261,72 @@
         }
     }
     
-    NSInteger numTotal = 0;
-    for ( OrderStoreModel *storeItem  in orderStoreArray) {
-        for (OrderGoodsModel *goodsItem in storeItem.goods) {
-            numTotal += goodsItem.num.integerValue;
-            if ([goodsItem.goods_image count]>0) {
-                [self.goodsImagesArray addObject:goodsItem.goods_image[0]];
-            }
-        }
-    }
+    //    NSInteger numTotal = 0;
+    //    for ( OrderStoreModel *storeItem  in orderStoreArray) {
+    //        for (OrderGoodsModel *goodsItem in storeItem.goods) {
+    //            numTotal += goodsItem.num.integerValue;
+    //            if ([goodsItem.goods_image count]>0) {
+    //                [self.goodsImagesArray addObject:goodsItem.goods_image[0]];
+    //            }
+    //        }
+    //    }
+    
+    NSInteger numTotal = [listModel.amount integerValue];
+    self.goodsImagesArray  = [listModel.goodsImages mutableCopy];
+    //
     
     [self.collectionView reloadData];
     
     [self.numberLabel setText:[NSString stringWithFormat:SLLocalizedString(@"共%ld件"), (long)numTotal]];
     
-   
-
     
-    BOOL is_invoice = [goodsModel.is_invoice boolValue];
-       NSString *buttonTitle = SLLocalizedString(@"查看发票");
-       if (is_invoice == NO) {
-           buttonTitle = SLLocalizedString(@"补开发票");
-       }
-       
-       float goodsMoney = [listModel.order_car_money floatValue];
-       
-       if (goodsMoney == 0) {
-           [self.receivingCheckInvoiceButton setHidden:YES];
-              [self.waitingSendGoodsCheckInvoiceButton setHidden:YES];
-              [self.completeCheckInvoiceButton setHidden:YES];
-       }else{
-           [self.receivingCheckInvoiceButton setHidden:NO];
-           [self.waitingSendGoodsCheckInvoiceButton setHidden:NO];
-           [self.completeCheckInvoiceButton setHidden:NO];
-           [self.receivingCheckInvoiceButton setTitle:buttonTitle forState:UIControlStateNormal];
-              [self.waitingSendGoodsCheckInvoiceButton setTitle:buttonTitle forState:UIControlStateNormal];
-              [self.completeCheckInvoiceButton setTitle:buttonTitle forState:UIControlStateNormal];
-           
-           if ([goodsModel.is_foreign isEqualToString:@"1"] && [buttonTitle isEqualToString:SLLocalizedString(@"补开发票")]) {
-               [self.receivingCheckInvoiceButton setHidden:YES];
-               [self.waitingSendGoodsCheckInvoiceButton setHidden:YES];
-               [self.completeCheckInvoiceButton setHidden:YES];
-               
-               [self.completeCheckInvoiceView setHidden:YES];
-               self.completeOperationViewW.constant = self.completeOperationViewW.constant  - (self.completeOperationViewW.constant  / 4);
-           }
-       }
-       
-      
-
-       [self.obligationCheckInvoiceButton setHidden:YES];
     
-
+    
+    BOOL is_invoice = [listModel.isInvoice boolValue];
+    NSString *buttonTitle = SLLocalizedString(@"查看发票");
+    if (is_invoice == NO) {
+        buttonTitle = SLLocalizedString(@"补开发票");
+    }
+    
+    float goodsMoney = [listModel.money floatValue];
+    
+    if (goodsMoney == 0) {
+        [self.receivingCheckInvoiceButton setHidden:YES];
+        [self.waitingSendGoodsCheckInvoiceButton setHidden:YES];
+        [self.completeCheckInvoiceButton setHidden:YES];
+        [self.completeCheckInvoiceView setHidden:YES];
+        self.completeOperationViewW.constant = self.completeOperationViewW.constant  - (self.completeOperationViewW.constant  / 4);
+    }else{
+        [self.receivingCheckInvoiceButton setHidden:NO];
+        [self.waitingSendGoodsCheckInvoiceButton setHidden:NO];
+        [self.completeCheckInvoiceButton setHidden:NO];
+        
+        [self.receivingCheckInvoiceButton setTitle:buttonTitle forState:UIControlStateNormal];
+        [self.waitingSendGoodsCheckInvoiceButton setTitle:buttonTitle forState:UIControlStateNormal];
+        [self.completeCheckInvoiceButton setTitle:buttonTitle forState:UIControlStateNormal];
+        
+        [self.completeCheckInvoiceView setHidden:NO];
+        
+        [self.completeCheckInvoiceButton setHidden:NO];
+        
+        //           self.completeOperationViewW.constant = self.completeOperationViewW.constant  - (self.completeOperationViewW.constant  / 4);
+        
+//        if ([listModel.isForeign isEqualToString:@"1"] && [buttonTitle isEqualToString:SLLocalizedString(@"补开发票")]) {
+//            [self.receivingCheckInvoiceButton setHidden:YES];
+//            [self.waitingSendGoodsCheckInvoiceButton setHidden:YES];
+//            [self.completeCheckInvoiceButton setHidden:YES];
+//            
+//            
+//            [self.completeCheckInvoiceView setHidden:YES];
+//            self.completeOperationViewW.constant = self.completeOperationViewW.constant  - (self.completeOperationViewW.constant  / 4);
+//        }
+    }
     
 }
 
 
 ///装饰button
--(void)modifiedButton:(UIButton *)sender borderColor:(UIColor *)color cornerRadius:(CGFloat)radius{
+- (void)modifiedButton:(UIButton *)sender borderColor:(UIColor *)color cornerRadius:(CGFloat)radius{
     sender.layer.borderWidth = 1;
     sender.layer.borderColor = color.CGColor;
 //    sender.layer.cornerRadius = SLChange(radius);
@@ -331,7 +336,7 @@
 }
 
 ///待付款
--(void)obligationLayout{
+- (void)obligationLayout{
     [self.instructionsLabel setHidden:NO];
     [self.instructionsLabel setText:SLLocalizedString(@"等待付款")];
     [self.deleteButton setHidden:YES];
@@ -345,7 +350,7 @@
 }
 
 ///待收货
--(void)receivingLayout{
+- (void)receivingLayout{
     [self.instructionsLabel setHidden:NO];
     
     [self.deleteButton setHidden:YES];
@@ -359,7 +364,7 @@
 }
 
 ///待发货
--(void)waitingSendGoodsLayout{
+- (void)waitingSendGoodsLayout{
     [self.instructionsLabel setHidden:NO];
     
     [self.deleteButton setHidden:YES];
@@ -373,7 +378,7 @@
 }
 
 ///已取消
--(void)cancelLayout{
+- (void)cancelLayout{
     [self.instructionsLabel setHidden:YES];
     [self.deleteButton setHidden:NO];
     [self.cancelLabel setHidden:NO];
@@ -386,7 +391,7 @@
 }
 
 ///已完成
--(void)completeLayout{
+- (void)completeLayout{
     [self.instructionsLabel setHidden:YES];
     [self.deleteButton setHidden:NO];
 //    [self.cancelLabel setHidden:YES];
@@ -503,18 +508,21 @@
 
 #pragma mark - setter / getter
 
--(void)setListModel:(OrderListModel *)listModel{
+- (void)setListModel:(OrderListModel *)listModel{
     _listModel = listModel;
     [self.goodsImagesArray removeAllObjects];
     
-    [self.priceLabel setText:[NSString stringWithFormat:@"¥%@", listModel.order_car_money]];
+   NSString *moneyStr = [NSString stringWithFormat:@"¥%@", listModel.money];
+    
+//    [self.priceLabel setText:[NSString stringWithFormat:@"¥%@", listModel.money]];
+    [self.priceLabel setAttributedText:[moneyStr moneyStringWithFormatting:MoneyStringFormattingMoneyAllFormattingType]];
     
     
     
     [self updateLayout:listModel];
 }
 
--(NSMutableArray *)goodsImagesArray{
+- (NSMutableArray *)goodsImagesArray{
     if (_goodsImagesArray == nil) {
         _goodsImagesArray = [NSMutableArray array];
     }

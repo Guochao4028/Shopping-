@@ -61,15 +61,13 @@ static NSString *const FocusImageScaleAnimation = @"focusImageScaleAnimation";
     if (self.hideNavigationBarView == NO && self.hideNavigationBar == NO){
         self.hideNavigationBar = YES;
     }
-    [self setUI];
+    [self setupUI];
 //    [self openCamera];
     [self addTimer];
     [self starScan];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
-//    [self.navigationController setNavigationBarHidden:NO animated:animated];
-    
     [self stopScan];
 }
  
@@ -78,7 +76,7 @@ static NSString *const FocusImageScaleAnimation = @"focusImageScaleAnimation";
 }
  
 //添加扫描框
-- (void)setUI{
+- (void)setupUI{
     self.view.backgroundColor = [UIColor blackColor];
     [self.view addSubview:self.backButton];
     [self.view addSubview:self.imageView];

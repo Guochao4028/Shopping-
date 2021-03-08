@@ -35,7 +35,7 @@
 
 @implementation BillingDetailsPopupView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [self initUI];
@@ -46,7 +46,7 @@
 
 #pragma mark - methods
 
--(void)initData{
+- (void)initData{
     self.dataArray = @[
     @{@"title":SLLocalizedString(@"全部"), @"isSelected":@"1"},
     @{@"title":SLLocalizedString(@"商品"), @"isSelected":@"0"},
@@ -62,7 +62,7 @@
 }
 
 /// 初始化UI
--(void)initUI{
+- (void)initUI{
     
     [self setBackgroundColor:[UIColor colorWithWhite:0 alpha:0.6]];
     
@@ -79,7 +79,7 @@
     
 }
 
--(void)disappear{
+- (void)disappear{
     [UIView animateWithDuration:0.3 animations:^{
         self.alpha = 0;
     } completion:^(BOOL finished) {
@@ -87,7 +87,7 @@
     }];
 }
 
--(void)determineButtonClick:(UIButton *)button{
+- (void)determineButtonClick:(UIButton *)button{
     NSString *string = @"";
     if (self.popType == PopupViewChooseTimeType){
         string = [self.pickTimeView getTimeString];
@@ -110,7 +110,7 @@
 
 #pragma mark -  private
 
--(void)p_Autolayout{
+- (void)p_Autolayout{
     [self.contentView autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:kBottomSafeHeight];
     [self.contentView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
     [self.contentView autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
@@ -157,7 +157,7 @@
     return cell;
 }
 
--(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     
     for (NSMutableDictionary *dic in self.dataArray) {
         [dic setValue:@"0" forKey:@"isSelected"];
@@ -186,7 +186,7 @@
     }
 }
 
--(UIView *)contentView{
+- (UIView *)contentView{
     
     if (_contentView == nil) {
         _contentView = [UIView newAutoLayoutView];
@@ -196,7 +196,7 @@
 
 }
 
--(UIView *)titleView{
+- (UIView *)titleView{
     
     if (_titleView == nil) {
         _titleView = [UIView newAutoLayoutView];
@@ -207,7 +207,7 @@
 
 }
 
--(UIButton *)determineButton{
+- (UIButton *)determineButton{
     
     if (_determineButton == nil) {
         _determineButton = [UIButton newAutoLayoutView];
@@ -224,7 +224,7 @@
 }
 
 
--(UIButton *)closeButton{
+- (UIButton *)closeButton{
     
     if (_closeButton == nil) {
         _closeButton = [UIButton newAutoLayoutView];
@@ -234,7 +234,7 @@
     return _closeButton;
 }
 
--(UILabel *)titleLable{
+- (UILabel *)titleLable{
     
     if (_titleLable == nil) {
         _titleLable = [UILabel newAutoLayoutView];
@@ -244,7 +244,7 @@
     return _titleLable;
 }
 
--(GCPickTimeView *)pickTimeView{
+- (GCPickTimeView *)pickTimeView{
     
     if (_pickTimeView == nil) {
         _pickTimeView = [[GCPickTimeView alloc]initForAutoLayout];
@@ -252,7 +252,7 @@
     return _pickTimeView;
 }
 
--(UICollectionView *)collectionView{
+- (UICollectionView *)collectionView{
     
     if (_collectionView == nil) {
         
@@ -277,12 +277,12 @@
 }
 
 
--(void)setTitleStr:(NSString *)titleStr{
+- (void)setTitleStr:(NSString *)titleStr{
     _titleStr = titleStr;
     [self.titleLable setText:titleStr];
 }
 
--(void)setPopType:(PopupViewType)popType{
+- (void)setPopType:(PopupViewType)popType{
     _popType = popType;
     switch (popType) {
         case PopupViewChooseTimeType:{

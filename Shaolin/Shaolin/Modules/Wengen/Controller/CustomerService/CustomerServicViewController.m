@@ -22,6 +22,12 @@
 
 #import "GoodsStoreInfoModel.h"
 
+
+#import "EMDemoHelper.h"
+#import "EMConversationHelper.h"
+#import "EMRemindManager.h"
+
+
 @interface CustomerServicViewController ()<CustomerServiceTabelHeardViewDelegate, UITableViewDelegate, UITableViewDataSource, CustomerServiceMessageTableCellDelegate>
 
 @property(nonatomic, strong)UITableView *tabelView;
@@ -46,7 +52,7 @@
 }
 
 #pragma mark - methods
--(void)initUI{
+- (void)initUI{
     [self.titleLabe setText:SLLocalizedString(@"在线客服")];
     [self.view setBackgroundColor:BackgroundColor_White];
     [self.view addSubview:self.tabelView];
@@ -56,7 +62,7 @@
     
     [self.inputView setInputWordBlock:^(NSString * _Nonnull word) {
         
-        [[DataManager shareInstance]getAhqList:@{@"question":word, @"type": weakSelf.servicType} Callback:^(NSArray *result) {
+        [[DataManager shareInstance]getAhqList:@{@"question":word, @"type": weakSelf.servicType, @"guess":@"0"} Callback:^(NSArray *result) {
             
             if ([result count] == 1) {
                 CustomerServieListModel *listModel = [result firstObject];
@@ -87,20 +93,16 @@
     }];
 }
 
--(void)initData{
+- (void)initData{
     
     //加载数据  headView上加载数据
-    [[DataManager shareInstance]getGuessList:@{@"type": self.servicType} Callback:^(NSArray *result) {
+    [[DataManager shareInstance]getGuessList:@{@"type": self.servicType,@"guess":@"1"} Callback:^(NSArray *result) {
          self.currentProblemArray = result;
          [self.tableHeardView setDataArray:result];
         
         if (![result count]) {
             [self.tableHeardView setMj_h:83];
         }
-        
-        
-        
-       
         
        NSInteger servicType = [self.servicType integerValue];
         
@@ -110,7 +112,7 @@
     }];
 }
 
--(void)sendMessage:(NSString *)word messageType:(MessageType)type isTimeHidden:(BOOL)isHidden extensionData:(NSArray *)list isHasMessage:(BOOL)isHas{
+- (void)sendMessage:(NSString *)word messageType:(MessageType)type isTimeHidden:(BOOL)isHidden extensionData:(NSArray *)list isHasMessage:(BOOL)isHas{
     
     CustomerServieItemMessageModel *messageModel = [[CustomerServieItemMessageModel alloc]init];
     messageModel.text = word;
@@ -139,38 +141,38 @@
 }
 
 #pragma mark - CustomerServiceTabelHeardViewDelegate
--(void)customerServiceTabelHeardView:(CustomerServiceTabelHeardView *)heardView tapCell:(CustomerServieListModel *)model{
+- (void)customerServiceTabelHeardView:(CustomerServiceTabelHeardView *)heardView tapCell:(CustomerServieListModel *)model{
     [self sendMessage:model.answer messageType:MessageTypeOther isTimeHidden:YES extensionData:nil isHasMessage:YES];
 }
 
 
 #pragma mark - UITableViewDelegate, UITableViewDataSource
 
--(CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     return 0.01;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     return 0.01;
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     UIView *view = [[UIView alloc] init];
     view.backgroundColor = [UIColor clearColor];
     return view;
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
     UIView *view = [[UIView alloc] init];
     view.backgroundColor = KTextGray_FA;
     return view;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return [self.dataArray count];
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
 //    CGFloat tableViewH = 100;
     
     CustomerServieItemMessageModel *message = self.dataArray[indexPath.row];
@@ -184,12 +186,12 @@
 //    return tableViewH;
 }
 
--(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 200;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
 
     CustomerServiceMessageTableCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CustomerServiceMessageTableCell"];
     
@@ -203,32 +205,41 @@
 
 #pragma mark - CustomerServiceMessageTableCellDelegate
 
--(void)customerServiceMessageTableCell:(CustomerServiceMessageTableCell *)cell tapCell:(CustomerServieListModel *)model{
+- (void)customerServiceMessageTableCell:(CustomerServiceMessageTableCell *)cell tapCell:(CustomerServieListModel *)model{
     [self sendMessage:model.answer messageType:MessageTypeOther isTimeHidden:YES extensionData:nil isHasMessage:YES];
 }
 
--(void)customerServiceMessageTableCell:(CustomerServiceMessageTableCell *)cell tapContactArtificial:(BOOL)isTap{
+- (void)customerServiceMessageTableCell:(CustomerServiceMessageTableCell *)cell tapContactArtificial:(BOOL)isTap{
     
     NSString *im =  self.imID;
-    if (im.length == 0) {
+    NSString *im_id = [SLAppInfoModel sharedInstance].IMId;
+    if (im.length == 0 || im_id.length == 0) {
         [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"客服坐席繁忙")];
         return;
     }
-    NSString *im_id = [SLAppInfoModel sharedInstance].iM_id;
-    if(im_id.length == 0){
-//        [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"获取聊天服务信息失败")];
-        [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"客服坐席繁忙")];
-        return;
-    }
-
     
-    EMChatViewController *chatVC = [[EMChatViewController alloc] initWithConversationId:im type:EMConversationTypeChat createIfNotExist:YES];
+
+//    if(im_id.length == 0){
+//        [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"获取聊天服务信息失败")];
+//        [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"客服坐席繁忙")];
+//        return;
+//    }
+
+//
+//    EMChatViewController *chatVC = [[EMChatViewController alloc] initWithConversationId:im type:EMConversationTypeChat createIfNotExist:YES];
+    EMConversation *conversation = [[EMClient sharedClient].chatManager getConversation:im type:EMConversationTypeChat createIfNotExist:YES];
+    conversation.ext = @{@"name":self.chatName};
+        EMConversationModel * aModel = [[EMConversationModel alloc] initWithEMModel:conversation];
+        aModel.nickName = self.chatName;
+        
+        EMChatViewController * chatVC = [[EMChatViewController alloc] initWithCoversationModel:aModel];
+    
        [self.navigationController pushViewController:chatVC animated:YES];
 }
 
 
 #pragma mark - setter / getter
--(UITableView *)tabelView{
+- (UITableView *)tabelView{
     
     if (_tabelView == nil) {
         _tabelView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight - 45 - NavBar_Height - kBottomSafeHeight) style:UITableViewStylePlain];
@@ -251,7 +262,7 @@
 
 }
 
--(CustomerServiceInputView *)inputView{
+- (CustomerServiceInputView *)inputView{
     
     if (_inputView == nil) {
         _inputView = [[CustomerServiceInputView alloc]initWithFrame:CGRectMake(0, ScreenHeight - 45 - NavBar_Height - kBottomSafeHeight, ScreenWidth, 45 )];
@@ -261,7 +272,7 @@
 }
 
 
--(CustomerServiceTabelHeardView *)tableHeardView{
+- (CustomerServiceTabelHeardView *)tableHeardView{
     
     if (_tableHeardView == nil) {
         _tableHeardView = [[CustomerServiceTabelHeardView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, 358)];
@@ -271,7 +282,7 @@
 
 }
 
--(NSMutableArray *)dataArray{
+- (NSMutableArray *)dataArray{
     
     if (_dataArray == nil) {
         _dataArray = [NSMutableArray array];
@@ -280,16 +291,18 @@
 
 }
 
--(void)setServicType:(NSString *)servicType{
+- (void)setServicType:(NSString *)servicType{
     _servicType = servicType;
 }
 
--(NSString *)servicType{
+- (NSString *)servicType{
     if (_servicType) {
         return _servicType;
     }
     
     return @"1";
 }
+
+
 
 @end

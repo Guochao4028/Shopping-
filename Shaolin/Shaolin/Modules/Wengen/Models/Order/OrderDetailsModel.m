@@ -62,7 +62,7 @@
 }
 
 
--(NSString *)invoiceTypeString {
+- (NSString *)invoiceTypeString {
     if (IsNilOrNull(self.invoice.type)) {
         return SLLocalizedString(@"不开发票");
     } else if ([self.invoice.type isEqualToString:@"1"]) {

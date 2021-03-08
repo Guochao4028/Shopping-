@@ -28,7 +28,7 @@
 }
 
 
--(void)setDataModel:(NSDictionary *)dataModel{
+- (void)setDataModel:(NSDictionary *)dataModel{
     _dataModel = dataModel;
     [self.lineLabel setHidden:YES];
     NSString *color = dataModel[@"color"];
@@ -54,7 +54,7 @@
     
 }
 
--(void)setAddressModel:(EnrollmentAddressModel *)addressModel{
+- (void)setAddressModel:(EnrollmentAddressModel *)addressModel{
     _addressModel = addressModel;
     
     [self.titleLabel setTextColor:KTextGray_999];
@@ -72,7 +72,7 @@
     
 }
 
--(void)setAddressInfoModel:(AddressInfoModel *)addressInfoModel{
+- (void)setAddressInfoModel:(AddressInfoModel *)addressInfoModel{
     _addressInfoModel = addressInfoModel;
        
        [self.titleLabel setTextColor:KTextGray_999];
@@ -90,7 +90,7 @@
 }
 
 
--(void)setDataInfoModel:(DegreeNationalDataModel *)dataInfoModel{
+- (void)setDataInfoModel:(DegreeNationalDataModel *)dataInfoModel{
     _dataInfoModel = dataInfoModel;
           
           [self.titleLabel setTextColor:KTextGray_999];
@@ -107,7 +107,7 @@
        [self.titleLabel setText:dataInfoModel.name];
 }
 
--(void)setTitleStr:(NSString *)titleStr{
+- (void)setTitleStr:(NSString *)titleStr{
     
     [self.titleLabel setTextColor:KTextGray_999];
        self.titleLabel.layer.borderWidth = 0;

@@ -11,7 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @protocol GoodsAddressListViewDelegate <NSObject>
--(void)tapAddress:(NSInteger)row;
+- (void)tapAddress:(NSInteger)row;
 @end
 
 @interface GoodsAddressListView : UIView
@@ -20,9 +20,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, weak)id<GoodsAddressListViewDelegate>delegate;
 
--(void)closeTarget:(nullable id)target action:(SEL)action;
+- (void)closeTarget:(nullable id)target action:(SEL)action;
 
--(void)createAddressTarget:(nullable id)target action:(SEL)action;
+- (void)createAddressTarget:(nullable id)target action:(SEL)action;
 
 @end
 

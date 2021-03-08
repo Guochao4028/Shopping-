@@ -22,6 +22,11 @@ NSString *const WXAppId = @"wx08634944da1c147c";
 NSString *const WBAppId = @"4078669462";
 NSString *const QQAppId = @"1110573526";
 
+//通用连接，用于直接拉起本应用，通过apple平台及后台配置
+NSString *const UniversalLink               = @"https://api.shaolinapp.com";
+//微博授权成功回调页
+static NSString *const SinaRedirectURI      = @"https://api.weibo.com/oauth2/default.html";
+
 // 授权登录相关 key
 NSString *const ThirdpartyType              = @"type";
 NSString *const ThirdpartyOpenID            = @"openID";
@@ -34,20 +39,16 @@ NSString *const ThirdpartyRefreshTokenToken = @"refreshToken";
 
 NSString *const ThirdpartyCertCode          = @"certCode";
 // 授权登录相关 value
-NSString *const ThirdpartyType_WX           = @"1";
-NSString *const ThirdpartyType_WB           = @"2";
-NSString *const ThirdpartyType_QQ           = @"3";
-NSString *const ThirdpartyType_Apple        = @"4";
-NSString *const ThirdpartyType_Phone        = @"0";
-NSString *const ThirdpartyType_Ali          = @"100";
+NSString *const ThirdpartyTypeWX            = @"1";
+NSString *const ThirdpartyTypeWB            = @"2";
+NSString *const ThirdpartyTypeQQ            = @"3";
+NSString *const ThirdpartyTypeApple         = @"4";
+NSString *const ThirdpartyTypePhone         = @"0";
+NSString *const ThirdpartyTypeAli           = @"100";
 
-NSString *const ThirdpartyType_WX_Moments = @"wx_Moments";
+NSString *const ThirdpartyTypeWXMoments = @"wxMoments";
 
-NSString *const ThirdpartyApplicationWillEnterForeground = @"ThirdpartyApplicationWillEnterForeground";
-//通用连接，用于直接拉起本应用
-NSString *const UniversalLink               = @"https://api.shaolinapp.com";
-//微博授权成功回调页
-static NSString *const SinaRedirectURI      = @"https://api.weibo.com/oauth2/default.html";
+NSString *const ApplicationWillEnterForegroundNotification = @"ApplicationWillEnterForegroundNotification";
 
 @interface ThirdpartyAuthorizationManager()<WXApiDelegate, TencentSessionDelegate, QQApiInterfaceDelegate, WeiboSDKDelegate, ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding>
 @property (nonatomic, strong) TencentOAuth *tencentOAuth;
@@ -67,13 +68,13 @@ static NSString *const SinaRedirectURI      = @"https://api.weibo.com/oauth2/def
 }
 
 + (BOOL)checkSDKByThirdpartyType:(NSString *)thirdpartyType {
-    if ([thirdpartyType isEqualToString:ThirdpartyType_WX]){
+    if ([thirdpartyType isEqualToString:ThirdpartyTypeWX]){
         return [WXApi isWXAppInstalled];;
-    } else if ([thirdpartyType isEqualToString:ThirdpartyType_WB]){
+    } else if ([thirdpartyType isEqualToString:ThirdpartyTypeWB]){
         return [WeiboSDK isWeiboAppInstalled];
-    } else if ([thirdpartyType isEqualToString:ThirdpartyType_QQ]){
+    } else if ([thirdpartyType isEqualToString:ThirdpartyTypeQQ]){
         return [QQApiInterface isQQInstalled];
-    } else if ([thirdpartyType isEqualToString:ThirdpartyType_Apple]){
+    } else if ([thirdpartyType isEqualToString:ThirdpartyTypeApple]){
         if (@available(iOS 13.0, *)){
             return YES;
         }
@@ -120,23 +121,23 @@ static NSString *const SinaRedirectURI      = @"https://api.weibo.com/oauth2/def
 }
 
 + (NSArray <NSString *> *)thirdpartyLoginTypes {
-    NSMutableArray *otherEnterArray = [@[ThirdpartyType_WX, ThirdpartyType_QQ, ThirdpartyType_WB] mutableCopy];
+    NSMutableArray *otherEnterArray = [@[ThirdpartyTypeWX, ThirdpartyTypeQQ, ThirdpartyTypeWB] mutableCopy];
     if (@available(iOS 13.0, *)){
-        [otherEnterArray addObject:ThirdpartyType_Apple];
+        [otherEnterArray addObject:ThirdpartyTypeApple];
     }
     return otherEnterArray;
 }
 
 + (NSString *)thirdpartyTypeToChinese:(NSString *)type{
-    if ([type isEqualToString:ThirdpartyType_QQ]){
+    if ([type isEqualToString:ThirdpartyTypeQQ]){
         return @"QQ";
-    } else if ([type isEqualToString:ThirdpartyType_WX]){
+    } else if ([type isEqualToString:ThirdpartyTypeWX]){
         return SLLocalizedString(@"微信");
-    } else if ([type isEqualToString:ThirdpartyType_WB]){
+    } else if ([type isEqualToString:ThirdpartyTypeWB]){
         return SLLocalizedString(@"微博");
-    } else if ([type isEqualToString:ThirdpartyType_Apple]){
+    } else if ([type isEqualToString:ThirdpartyTypeApple]){
         return SLLocalizedString(@"苹果");
-    } else if ([type isEqualToString:ThirdpartyType_Phone]){
+    } else if ([type isEqualToString:ThirdpartyTypePhone]){
         return SLLocalizedString(@"手机号");
     }
     return @"";
@@ -147,7 +148,7 @@ static NSString *const SinaRedirectURI      = @"https://api.weibo.com/oauth2/def
 }
 
 - (void)applicationWillEnterForeground:(id)aApplication{
-    [[NSNotificationCenter defaultCenter] postNotificationName:ThirdpartyApplicationWillEnterForeground object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:ApplicationWillEnterForegroundNotification object:nil];
 }
 
 - (BOOL)handleOpenURL:(NSURL *)url {
@@ -194,31 +195,31 @@ static NSString *const SinaRedirectURI      = @"https://api.weibo.com/oauth2/def
 
 - (void)sendLoginSuccessMessage{
     Message *message = [self createMessage:SLLocalizedString(@"授权成功") isSuccess:YES];
-    [self sendCompletionBlock:ThirdpartyAuthorizationCode_AuthorizationSuccess message:message];
+    [self sendCompletionBlock:ThirdpartyAuthorizationCodeSuccess message:message];
 }
 
 - (void)sendLoginErrorMessage{
     Message *message = [self createMessage:SLLocalizedString(@"授权失败") isSuccess:NO];
-    [self sendCompletionBlock:ThirdpartyAuthorizationCode_AuthorizationError message:message];
+    [self sendCompletionBlock:ThirdpartyAuthorizationCodeError message:message];
 }
 
 - (void)sendNotAppInstalled:(NSString *)thirdpartyType{
     NSString *type = [ThirdpartyAuthorizationManager thirdpartyTypeToChinese:thirdpartyType];
     NSString *tips = [NSString stringWithFormat:SLLocalizedString(@"检测到您未安装%@，请先安装%@"), type, type];
     Message *message = [self createMessage:tips isSuccess:NO];
-    [self sendCompletionBlock:ThirdpartyAuthorizationCode_AuthorizationTips message:message];
+    [self sendCompletionBlock:ThirdpartyAuthorizationCodeTips message:message];
 }
 
 - (void)sendSharedSuccess:(NSString *)thirdpartyType{
     NSString *type = [ThirdpartyAuthorizationManager thirdpartyTypeToChinese:thirdpartyType];
     NSString *tips = [NSString stringWithFormat:SLLocalizedString(@"已成功分享到%@"), type];
     Message *message = [self createMessage:tips isSuccess:NO];
-    [self sendCompletionBlock:ThirdpartyAuthorizationCode_AuthorizationTips message:message];
+    [self sendCompletionBlock:ThirdpartyAuthorizationCodeTips message:message];
 }
 
 - (void)sendTipsMessage:(NSString *)reason success:(BOOL)success{
     Message *message = [self createMessage:reason isSuccess:success];
-    [self sendCompletionBlock:ThirdpartyAuthorizationCode_AuthorizationTips message:message];
+    [self sendCompletionBlock:ThirdpartyAuthorizationCodeTips message:message];
 }
 
 - (void)sendCompletionBlock:(ThirdpartyAuthorizationMessageCode)messageCode message:(Message *)message{
@@ -228,13 +229,13 @@ static NSString *const SinaRedirectURI      = @"https://api.weibo.com/oauth2/def
 #pragma mark - 便利方法
 // 拉起授权登陆
 - (void)loginByThirdpartyType:(NSString *)thirdpartyType {
-    if ([thirdpartyType isEqualToString:ThirdpartyType_WX]){
+    if ([thirdpartyType isEqualToString:ThirdpartyTypeWX]){
         [self weiXinLogin];
-    } else if ([thirdpartyType isEqualToString:ThirdpartyType_WB]){
+    } else if ([thirdpartyType isEqualToString:ThirdpartyTypeWB]){
         [self weiBoLogin];
-    } else if ([thirdpartyType isEqualToString:ThirdpartyType_QQ]){
+    } else if ([thirdpartyType isEqualToString:ThirdpartyTypeQQ]){
         [self QQLogin];
-    } else if ([thirdpartyType isEqualToString:ThirdpartyType_Apple]){
+    } else if ([thirdpartyType isEqualToString:ThirdpartyTypeApple]){
         [self appleLogin];
     }
 }
@@ -242,7 +243,7 @@ static NSString *const SinaRedirectURI      = @"https://api.weibo.com/oauth2/def
 // 拉起分享
 - (void)sharedByThirdpartyType:(NSString *)thirdpartyType sharedModel:(SharedModel *)sharedModel completion:(void (^)(void))completion{
     if (!sharedModel) return;
-    if (!sharedModel.image && sharedModel.imageURL && sharedModel.imageURL.length){
+    if (sharedModel.imageURL && sharedModel.imageURL.length){
         MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
         dispatch_group_t group = dispatch_group_create();
         dispatch_queue_t queue = dispatch_queue_create("com.shaolin.downloadThirdpartySharedImage", DISPATCH_QUEUE_CONCURRENT);
@@ -261,13 +262,13 @@ static NSString *const SinaRedirectURI      = @"https://api.weibo.com/oauth2/def
         });
         return;
     }
-    if ([thirdpartyType isEqualToString:ThirdpartyType_WX]){
+    if ([thirdpartyType isEqualToString:ThirdpartyTypeWX]){
         [self weiXinShared:sharedModel wXScene:WXSceneSession];
-    } else if ([thirdpartyType isEqualToString:ThirdpartyType_WX_Moments]){
+    } else if ([thirdpartyType isEqualToString:ThirdpartyTypeWXMoments]){
         [self weiXinShared:sharedModel wXScene:WXSceneTimeline];
-    } else if ([thirdpartyType isEqualToString:ThirdpartyType_WB]){
+    } else if ([thirdpartyType isEqualToString:ThirdpartyTypeWB]){
         [self weiBoShared:sharedModel];
-    } else if ([thirdpartyType isEqualToString:ThirdpartyType_QQ]){
+    } else if ([thirdpartyType isEqualToString:ThirdpartyTypeQQ]){
         [self QQShared:sharedModel];
     }
     if (completion) completion();
@@ -281,18 +282,18 @@ static NSString *const SinaRedirectURI      = @"https://api.weibo.com/oauth2/def
             errorStr = dict[MSG];
         }
         Message *message = [self createMessage:errorStr isSuccess:NO];
-        [self sendCompletionBlock:ThirdpartyAuthorizationCode_AuthorizationError message:message];
+        [self sendCompletionBlock:ThirdpartyAuthorizationCodeError message:message];
         return;
     }
-    if ([thirdpartyType isEqualToString:ThirdpartyType_WX]){
+    if ([thirdpartyType isEqualToString:ThirdpartyTypeWX]){
         [self weixinPay:dict];
-    } else if ([thirdpartyType isEqualToString:ThirdpartyType_Ali]){
+    } else if ([thirdpartyType isEqualToString:ThirdpartyTypeAli]){
         [self aliPay:dict];
     }
 }
 #pragma mark - 微信相关
 - (void)weiXinLogin{
-    if([ThirdpartyAuthorizationManager checkSDKByThirdpartyType:ThirdpartyType_WX]){//判断用户是否已安装微信App
+    if([ThirdpartyAuthorizationManager checkSDKByThirdpartyType:ThirdpartyTypeWX]){//判断用户是否已安装微信App
         SendAuthReq *req = [[SendAuthReq alloc] init];
         req.state = @"wx_oauth_authorization_state";//用于保持请求和回调的状态，授权请求或原样带回
         req.scope = @"snsapi_userinfo";//授权作用域：获取用户个人信息
@@ -305,19 +306,19 @@ static NSString *const SinaRedirectURI      = @"https://api.weibo.com/oauth2/def
             NSLog(@"%@", reason);
         }];
     } else {
-        [self sendNotAppInstalled:ThirdpartyType_WX];
+        [self sendNotAppInstalled:ThirdpartyTypeWX];
     }
 }
 
 - (void)weiXinShared:(SharedModel *)sharedModel wXScene:(int)scene{
-    if([ThirdpartyAuthorizationManager checkSDKByThirdpartyType:ThirdpartyType_WX]){//判断用户是否已安装微信App
+    if([ThirdpartyAuthorizationManager checkSDKByThirdpartyType:ThirdpartyTypeWX]){//判断用户是否已安装微信App
         WXMediaMessage *message = [WXMediaMessage message];
         message.title = sharedModel.titleStr;
         message.description = sharedModel.descriptionStr;
         if (sharedModel.image){
             [message setThumbImage:[sharedModel toThumbImage]];
         }
-        if ([sharedModel.type isEqualToString:SharedModelType_Video]){
+        if ([sharedModel.type isEqualToString:SharedModelVideoType]){
             WXVideoObject *videoObject = [WXVideoObject object];
             videoObject.videoUrl = sharedModel.webpageURL;
             message.mediaObject = videoObject;
@@ -338,26 +339,26 @@ static NSString *const SinaRedirectURI      = @"https://api.weibo.com/oauth2/def
             }
         }];
     } else {
-        [self sendNotAppInstalled:ThirdpartyType_WX];
+        [self sendNotAppInstalled:ThirdpartyTypeWX];
     }
 }
 #pragma mark - QQ相关
 - (void)QQLogin{
-    if ([ThirdpartyAuthorizationManager checkSDKByThirdpartyType:ThirdpartyType_QQ]){
+    if ([ThirdpartyAuthorizationManager checkSDKByThirdpartyType:ThirdpartyTypeQQ]){
         [self.tencentOAuth authorize:self.tencentPermissions];
     } else {
-        [self sendNotAppInstalled:ThirdpartyType_QQ];
+        [self sendNotAppInstalled:ThirdpartyTypeQQ];
     }
 }
 
 - (void)QQShared:(SharedModel *)sharedModel{
-    if ([ThirdpartyAuthorizationManager checkSDKByThirdpartyType:ThirdpartyType_QQ]){
+    if ([ThirdpartyAuthorizationManager checkSDKByThirdpartyType:ThirdpartyTypeQQ]){
         NSURL * webUrl = [NSURL URLWithString:sharedModel.webpageURL];
         NSString *title = sharedModel.titleStr;
         NSString *description = sharedModel.descriptionStr;
         NSData *imageData = UIImagePNGRepresentation([sharedModel toThumbImage]);
         QQApiObject *object;
-        if ([sharedModel.type isEqualToString:SharedModelType_Video]){
+        if ([sharedModel.type isEqualToString:SharedModelVideoType]){
             object = [[QQApiVideoObject alloc] initWithURL:webUrl title:title description:description previewImageData:imageData targetContentType:QQApiURLTargetTypeVideo];
         } else {
             object = [[QQApiURLObject alloc] initWithURL:webUrl title:title description:description previewImageData:imageData targetContentType:QQApiURLTargetTypeNews];//QQApiURLTargetTypeNotSpecified,QQApiURLTargetTypeNews
@@ -367,7 +368,7 @@ static NSString *const SinaRedirectURI      = @"https://api.weibo.com/oauth2/def
         QQApiSendResultCode sent = [QQApiInterface sendReq:req];
         NSLog(@"QQApiSendResultCode:%ld", sent);
     } else {
-        [self sendNotAppInstalled:ThirdpartyType_QQ];
+        [self sendNotAppInstalled:ThirdpartyTypeQQ];
     }
 }
 #pragma mark - 微博相关
@@ -377,7 +378,7 @@ static NSString *const SinaRedirectURI      = @"https://api.weibo.com/oauth2/def
      如果下次登录时已经有授权信息，直接调用获取用户信息接口就行了。（如果真的授权次数太多提示授权失败了，可以重装APP，还能再授权几次
      TODO: 以上说法待测试
      */
-    if ([ThirdpartyAuthorizationManager checkSDKByThirdpartyType:ThirdpartyType_WB]) {
+    if ([ThirdpartyAuthorizationManager checkSDKByThirdpartyType:ThirdpartyTypeWB]) {
         //发送授权请求
         WBAuthorizeRequest *request = [WBAuthorizeRequest request];
         //回调地址与 新浪微博开放平台中 我的应用  --- 应用信息 -----高级应用    -----授权设置 ---应用回调中的url保持一致就好了
@@ -388,12 +389,12 @@ static NSString *const SinaRedirectURI      = @"https://api.weibo.com/oauth2/def
         request.userInfo = @{@"SSO_From": @"ThirdpartyAuthorizationManager"};
         [WeiboSDK sendRequest:request];
     }else{
-        [self sendNotAppInstalled:ThirdpartyType_WB];
+        [self sendNotAppInstalled:ThirdpartyTypeWB];
     }
 }
 
 - (void)weiBoShared:(SharedModel *)sharedModel{
-    if ([ThirdpartyAuthorizationManager checkSDKByThirdpartyType:ThirdpartyType_WB]) {
+    if ([ThirdpartyAuthorizationManager checkSDKByThirdpartyType:ThirdpartyTypeWB]) {
         WBAuthorizeRequest *authRequest = [WBAuthorizeRequest request];
         authRequest.redirectURI = SinaRedirectURI;
         authRequest.scope = @"all";
@@ -422,12 +423,12 @@ static NSString *const SinaRedirectURI      = @"https://api.weibo.com/oauth2/def
         request.userInfo = @{@"SSO_From": @"ThirdpartyAuthorizationManager"};
         [WeiboSDK sendRequest:request];
     } else {
-        [self sendNotAppInstalled:ThirdpartyType_WB];
+        [self sendNotAppInstalled:ThirdpartyTypeWB];
     }
 }
 #pragma mark - apple登录相关
 - (void)appleLogin{
-    if ([ThirdpartyAuthorizationManager checkSDKByThirdpartyType:ThirdpartyType_Apple]) {
+    if ([ThirdpartyAuthorizationManager checkSDKByThirdpartyType:ThirdpartyTypeApple]) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored"-Wunguarded-availability-new"
         ASAuthorizationAppleIDProvider * appleIDProvider = [[ASAuthorizationAppleIDProvider alloc] init];
@@ -456,20 +457,19 @@ static NSString *const SinaRedirectURI      = @"https://api.weibo.com/oauth2/def
 
 #pragma mark - 支付相关
 - (void)weixinPay:(NSDictionary *)dict{
-    PayReq *request = [[PayReq alloc] init];
-    request.partnerId = @"10000100";
-    request.prepayId= @"1101000000140415649af9fc314aa427";
-    request.package = @"Sign=WXPay";
-    request.nonceStr= @"a462b76e7436e98e0ed6e13c64b4fd1c";
-    request.timeStamp= 1397527777;
-    request.sign = @"582282D72DD2B03AD892830965F428CB16E7A256";
-    [WXApi sendReq:request completion:^(BOOL success) {
-        NSString *reason = SLLocalizedString(@"无法使用微信支付");
-        if (success){
-            reason = SLLocalizedString(@"拉起微信成功");
-        }
-        NSLog(@"%@", reason);
-    }];
+    if([ThirdpartyAuthorizationManager checkSDKByThirdpartyType:ThirdpartyTypeWX]){//判断用户是否已安装微信App
+        NSDictionary *params = dict[DATAS];
+        PayReq *request = [PayReq mj_objectWithKeyValues:params];
+        [WXApi sendReq:request completion:^(BOOL success) {
+            NSString *reason = SLLocalizedString(@"无法使用微信支付");
+            if (success){
+                reason = SLLocalizedString(@"拉起微信成功");
+            }
+            NSLog(@"%@", reason);
+        }];
+    } else {
+        [self sendNotAppInstalled:ThirdpartyTypeWX];
+    }
 }
 
 - (void)aliPay:(NSDictionary *)dict{
@@ -479,7 +479,7 @@ static NSString *const SinaRedirectURI      = @"https://api.weibo.com/oauth2/def
     [[AlipaySDK defaultService] payOrder:orderString fromScheme:appScheme callback:^(NSDictionary *resultDic) {
         Message *message = [self createMessage:@"" isSuccess:YES];
         message.extensionDic = resultDic;
-        [self sendCompletionBlock:ThirdpartyAuthorizationCode_AuthorizationSuccess message:message];
+        [self sendCompletionBlock:ThirdpartyAuthorizationCodeSuccess message:message];
         NSLog(@"reslut = %@",resultDic);
     }];
 }
@@ -520,22 +520,22 @@ static NSString *const SinaRedirectURI      = @"https://api.weibo.com/oauth2/def
         //授权成功获取 OpenId
         NSString *code = aresp.code;
         NSDictionary *params = @{
-            ThirdpartyType : ThirdpartyType_WX,
+            ThirdpartyType : ThirdpartyTypeWX,
             ThirdpartyCode : code,
         };
         NSLog(@"%@", params);
         Message *message = [self createMessage:SLLocalizedString(@"授权成功") isSuccess:YES];
         message.extensionDic = params;
-        [self sendCompletionBlock:ThirdpartyAuthorizationCode_AuthorizationSuccess message:message];
+        [self sendCompletionBlock:ThirdpartyAuthorizationCodeSuccess message:message];
     } else if ([resp isMemberOfClass:[SendMessageToWXResp class]]){
         NSLog(@"******************微信分享******************");
         SendMessageToWXResp *wxResp = (SendMessageToWXResp *)resp;
         if (wxResp.errCode != 0 ) {
             Message *message = [self createMessage:SLLocalizedString(@"分享失败") isSuccess:NO];
-            [self sendCompletionBlock:ThirdpartyAuthorizationCode_AuthorizationError message:message];
+            [self sendCompletionBlock:ThirdpartyAuthorizationCodeError message:message];
             return;
         } else {
-            [self sendSharedSuccess:ThirdpartyType_WX];
+            [self sendSharedSuccess:ThirdpartyTypeWX];
 //            [self sendTipsMessage:SLLocalizedString(@"分享成功") success:NO];
         }
     } else if([resp isKindOfClass:[PayResp class]]){
@@ -545,7 +545,7 @@ static NSString *const SinaRedirectURI      = @"https://api.weibo.com/oauth2/def
         NSLog(@"payResp:%@", payResp.returnKey);
         
         Message *message = [self createMessage:@"" isSuccess:YES];
-        [self sendCompletionBlock:ThirdpartyAuthorizationCode_AuthorizationSuccess message:message];
+        [self sendCompletionBlock:ThirdpartyAuthorizationCodeSuccess message:message];
     }
 }
 
@@ -557,7 +557,7 @@ static NSString *const SinaRedirectURI      = @"https://api.weibo.com/oauth2/def
     BOOL isSuccess = [self.tencentOAuth getUserInfo];
     if (isSuccess){
         NSDictionary *params = @{
-            ThirdpartyType : ThirdpartyType_QQ,
+            ThirdpartyType : ThirdpartyTypeQQ,
             ThirdpartyOpenID : [_tencentOAuth openId],
             ThirdpartyAccessToken : [_tencentOAuth accessToken],
             ThirdpartyCode : [_tencentOAuth getServerSideCode],
@@ -565,7 +565,7 @@ static NSString *const SinaRedirectURI      = @"https://api.weibo.com/oauth2/def
         NSLog(@"%@", params);
         Message *message = [self createMessage:SLLocalizedString(@"授权成功") isSuccess:YES];
         message.extensionDic = params;
-        [self sendCompletionBlock:ThirdpartyAuthorizationCode_AuthorizationSuccess message:message];
+        [self sendCompletionBlock:ThirdpartyAuthorizationCodeSuccess message:message];
     } else {
         [self sendLoginErrorMessage];
     }
@@ -646,7 +646,7 @@ static NSString *const SinaRedirectURI      = @"https://api.weibo.com/oauth2/def
             NSString *accessToken = aresponse.accessToken;
             NSString *refreshToken = aresponse.refreshToken;
             NSDictionary *params = @{
-                ThirdpartyType : ThirdpartyType_WB,
+                ThirdpartyType : ThirdpartyTypeWB,
                 ThirdpartyUserID : userID,
                 ThirdpartyAccessToken : accessToken,
                 ThirdpartyRefreshTokenToken : refreshToken,
@@ -655,7 +655,7 @@ static NSString *const SinaRedirectURI      = @"https://api.weibo.com/oauth2/def
             NSLog(@"%@", params);
             Message *message = [self createMessage:SLLocalizedString(@"授权成功") isSuccess:YES];
             message.extensionDic = params;
-            [self sendCompletionBlock:ThirdpartyAuthorizationCode_AuthorizationSuccess message:message];
+            [self sendCompletionBlock:ThirdpartyAuthorizationCodeSuccess message:message];
             NSLog(@"微博登录 userID:%@, accessToken:%@", userID, accessToken);
         } else {
             [self sendLoginErrorMessage];
@@ -663,10 +663,10 @@ static NSString *const SinaRedirectURI      = @"https://api.weibo.com/oauth2/def
     } else if ([response isMemberOfClass:[WBSendMessageToWeiboResponse class]]){
         if (response.statusCode == WeiboSDKResponseStatusCodeSuccess){
             WBSendMessageToWeiboResponse *mresponse = (WBSendMessageToWeiboResponse *)response;
-            [self sendSharedSuccess:ThirdpartyType_WB];
+            [self sendSharedSuccess:ThirdpartyTypeWB];
         } else {
             Message *message = [self createMessage:SLLocalizedString(@"分享失败") isSuccess:NO];
-            [self sendCompletionBlock:ThirdpartyAuthorizationCode_AuthorizationError message:message];
+            [self sendCompletionBlock:ThirdpartyAuthorizationCodeError message:message];
         }
     }
 }
@@ -697,7 +697,7 @@ API_AVAILABLE(ios(13.0)) {
         NSLog(@"identityToken: %@", accessToken);
         
         NSDictionary *params = @{
-            ThirdpartyType : ThirdpartyType_Apple,
+            ThirdpartyType : ThirdpartyTypeApple,
             ThirdpartyCode : accessToken,
             ThirdpartyUserID : userID,
 //            ThirdpartyAccessToken : accessToken,
@@ -705,7 +705,7 @@ API_AVAILABLE(ios(13.0)) {
         NSLog(@"%@", params);
         Message *message = [self createMessage:SLLocalizedString(@"授权成功") isSuccess:YES];
         message.extensionDic = params;
-        [self sendCompletionBlock:ThirdpartyAuthorizationCode_AuthorizationSuccess message:message];
+        [self sendCompletionBlock:ThirdpartyAuthorizationCodeSuccess message:message];
     } else if ([authorization.credential isKindOfClass:[ASPasswordCredential class]]) {
         // 用户登录使用现有的密码凭证
         ASPasswordCredential * passwordCredential = (ASPasswordCredential*)authorization.credential;
@@ -743,7 +743,7 @@ API_AVAILABLE(ios(13.0)) {
             break;
     }
     Message *message = [self createMessage:errorMsg isSuccess:NO];
-    [self sendCompletionBlock:ThirdpartyAuthorizationCode_AuthorizationError message:message];
+    [self sendCompletionBlock:ThirdpartyAuthorizationCodeError message:message];
     NSLog(@"%@", errorMsg);
 }
 

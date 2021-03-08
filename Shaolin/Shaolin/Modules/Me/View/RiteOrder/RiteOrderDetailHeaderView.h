@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface RiteOrderDetailHeaderView : UIView
 
-@property(nonatomic, strong)OrderDetailsModel *detailsModel;
+@property(nonatomic, strong)OrderDetailsNewModel *detailsModel;
 
 @property (nonatomic , copy) void (^ timeOutHandle)(void);
 @property (nonatomic , copy) void (^ payHandle)(void);

@@ -171,7 +171,7 @@
     NSDictionary *dicc = @{
         @"identifier":[NSString stringWithFormat:@"%ld", index]
     };
-    [[NSNotificationCenter defaultCenter]postNotificationName:@"Found_ReloadCurrentPage" object:nil userInfo:dicc];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"FoundDidReloadCurrentPageNotification" object:nil userInfo:dicc];
     FieldModel *model = self.dataArr[index];
     NSLog(@"切换到了：%@", model.name);
 }
@@ -238,7 +238,7 @@
     }
     
 }
--(void)writeTextAndVideo
+- (void)writeTextAndVideo
 {
     _foundAddView = [[FoundAddView alloc]initWithFrame:CGRectMake(0, 0, kWidth, kHeight)];
     __block FoundViewController *strongBlock = self;
@@ -266,6 +266,16 @@
 //    return self.searchBar;
     return self.searchView;
 }
+
+#pragma mark - device
+- (BOOL)shouldAutorotate {
+    return NO;
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskPortrait;
+}
+
 /*
  #pragma mark - Navigation
  

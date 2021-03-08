@@ -27,7 +27,7 @@
 
 }
 
--(void)layoutSubviews {
+- (void)layoutSubviews {
     [super layoutSubviews];
     
     self.titleLabel.text = self.titleStr;

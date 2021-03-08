@@ -37,10 +37,10 @@
     self.tableView.hidden = YES;
    [self initData];
 }
--(void)initData{
+- (void)initData{
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
     WEAKSELF
-    [[DataManager shareInstance]getOrderInfoNew:@{@"order_id":self.orderId} Callback:^(NSObject *object) {
+    [[DataManager shareInstance]getOrderInfoNew:@{@"orderId":self.orderId} Callback:^(NSObject *object) {
         [hud hideAnimated:YES];
         NSLog(@"%@",object);
 //        self.model = (OrderDetailsModel *)object;
@@ -235,7 +235,7 @@
      pboard.string = self.numberLabel.text;
     [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"复制成功") view:self.view afterDelay:TipSeconds];
 }
--(UITableView *)tableView
+- (UITableView *)tableView
 {
     if (!_tableView) {
         _tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, SLChange(108), kWidth, kHeight-SLChange(92)) style:(UITableViewStylePlain)];

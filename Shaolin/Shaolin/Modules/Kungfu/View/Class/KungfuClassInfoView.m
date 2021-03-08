@@ -24,7 +24,7 @@
 
 @implementation KungfuClassInfoView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [[NSBundle mainBundle] loadNibNamed:@"KungfuClassInfoView" owner:self options:nil];
@@ -37,7 +37,7 @@
 #pragma mark - methods
 
 /// 初始化UI
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.contentView];
     
     
@@ -60,14 +60,14 @@
 
 }
 
--(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     if (self.shutDownBlock) {
         self.shutDownBlock();
     }
 }
 
 /// 重写系统方法
--(void)setFrame:(CGRect)frame{
+- (void)setFrame:(CGRect)frame{
     [super setFrame:frame];
     [self.contentView setFrame:self.bounds];
 }
@@ -99,7 +99,7 @@
 
 
 
--(void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation{
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation{
     NSLog(@"-------------didFinishNavigation--------------");
     NSLog(@"now time : %@", [NSDate date]);
     NSLog(@"---------------------------");
@@ -110,7 +110,7 @@
 
 #pragma mark - setter / getter
 
--(WKWebView *)webView{
+- (WKWebView *)webView{
     
     if (_webView == nil) {
         
@@ -127,12 +127,12 @@
     
 }
 
--(void)setClassNameStr:(NSString *)classNameStr{
+- (void)setClassNameStr:(NSString *)classNameStr{
     _classNameStr = classNameStr;
     [self.classNameLabel setText:classNameStr];
 }
 
--(void)setClassContentStr:(NSString *)classContentStr{
+- (void)setClassContentStr:(NSString *)classContentStr{
     NSLog(@"-----------classContentStr---------------");
     NSLog(@"now time : %@", [NSDate date]);
     NSLog(@"---------------------------");

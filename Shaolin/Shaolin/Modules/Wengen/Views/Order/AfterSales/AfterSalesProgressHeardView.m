@@ -24,7 +24,7 @@
 
 @implementation AfterSalesProgressHeardView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
         [[NSBundle mainBundle] loadNibNamed:@"AfterSalesProgressHeardView" owner:self options:nil];
         [self initUI];
@@ -33,12 +33,12 @@
 }
 
 #pragma mark - methods
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.contentView];
     [self.contentView setFrame:self.bounds];
 }
 
--(void)setModel:(OrderRefundInfoModel *)model{
+- (void)setModel:(OrderRefundInfoModel *)model{
     NSString *refund_status = model.status;
     
     if ([refund_status isEqualToString:@"1"]) {

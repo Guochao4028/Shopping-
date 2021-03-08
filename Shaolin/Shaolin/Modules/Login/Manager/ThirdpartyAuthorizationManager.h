@@ -11,9 +11,9 @@
 NS_ASSUME_NONNULL_BEGIN
 
 typedef NS_ENUM(NSInteger, ThirdpartyAuthorizationMessageCode) {
-    ThirdpartyAuthorizationCode_AuthorizationTips,
-    ThirdpartyAuthorizationCode_AuthorizationSuccess,
-    ThirdpartyAuthorizationCode_AuthorizationError,
+    ThirdpartyAuthorizationCodeTips,
+    ThirdpartyAuthorizationCodeSuccess,
+    ThirdpartyAuthorizationCodeError,
 };
 @class SharedModel;
 @interface ThirdpartyAuthorizationManager : NSObject
@@ -25,7 +25,7 @@ typedef NS_ENUM(NSInteger, ThirdpartyAuthorizationMessageCode) {
 /**根据ThirdpartyType，检查相关SDK是否可用*/
 + (BOOL)checkSDKByThirdpartyType:(NSString *)type;
 
-//返回支持的第三方登录类型ThirdpartyType_WX, ThirdpartyType_WB, ThirdpartyType_QQ, ThirdpartyType_Apple
+//返回支持的第三方登录类型ThirdpartyTypeWX, ThirdpartyTypeWB, ThirdpartyTypeQQ, ThirdpartyTypeApple
 + (NSArray <NSString *> *)thirdpartyLoginTypes;
 //返回ThirdpartyType国际化串(暂时只有中文)
 + (NSString *)thirdpartyTypeToChinese:(NSString *)type;
@@ -39,7 +39,7 @@ typedef NS_ENUM(NSInteger, ThirdpartyAuthorizationMessageCode) {
 - (BOOL)handleOpenURL:(NSURL *)url;
 - (BOOL)handleOpenUniversalLink:(NSUserActivity *)userActivity;
 
-/**ThirdpartyAuthorizationManager类接收到消息后，进行整理，然后回调Block，调用者负责Block的生成及销毁*/
+/**ThirdpartyAuthorizationManager类接收到第三方的消息后，进行整理，然后回调Block，调用者负责Block的生成及销毁*/
 - (void)receiveCompletionBlock:(void (^ __nullable)(ThirdpartyAuthorizationMessageCode code, Message *message))completion;
 
 /**根据ThirdpartyType，拉起第三方登录*/
@@ -71,19 +71,19 @@ extern NSString *const ThirdpartyRefreshTokenToken; //refreshToken
 extern NSString *const ThirdpartyCertCode;          //通过向服务器上传ThirdpartyCode换回的第三方登录凭证
 
 // 授权登录相关 value
-extern NSString *const ThirdpartyType_WX;
-extern NSString *const ThirdpartyType_WB;
-extern NSString *const ThirdpartyType_QQ;
-extern NSString *const ThirdpartyType_Apple;
+extern NSString *const ThirdpartyTypeWX;
+extern NSString *const ThirdpartyTypeWB;
+extern NSString *const ThirdpartyTypeQQ;
+extern NSString *const ThirdpartyTypeApple;
 
-extern NSString *const ThirdpartyType_Ali;
+extern NSString *const ThirdpartyTypeAli;
 
 // 分享 微信朋友圈
-extern NSString *const ThirdpartyType_WX_Moments;
+extern NSString *const ThirdpartyTypeWXMoments;
 
 //借个位置，电话号登录(该值为电话号登录使用，ThirdpartyType不会使用该值)
-extern NSString *const ThirdpartyType_Phone;
+extern NSString *const ThirdpartyTypePhone;
 
 //当应用回到前台时发的消息
-extern NSString *const ThirdpartyApplicationWillEnterForeground;
+extern NSString *const ApplicationWillEnterForegroundNotification;
 NS_ASSUME_NONNULL_END

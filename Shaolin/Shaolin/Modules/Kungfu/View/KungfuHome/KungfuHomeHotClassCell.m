@@ -31,7 +31,7 @@
     // Configure the view for the selected state
 }
 
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
 //        [self.contentView addSubview:self.tableView];
 //        [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -46,7 +46,7 @@
     return self;
 }
 
--(void)setHotSearchArr:(NSArray *)hotSearchArr
+- (void)setHotSearchArr:(NSArray *)hotSearchArr
 {
     _hotSearchArr = hotSearchArr;
 
@@ -60,16 +60,16 @@
 //    [self.tableView reloadData];
 //}
 //#pragma mark - tableView delegate && dataSource
-//-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+//- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 //    return 1;
 //}
 //
-//-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+//- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 //
 //    return self.subjectList.count;
 //}
 
-//-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+//- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
 //    if (tableView == self.tableView) {
 //        UIView *view = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWidth, 1)];
 //        view.backgroundColor = UIColor.whiteColor;
@@ -79,7 +79,7 @@
 //    }
 //}
 
-//-(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+//- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
 //    if (tableView == self.tableView) {
 //        UIView *view = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWidth, 1)];
 //        view.backgroundColor =  UIColor.whiteColor;
@@ -88,7 +88,7 @@
 //    return [UIView new];
 //}
 
-//-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 //
 //    KungfuCurriculumCell *cell = [tableView dequeueReusableCellWithIdentifier:NSStringFromClass([KungfuCurriculumCell class])];
 //    cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -96,7 +96,7 @@
 //    return cell;
 //}
 //
-//-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+//- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 //
 //    SubjectModel * subject = self.subjectList[indexPath.row];
 //
@@ -108,7 +108,7 @@
 //    [nav pushViewController:vc animated:YES];
 //}
 //
-//-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 //
 //    //设计图343*150
 //    CGFloat imgWidth = (kScreenWidth-32);
@@ -117,7 +117,7 @@
 //    return imgHeight;
 //}
 
-//-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+//- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
 //    if (section == 0 && tableView == self.tableView) {
 //         return 10;
 //    }else {
@@ -125,7 +125,7 @@
 //    }
 //}
 
-//-(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+//- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
 //
 //    return 0;
 //}

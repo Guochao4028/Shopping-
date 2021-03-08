@@ -52,11 +52,11 @@
     }
     return self;
 }
--(void)viewWillDisappear:(BOOL)animated{
+- (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
--(void)deleteTheImage:(UIBarButtonItem *)sender{
+- (void)deleteTheImage:(UIBarButtonItem *)sender{
         if (self.dataSource.count==1) {
             [self.dataSource removeObjectAtIndex:self.currentPhotoIndex];
             [self.navigationController popViewControllerAnimated:YES];
@@ -71,7 +71,7 @@
         self.deleteBlock(self.dataSource,self.currentPhotoIndex,self.collectionView);
     }
 }
--(UICollectionView *)collectionView{
+- (UICollectionView *)collectionView{
     if (_collectionView==nil) {
         WMCollectionViewFlowLayout *layout = [[WMCollectionViewFlowLayout alloc] init];
         layout.imgaeGap = 20;
@@ -132,7 +132,7 @@
     self.pageControl.numberOfPages = self.dataSource.count;
     self.pageControl.currentPage = self.currentPhotoIndex;
 }
--(UIPageControl *)pageControl{
+- (UIPageControl *)pageControl{
     if (!_pageControl) {
         _pageControl = [[UIPageControl alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height-30, self.view.frame.size.width, 30)];
         _pageControl.numberOfPages = 5;

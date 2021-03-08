@@ -53,7 +53,7 @@
 
 #pragma mark - life cycle
 
--(void)viewDidDisappear:(BOOL)animated {
+- (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     
     dispatch_source_cancel(self.timer);
@@ -123,43 +123,43 @@
         @"userAnswer":self.answerDic
     };
     
-    [[KungfuManager sharedInstance] getSubmitExaminationWithDic:paramers callback:^(NSDictionary *result) {
-        
-        [SMAlert hide];
-        [hud hideAnimated:YES];
-        
-        BOOL isSuccess = NO;
-        if ([ModelTool checkResponseObject:result]){
-            isSuccess = YES;
-        }else{
-            isSuccess = NO;
-        }
-        
-        if (isSuccess) {
-            NSDictionary * responDic = result[DATAS];
-            if ([responDic.allKeys containsObject:@"fraction"]) {
-                int score = [responDic[@"fraction"] intValue];
-                KfExamResultsViewController * vc = [KfExamResultsViewController new];
-                vc.scoreString = [NSString stringWithFormat:@"%@",responDic[@"fraction"]];
-                if (score >= [self.detailModel.paperRules.passScore intValue]) {
-                    vc.isPass = YES;
-                } else {
-                    vc.isPass = NO;
-                }
-                
-                int countNum = 0;
-                if ([responDic.allKeys containsObject:@"countNum"]) {
-                    countNum = [responDic[@"countNum"] intValue];
-                    vc.countNum = countNum;
-                }
-                
-                [self.navigationController pushViewController:vc animated:YES];
-            }
-        } else {
-            self.isAutoSubmit = YES;
-            [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"提交失败") view:self.view afterDelay:TipSeconds];
-        }
-    }];
+//    [[KungfuManager sharedInstance] getSubmitExaminationWithDic:paramers callback:^(NSDictionary *result) {
+//        
+//        [SMAlert hide];
+//        [hud hideAnimated:YES];
+//        
+//        BOOL isSuccess = NO;
+//        if ([ModelTool checkResponseObject:result]){
+//            isSuccess = YES;
+//        }else{
+//            isSuccess = NO;
+//        }
+//        
+//        if (isSuccess) {
+//            NSDictionary * responDic = result[DATAS];
+//            if ([responDic.allKeys containsObject:@"fraction"]) {
+//                int score = [responDic[@"fraction"] intValue];
+//                KfExamResultsViewController * vc = [KfExamResultsViewController new];
+//                vc.scoreString = [NSString stringWithFormat:@"%@",responDic[@"fraction"]];
+//                if (score >= [self.detailModel.paperRules.passScore intValue]) {
+//                    vc.isPass = YES;
+//                } else {
+//                    vc.isPass = NO;
+//                }
+//                
+//                int countNum = 0;
+//                if ([responDic.allKeys containsObject:@"countNum"]) {
+//                    countNum = [responDic[@"countNum"] intValue];
+//                    vc.countNum = countNum;
+//                }
+//                
+//                [self.navigationController pushViewController:vc animated:YES];
+//            }
+//        } else {
+//            self.isAutoSubmit = YES;
+//            [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"提交失败") view:self.view afterDelay:TipSeconds];
+//        }
+//    }];
 
 }
 
@@ -173,7 +173,7 @@
     }
 }
 
--(void)leftAction
+- (void)leftAction
 {
     [self showAlertWithInfoString:SLLocalizedString(@"您是否要退出理论考试？") isBack:YES];
 }
@@ -234,11 +234,11 @@
 
 #pragma mark - scrollerDelegate
 
--(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
     self.lastContentOffset = scrollView.contentOffset.y;
 }
 
-//-(void)scrollViewDidScroll:(UIScrollView *)scrollView{
+//- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
 //    if (self.lastContentOffset < scrollView.contentOffset.y) {
 //        [UIView animateWithDuration:0.4 animations:^{
 //            self.footerView.top = SCREEN_HEIGHT;
@@ -284,7 +284,7 @@
     return tableView.rowHeight;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     if (self.radioList.count && self.judgeList.count) {
         return 35;
@@ -292,7 +292,7 @@
     return .001;
 }
 
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     
     if (!(self.radioList.count && self.judgeList.count)) {return [UIView new];}
@@ -356,7 +356,7 @@
 
 
 #pragma mark - setter
--(void)setDetailModel:(ExamDetailModel *)detailModel {
+- (void)setDetailModel:(ExamDetailModel *)detailModel {
     _detailModel = detailModel;
     
     /*
@@ -427,7 +427,7 @@
     [self.examTable reloadData];
 }
 
--(void)timerFireWithTimeLeft:(NSInteger)timeLeft {
+- (void)timerFireWithTimeLeft:(NSInteger)timeLeft {
     
     //设置倒计时时间
     __block NSInteger timeout = timeLeft;
@@ -464,7 +464,7 @@
 
 #pragma mark - getter
 
--(UITableView *)examTable {
+- (UITableView *)examTable {
     if (!_examTable) {
         _examTable = [[UITableView alloc]initWithFrame:CGRectZero style:UITableViewStyleGrouped];
         _examTable.dataSource = self;
@@ -482,21 +482,21 @@
 }
 
 
--(NSMutableDictionary *)answerDic {
+- (NSMutableDictionary *)answerDic {
     if (!_answerDic) {
        _answerDic = [[NSMutableDictionary alloc]init];
     }
     return _answerDic;
 }
 
--(NSMutableArray *)radioList {
+- (NSMutableArray *)radioList {
     if (!_radioList) {
         _radioList = [NSMutableArray new];
     }
     return _radioList;
 }
 
--(NSMutableArray *)judgeList {
+- (NSMutableArray *)judgeList {
     if (!_judgeList) {
         _judgeList = [NSMutableArray new];
     }
@@ -504,7 +504,7 @@
 }
 
 
-//-(UIView *)tableFooterView {
+//- (UIView *)tableFooterView {
 //    if (!_tableFooterView) {
 //        _tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, kScreenHeight - 56, kScreenWidth, 56)];
 //        
@@ -522,7 +522,7 @@
 //    return _tableFooterView;
 //}
 
--(UILabel *)paperLabel {
+- (UILabel *)paperLabel {
     if (!_paperLabel) {
         _paperLabel = [UILabel new];
         _paperLabel.textColor = KTextGray_333;
@@ -532,7 +532,7 @@
     return _paperLabel;
 }
 
--(UILabel *)timeLeftLabel {
+- (UILabel *)timeLeftLabel {
     if (!_timeLeftLabel) {
         _timeLeftLabel = [UILabel new];
         _timeLeftLabel.textColor = KTextGray_333;
@@ -542,14 +542,14 @@
     return _timeLeftLabel;
 }
 
--(UIImageView *)hourglassIcon {
+- (UIImageView *)hourglassIcon {
     if (!_hourglassIcon) {
         _hourglassIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"kf_Hourglass"]];
     }
     return _hourglassIcon;
 }
 
--(UIView *)footerView {
+- (UIView *)footerView {
     if (!_footerView) {
         _footerView = [[UIView alloc] initWithFrame:CGRectMake(0, kScreenHeight - 45 - NavBar_Height, kScreenWidth - 32, 45)];
         [_footerView addSubview:self.submitBtn];
@@ -557,7 +557,7 @@
     return _footerView;
 }
 
--(UIButton *)submitBtn {
+- (UIButton *)submitBtn {
     if (!_submitBtn) {
         _submitBtn = [[UIButton alloc] initWithFrame:CGRectMake(16, 3, kScreenWidth - 32, 40)];
         _submitBtn.layer.cornerRadius = 20;

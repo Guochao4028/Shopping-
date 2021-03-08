@@ -11,7 +11,7 @@
 #import "WengenNavgationView.h"
 #import "AfterSalesTypeView.h"
 #import "AfterSalesDetailsViewController.h"
-#import "OrderDetailsModel.h"
+#import "OrderDetailsNewModel.h"
 
 @interface AfterSalesViewController ()<WengenNavgationViewDelegate, AfterSalesTypeViewDelegate>
 
@@ -32,18 +32,18 @@
     
 }
 
--(void)viewWillAppear:(BOOL)animated{
+- (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
 }
 
 #pragma mark - methods
--(void)initUI{
+- (void)initUI{
     [self.view setBackgroundColor:[UIColor whiteColor]];
     [self.view addSubview:self.navgationView];
     [self.view addSubview:self.typeView];
 }
 
--(void)initData{
+- (void)initData{
 //    [[DataManager shareInstance]getOrderInfo:@{@"order_id":self.model.orderId} Callback:^(NSObject *object) {
 //        
 //        self.model = (OrderDetailsModel *)object;
@@ -53,12 +53,12 @@
 
 
 #pragma mark - WengenNavgationViewDelegate
--(void)tapBack{
+- (void)tapBack{
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - AfterSalesTypeViewDelegate
--(void)afterSalesTypeView:(AfterSalesTypeView *)view jumpAfterSalesDetailsModel:(OrderDetailsModel *)model afterSalesType:(AfterSalesDetailsType)type{
+- (void)afterSalesTypeView:(AfterSalesTypeView *)view jumpAfterSalesDetailsModel:(OrderDetailsGoodsModel *)model afterSalesType:(AfterSalesDetailsType)type{
     NSString *status = self.model.status;
     if ([status isEqualToString:@"2"] ) {
         if (type == AfterSalesDetailsTuiHuoType) {
@@ -74,7 +74,7 @@
 }
 
 #pragma mark - setter / getter
--(WengenNavgationView *)navgationView{
+- (WengenNavgationView *)navgationView{
     
     if (_navgationView == nil) {
         //状态栏高度
@@ -95,7 +95,7 @@
 
 }
 
--(AfterSalesTypeView *)typeView{
+- (AfterSalesTypeView *)typeView{
     
     if (_typeView == nil) {
         CGFloat y = CGRectGetMaxY(self.navgationView.frame);
@@ -107,7 +107,7 @@
 
 }
 
--(void)setModel:(OrderDetailsModel *)model{
+- (void)setModel:(OrderDetailsGoodsModel *)model{
     _model = model;
     [self.typeView setModel:model];
 }

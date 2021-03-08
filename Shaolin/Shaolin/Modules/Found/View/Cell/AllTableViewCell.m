@@ -9,7 +9,7 @@
 #import "AllTableViewCell.h"
 
 @implementation AllTableViewCell
--(NSString *)compaareCurrentTime:(NSDate *)compareDate
+- (NSString *)compaareCurrentTime:(NSDate *)compareDate
 {
     NSTimeInterval  timeInterval = [compareDate timeIntervalSinceNow];
 
@@ -68,7 +68,7 @@
     return  result;
   
 }
--(NSDate *)nsstringConversionNSDate:(NSString *)dateStr
+- (NSDate *)nsstringConversionNSDate:(NSString *)dateStr
 {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"YYYY-MM-dd HH:mm:ss"];
@@ -76,7 +76,7 @@
     return datestr;
 }
 
--(UIImage *)getShowImage {
+- (UIImage *)getShowImage {
     return [UIImage imageNamed:@"default_small"];
 }
 

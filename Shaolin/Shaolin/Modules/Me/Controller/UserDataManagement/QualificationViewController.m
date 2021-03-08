@@ -15,6 +15,7 @@
 
 #import "DefinedHost.h"
 #import "DataManager.h"
+#import "QualificationPopView.h"
 
 
 @interface QualificationViewController ()<UITableViewDelegate, UITableViewDataSource>
@@ -40,6 +41,7 @@
 
 //是否可以编辑
 @property(nonatomic, assign)BOOL isCanEditor;
+@property(nonatomic, weak)UIImageView *iconImageView;
 
 
 
@@ -55,13 +57,15 @@
     [self initUI];
 }
 
--(void)initData{
+- (void)initData{
     
     self.isHasColumn = NO;
     
     self.isColumn = NO;
     
     self.isModify = NO;
+    
+    self.isCanEditor = YES;
     
     NSArray *bascArray = @[
     
@@ -84,6 +88,8 @@
          
        
            self.qualificationsModel = (InvoiceQualificationsModel *)object;
+         
+         [self.iconImageView setHidden:YES];
           
            if (self.qualificationsModel == nil) {
                self.isHasColumn = YES;
@@ -100,10 +106,25 @@
                    [dic setValue:@"0" forKey:@"isEditor"];
                }
                
-               if ([self.qualificationsModel.status isEqualToString:@"1"]) {
+              
+               NSInteger status = [self.qualificationsModel.status integerValue];
+               
+              
+               
+               if (status == 1) {
                    [self.titleLabel setText:SLLocalizedString(@"已通过审核")];
+               }else if (status == 2 ){
+                   [self.titleLabel setText:SLLocalizedString(@"未通过，查看拒绝理由")];
+                   
+                   [self.button setHidden:NO];
+                   UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapPopView)];
+                   [self.titleView addGestureRecognizer:tap];
+                   [self.iconImageView setHidden:NO];
+                   
                }else{
                    [self.titleLabel setText:SLLocalizedString(@"已提交，待审核")];
+                   [self.button setHidden:YES];
+                  
                }
                
                [self.button setTitle:SLLocalizedString(@"修改") forState:UIControlStateNormal];
@@ -116,7 +137,7 @@
        }];
 }
 
--(void)initUI{
+- (void)initUI{
     [self.view setBackgroundColor:KTextGray_FA];
     [self.titleLabe setText:SLLocalizedString(@"增票资质")];
     
@@ -127,12 +148,13 @@
     [self.view addSubview:self.button];
 }
 
--(void)submitAction{
+- (void)submitAction{
     
     [self.view endEditing:YES];
     
     if (self.isCanEditor == NO) {
         [self.button setBackgroundColor:kMainYellow];
+        [self.button setTitle:@"确认" forState:UIControlStateNormal];
         
         self.isCanEditor = YES;
         for (NSMutableDictionary *dic in self.dataArray) {
@@ -144,7 +166,7 @@
     }
     
     NSString *tipMsg = @"";
-    if (self.qualificationsModel.company_name.length == 0){
+    if (self.qualificationsModel.companyName.length == 0){
         tipMsg = SLLocalizedString(@"请输入单位名称");
     } else if (self.qualificationsModel.number.length == 0) {
         tipMsg = SLLocalizedString(@"请输入纳税人识别号");
@@ -154,7 +176,7 @@
         tipMsg = SLLocalizedString(@"请输入注册电话");
     } else if (self.qualificationsModel.bank.length == 0) {
         tipMsg = SLLocalizedString(@"请输入开户银行");
-    } else if (self.qualificationsModel.bank_sn.length == 0) {
+    } else if (self.qualificationsModel.bankSn.length == 0) {
         tipMsg = SLLocalizedString(@"请输入银行账户");
     }
     if (tipMsg.length){
@@ -172,9 +194,9 @@
                 if (message.isSuccess) {
                     [self.dataArray removeAllObjects];
                     [self initData];
-                    [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"添加用户资质成功") view:self.view afterDelay:TipSeconds];
+                    [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"添加用户资质成功") view:WINDOWSVIEW afterDelay:TipSeconds];
                 }else{
-                    [ShaolinProgressHUD singleTextHud:message.reason view:self.view afterDelay:TipSeconds];
+                    [ShaolinProgressHUD singleTextHud:message.reason view:WINDOWSVIEW afterDelay:TipSeconds];
                 }
             }];
             
@@ -190,20 +212,26 @@
             if (message.isSuccess) {
                 [self.dataArray removeAllObjects];
                 [self initData];
-                [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"修改用户资质成功") view:self.view afterDelay:TipSeconds];
+                [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"修改用户资质成功") view:WINDOWSVIEW afterDelay:TipSeconds];
             }else{
-                [ShaolinProgressHUD singleTextHud:message.reason view:self.view afterDelay:TipSeconds];
+                [ShaolinProgressHUD singleTextHud:message.reason view:WINDOWSVIEW afterDelay:TipSeconds];
             }
         }];
     }
-    
-    
-    
+}
+
+-(void)tapPopView{
+    CGFloat y = CGRectGetMaxY(self.titleView.frame) + 67;
+
+    QualificationPopView *popView = [[QualificationPopView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
+    [popView setFloatingTop:y];
+    [popView setRefusedStr:self.qualificationsModel.checkMessage];
+    [self.view addSubview:popView];
 }
 
 #pragma mark - UITableViewDelegate && UITableViewDataSource
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return self.dataArray.count;
 }
 
@@ -215,25 +243,25 @@
     
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     return 0.01;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     return 10;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return 51;
 }
 
--(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
     UIView *view = [[UIView alloc]init];
     [view setBackgroundColor:KTextGray_FA];
     return view;
 }
 
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     return [UIView new];
 }
 
@@ -274,47 +302,56 @@
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    if (indexPath.section == 1) {
-        
-        NSArray *rowArray = self.dataArray[indexPath.section];
-        NSDictionary *model =  rowArray[indexPath.row];
-        BOOL isSelected = [model[@"isSelected"] boolValue];
-        if (!isSelected) {
-            self.isColumn = YES;
-        }else{
-            self.isColumn = NO;
-        }
-        [model setValue:[NSString stringWithFormat:@"%d", (!isSelected)] forKey:@"isSelected"];
-        [tableView reloadData];
-        
-    }
+//    if (indexPath.section == 1) {
+//
+//        NSArray *rowArray = self.dataArray[indexPath.section];
+//        NSDictionary *model =  rowArray[indexPath.row];
+//        BOOL isSelected = [model[@"isSelected"] boolValue];
+//        if (!isSelected) {
+//            self.isColumn = YES;
+//        }else{
+//            self.isColumn = NO;
+//        }
+//        [model setValue:[NSString stringWithFormat:@"%d", (!isSelected)] forKey:@"isSelected"];
+//        [tableView reloadData];
+//
+//    }
 }
 
 
 #pragma mark - getter / setter
 
--(UIView *)titleView{
+- (UIView *)titleView{
     
     if (_titleView == nil) {
         _titleView = [[UIView alloc]initWithFrame:CGRectMake(0, 10, ScreenWidth, 44)];
         
         [_titleView setBackgroundColor:kMainYellow];
 
-        UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(16, 11.5, 110, 21)];
+        UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(16, 11.5, 150, 21)];
         
         [titleLabel setText:SLLocalizedString(@"填写资质信息")];
         [titleLabel setFont:kRegular(15)];
         [titleLabel setTextColor:[UIColor whiteColor]];
         self.titleLabel = titleLabel;
+        
+        
+        UIImageView *iconImageView = [[UIImageView alloc]initWithFrame:CGRectMake(CGRectGetMaxX(titleLabel.frame)+10, 15, 13, 13)];
+        [iconImageView setImage:[UIImage imageNamed:@"questionMark"]];
+        iconImageView.centerY = titleLabel.centerY;
+        
+        self.iconImageView = iconImageView;
+        
         [_titleView addSubview:titleLabel];
+        [_titleView addSubview:iconImageView];
     }
     return _titleView;
 }
 
 
--(UITableView *)tabelView{
+- (UITableView *)tabelView{
     if (_tabelView == nil) {
         CGFloat y = CGRectGetMaxY(self.titleView.frame) +10;
         
@@ -333,7 +370,7 @@
 }
 
 
--(UIButton *)button{
+- (UIButton *)button{
     
     if (_button == nil) {
         _button = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -352,7 +389,7 @@
 
 }
 
--(NSMutableArray *)dataArray{
+- (NSMutableArray *)dataArray{
     
     if (_dataArray == nil) {
         _dataArray = [NSMutableArray array];

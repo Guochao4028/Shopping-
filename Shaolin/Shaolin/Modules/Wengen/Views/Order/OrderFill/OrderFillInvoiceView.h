@@ -34,9 +34,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol OrderFillInvoiceViewDelegate <NSObject>
 
--(void)orderFillInvoiceView:(OrderFillInvoiceView *)view tapDetermine:(NSDictionary *)dic;
+- (void)orderFillInvoiceView:(OrderFillInvoiceView *)view tapDetermine:(NSDictionary *)dic;
 
--(void)orderFillInvoiceView:(OrderFillInvoiceView *)view tapNotDevelopmentTicket:(BOOL)isInvoices;
+- (void)orderFillInvoiceView:(OrderFillInvoiceView *)view tapNotDevelopmentTicket:(BOOL)isInvoices;
 
 @end
 

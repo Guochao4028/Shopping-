@@ -12,10 +12,10 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="148" id="KGk-i7-Jjw" customClass="ShoppingCratTableCell">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="148"/>
+            <rect key="frame" x="0.0" y="0.0" width="375" height="148"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="320" height="148"/>
+                <rect key="frame" x="0.0" y="0.0" width="375" height="148"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="unShopping" translatesAutoresizingMaskIntoConstraints="NO" id="KGc-j0-dgP">
@@ -53,14 +53,14 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ft9-44-d71" customClass="ShoppingCartNumberCountView">
-                        <rect key="frame" x="238.5" y="113" width="65.5" height="20"/>
+                        <rect key="frame" x="223.5" y="113" width="135.5" height="20"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="20" id="Idf-pJ-IyK"/>
                         </constraints>
                     </view>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fmj-fJ-THQ">
-                        <rect key="frame" x="178" y="18" width="126" height="50.5"/>
+                        <rect key="frame" x="178" y="18" width="181" height="50.5"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
@@ -97,7 +97,7 @@
                         </constraints>
                     </view>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6fo-WT-29A" userLabel="line">
-                        <rect key="frame" x="16" y="147" width="304" height="1"/>
+                        <rect key="frame" x="16" y="147" width="359" height="1"/>
                         <color key="backgroundColor" red="0.89803921568627454" green="0.89803921568627454" blue="0.89803921568627454" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="1" id="BtJ-IT-Btu"/>
@@ -121,7 +121,7 @@
                     <constraint firstItem="6fo-WT-29A" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="cIh-AF-sRg"/>
                     <constraint firstItem="KGc-j0-dgP" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="cXM-qb-7Le"/>
                     <constraint firstItem="wWe-63-9ND" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="duU-b5-81r"/>
-                    <constraint firstItem="ft9-44-d71" firstAttribute="leading" secondItem="Dbn-Tu-U9O" secondAttribute="trailing" constant="30" id="gmF-X5-tjM"/>
+                    <constraint firstItem="ft9-44-d71" firstAttribute="leading" secondItem="Dbn-Tu-U9O" secondAttribute="trailing" constant="15" id="gmF-X5-tjM"/>
                     <constraint firstAttribute="trailing" secondItem="6fo-WT-29A" secondAttribute="trailing" id="jhg-aK-DxJ"/>
                     <constraint firstItem="Fmj-fJ-THQ" firstAttribute="top" secondItem="zvp-Od-Tf3" secondAttribute="top" id="nOJ-nT-ZP1"/>
                     <constraint firstItem="ft9-44-d71" firstAttribute="bottom" secondItem="Dbn-Tu-U9O" secondAttribute="bottom" id="pu1-A7-STj"/>
@@ -143,7 +143,7 @@
                 <outlet property="specificationsView" destination="nJ2-HZ-Jgn" id="Yfq-m0-mj6"/>
                 <outlet property="specificationsViewW" destination="3HN-mi-Pgu" id="omc-pJ-ssW"/>
             </connections>
-            <point key="canvasLocation" x="225" y="-9"/>
+            <point key="canvasLocation" x="-4" y="-35"/>
         </tableViewCell>
     </objects>
     <resources>

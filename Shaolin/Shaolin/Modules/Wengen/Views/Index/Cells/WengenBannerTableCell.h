@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol WengenBannerTableCellDelegate <NSObject>
 
--(void)pushToOtherViewControllerwithHomeItem:(WengenBannerModel *)item;
+- (void)pushToOtherViewControllerwithHomeItem:(WengenBannerModel *)item;
 
 @end
 

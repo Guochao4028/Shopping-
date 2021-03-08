@@ -94,6 +94,11 @@ static SLAppInfoModel *currentUser = nil;
     [defs synchronize];
     
     [self setCurrentUserNil];
+    
+    // 退出登录同时清空taoken刷新时间
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kTokenRefreshIn];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kTokenExpiresIn];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)modelWithDictionary:(NSDictionary*)jsonDic {
@@ -105,7 +110,7 @@ static SLAppInfoModel *currentUser = nil;
             
             [dic setObject:@"" forKey:key];
         } else {
-            [dic setObject:[jsonDic objectForKey:key] forKey:key];
+            [dic setObject:[NSString stringWithFormat:@"%@",[jsonDic objectForKey:key]] forKey:key];
         }
     }
     [currentUser setValuesForKeysWithDictionary:dic];
@@ -195,7 +200,7 @@ static SLAppInfoModel *currentUser = nil;
 }
 
 #pragma mark - 轮播图和广告的点击响应
--(void)bannerEventResponseWithBannerModel:(WengenBannerModel *)bannerModel {
+- (void)bannerEventResponseWithBannerModel:(WengenBannerModel *)bannerModel {
     /*
     contentUrl 说明
     type 1为外链 2为内链
@@ -212,6 +217,11 @@ static SLAppInfoModel *currentUser = nil;
     if ([bannerModel.type intValue] == 1) {
         // 外链
         NSString * urlString = bannerModel.contentUrl;
+        if ([urlString hasPrefix:@"www"]){
+            urlString = [urlString stringByReplacingOccurrencesOfString:@"www" withString:@"https://www"];
+        } else if ([urlString hasPrefix:@"http:"]){
+            urlString = [urlString stringByReplacingOccurrencesOfString:@"http:" withString:@"https:"];
+        }
         KungfuWebViewController * webVC = [[KungfuWebViewController alloc] initWithUrl:urlString type:0];
         if (bannerModel.bannerName.length){
             webVC.titleStr = bannerModel.bannerName;
@@ -231,19 +241,11 @@ static SLAppInfoModel *currentUser = nil;
 
 - (void)advertEventResponseWithFoundModel:(FoundModel *)foundModel
 {
-    // 逻辑与点击banner相同，只是不判断type，改为判断classif
-    if ([foundModel.classif intValue] == 1) {
-        // 外链
-        NSString * urlString = foundModel.content;
-        KungfuWebViewController * webVC = [[KungfuWebViewController alloc] initWithUrl:urlString type:0];
-        
-        [self pushController:webVC];
-    }
-    if ([foundModel.classif intValue] == 2) {
-        
-        BannerSubModel * subM = [self getBannerSubModelWithContent:foundModel.content];
-        [self bannerAndAdvertSelectHandleWithModel:subM];
-    }
+    WengenBannerModel *bannerModel = [[WengenBannerModel alloc] init];
+    bannerModel.type = foundModel.classIf;
+    bannerModel.contentUrl = foundModel.content;
+    bannerModel.bannerName = foundModel.title;
+    [[SLAppInfoModel sharedInstance] bannerEventResponseWithBannerModel:bannerModel];
 }
 
 
@@ -359,7 +361,7 @@ static SLAppInfoModel *currentUser = nil;
         case 1:
             break;
         case 2:{
-            NSString * url = URL_H5_EventRegistration(valud,self.access_token);
+            NSString * url = URL_H5_EventRegistration(valud,self.accessToken);
             KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:url type:KfWebView_activityDetail];
             vc = webVC;
         }
@@ -373,7 +375,7 @@ static SLAppInfoModel *currentUser = nil;
         case 4:
             break;
         case 5:{
-            NSString * url = URL_H5_MechanismDetail(valud,self.access_token);
+            NSString * url = URL_H5_MechanismDetail(valud,self.accessToken);
             KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:url type:KfWebView_mechanismDetail];
             vc = webVC;
         }
@@ -417,13 +419,13 @@ static SLAppInfoModel *currentUser = nil;
     
     controller.hidesBottomBarWhenPushed = YES;
     
-    UITabBarController *tabBarVc = (UITabBarController *)[UIApplication sharedApplication].keyWindow.rootViewController;
+    UITabBarController *tabBarVc = ( UITabBarController *)WINDOWSVIEW.rootViewController;
     UINavigationController *Nav = [tabBarVc selectedViewController];
     [Nav pushViewController:controller animated:YES];
 }
 
 
--(NSString *)deviceString {
+- (NSString *)deviceString {
     struct utsname systemInfo;
     uname(&systemInfo);
     NSString *deviceString = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
@@ -435,7 +437,7 @@ static SLAppInfoModel *currentUser = nil;
     if ([riteType isEqualToString:@"3"] || [riteType isEqualToString:@"4"]) {
         [self pushRiteLongViewController:riteType];
     } else {
-        KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteDetail(riteId, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_rite];
+        KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteDetail(riteId, [SLAppInfoModel sharedInstance].accessToken) type:KfWebView_rite];
         webVC.fillToView = YES;
         [self pushController:webVC];
     }
@@ -449,7 +451,7 @@ static SLAppInfoModel *currentUser = nil;
     [self pushController:vc];
 }
 
--(void)clearAppCache {
+- (void)clearAppCache:(void (^_Nullable)(void))completion {
     
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
     
@@ -458,10 +460,20 @@ static SLAppInfoModel *currentUser = nil;
         [[SDImageCache sharedImageCache] clearWithCacheType:SDImageCacheTypeAll completion:^{
             [hud hideAnimated:YES];
             [ShaolinProgressHUD singleTextAutoHideHud:@"清除成功！"];
+            
+            if (completion) completion();
         }];
     });
     
+    NSURLCache *cache = [NSURLCache sharedURLCache];
+    [cache removeAllCachedResponses];
+}
+
+- (float)getAppCacheSize {
+    float sdImageCacheSize = [[SDImageCache sharedImageCache] totalDiskSize]/(1024.0*1024.0);
+    float adCacheSize = [ADManager getDiskCacheSize];
     
+    return sdImageCacheSize + adCacheSize;
 }
 
 @end

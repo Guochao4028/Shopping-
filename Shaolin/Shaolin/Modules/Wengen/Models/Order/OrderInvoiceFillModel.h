@@ -11,12 +11,12 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface OrderInvoiceFillModel : NSObject
-
-@property(nonatomic, copy)NSString *order_id;
+///订单号
+@property(nonatomic, copy)NSString *orderCarId;
 ///买方名称
-@property(nonatomic, copy)NSString *buy_name;
+@property(nonatomic, copy)NSString *buyName;
 ///单位税号
-@property(nonatomic, copy)NSString *duty_num;
+@property(nonatomic, copy)NSString *dutyNum;
 ///1 个人 2 单位
 @property(nonatomic, copy)NSString *type;
 ///注册地址
@@ -26,17 +26,17 @@ NS_ASSUME_NONNULL_BEGIN
 ///开户银行
 @property(nonatomic, copy)NSString *bank;
 ///开户银行账号
-@property(nonatomic, copy)NSString *bank_sn;
+@property(nonatomic, copy)NSString *bankSn;
 ///1 纸 2 电子
-@property(nonatomic, copy)NSString *is_paper;
+@property(nonatomic, copy)NSString *isPaper;
 ///1 普通发票 2 增值税发票
-@property(nonatomic, copy)NSString *invoice_type;
+@property(nonatomic, copy)NSString *invoiceType;
 ///收票地址
-@property(nonatomic, copy)NSString *revice_address;
+@property(nonatomic, copy)NSString *reviceAddress;
 ///收票人
-@property(nonatomic, copy)NSString *revice_name;
+@property(nonatomic, copy)NSString *reviceName;
 ///收票电话
-@property(nonatomic, copy)NSString *revice_phone;
+@property(nonatomic, copy)NSString *revicePhone;
 
 @property(nonatomic, copy)NSString *email;
 

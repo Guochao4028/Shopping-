@@ -14,6 +14,10 @@
 + (NSDictionary *)mj_replacedKeyFromPropertyName{
     return @{
              @"goodsid" : @"id",
+             @"img_data" : @[@"img_data", @"imgDataList"],
+             @"attrStr" : @"attrDetail.attrStr",
+             @"attr" : @"attrDetail.attr.attrList",
+             @"templateId" : @"template"
              };
 }
 

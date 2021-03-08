@@ -34,7 +34,7 @@
     }
 }
 
--(void)leftAction
+- (void)leftAction
 {
     UIViewController * popVc = nil;
     for (UIViewController * vc in self.navigationController.viewControllers) {
@@ -101,7 +101,7 @@
 
 #pragma mark - getter /setter
 
--(UILabel *)promptLabel
+- (UILabel *)promptLabel
 {
     if (!_promptLabel) {
         _promptLabel = [[UILabel alloc]init];
@@ -113,7 +113,7 @@
     return _promptLabel;
 }
 
--(UIButton *)okButton {
+- (UIButton *)okButton {
     if (!_okButton) {
         _okButton = [[UIButton alloc] init];
         [_okButton setTitle:SLLocalizedString(@"我知道了") forState:(UIControlStateNormal)];
@@ -127,7 +127,7 @@
     return _okButton;
 }
 
--(UIImageView *)successImgv {
+- (UIImageView *)successImgv {
     if (!_successImgv) {
         _successImgv = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"payPassword_success_yellow"]];
     }

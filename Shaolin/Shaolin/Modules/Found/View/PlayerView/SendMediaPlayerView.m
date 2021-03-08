@@ -13,7 +13,7 @@
 @property (strong, nonatomic  )  UIImageView     *bottomImageView;
 @end
 @implementation SendMediaPlayerView
--(instancetype)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
@@ -105,7 +105,7 @@
 
 
 
--(void)layoutSubviews
+- (void)layoutSubviews
 {
     [super layoutSubviews];
     
@@ -136,7 +136,7 @@
 
 
 
--(void)dealloc
+- (void)dealloc
 {
     NSLog(@"%s",__func__);
     

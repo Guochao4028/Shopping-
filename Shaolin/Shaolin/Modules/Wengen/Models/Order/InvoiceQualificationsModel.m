@@ -17,5 +17,8 @@
              };
 }
 
+- (void)mj_objectDidConvertToKeyValues:(NSDictionary *)keyValues {
+    NSLog(@"000");
+}
 @end
 

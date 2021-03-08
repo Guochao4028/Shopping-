@@ -16,6 +16,9 @@
 #import "KungfuClassDetailViewController.h"
 #import "KungfuManager.h"
 
+#import "DataManager.h"
+#import "ThumbFollowShareManager.h"
+
 // TODO: 启用测试数据宏
 //#define MECOURSE_TEST
 
@@ -56,7 +59,7 @@
         make.bottom.mas_equalTo(-BottomMargin_X);
     }];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectEditCell) name:@"collectionEditCourseSelect" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectEditCell:) name:@"collectionEditCourseSelect" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(normalEditCell) name:@"collectionEditCourseNormal" object:nil];
     // Do any additional setup after loading the view.
 }
@@ -65,7 +68,15 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)selectEditCell {
+- (void)selectEditCell:(NSNotification *)notf {
+    
+    if (self.courseArray.count == 0){
+            UIButton *button = notf.object;
+            button.selected = NO;
+            [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"暂无可编辑内容")];
+            return;
+        }
+    
     //点击编辑的时候清空删除数组
     [self.deleteArray removeAllObjects];
     self.isInsertEdit = YES;//这个时候是全选模式
@@ -160,7 +171,8 @@
 - (void)requestData:(void (^)(NSArray *meClassListArray))finish{
 //    MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
     NSDictionary *params = @{
-        @"page" : [NSString stringWithFormat:@"%ld", self.page],
+        @"pageNum" : [NSString stringWithFormat:@"%ld", self.page],
+        @"pageSize" : @"10",
         @"type" : @"2",
     };
     WEAKSELF
@@ -171,7 +183,8 @@
             if (finish) finish(weakSelf.courseArray);
 #else
             NSDictionary *data = responseObject[DATAS];
-            NSArray *arr = [data objectForKey:LIST];
+            NSArray *arr = [data objectForKey:DATAS];
+            arr = [ThumbFollowShareManager deleteLocalCacheData:arr modelItemType:ClassItemType modelType:CollectionType modelItemKind:ImageText];
             NSArray *dataList = [MeCouresModel mj_objectArrayWithKeyValuesArray:arr];
             [weakSelf.courseArray addObjectsFromArray:dataList];
             if (finish) finish(dataList);
@@ -219,27 +232,38 @@
         dispatch_group_enter(group);//手动在group中加入一个任务
         //取消收藏
         NSDictionary * dic = @{
-            @"goods_id" : model.couresId,
+            @"goodsId" : model.goodsId,
             @"type" : @"2"
         };
-        [[KungfuManager sharedInstance] getClassCollectWithDic:dic callback:^(Message *message) {
+//        [[KungfuManager sharedInstance] getClassCollectWithDic:dic callback:^(Message *message) {
+//            if (message.isSuccess) {
+//                [deleteSucceedArray addObject:model];
+//            }
+//            dispatch_group_leave(group);//手动在group移除一个任务
+//        }];
+        [[DataManager shareInstance]cancelCollect:dic Callback:^(Message *message) {
             if (message.isSuccess) {
                 [deleteSucceedArray addObject:model];
             }
             dispatch_group_leave(group);//手动在group移除一个任务
         }];
+  
+        
+        
+        
     }
     WEAKSELF
     dispatch_group_notify(group, dispatch_get_main_queue(), ^{
         [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"删除成功") view:self.view afterDelay:TipSeconds];
-        [weakSelf.courseArray removeObjectsInArray:deleteSucceedArray];
-        [weakSelf.deleteArray removeObject:deleteSucceedArray];
+//        [weakSelf.courseArray removeObjectsInArray:deleteSucceedArray];
+//        [weakSelf.deleteArray removeObject:deleteSucceedArray];
         [weakSelf normalEditCell];
         weakSelf.isInsertEdit = NO;
         [weakSelf.tableView setEditing:NO animated:YES];
         [weakSelf reloadCollectionView];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"NormalCollectionButton" object:nil];
-        [weakSelf update];
+//        [weakSelf update];
+        [weakSelf.tableView.mj_header beginRefreshing];
     });
 }
 #pragma mark - tableView Delegate
@@ -304,7 +328,7 @@
         [tableView deselectRowAtIndexPath:indexPath animated:NO];
         MeCouresModel *model = self.courseArray[indexPath.row];
         KungfuClassDetailViewController * vc = [KungfuClassDetailViewController new];
-        vc.classId = model.couresId;
+        vc.classId = model.goodsId;
         vc.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:vc animated:YES];
     }
@@ -324,7 +348,7 @@
     return !self.courseArray.count;
 }
 
--(CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
+- (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
     return -70;
 }
 
@@ -338,7 +362,7 @@
     return [[NSAttributedString alloc] initWithString:text attributes:attributes];
 }
 
--(NSAttributedString *)descriptionForEmptyDataSet:(UIScrollView *)scrollView {
+- (NSAttributedString *)descriptionForEmptyDataSet:(UIScrollView *)scrollView {
     NSString *text = SLLocalizedString(@"快去收藏喜欢的教程吧");
     
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont boldSystemFontOfSize:13.0f],

@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol OrderExchangeInvoiceHeardViewDelegate <NSObject>
 
--(void)orderExchangeInvoiceHeardView:(OrderExchangeInvoiceHeardView *)view tapAction:(BOOL )isPersonal;
+- (void)orderExchangeInvoiceHeardView:(OrderExchangeInvoiceHeardView *)view tapAction:(BOOL )isPersonal;
 
 
 @end

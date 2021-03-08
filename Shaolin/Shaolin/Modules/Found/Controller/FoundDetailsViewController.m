@@ -12,6 +12,7 @@
 #import "SLShareView.h"
 #import "DefinedHost.h"
 #import "UIButton+HitBounds.h"
+#import "ThumbFollowShareManager.h"
 
 @interface FoundDetailsViewController ()<WKUIDelegate,WKNavigationDelegate, WKScriptMessageHandler>
 //@property (nonatomic,strong) UIScrollView *scrollView;
@@ -41,7 +42,7 @@
     }
     return self;
 }
--(NSMutableDictionary *)dataDic
+- (NSMutableDictionary *)dataDic
 {
     if (!_dataDic) {
         _dataDic = [NSMutableDictionary dictionary];
@@ -64,25 +65,32 @@
     [super viewWillDisappear:animated];
 }
 
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    
+    if (!self.navigationController || self.navigationController.viewControllers.count == 1) {
+        
+//        [self wr_setNavBarBackgroundAlpha:0];
+        [self.webView.configuration.userContentController removeScriptMessageHandlerForName:@"H5inFormLocal"];
+    }
+}
+
+- (void)dealloc{
+    
+    [self.webView setNavigationDelegate:nil];
+    [self.webView setUIDelegate:nil];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     if (!self.hideNavigationBarView && !self.hideNavigationBar){
         self.hideNavigationBarView = YES;
     }
-    self.hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
-    
     self.view.backgroundColor = [UIColor whiteColor];
     [self setupUI];
     [self setupWebView];
     [self setData];
-    if (!self.isInteractive){
-        self.focusBtn.hidden = YES;
-        self.focusLabel.hidden = YES;
-        self.praiseBtn.hidden = YES;
-        self.praiseLabel.hidden = YES;
-        self.shareBtn.hidden = YES;
-        self.shareLabel.hidden = YES;
-    }
+    [self reloadNavigationBarButtonsHiddenState];
 //    if ([self.stateStr isEqualToString:@"2"]) {
 //        self.focusBtn.hidden = YES;
 //        self.focusLabel.hidden = YES;
@@ -93,7 +101,25 @@
 //    }
 }
 
--(void)setData
+- (void)reloadNavigationBarButtonsHiddenState {
+    if ([self.dataDic allKeys].count == 0 || !self.isInteractive) {
+        self.focusBtn.hidden = YES;
+        self.focusLabel.hidden = YES;
+        self.praiseBtn.hidden = YES;
+        self.praiseLabel.hidden = YES;
+        self.shareBtn.hidden = YES;
+        self.shareLabel.hidden = YES;
+    } else {
+        self.focusBtn.hidden = NO;
+        self.focusLabel.hidden = NO;
+        self.praiseBtn.hidden = NO;
+        self.praiseLabel.hidden = NO;
+        self.shareBtn.hidden = NO;
+        self.shareLabel.hidden = NO;
+    }
+}
+
+- (void)setData
 {
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
 //    [[HomeManager sharedInstance] getArticleDetails:self.idStr tabbarStr:self.tabbarStr otherParams:^NSDictionary * _Nonnull{
@@ -119,99 +145,99 @@
 //    }];
 //    
     
-   [[HomeManager sharedInstance]getArticleDetails:self.idStr tabbarStr:self.tabbarStr otherParams:^NSDictionary * _Nonnull{
-         if ([self.tabbarStr isEqualToString:@"Found"] && self.stateStr) {
-             return @{@"state" : self.stateStr};
-             
-         }
-               return nil;
+    [[HomeManager sharedInstance]getArticleDetails:self.idStr tabbarStr:self.tabbarStr otherParams:^NSDictionary * _Nonnull{
+        if ([self.tabbarStr isEqualToString:@"Found"] && self.stateStr) {
+            return @{@"state" : self.stateStr};
+            
+        }
+        return nil;
     } success:^(NSDictionary * _Nullable resultDic) {
         
     } failure:^(NSString * _Nullable errorReason) {
         
     } finish:^(NSDictionary * _Nullable responseObject, NSString * _Nullable errorReason) {
-         [hud hideAnimated:YES];
-               NSLog(@"%@",responseObject);
-               if ([[responseObject objectForKey:@"code"] integerValue]==200) {
-                   NSArray *arr = [[responseObject objectForKey:@"data"] objectForKey:@"data"];
-                   NSDictionary *dic ;
-                   for (NSDictionary *dicc in arr) {
-                       dic = dicc;
-                   }
-                   
-                   self.dataDic = [[NSMutableDictionary alloc]initWithDictionary:dic];;
-                   NSLog(@"%@",self.dataDic);
-                   [self assignment:dic];
-                   
-               }
+        [hud hideAnimated:YES];
+        NSLog(@"%@",responseObject);
+        if ([[responseObject objectForKey:@"code"] integerValue]==200) {
+            NSArray *arr = [[responseObject objectForKey:@"data"] objectForKey:@"data"];
+            NSDictionary *dic ;
+            for (NSDictionary *dicc in arr) {
+                dic = dicc;
+            }
+            dic = [ThumbFollowShareManager reloadDictByLocalCache:dic modelItemType:FoundItemType modelItemKind:ImageText];
+            self.dataDic = [[NSMutableDictionary alloc]initWithDictionary:dic];;
+            NSLog(@"%@",self.dataDic);
+            [self assignment:dic];
+            [self reloadNavigationBarButtonsHiddenState];
+            [self reloadNavigationButtons];
+        }
     }];
     
 }
 
 #pragma mark - 赋值
--(void)assignment:(NSDictionary *)dic
+- (void)assignment:(NSDictionary *)dic
 {
     if (IsNilOrNull(dic)) {
         return;
     }
-    NSString *htmlStr;
+    NSString *urlStr;
     self.detailId = [dic objectForKey:@"id"];
-    NSString * token = [SLAppInfoModel sharedInstance].access_token;
+    NSString * token = [SLAppInfoModel sharedInstance].accessToken;
     if ([self.tabbarStr isEqualToString:@"Found"]) {
-        htmlStr = URL_H5_ArticleDetail(self.detailId, token);
+        urlStr = URL_H5_ArticleDetail(self.detailId, token);
     }else {
-        htmlStr = URL_H5_ActivityDetail(self.detailId, token);
+        urlStr = URL_H5_ActivityDetail(self.detailId, token);
     }
     
     
+    self.hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
     
-    NSURL *baseURL = [NSURL URLWithString:htmlStr];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.hud hideAnimated:YES];
+    });
+    
+    NSURL *baseURL = [NSURL URLWithString:urlStr];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:baseURL];
     
     [self.webView loadRequest:request];
-    
-    
-    
+}
+
+- (void)reloadNavigationButtons {
     // 收藏个数
-    if ([[dic objectForKey:@"collections"] integerValue]==0) {
-        self.focusLabel.hidden = YES;
-    }else
-    {
-        self.focusLabel.text = [NSString stringWithFormat:@"%@",[dic objectForKey:@"collections"]];
-    }
+    self.focusLabel.hidden = [[self.dataDic objectForKey:@"collection"] integerValue] == 0;
+    self.focusLabel.text = [NSString stringWithFormat:@"%@",[self.dataDic objectForKey:@"collection"]];
     // 点赞数
-    if ([[dic objectForKey:@"praises"] integerValue]==0) {
-        self.praiseLabel.hidden = YES;
-    }else
-    {
-        self.praiseLabel.text = [NSString stringWithFormat:@"%@",[dic objectForKey:@"praises"]];
-    }
+    self.praiseLabel.hidden = [[self.dataDic objectForKey:@"praise"] integerValue] == 0;
+    self.praiseLabel.text = [NSString stringWithFormat:@"%@",[self.dataDic objectForKey:@"praise"]];
     // 分享数
-    if ([[dic objectForKey:@"forwards"] integerValue]==0) {
-        self.shareLabel.hidden = YES;
-    }else
-    {
-        self.shareLabel.text = [NSString stringWithFormat:@"%@",[dic objectForKey:@"forwards"]];
-    }
-    if ([[dic objectForKey:@"praise"] integerValue]==1) {
-        [self.praiseBtn setSelected:NO];
-        self.praiseLabel.textColor = KTextGray_333;
-    }else
-    {
+    self.shareLabel.hidden = [[self.dataDic objectForKey:@"forward"] integerValue] == 0;
+    self.shareLabel.text = [NSString stringWithFormat:@"%@",[self.dataDic objectForKey:@"forward"]];
+    
+    if ([[self.dataDic objectForKey:@"praiseState"] boolValue]) {
         [self.praiseBtn setSelected:YES];
-        self.praiseLabel.textColor = KPriceRed;
-    }
-    if ([[dic objectForKey:@"collection"] integerValue]==1) {
-        [self.focusBtn setSelected:NO];
-        self.focusLabel.textColor = KTextGray_333;
+        [self.praiseBtn setImage:[UIImage imageNamed:@"praise_select_yellow"] forState:UIControlStateNormal];
+        self.praiseLabel.textColor = kMainYellow;
     }else
     {
+        [self.praiseBtn setSelected:NO];
+        [self.praiseBtn setImage:[UIImage imageNamed:@"praise_normal"] forState:UIControlStateNormal];
+        self.praiseLabel.textColor = KTextGray_333;
+    }
+    
+    if ([[self.dataDic objectForKey:@"collectionState"] boolValue]) {
         [self.focusBtn setSelected:YES];
-        self.focusLabel.textColor = KPriceRed;
+        [self.focusBtn setImage:[UIImage imageNamed:@"focus_select_yellow"] forState:UIControlStateNormal];
+        self.focusLabel.textColor = kMainYellow;
+    }else
+    {
+        [self.focusBtn setSelected:NO];
+        [self.focusBtn setImage:[UIImage imageNamed:@"focus_normal"] forState:UIControlStateNormal];
+        self.focusLabel.textColor = KTextGray_333;
     }
 }
--(void)setupWebView
+- (void)setupWebView
 {
     
     WKWebViewConfiguration *webConfiguration = [WKWebViewConfiguration new];
@@ -241,12 +267,16 @@
     
 }
 
--(void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
     
     if (webView.isLoading) {
         return;
     }
     //     [webView evaluateJavaScript:@"document.getElementsByTagName('body')[0].style.webkitTextSizeAdjust= '140%'"completionHandler:nil];
+}
+
+- (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error{
+    [self.hud hideAnimated:YES];
 }
 
 - (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message{
@@ -265,7 +295,7 @@
 }
 
 
--(void)setupUI
+- (void)setupUI
 {
     UIView *viewBg = [[UIView alloc]initWithFrame:CGRectMake(0, NavBar_Height, kWidth, 1)];
     viewBg.backgroundColor = RGBA(216, 216, 216, 1);
@@ -331,12 +361,12 @@
     
 }
 
--(void)leftAction
+- (void)leftAction
 {
     [self.navigationController popViewControllerAnimated:YES];
 }
 
--(UIButton *)focusBtn
+- (UIButton *)focusBtn
 {
     if (!_focusBtn) {
         _focusBtn = [[UIButton alloc] init];
@@ -346,107 +376,78 @@
     }
     return _focusBtn;
 }
--(void)foucsAction:(UIButton *)btn
+- (void)foucsAction:(UIButton *)btn
 {
     
-    btn.selected = !btn.selected;
-    if (btn.selected) { //收藏成功调用的
-        [self foucsSuccess:btn];
+    if (btn.selected) {//取消收藏
         
+        [self foucsCancle:btn];
         NSLog(@"====");
     }else
-    {  //取消收藏
-        [self foucsCancle:btn];
+    {  //收藏
+        [self foucsSuccess:btn];
+        
         
         NSLog(@"LLLLLL");
     }
 }
 #pragma mark - 收藏成功
--(void)foucsSuccess:(UIButton *)btn
+- (void)foucsSuccess:(UIButton *)btn
 {
     
     NSString *contentId  =[NSString stringWithFormat:@"%@",[self.dataDic objectForKey:@"id"]];
-//    [[HomeManager sharedInstance]postCollectionContentId:contentId Type:self.typeStr Kind:@"1" MemberId:@"" MemberName:@"" Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+    [[HomeManager sharedInstance]postCollectionContentId:contentId Type:self.typeStr Kind:@"1" MemberId:@"" MemberName:@"" Success:^(NSDictionary * _Nullable resultDic) {
+        NSInteger likeCount = [[self.dataDic objectForKey:@"collection"] integerValue];
+        likeCount += 1;
+        [self.dataDic setObject:@"1" forKey:@"collectionState"];
+        [self.dataDic setObject:[NSString stringWithFormat:@"%ld",likeCount] forKey:@"collection"];
+        [self reloadNavigationButtons];
+        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"收藏成功") view:self.view afterDelay:TipSeconds];
+    } failure:^(NSString * _Nullable errorReason) {
+        [ShaolinProgressHUD singleTextHud:errorReason view:self.view afterDelay:TipSeconds];
+    } finish:^(NSDictionary * _Nullable responseObject, NSString * _Nullable errorReason) {
 //        NSLog(@"%@",responseObject);
 //        if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
-//            
-//            NSInteger likeCount = [[self.dataDic objectForKey:@"collections"] integerValue];
+//
+//            NSInteger likeCount = [[self.dataDic objectForKey:@"collection"] integerValue];
 //            likeCount += 1;
-//            
-//            
-//            [btn setSelected:YES];
-//            self.focusLabel.text = [NSString stringWithFormat:@"%ld",likeCount];
-//            self.focusLabel.hidden = NO;
-//            [self.dataDic setObject:[NSString stringWithFormat:@"%ld",likeCount] forKey:@"collections"];
+//            [self.dataDic setObject:@"1" forKey:@"collectionState"];
+//            [self.dataDic setObject:[NSString stringWithFormat:@"%ld",likeCount] forKey:@"collection"];
+//            [self reloadNavigationButtons];
 //            [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"收藏成功") view:self.view afterDelay:TipSeconds];
 //        }else
 //        {
 //            [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
 //        }
-//    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-//        [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
-//    }];
-//    
-    
-    [[HomeManager sharedInstance]postCollectionContentId:contentId Type:self.typeStr Kind:@"1" MemberId:@"" MemberName:@"" Success:^(NSDictionary * _Nullable resultDic) {
-        
-    } failure:^(NSString * _Nullable errorReason) {
-        
-    } finish:^(NSDictionary * _Nullable responseObject, NSString * _Nullable errorReason) {
-        NSLog(@"%@",responseObject);
-        if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
-            
-            NSInteger likeCount = [[self.dataDic objectForKey:@"collections"] integerValue];
-            likeCount += 1;
-            
-            
-            [btn setSelected:YES];
-            self.focusLabel.text = [NSString stringWithFormat:@"%ld",likeCount];
-            self.focusLabel.hidden = NO;
-            [self.dataDic setObject:[NSString stringWithFormat:@"%ld",likeCount] forKey:@"collections"];
-            [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"收藏成功") view:self.view afterDelay:TipSeconds];
-        }else
-        {
-            [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
-        }
     }];
     
 }
 #pragma mark - 取消收藏
--(void)foucsCancle:(UIButton *)btn
+- (void)foucsCancle:(UIButton *)btn
 {
-    
-    
     NSString *strId = [NSString stringWithFormat:@"%@", [self.dataDic objectForKey:@"id"]];
     NSMutableArray *arr = [NSMutableArray array];
-    NSDictionary *dic = @{@"contentId":strId,@"type":self.typeStr};
+    NSDictionary *dic = @{@"contentId":strId,@"type":self.typeStr, @"kind" : @"1"};
     [arr addObject:dic];
-    [[HomeManager sharedInstance]postCollectionCancleArray:arr WithBlock:^(id  _Nonnull responseObject, NSError * _Nonnull error) {
+    [[HomeManager sharedInstance]postCollectionCancleArray:arr WithBlock:^(id  _Nonnull responseObject, NSString * _Nonnull error) {
         NSLog(@"%@",responseObject);
-        if ([[responseObject objectForKey:@"code"] integerValue]== 200) {
-            
-            NSInteger likeCount = [[self.dataDic objectForKey:@"collections"] integerValue];
-            likeCount --;
-            
-            
-            [btn setSelected:NO];
-            if (likeCount == 0) {
-                self.focusLabel.hidden = YES;
-            }else
-            {
-                self.focusLabel.text = [NSString stringWithFormat:@"%ld",likeCount];
-            }
-            
-            [self.dataDic setObject:[NSString stringWithFormat:@"%ld",likeCount] forKey:@"collections"];
-            
-            [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"取消收藏") view:self.view afterDelay:TipSeconds];
-        }else
-        {
-            [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
-        }
+        NSInteger likeCount = [[self.dataDic objectForKey:@"collection"] integerValue];
+        likeCount --;
+        if (likeCount < 0) likeCount = 0;
+        [self.dataDic setObject:@"0" forKey:@"collectionState"];
+        [self.dataDic setObject:[NSString stringWithFormat:@"%ld",likeCount] forKey:@"collection"];
+        [self reloadNavigationButtons];
+        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"取消收藏") view:self.view afterDelay:TipSeconds];
+//        if ([[responseObject objectForKey:@"code"] integerValue]== 200) {
+//
+//
+//        }else
+//        {
+//            [ShaolinProgressHUD singleTextHud:error view:self.view afterDelay:TipSeconds];
+//        }
     }];
 }
--(UILabel *)focusLabel
+- (UILabel *)focusLabel
 {
     if (!_focusLabel) {
         _focusLabel = [[UILabel alloc] init];
@@ -457,7 +458,7 @@
     }
     return _focusLabel;
 }
--(UIButton *)praiseBtn
+- (UIButton *)praiseBtn
 {
     if (!_praiseBtn) {
         
@@ -468,103 +469,70 @@
     }
     return _praiseBtn;
 }
--(void)praiseAction:(UIButton *)btn
+- (void)praiseAction:(UIButton *)btn
 {
-    btn.selected = !btn.selected;
-    if (btn.selected) { //收藏成功调用的
-        [self praiseSuccess:btn];
-        
+    if (btn.selected) { //取消点赞
+        [self praiseCancle:btn];
         NSLog(@"====");
     }else
-    {  //取消收藏
-        [self praiseCancle:btn];
-        
+    {   //点赞
+        [self praiseSuccess:btn];
         NSLog(@"LLLLLL");
     }
 }
 #pragma mark - 点赞成功
--(void)praiseSuccess:(UIButton *)btn
+- (void)praiseSuccess:(UIButton *)btn
 {
     
     NSString *contentId  =[NSString stringWithFormat:@"%@",[self.dataDic objectForKey:@"id"]];
-//    [[HomeManager sharedInstance]postPraiseContentId:contentId Type:self.typeStr Kind:@"1" MemberId:@"" MemberName:@"" Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+    [[HomeManager sharedInstance]postPraiseContentId:contentId Type:self.typeStr Kind:@"1" MemberId:@"" MemberName:@"" Success:^(NSDictionary * _Nullable resultDic) {
+        NSInteger likeCount = [[self.dataDic objectForKey:@"praise"] integerValue];
+        likeCount += 1;
+        [self.dataDic setObject:@"1" forKey:@"praiseState"];
+        [self.dataDic setObject:[NSString stringWithFormat:@"%ld",likeCount] forKey:@"praise"];
+        [self reloadNavigationButtons];
+        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"点赞成功") view:self.view afterDelay:TipSeconds];
+    } failure:^(NSString * _Nullable errorReason) {
+        [ShaolinProgressHUD singleTextHud:errorReason view:self.view afterDelay:TipSeconds];
+    } finish:^(NSDictionary * _Nullable responseObject, NSString * _Nullable errorReason) {
 //        NSLog(@"%@",responseObject);
 //        if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
 //
 //
-//            NSInteger likeCount = [[self.dataDic objectForKey:@"praises"] integerValue];
-//            likeCount += 1;
 //
-//
-//            [btn setSelected:YES];
-//            self.praiseLabel.text = [NSString stringWithFormat:@"%ld",likeCount];
-//            self.praiseLabel.hidden = NO;
-//            [self.dataDic setObject:[NSString stringWithFormat:@"%ld",likeCount] forKey:@"praises"];
-//            [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"点赞成功") view:self.view afterDelay:TipSeconds];
 //        }else
 //        {
-//            [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
+//            [ShaolinProgressHUD singleTextHud:errorReason view:self.view afterDelay:TipSeconds];
 //        }
-//    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-//        [ShaolinProgressHUD singleTextHud:kNetErrorPrompt view:self.view afterDelay:TipSeconds];
-//    }];
-    
-    [[HomeManager sharedInstance]postPraiseContentId:contentId Type:self.typeStr Kind:@"1" MemberId:@"" MemberName:@"" Success:^(NSDictionary * _Nullable resultDic) {
-    } failure:^(NSString * _Nullable errorReason) {
-    } finish:^(NSDictionary * _Nullable responseObject, NSString * _Nullable errorReason) {
-         NSLog(@"%@",responseObject);
-               if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
-                   
-                   
-                   NSInteger likeCount = [[self.dataDic objectForKey:@"praises"] integerValue];
-                   likeCount += 1;
-                   
-                   
-                   [btn setSelected:YES];
-                   self.praiseLabel.text = [NSString stringWithFormat:@"%ld",likeCount];
-                   self.praiseLabel.hidden = NO;
-                   [self.dataDic setObject:[NSString stringWithFormat:@"%ld",likeCount] forKey:@"praises"];
-                   [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"点赞成功") view:self.view afterDelay:TipSeconds];
-               }else
-               {
-                   [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
-               }
     }];
 }
 #pragma mark - 取消点赞
--(void)praiseCancle:(UIButton *)btn
+- (void)praiseCancle:(UIButton *)btn
 {
     
     NSString *strId = [NSString stringWithFormat:@"%@", [self.dataDic objectForKey:@"id"]];
     NSMutableArray *arr = [NSMutableArray array];
-    NSDictionary *dic = @{@"contentId":strId,@"type":self.typeStr};
+    NSDictionary *dic = @{@"contentId":strId,@"type":self.typeStr, @"kind":@"1"};
     [arr addObject:dic];
-    [[HomeManager sharedInstance]postPraiseCancleArray:arr WithBlock:^(id  _Nonnull responseObject, NSError * _Nonnull error) {
+    [[HomeManager sharedInstance]postPraiseCancleArray:arr WithBlock:^(id  _Nonnull responseObject, NSString * _Nonnull error) {
         NSLog(@"%@",responseObject);
-        if ([[responseObject objectForKey:@"code"] integerValue]== 200) {
-            
-            NSInteger likeCount = [[self.dataDic objectForKey:@"praises"] integerValue];
-            likeCount --;
-            
-            [btn setSelected:NO];
-            if (likeCount == 0) {
-                self.praiseLabel.hidden = YES;
-            }else
-            {
-                self.praiseLabel.text = [NSString stringWithFormat:@"%ld",likeCount];
-            }
-            
-            [self.dataDic setObject:[NSString stringWithFormat:@"%ld",likeCount] forKey:@"praises"];
-            
-            [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"取消点赞") view:self.view afterDelay:TipSeconds];
-        }else
-        {
-            [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
-        }
+        NSInteger likeCount = [[self.dataDic objectForKey:@"praise"] integerValue];
+        likeCount --;
+        if (likeCount < 0) likeCount = 0;
+        [self.dataDic setObject:@"0" forKey:@"praiseState"];
+        [self.dataDic setObject:[NSString stringWithFormat:@"%ld",likeCount] forKey:@"praise"];
+        [self reloadNavigationButtons];
+        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"取消点赞") view:self.view afterDelay:TipSeconds];
+//        if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
+//
+//        }else
+//        {
+//            [ShaolinProgressHUD singleTextHud:error view:self.view afterDelay:TipSeconds];
+//        }
     }];
 }
 #pragma mark - 分享
--(void)sharedSuccess{
+- (void)sharedSuccess{
     WEAKSELF
     NSString *contentId  =[NSString stringWithFormat:@"%@",[self.dataDic objectForKey:@"id"]];
     //    [[HomeManager sharedInstance]postSharedContentId:contentId Type:self.typeStr Kind:@"1" MemberId:@"" MemberName:@"" Success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
@@ -583,22 +551,23 @@
     
     
     [[HomeManager sharedInstance]postSharedContentId:contentId Type:self.typeStr Kind:@"1" MemberId:@"" MemberName:@"" Success:^(NSDictionary * _Nullable resultDic) {
+        NSInteger forwardsCount = [[self.dataDic objectForKey:@"forward"] integerValue];
+        forwardsCount += 1;
+        
+        weakSelf.shareLabel.text = [NSString stringWithFormat:@"%ld",forwardsCount];
+        weakSelf.shareLabel.hidden = NO;
+        [weakSelf.dataDic setObject:[NSString stringWithFormat:@"%ld",forwardsCount] forKey:@"forward"];
     } failure:^(NSString * _Nullable errorReason) {
     } finish:^(NSDictionary * _Nullable responseObject, NSString * _Nullable errorReason) {
         
-        if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
-            NSInteger forwardsCount = [[self.dataDic objectForKey:@"forwards"] integerValue];
-            forwardsCount += 1;
-            
-            weakSelf.shareLabel.text = [NSString stringWithFormat:@"%ld",forwardsCount];
-            weakSelf.shareLabel.hidden = NO;
-            [weakSelf.dataDic setObject:[NSString stringWithFormat:@"%ld",forwardsCount] forKey:@"forwards"];
-        }
+//        if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
+//
+//        }
     }];
 }
 
 
--(UILabel *)praiseLabel
+- (UILabel *)praiseLabel
 {
     if (!_praiseLabel) {
         _praiseLabel = [[UILabel alloc] init];
@@ -608,7 +577,7 @@
     }
     return _praiseLabel;
 }
--(UIButton *)shareBtn
+- (UIButton *)shareBtn
 {
     if (!_shareBtn) {
         
@@ -619,19 +588,9 @@
     }
     return _shareBtn;
 }
--(void)shareAction {
-    NSMutableArray *imgArr = [NSMutableArray array];
-    NSArray *arr = [self.dataDic objectForKey:@"coverurlList"];
-    if (IsNilOrNull(arr)) {
-        return;
-    }
-    for (NSDictionary *dic in arr) {
-        NSString *str = [dic objectForKey:@"route"];
-        [imgArr addObject:str];
-    }
-    
+- (void)shareAction {
     SharedModel *model = [[SharedModel alloc] init];
-    model.type = SharedModelType_URL;
+    model.type = SharedModelURLType;
     model.titleStr = [self.dataDic objectForKey:@"title"];
     model.descriptionStr = [self.dataDic objectForKey:@"abstracts"];
     
@@ -642,10 +601,18 @@
         webpageURL = URL_H5_SharedArticle(self.detailId);
     }
     model.webpageURL = webpageURL;
-    
     model.image = self.showImage;//[SharedModel toThumbImage:self.showImage];
-    if (imgArr.count){
-        model.imageURL = imgArr.firstObject;
+    
+    NSMutableArray *imgArr = [NSMutableArray array];
+    NSArray *arr = [self.dataDic objectForKey:@"coverUrlList"];
+    if (!IsNilOrNull(arr)) {
+        for (NSDictionary *dic in arr) {
+            NSString *str = [dic objectForKey:@"route"];
+            [imgArr addObject:str];
+        }
+        if (imgArr.count){
+            model.imageURL = imgArr.firstObject;
+        }
     }
     WEAKSELF
     _slShareView = [[SLShareView alloc]initWithFrame:CGRectMake(0, 0, kWidth, kHeight)];
@@ -656,7 +623,7 @@
     [[UIApplication sharedApplication].keyWindow addSubview:_slShareView];
     
 }
--(UILabel *)shareLabel
+- (UILabel *)shareLabel
 {
     if (!_shareLabel) {
         _shareLabel = [[UILabel alloc] init];
@@ -668,7 +635,7 @@
 }
 
 
--(NSString *)compaareCurrentTime:(NSDate *)compareDate
+- (NSString *)compaareCurrentTime:(NSDate *)compareDate
 {
     NSTimeInterval  timeInterval = [compareDate timeIntervalSinceNow];
     
@@ -725,7 +692,7 @@
     return  result;
     
 }
--(NSDate *)nsstringConversionNSDate:(NSString *)dateStr
+- (NSDate *)nsstringConversionNSDate:(NSString *)dateStr
 {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"YYYY-MM-dd HH:mm:ss"];
@@ -733,11 +700,7 @@
     return datestr;
 }
 
--(void)dealloc{
-    [self.webView.configuration.userContentController removeScriptMessageHandlerForName:@"H5inFormLocal"];
-    [self.webView setNavigationDelegate:nil];
-    [self.webView setUIDelegate:nil];
-}
+
 
 /*
  #pragma mark - Navigation

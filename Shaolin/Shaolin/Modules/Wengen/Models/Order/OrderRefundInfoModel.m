@@ -10,4 +10,10 @@
 
 @implementation OrderRefundInfoModel
 
++ (NSDictionary *)mj_replacedKeyFromPropertyName{
+    return @{
+             @"refundInfoId" : @"id",
+             };
+}
+
 @end

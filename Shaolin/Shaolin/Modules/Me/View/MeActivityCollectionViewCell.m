@@ -30,7 +30,7 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        [self setUI];
+        [self setupUI];
     }
     return self;
 }
@@ -46,6 +46,9 @@
         self.timeLabel.text = [NSString stringWithFormat:SLLocalizedString(@"报名时间：%@"), model.createTime];
     }
     if ([self isSignUp]){
+        self.checkInButton.hidden = ![model canCheckIn];
+        self.checkInTimeLabel.text = @"";
+    } else {
         if ([model isCheckIn]){
             NSDate *checkInDate = [NSDate lgf_NeedDateFormat:@"yyyy-MM-dd HH:mm:ss" date:model.signInTime];
             if (checkInDate){
@@ -57,11 +60,6 @@
         } else {
             self.checkInTimeLabel.text = @"";
         }
-        self.checkInButton.hidden = ![model canCheckIn];
-    } else {
-        self.checkInTimeLabel.text = @"";
-        self.checkInImage.image = nil;
-        
         self.checkInButton.hidden = YES;
     }
     if ([model isCheckIn]){
@@ -75,8 +73,8 @@
     [self.imageView sd_setImageWithURL:[NSURL URLWithString:model.mechanismImage] placeholderImage:[UIImage imageNamed:@"default_big"]];
 //    [self reloadLevelView:model.levelIds];//SLLocalizedString(@"1-3段")
     NSLog(@"model.stateName:%@", model.stateName);
-    if ([model.stateName isEqualToString:SLLocalizedString(@"已报名")]){
-        NSString *signUpNumber = model.registeredNumber;// @"256";
+    if ([model.stateType intValue] == 2){//[model.stateName isEqualToString:SLLocalizedString(@"已报名")
+        NSString *signUpNumber = model.applicationNumber;// @"256";
         NSString *signUpNumberText = [NSString stringWithFormat:SLLocalizedString(@"已报名 %@ 人"), signUpNumber];
         self.signUpNumberLabel.attributedText = [self getAttributeString:signUpNumberText colorStr:signUpNumber color:[UIColor redColor] font:self.signUpNumberLabel.font];
     } else {
@@ -118,25 +116,25 @@
     [self.levelView addSubview:levelLabel];
     [self.levelView addSubview:levelRangeLabel];
     
-    [levelLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [levelLabel mas_updateConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(5);
         make.centerY.mas_equalTo(levelRangeLabel);
     }];
-    [levelRangeLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [levelRangeLabel mas_updateConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(levelLabel.mas_right).mas_offset(5);
         make.top.bottom.mas_equalTo(0);
         make.right.mas_equalTo(-5);
     }];
 }
 #pragma mark - UI
-- (void)setUI{
+- (void)setupUI{
     self.backView.layer.shadowColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.16].CGColor;
     //阴影偏移
-    self.backView.layer.shadowOffset = CGSizeMake(0, 1);
+    self.backView.layer.shadowOffset = CGSizeMake(0, 0);
     // 阴影透明度，默认0
-    self.backView.layer.shadowOpacity = 1;
+    self.backView.layer.shadowOpacity = 0.8;
     // 阴影半径，默认3
-    self.backView.layer.shadowRadius = 10;
+    self.backView.layer.shadowRadius = 5;
     
     [self.contentView addSubview:self.backView];
     [self.backView addSubview:self.titleLabel];
@@ -150,11 +148,9 @@
     [self.backView addSubview:self.showDetailsButton];
     [self.backView addSubview:self.signUpNumberLabel];
     [self.backView addSubview:self.levelIdLabel];
-}
-
-- (void)layoutSubviews{
-    [super layoutSubviews];
-    [self.backView mas_remakeConstraints:^(MASConstraintMaker *make) {
+    
+//    mas_makeConstraints
+    [self.backView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.bottom.mas_equalTo(0);
         make.left.mas_equalTo(15);
         make.right.mas_equalTo(-15);
@@ -163,75 +159,86 @@
     CGFloat imageViewTopPadding = 8, imageViewHeight = 113, levelViewBottomPadding = 15;
     CGSize levelViewSize = CGSizeMake(65, 35);
     CGSize showDetailsButtonSize = CGSizeMake(71, 25);
-    [self.titleLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(leftPadding);
         make.right.mas_equalTo(-rightPadding);
         make.top.mas_equalTo(topPadding);
     }];
     
-    [self.addressLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.addressLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.mas_equalTo(self.titleLabel);
         make.top.mas_equalTo(self.titleLabel.mas_bottom).mas_offset(11);
     }];
     
-    [self.timeLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.timeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.mas_equalTo(self.addressLabel);
         make.top.mas_equalTo(self.addressLabel.mas_bottom).mas_offset(14);
         make.height.mas_equalTo(12.5);
     }];
-    [self.checkInTimeLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.checkInTimeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.mas_equalTo(self.timeLabel);
-        if ([self.model isCheckIn] && [self isSignUp]){
+        if ([self.model isCheckIn] && ![self isSignUp]){
             make.top.mas_equalTo(self.timeLabel.mas_bottom).mas_offset(14);
+            make.height.mas_equalTo(12.5);
         } else {
             make.top.mas_equalTo(self.timeLabel.mas_bottom);
+            make.height.mas_equalTo(0);
         }
     }];
-    [self.levelIdLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.levelIdLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.mas_equalTo(self.timeLabel);
         make.top.mas_equalTo(self.checkInTimeLabel.mas_bottom).mas_offset(12);
     }];
-    [self.checkInImage mas_remakeConstraints:^(MASConstraintMaker *make) {
+    
+    [self.checkInImage mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.mas_equalTo(self.titleLabel);
         make.bottom.mas_equalTo(self.levelIdLabel.mas_top).mas_offset(-5);
         make.size.mas_equalTo(CGSizeMake(35, 33.5));
     }];
     
-    [self.imageView mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.mas_equalTo(self.titleLabel);
         make.top.mas_equalTo(self.levelIdLabel.mas_bottom).mas_offset(imageViewTopPadding);
         make.height.mas_equalTo(imageViewHeight);
     }];
     
-    
-    [self.levelView mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.levelView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.mas_equalTo(0);
         make.bottom.mas_equalTo(-levelViewBottomPadding);
         make.height.mas_equalTo(0);
     }];
     
-    [self.checkInButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.checkInButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.mas_equalTo(self.showDetailsButton.mas_left).mas_offset(-10);
         make.centerY.mas_equalTo(self.showDetailsButton);
         make.size.mas_equalTo(showDetailsButtonSize);
     }];
     
-    [self.showDetailsButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.showDetailsButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.mas_equalTo(self.titleLabel);
         make.top.mas_equalTo(self.imageView.mas_bottom).mas_offset(topPadding);
         make.size.mas_equalTo(showDetailsButtonSize);
     }];
     
-    [self.signUpNumberLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.signUpNumberLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(self.titleLabel);
         make.centerY.mas_equalTo(self.showDetailsButton);
         make.height.mas_equalTo(12.5);
         make.bottom.mas_equalTo(-19);
     }];
     
-    //设置timeLabel有更高的拉伸抗性
-    [self.timeLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
-    [self.checkInTimeLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+    //设置label有更高的拉伸抗性
+//    [self.titleLabel setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+//    [self.addressLabel setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+    [self.levelIdLabel setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+    
+//    [self.titleLabel setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
+//    [self.addressLabel setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
+//    [self.levelIdLabel setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
+    
+//    [self.titleLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
+//    [self.addressLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
+//    [self.levelIdLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
     
     self.checkInButton.layer.cornerRadius = showDetailsButtonSize.height/2;
     self.showDetailsButton.layer.cornerRadius = showDetailsButtonSize.height/2;
@@ -242,6 +249,19 @@
     maskLayer.frame = maskFrame;
     maskLayer.path = maskPath.CGPath;
     self.levelView.layer.mask = maskLayer;
+}
+
+- (void)layoutSubviews{
+    [super layoutSubviews];
+    [self.checkInTimeLabel mas_updateConstraints:^(MASConstraintMaker *make) {
+        if ([self.model isCheckIn] && ![self isSignUp]){
+            make.top.mas_equalTo(self.timeLabel.mas_bottom).mas_offset(14);
+            make.height.mas_equalTo(12.5);
+        } else {
+            make.top.mas_equalTo(self.timeLabel.mas_bottom);
+            make.height.mas_equalTo(0);
+        }
+    }];
 }
 
 - (BOOL)isSignUp{

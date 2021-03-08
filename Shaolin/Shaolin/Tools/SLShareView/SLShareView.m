@@ -16,7 +16,7 @@
 @end
 
 @implementation SLShareView
--(instancetype)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     
@@ -24,7 +24,7 @@
         [self layoutView];
         // TODO:由于无法准确监听分享结果，所以这里就不出分享结果的提示框了
         [[ThirdpartyAuthorizationManager sharedInstance] receiveCompletionBlock:^(ThirdpartyAuthorizationMessageCode code, Message * _Nonnull message) {
-            if (code == ThirdpartyAuthorizationCode_AuthorizationTips){
+            if (code == ThirdpartyAuthorizationCodeTips){
                 [ShaolinProgressHUD singleTextAutoHideHud:message.reason];
                 NSLog(@"%@", message.reason);
             }
@@ -32,7 +32,7 @@
     }
     return self;
 }
--(void)layoutView
+- (void)layoutView
 {
     _bgView = [[UIView alloc]initWithFrame:self.frame];
     _bgView.alpha = 0.3;
@@ -64,7 +64,7 @@
     
     NSArray *arr = @[SLLocalizedString(@"微信"),SLLocalizedString(@"朋友圈"),@"QQ",SLLocalizedString(@"微博")];
     NSArray *image = @[@"login_wechat",@"wechat_circle",@"login_qq",@"login_sina"];
-    NSArray *identifierArray = @[ThirdpartyType_WX, ThirdpartyType_WX_Moments, ThirdpartyType_QQ, ThirdpartyType_WB];
+    NSArray *identifierArray = @[ThirdpartyTypeWX, ThirdpartyTypeWXMoments, ThirdpartyTypeQQ, ThirdpartyTypeWB];
     for (int i = 0; i<4; i++) {
         UIButton *button = [[UIButton alloc]initWithFrame:CGRectMake(SLChange(55)+(SLChange(40)+SLChange(37))*(i%4), SLChange(25), SLChange(40), SLChange(48))];
         [button setTitle:arr[i] forState:(UIControlStateNormal)];
@@ -91,7 +91,7 @@
     [self dismissView];
 }
 
--(void)dismissView
+- (void)dismissView
 {
     __weak typeof(self)weakSelf =self;
     [UIView animateWithDuration:0.5 animations:^{

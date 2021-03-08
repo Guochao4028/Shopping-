@@ -9,13 +9,15 @@
 #ifndef DefinedHost_h
 #define DefinedHost_h
 
-// 是否是生产上线环境
-//#define IsAppStore YES
+// 需要哪个环境取消注释就可以，都打开时上边优先级更高
 
-// 是否是预发布环境
+// 是否是生产上线环境
+#define IsAppStore YES
+
+// 是否是pre环境
 //#define IsPre YES
 
-// 是否是开发环境，注释掉为演示测试环境
+// 是否是dev环境，注释掉为test环境 
 //#define IsDevelop YES
 
 #ifdef IsAppStore
@@ -24,30 +26,42 @@
 #define H5Host @"https://h5.shaolinapp.com/#"
 
 // IAP内购验证，是否是正式
-#define IapCheckEnv YES
+#define IapCheckEnv NO
+
+// 是否显示测试系统的label
+#define IsShowTestLabel YES
+
+// 是否加密
+#define IsEncryption YES
 
 #else
 
 #ifdef IsPre
 
-#define Host @"https://api-pre.shaolinapp.com"
-#define H5Host @"https://h5-pre.shaolinapp.com/#"
+
+#define Host @"http://api.shaolin.pre.gaoshier.cn"
+#define H5Host @"http://h5.shaolin.pre.gaoshier.cn/#"
 #define IapCheckEnv NO
+#define IsEncryption NO
+#define IsShowTestLabel YES
 
 #else
 
 #ifdef IsDevelop
 
-#define Host @"http://php.shaolin.gaoshier.cn"
-#define H5Host @"http://shaolin-app.gaoshier.cn/#"
+#define Host @"http://api.shaolin.dev.gaoshier.cn"
+#define H5Host @"http://h5.shaolin.dev.gaoshier.cn/#"
 #define IapCheckEnv NO
+#define IsEncryption NO
+#define IsShowTestLabel YES
 
 #else
 
-//#define Host  @"http://192.168.31.123:8080"
-#define Host  @"http://test.php.shaolin.gaoshier.cn"
-#define H5Host @"http://test.shaolin-app.gaoshier.cn/#"
+#define Host  @"http://api.shaolin.test.gaoshier.cn"
+#define H5Host @"http://h5.shaolin.test.gaoshier.cn/#"
 #define IapCheckEnv NO
+#define IsEncryption NO
+#define IsShowTestLabel YES
 
 #endif
 #endif
@@ -122,7 +136,10 @@
 #define URL_H5_Help(a) [NSString stringWithFormat:@"%@/helpCenter?token=%@",H5Host,a]
 
 // 发票详情
-#define URL_H5_InvoiceDetail(a,b) [NSString stringWithFormat:@"%@/invoiceDetail?order_id=%@&token=%@",H5Host,a,b]
+#define URL_H5_InvoiceDetail(a,b,c) [NSString stringWithFormat:@"%@/invoiceDetail?order_id=%@&orderCarId=%@&token=%@",H5Host,a,b,c]
+
+// 发票详情 需要店铺
+#define URL_H5_InvoiceDetailAndClubId(a,b,c,d) [NSString stringWithFormat:@"%@/invoiceDetail?order_id=%@&orderCarId=%@&token=%@&clubId=%@",H5Host,(a),(b),(c),(d)]
 
 // 申请开具增值税专用发票确认书
 #define URL_H5_InvoiceConfirmation H5Host@"/invoiceConfirmation"

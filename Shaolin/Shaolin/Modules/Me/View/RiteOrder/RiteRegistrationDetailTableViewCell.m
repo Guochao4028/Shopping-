@@ -28,12 +28,12 @@
 }
 
 
--(void)setTitleStr:(NSString *)titleStr{
+- (void)setTitleStr:(NSString *)titleStr{
     _titleStr = titleStr;
     [self.titleLabel setText:titleStr];
 }
 
--(void)setContentStr:(NSString *)contentStr{
+- (void)setContentStr:(NSString *)contentStr{
     _contentStr = contentStr;
     [self.contentLabel setText:contentStr];
 }

@@ -118,7 +118,7 @@
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="照相机" translatesAutoresizingMaskIntoConstraints="NO" id="LsL-vd-xND">
                                 <rect key="frame" x="62.5" y="167" width="27" height="22.5"/>
                             </imageView>
-                            <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0YP-Ws-NiP">
+                            <button opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0YP-Ws-NiP">
                                 <rect key="frame" x="16" y="118" width="120" height="120"/>
                                 <connections>
                                     <action selector="choosePhotoAction:" destination="fK0-eU-o4z" eventType="touchUpInside" id="fPX-am-BtS"/>

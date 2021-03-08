@@ -7,12 +7,12 @@
 //
 
 #import "SinglePhotoCell.h"
-
+#import "DefinedURLs.h"
 
 
 
 @implementation SinglePhotoCell
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
@@ -21,7 +21,7 @@
     return self;
 }
 
--(void)setFoundModel:(FoundModel *)f indexpath:(NSIndexPath *)indexPath
+- (void)setFoundModel:(FoundModel *)f indexpath:(NSIndexPath *)indexPath
 {
     _model = f;
     
@@ -38,10 +38,10 @@
     f.cellHeight = SLChange(105);
     self.titleL.text = [NSString stringWithFormat:@"%@",f.title];
     NSString *urlStr;
-    if (f.coverurlList.count < 1) {
+    if (f.coverUrlList.count < 1) {
     }else
     {
-        for (NSDictionary *dic in f.coverurlList) {
+        for (NSDictionary *dic in f.coverUrlList) {
             urlStr = [dic objectForKey:@"route"];
         }
     }
@@ -66,7 +66,7 @@
     NSDate *date= [self nsstringConversionNSDate:f.returnTime];
     NSString *timeStr = @"";//[NSString stringWithFormat:@"%@",[self compaareCurrentTime:date]];
     
-    NSString *strCount = f.clicks;
+    NSString *strCount = f.click;
     if (strCount.integerValue <= 0) {
         strCount = [NSString stringWithFormat:@"0"];
     }else if(strCount.integerValue < 10000){
@@ -83,11 +83,11 @@
     //    [self.nameLabel mas_updateConstraints:^(MASConstraintMaker *make) {
     //        make.width.mas_equalTo(nameSize.width+5);
     //    }];
-    
+//    self.imageV.image = [UIImage imageNamed:@"default_big"];
 }
 
 
--(void)setupView
+- (void)setupView
 {
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     [self.contentView addSubview:self.titleL];
@@ -155,7 +155,7 @@
 - (UIImage *)getShowImage{
     return self.imageV.image;
 }
--(UIButton *)plaayerBtn
+- (UIButton *)plaayerBtn
 {
     if (!_plaayerBtn) {
         _plaayerBtn = [[UIButton alloc]init];
@@ -164,7 +164,7 @@
     }
     return _plaayerBtn;
 }
--(UILabelLeftTopAlign *)titleL
+- (UILabelLeftTopAlign *)titleL
 {
     if (!_titleL) {
         _titleL = [[UILabelLeftTopAlign alloc]init];
@@ -176,7 +176,7 @@
     }
     return _titleL;
 }
--(UIImageView *)imageV
+- (UIImageView *)imageV
 {
     if (!_imageV) {
         _imageV = [[UIImageView alloc]init];
@@ -189,7 +189,7 @@
     return _imageV;
 }
 
--(UILabel *)nameLabel
+- (UILabel *)nameLabel
 {
     if (!_nameLabel) {
         _nameLabel = [[UILabel alloc]init];
@@ -201,7 +201,7 @@
     }
     return _nameLabel;
 }
-//-(UILabel *)lookLabel
+//- (UILabel *)lookLabel
 //{
 //    if (!_lookLabel) {
 //           _lookLabel = [[UILabel alloc]init];
@@ -214,7 +214,7 @@
 //       return _lookLabel;
 //}
 //
-//-(UILabel *)timeLabel
+//- (UILabel *)timeLabel
 //{
 //    if (!_timeLabel) {
 //           _timeLabel = [[UILabel alloc]init];
@@ -228,7 +228,7 @@
 //       return _timeLabel;
 //}
 
--(UILabel *)detailsLabel{
+- (UILabel *)detailsLabel{
     
     if (_detailsLabel == nil) {
         _detailsLabel = [[UILabel alloc]init];

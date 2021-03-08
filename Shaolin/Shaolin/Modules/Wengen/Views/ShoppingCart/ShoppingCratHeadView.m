@@ -10,6 +10,8 @@
 
 #import "GoodsStoreInfoModel.h"
 
+#import "ShoppingCartListModel.h"
+
 @interface ShoppingCratHeadView ()
 
 @property(nonatomic, assign)ShoppingCartHeadViewType type;
@@ -34,7 +36,7 @@
 
 @implementation ShoppingCratHeadView
 
--(instancetype)initWithFrame:(CGRect)frame ViewType:(ShoppingCartHeadViewType)type{
+- (instancetype)initWithFrame:(CGRect)frame ViewType:(ShoppingCartHeadViewType)type{
     
     self = [self initWithFrame:frame];
     if (self != nil) {
@@ -46,7 +48,7 @@
 }
 
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [[NSBundle mainBundle] loadNibNamed:@"ShoppingCratHeadView" owner:self options:nil];
@@ -55,7 +57,7 @@
 }
 
 /// 初始化UI
--(void)initUI{
+- (void)initUI{
     
     if (self.type == ShoppingCartHeadViewStoreType) {
         self.contentView = self.stroeHeadView;
@@ -68,7 +70,7 @@
 }
 
 /// 重写系统方法
--(void)setFrame:(CGRect)frame{
+- (void)setFrame:(CGRect)frame{
     [super setFrame:frame];
     [self.contentView setFrame:self.bounds];
 }
@@ -91,12 +93,19 @@
 }
 
 #pragma mark - setter / getter
--(void)setModel:(GoodsStoreInfoModel *)model{
+//- (void)setModel:(GoodsStoreInfoModel *)model{
+//    _model = model;
+//    [self.stroeTitleLabel setText:model.name];
+//}
+
+-(void)setModel:(ShoppingCartListModel *)model{
     _model = model;
-    [self.stroeTitleLabel setText:model.name];
+    [self.stroeTitleLabel setText:model.clubName];
 }
 
--(void)setIsSelected:(BOOL)isSelected{
+
+
+- (void)setIsSelected:(BOOL)isSelected{
     
     if (isSelected) {
         [self.selectImageView setImage:[UIImage imageNamed:@"Shoppinged"]];
@@ -110,7 +119,7 @@
     }
 }
 
-//-(void)setType:(ShoppingCartHeadViewType)type{
+//- (void)setType:(ShoppingCartHeadViewType)type{
 //    [self.contentView removeFromSuperview];
 //    self.contentView = nil;
 //    if (self.type == ShoppingCartHeadViewStoreType) {

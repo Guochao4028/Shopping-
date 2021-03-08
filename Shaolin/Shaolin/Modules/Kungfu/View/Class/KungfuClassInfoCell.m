@@ -71,7 +71,7 @@
     
     self.timeLabel.text = model ? timeStr : @"";
     self.recommendLabel.text = model ? model.desc : @"";
-    self.levelLabel.text = model ? model.level_name : @"";
+    self.levelLabel.text = model ? model.levelName : @"";
     //    NSString * contentStr = [self removeTheHtmlFromString:NotNilAndNull(model.intro)?model.intro:@""];
 //    self.contentLabel.attributedText = [self converattrStringWith:model.intro];
     
@@ -97,8 +97,12 @@
     NSData *data = [html dataUsingEncoding:NSUnicodeStringEncoding];
     NSAttributedString *attriStr = [[NSAttributedString alloc] initWithData:data options:dic documentAttributes:nil error:nil];
     NSString *str = attriStr.string;
+    
+    NSData *data2 = [str dataUsingEncoding:NSUnicodeStringEncoding];
+    NSAttributedString *attriStr2 = [[NSAttributedString alloc] initWithData:data2 options:dic documentAttributes:nil error:nil];
+    NSString *str2 = attriStr2.string;
     //str = [str stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
-    return str;
+    return str2;
     
 }
 

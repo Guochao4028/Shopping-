@@ -22,6 +22,17 @@
     return @{@"order_goods" : @"OrderStoreModel"};
 }
 
+- (BOOL)isRiteGoodsType {
+    BOOL isRite = [self.type isEqualToString:@"5"] || [self.type isEqualToString:@"6"] || [self.type isEqualToString:@"7"] || [self.type isEqualToString:@"8"];
+    return isRite;
+}
+
+
+- (BOOL)isKungfuGoodsType {
+    BOOL isKungfu = [self.type isEqualToString:@"2"] || [self.type isEqualToString:@"3"] || [self.type isEqualToString:@"4"];
+    return isKungfu;
+}
+
 
 
 @end

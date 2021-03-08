@@ -25,12 +25,15 @@
 #import "ZFIJKPlayerManager.h"
 #if __has_include(<ZFPlayer/ZFPlayer.h>)
 #import <ZFPlayer/ZFPlayer.h>
+#import <ZFPlayer/ZFPlayerConst.h>
 #else
 #import "ZFPlayer.h"
+#import "ZFPlayerConst.h"
 #endif
 #if __has_include(<IJKMediaFramework/IJKMediaFramework.h>)
 
 @interface ZFIJKPlayerManager ()
+
 @property (nonatomic, strong) IJKFFMoviePlayerController *player;
 @property (nonatomic, strong) IJKFFOptions *options;
 @property (nonatomic, assign) CGFloat lastVolume;
@@ -99,6 +102,7 @@
         [self prepareToPlay];
     } else {
         [self.player play];
+        if (self.timer) [self.timer setFireDate:[NSDate date]];
         self.player.playbackRate = self.rate;
         _isPlaying = YES;
         self.playState = ZFPlayerPlayStatePlaying;
@@ -106,6 +110,7 @@
 }
 
 - (void)pause {
+    if (self.timer) [self.timer setFireDate:[NSDate distantFuture]];
     [self.player pause];
     _isPlaying = NO;
     self.playState = ZFPlayerPlayStatePaused;
@@ -118,6 +123,7 @@
     self.player = nil;
     _assetURL = nil;
     [self.timer invalidate];
+    self.presentationSize = CGSizeZero;
     self.timer = nil;
     _isPlaying = NO;
     _isPreparedToPlay = NO;
@@ -129,10 +135,12 @@
 }
 
 - (void)replay {
-    @weakify(self)
+    @zf_weakify(self)
     [self seekToTime:0 completionHandler:^(BOOL finished) {
-        @strongify(self)
-        [self play];
+        @zf_strongify(self)
+        if (finished) {
+            [self play];
+        }
     }];
 }
 
@@ -155,11 +163,7 @@
     self.player = [[IJKFFMoviePlayerController alloc] initWithContentURL:self.assetURL withOptions:self.options];
     self.player.shouldAutoplay = self.shouldAutoPlay;
     [self.player prepareToPlay];
-    
-    [self.view insertSubview:self.player.view atIndex:1];
-    self.player.view.frame = self.view.bounds;
-    self.player.view.backgroundColor = [UIColor clearColor];
-    self.player.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    self.view.playerView = self.player.view;
     self.scalingMode = self->_scalingMode;
     [self addPlayerNotificationObservers];
 }
@@ -230,19 +234,19 @@
     int reason = [[[notification userInfo] valueForKey:IJKMPMoviePlayerPlaybackDidFinishReasonUserInfoKey] intValue];
     switch (reason) {
         case IJKMPMovieFinishReasonPlaybackEnded: {
-            ZFPlayerLog(SLLocalizedString(@"playbackStateDidChange: 播放完毕: %d\n"), reason);
+            ZFPlayerLog(@"playbackStateDidChange: 播放完毕: %d\n", reason);
             self.playState = ZFPlayerPlayStatePlayStopped;
             if (self.playerDidToEnd) self.playerDidToEnd(self);
         }
             break;
             
         case IJKMPMovieFinishReasonUserExited: {
-            ZFPlayerLog(SLLocalizedString(@"playbackStateDidChange: 用户退出播放: %d\n"), reason);
+            ZFPlayerLog(@"playbackStateDidChange: 用户退出播放: %d\n", reason);
         }
             break;
             
         case IJKMPMovieFinishReasonPlaybackError: {
-            ZFPlayerLog(SLLocalizedString(@"playbackStateDidChange: 播放出现错误: %d\n"), reason);
+            ZFPlayerLog(@"playbackStateDidChange: 播放出现错误: %d\n", reason);
             self.playState = ZFPlayerPlayStatePlayFailed;
             if (self.playerPlayFailed) self.playerPlayFailed(self, @(reason));
         }
@@ -256,7 +260,7 @@
 
 // 准备开始播放了
 - (void)mediaIsPreparedToPlayDidChange:(NSNotification *)notification {
-    ZFPlayerLog(NSLocalizedString(@"加载状态变成了已经缓存完成，如果设置了自动播放, 会自动播放", nil));
+    ZFPlayerLog(@"加载状态变成了已经缓存完成，如果设置了自动播放, 会自动播放");
     // 视频开始播放的时候开启计时器
     if (!self.timer) {
         self.timer = [NSTimer scheduledTimerWithTimeInterval:self.timeRefreshInterval > 0 ? self.timeRefreshInterval : 0.1 target:self selector:@selector(timerUpdate) userInfo:nil repeats:YES];
@@ -287,19 +291,19 @@
 - (void)loadStateDidChange:(NSNotification*)notification {
     IJKMPMovieLoadState loadState = self.player.loadState;
     if ((loadState & IJKMPMovieLoadStatePlayable)) {
-        ZFPlayerLog(SLLocalizedString(@"加载状态变成了缓存数据足够开始播放，但是视频并没有缓存完全"));
+        ZFPlayerLog(@"加载状态变成了缓存数据足够开始播放，但是视频并没有缓存完全");
         if (self.player.currentPlaybackTime > 0) {
             self.loadState = ZFPlayerLoadStatePlayable;
         }
     } else if ((loadState & IJKMPMovieLoadStatePlaythroughOK)) {
         // 加载完成，即将播放，停止加载的动画，并将其移除
-        ZFPlayerLog(NSLocalizedString(@"加载状态变成了已经缓存完成，如果设置了自动播放, 会自动播放", nil));
+        ZFPlayerLog(@"加载状态变成了已经缓存完成，如果设置了自动播放, 会自动播放");
     } else if ((loadState & IJKMPMovieLoadStateStalled)) {
         // 可能由于网速不好等因素导致了暂停，重新添加加载的动画
-        ZFPlayerLog(SLLocalizedString(@"网速不好等因素导致了暂停"));
+        ZFPlayerLog(@"网速不好等因素导致了暂停");
         self.loadState = ZFPlayerLoadStateStalled;
     } else {
-        ZFPlayerLog(SLLocalizedString(@"加载状态变成了未知状态"));
+        ZFPlayerLog(@"加载状态变成了未知状态");
         self.loadState = ZFPlayerLoadStateUnknown;
     }
 }
@@ -308,38 +312,38 @@
 - (void)moviePlayBackStateDidChange:(NSNotification *)notification {
     switch (self.player.playbackState) {
         case IJKMPMoviePlaybackStateStopped: {
-            ZFPlayerLog(SLLocalizedString(@"播放器的播放状态变了，现在是停止状态 %d: stoped"), (int)_player.playbackState);
+            ZFPlayerLog(@"播放器的播放状态变了，现在是停止状态 %d: stoped", (int)_player.playbackState);
             // 这里的回调也会来多次(一次播放完成, 会回调三次), 所以, 这里不设置
             self.playState = ZFPlayerPlayStatePlayStopped;
         }
             break;
             
         case IJKMPMoviePlaybackStatePlaying: {
-            ZFPlayerLog(SLLocalizedString(@"播放器的播放状态变了，现在是播放状态 %d: playing"), (int)_player.playbackState);
+            ZFPlayerLog(@"播放器的播放状态变了，现在是播放状态 %d: playing", (int)_player.playbackState);
         }
             break;
             
         case IJKMPMoviePlaybackStatePaused: {
-            ZFPlayerLog(SLLocalizedString(@"播放器的播放状态变了，现在是暂停状态 %d: paused"), (int)_player.playbackState);
+            ZFPlayerLog(@"播放器的播放状态变了，现在是暂停状态 %d: paused", (int)_player.playbackState);
         }
             break;
             
         case IJKMPMoviePlaybackStateInterrupted: {
-            ZFPlayerLog(SLLocalizedString(@"播放器的播放状态变了，现在是中断状态 %d: interrupted"), (int)_player.playbackState);
+            ZFPlayerLog(@"播放器的播放状态变了，现在是中断状态 %d: interrupted", (int)_player.playbackState);
         }
             break;
             
         case IJKMPMoviePlaybackStateSeekingForward: {
-            ZFPlayerLog(SLLocalizedString(@"播放器的播放状态变了，现在是向前拖动状态:%d forward"),(int)self.player.playbackState);
+            ZFPlayerLog(@"播放器的播放状态变了，现在是向前拖动状态:%d forward",(int)self.player.playbackState);
         }
             break;
         case IJKMPMoviePlaybackStateSeekingBackward: {
-            ZFPlayerLog(SLLocalizedString(@"放器的播放状态变了，现在是向后拖动状态 %d: backward"), (int)_player.playbackState);
+            ZFPlayerLog(@"放器的播放状态变了，现在是向后拖动状态 %d: backward", (int)_player.playbackState);
         }
             break;
             
         default: {
-            ZFPlayerLog(SLLocalizedString(@"播放器的播放状态变了，现在是未知状态 %d: unknown"), (int)_player.playbackState);
+            ZFPlayerLog(@"播放器的播放状态变了，现在是未知状态 %d: unknown", (int)_player.playbackState);
         }
             break;
     }
@@ -347,7 +351,8 @@
 
 /// 视频的尺寸变化了
 - (void)sizeAvailableChange:(NSNotification *)notify {
-    self->_presentationSize = self.player.naturalSize;
+    self.presentationSize = self.player.naturalSize;
+    self.view.presentationSize = self.presentationSize;
     if (self.presentationSizeChanged) {
         self.presentationSizeChanged(self, self->_presentationSize);
     }
@@ -355,7 +360,7 @@
 
 #pragma mark - getter
 
-- (UIView *)view {
+- (ZFPlayerView *)view {
     if (!_view) {
         _view = [[ZFPlayerView alloc] init];
     }
@@ -416,6 +421,7 @@
 
 - (void)setScalingMode:(ZFPlayerScalingMode)scalingMode {
     _scalingMode = scalingMode;
+    self.view.scalingMode = scalingMode;
     switch (scalingMode) {
         case ZFPlayerScalingModeNone:
             self.player.scalingMode = IJKMPMovieScalingModeNone;

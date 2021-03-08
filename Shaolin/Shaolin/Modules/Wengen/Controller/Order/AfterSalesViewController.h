@@ -10,11 +10,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class  OrderDetailsModel, OrderListModel;
+@class  OrderDetailsGoodsModel;
 
 @interface AfterSalesViewController : RootViewController
 
-@property(nonatomic, strong)OrderDetailsModel *model;
+@property(nonatomic, strong)OrderDetailsGoodsModel *model;
 
 
 @end

@@ -39,7 +39,7 @@ static NSString *const kOrderFillGoodsTableCellIdentifier = @"OrderFillGoodsTabl
 
 @implementation OrderFillContentView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
         [self initUI];
     }
@@ -48,14 +48,14 @@ static NSString *const kOrderFillGoodsTableCellIdentifier = @"OrderFillGoodsTabl
 
 #pragma mark - methods
 
--(void)initUI{
+- (void)initUI{
     [self setBackgroundColor:[UIColor clearColor]];
     [self addSubview:self.tabelView];
 }
 
 #pragma mark - action
 
--(void)invoiceViewAction{
+- (void)invoiceViewAction{
     
     if ([self.delegate respondsToSelector:@selector(orderFillContentView:tapInvoiceView:)] == YES) {
         [self.delegate orderFillContentView:self tapInvoiceView:YES];
@@ -63,7 +63,7 @@ static NSString *const kOrderFillGoodsTableCellIdentifier = @"OrderFillGoodsTabl
     
 }
 
--(void)headViewTapAction{
+- (void)headViewTapAction{
     if ([self.delegate respondsToSelector:@selector(orderFillContentView:tapAddressView:)] == YES) {
         [self.delegate orderFillContentView:self tapAddressView:YES];
     }
@@ -71,20 +71,20 @@ static NSString *const kOrderFillGoodsTableCellIdentifier = @"OrderFillGoodsTabl
 
 #pragma mark - UITableViewDelegate & UITableViewDataSource
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return self.dataArray.count;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     return 90;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     
     return 44;
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     static NSString *hIdentifier = @"hIdentifier";
     
     UITableViewHeaderFooterView *view= [tableView dequeueReusableHeaderFooterViewWithIdentifier:hIdentifier];
@@ -102,7 +102,7 @@ static NSString *const kOrderFillGoodsTableCellIdentifier = @"OrderFillGoodsTabl
     return view;
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
     
 //    UIView *view = [[UIView alloc] init];
 //    view.backgroundColor = KTextGray_FA;
@@ -124,18 +124,18 @@ static NSString *const kOrderFillGoodsTableCellIdentifier = @"OrderFillGoodsTabl
     return view;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     NSDictionary *dic = [self.dataArray objectAtIndex:section];
     NSArray *goodsArray = dic[@"goods"];
     return goodsArray.count;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     return 130;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
    
     OrderFillGoodsTableCell *orderFillGoodsCell = [tableView dequeueReusableCellWithIdentifier:kOrderFillGoodsTableCellIdentifier];
     
@@ -151,7 +151,7 @@ static NSString *const kOrderFillGoodsTableCellIdentifier = @"OrderFillGoodsTabl
 }
 
 #pragma mark - OrderFillGoodsTableCellDelegate
--(void)orderFillGoodsTableCell:(OrderFillGoodsTableCell *)cellView calculateCount:(NSInteger)count model:(ShoppingCartGoodsModel *)model{
+- (void)orderFillGoodsTableCell:(OrderFillGoodsTableCell *)cellView calculateCount:(NSInteger)count model:(ShoppingCartGoodsModel *)model{
     if ([self.delegate respondsToSelector:@selector(orderFillContentView:calculateCount:model:)] == YES) {
         [self.delegate orderFillContentView:self calculateCount:count model:model];
     }
@@ -159,7 +159,7 @@ static NSString *const kOrderFillGoodsTableCellIdentifier = @"OrderFillGoodsTabl
 
 
 #pragma mark - getter / setter
--(UITableView *)tabelView{
+- (UITableView *)tabelView{
     
     if (_tabelView == nil) {
         _tabelView = [[UITableView alloc]initWithFrame:self.bounds style:UITableViewStyleGrouped];
@@ -176,7 +176,7 @@ static NSString *const kOrderFillGoodsTableCellIdentifier = @"OrderFillGoodsTabl
 
 }
 
--(OrderFillContentTableHeadView *)tabelHeadView{
+- (OrderFillContentTableHeadView *)tabelHeadView{
     if (_tabelHeadView == nil) {
         _tabelHeadView = [[OrderFillContentTableHeadView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, 104)];
         [_tabelHeadView orderFillContentTableHeadTarget:self action:@selector(headViewTapAction)];
@@ -184,7 +184,7 @@ static NSString *const kOrderFillGoodsTableCellIdentifier = @"OrderFillGoodsTabl
     return _tabelHeadView;
 }
 
--(OrderFillContentTableFooterView *)tabelFooterView{
+- (OrderFillContentTableFooterView *)tabelFooterView{
     
     if (_tabelFooterView == nil) {
         _tabelFooterView = [[OrderFillContentTableFooterView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, 117)];
@@ -194,12 +194,12 @@ static NSString *const kOrderFillGoodsTableCellIdentifier = @"OrderFillGoodsTabl
 
 }
 
--(void)setDataArray:(NSArray *)dataArray{
+- (void)setDataArray:(NSArray *)dataArray{
     _dataArray = dataArray;
     [self.tabelView reloadData];
 }
 
--(void)setAddressListModel:(AddressListModel *)addressListModel{
+- (void)setAddressListModel:(AddressListModel *)addressListModel{
     _addressListModel = addressListModel;
     self.tabelHeadView.mj_h = 82 +[UILabel  getLabelHeightWithText:addressListModel.address width:(ScreenWidth - 40) font:kMediumFont(16)] +1;
     [self.tabelHeadView setAddressListModel:addressListModel];
@@ -207,18 +207,21 @@ static NSString *const kOrderFillGoodsTableCellIdentifier = @"OrderFillGoodsTabl
     [self.tabelView reloadData];
 }
 
--(void)setGoodsAmountTotal:(NSString *)goodsAmountTotal{
+- (void)setGoodsAmountTotal:(NSString *)goodsAmountTotal{
     [self.tabelFooterView setGoodsAmountTotal:goodsAmountTotal];
 }
 
--(void)setFreightTotal:(NSString *)freightTotal{
+- (void)setFreightTotal:(NSString *)freightTotal{
     
     [self.tabelFooterView setFreightTotal:freightTotal];
 }
 
--(void)setInvoiceContent:(NSString *)invoiceContent{
+- (void)setInvoiceContent:(NSString *)invoiceContent{
     [self.tabelFooterView setInvoiceContent:invoiceContent];
 }
 
+-(void)setIsHiddenInvoice:(BOOL)isHiddenInvoice{
+    [self.tabelFooterView setIsHiddenInvoiceView:isHiddenInvoice];
+}
 
 @end

@@ -21,7 +21,7 @@
 
 @implementation OrderFillContentTableFooterView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [[NSBundle mainBundle] loadNibNamed:@"OrderFillContentTableFooterView" owner:self options:nil];
@@ -31,48 +31,48 @@
 }
 
 /// 初始化UI
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.contentView];
     [self.contentView setFrame:self.bounds];
 }
 
 /// 重写系统方法
--(void)setFrame:(CGRect)frame{
+- (void)setFrame:(CGRect)frame{
     [super setFrame:frame];
     [self.contentView setFrame:self.bounds];
 }
 
--(void)invoiceTarget:(id)target action:(SEL)action{
+- (void)invoiceTarget:(id)target action:(SEL)action{
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:target action:action];
     [self.invoiceView addGestureRecognizer:tap];
 }
 
 #pragma mark - setter / getter
 
--(void)setGoodsAmountTotal:(NSString *)goodsAmountTotal{
+- (void)setGoodsAmountTotal:(NSString *)goodsAmountTotal{
     
     [self.goodsAmountTotalLabel setText:goodsAmountTotal];
 }
 
--(void)setFreightTotal:(NSString *)freightTotal{
+- (void)setFreightTotal:(NSString *)freightTotal{
     //总运费
     float  freightTotalFloat = [freightTotal floatValue];
     [self.freightTotalLabel setText:[NSString stringWithFormat:@"¥%.2f", freightTotalFloat]];
 }
 
 
--(void)setInvoiceContent:(NSString *)invoiceContent{
+- (void)setInvoiceContent:(NSString *)invoiceContent{
     [self.invoiceLabel setText:invoiceContent];
 }
 
--(void)setIsHiddenFreeView:(BOOL)isHiddenFreeView{
+- (void)setIsHiddenFreeView:(BOOL)isHiddenFreeView{
     _isHiddenFreeView = isHiddenFreeView;
     if (isHiddenFreeView) {
         [self.freeView setHidden:isHiddenFreeView];
     }
 }
 
--(void)setIsHiddenInvoiceView:(BOOL)isHiddenInvoiceView{
+- (void)setIsHiddenInvoiceView:(BOOL)isHiddenInvoiceView{
     if (isHiddenInvoiceView) {
         [self.invoiceView setHidden:isHiddenInvoiceView];
     }

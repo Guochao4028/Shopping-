@@ -12,6 +12,8 @@
 
 #import "OrderDetailsModel.h"
 
+#import "OrderDetailsNewModel.h"
+
 
 @interface CancelOrdersView ()<UITableViewDelegate, UITableViewDataSource>
 //单元格内容
@@ -31,7 +33,7 @@
 
 @implementation CancelOrdersView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     
     if (self =[super initWithFrame:frame]) {
         [self initData];
@@ -41,7 +43,7 @@
     return self;
 }
 
--(instancetype)initWithFrame:(CGRect)frame reasonList:(NSArray *)list {
+- (instancetype)initWithFrame:(CGRect)frame reasonList:(NSArray *)list {
     if (self =[super initWithFrame:frame]) {
         [self initDataWithList:list];
         [self initUI];
@@ -51,7 +53,7 @@
 }
 
 #pragma mark - methods
--(void)initDataWithList:(NSArray *)list {
+- (void)initDataWithList:(NSArray *)list {
     NSArray *tempArray = list;
     
     NSMutableArray *array = [NSMutableArray array];
@@ -65,7 +67,7 @@
     
     self.cellArr = [NSArray arrayWithArray:array];
 }
--(void)initData{
+- (void)initData{
     
    NSArray *tempArray = @[
         @{@"title":SLLocalizedString(@"商品无货"), @"isSelect":@"0"},
@@ -88,7 +90,7 @@
     
 }
 
--(void)initUI{
+- (void)initUI{
     [self setBackgroundColor:[UIColor colorWithWhite:0 alpha:0.6]];
     
     [self addSubview:self.contentView];
@@ -98,7 +100,7 @@
     [self.contentView addSubview:self.determineButton];
 }
 
--(void)disappear{
+- (void)disappear{
     [UIView animateWithDuration:0.3 animations:^{
         self.alpha = 0;
     } completion:^(BOOL finished) {
@@ -108,11 +110,11 @@
 }
 
 #pragma mark - Action
--(void)closeAction{
+- (void)closeAction{
     [self disappear];
 }
 
--(void)determineAction{
+- (void)determineAction{
     if (self.selectedBlock) {
         self.selectedBlock(self.cellStr);
     }
@@ -120,32 +122,32 @@
 
 #pragma mark - UITableViewDelegate && UITableViewDataSource
 
--(CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     return 0.01;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     return 0.01;
 }
 
--(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
     return [UIView new];
 }
 
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     return [UIView new];
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.cellArr.count;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     return 44;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     CancelOrdersItemTableViewCell *itemCell = [tableView dequeueReusableCellWithIdentifier:@"CancelOrdersItemTableViewCell"];
     [itemCell setModel:self.cellArr[indexPath.row]];
@@ -155,7 +157,7 @@
     return itemCell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [self.determineButton setAlpha:1];
     [self.determineButton setEnabled:YES];
     for (int i = 0; i < self.cellArr.count; i++) {
@@ -173,7 +175,7 @@
 
 #pragma mark - getter / setter
 
--(UIView *)contentView{
+- (UIView *)contentView{
     
     if (_contentView == nil) {
         _contentView = [[UIView alloc]initWithFrame:CGRectMake(0, ScreenHeight - 500, ScreenWidth, 500)];
@@ -183,7 +185,7 @@
     return _contentView;
 }
 
--(UIView *)titleView{
+- (UIView *)titleView{
     if (_titleView == nil) {
         _titleView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, 90)];
         
@@ -217,7 +219,7 @@
 
 }
 
--(UIButton *)determineButton{
+- (UIButton *)determineButton{
     
     if (_determineButton == nil) {
         _determineButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -241,7 +243,7 @@
 
 }
 
--(UITableView *)tableView{
+- (UITableView *)tableView{
     if (_tableView == nil) {
         
         CGFloat y = CGRectGetMaxY(self.titleView.frame) +10;
@@ -260,12 +262,12 @@
     return _tableView;
 }
 
--(void)setTitleStr:(NSString *)titleStr{
+- (void)setTitleStr:(NSString *)titleStr{
     _titleStr = titleStr;
     [self.titleLabel setText:titleStr];
 }
 
--(void)setIsHiddenSubtitle:(BOOL)isHiddenSubtitle{
+- (void)setIsHiddenSubtitle:(BOOL)isHiddenSubtitle{
     _isHiddenSubtitle = isHiddenSubtitle;
     if (_isHiddenSubtitle == YES) {
         [self.promptLabel setHidden:YES];
@@ -274,7 +276,7 @@
     }
 }
 
--(void)setDetailsModel:(OrderDetailsModel *)detailsModel{
+- (void)setDetailsModel:(OrderDetailsNewModel *)detailsModel{
     _detailsModel = detailsModel;
     NSString *status = detailsModel.status;
     if ([status isEqualToString:@"2"] == YES){
@@ -286,7 +288,7 @@
     
     
     
--(void)setIsFromKungfuOrder:(BOOL)isFromKungfuOrder{
+- (void)setIsFromKungfuOrder:(BOOL)isFromKungfuOrder{
     _isFromKungfuOrder = isFromKungfuOrder;
     if (isFromKungfuOrder) {
         CGFloat y = CGRectGetMaxY(self.contentView.bounds) - 40 - 60;

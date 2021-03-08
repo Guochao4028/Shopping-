@@ -48,12 +48,12 @@
     
     WEAKSELF
     [[ThirdpartyAuthorizationManager sharedInstance] receiveCompletionBlock:^(ThirdpartyAuthorizationMessageCode code, Message * _Nonnull message) {
-        if (code == ThirdpartyAuthorizationCode_AuthorizationSuccess) {
+        if (code == ThirdpartyAuthorizationCodeSuccess) {
             NSDictionary *dict = message.extensionDic;
             NSString *code = [dict objectForKey:ThirdpartyCode];
             NSString *type = [dict objectForKey:ThirdpartyType];
             [weakSelf otherBind:code type:type success:^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"MeViewController_ReloadUserData" object:nil];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"MeViewControllerDidReloadUserDataNotification" object:nil];
                 [weakSelf reloadThirdpartyTypeButton:type bindStatus:YES];
             } failure:nil];
         } else {

@@ -10,13 +10,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OrderDetailsModel;
+@class OrderDetailsNewModel;
 
 @interface OdersDetailsTableViewCell : UITableViewCell
 
 @property(nonatomic, assign)OrderDetailsType orderDetailsType;
 
-@property(nonatomic, strong)OrderDetailsModel *model;
+@property(nonatomic, strong)OrderDetailsNewModel *model;
 
 
 @end

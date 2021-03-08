@@ -19,28 +19,28 @@
 + (AppDelegate *)shareAppDelegate;
 
 //初始化 window
--(void)initWindow;
+- (void)initWindow;
 
 //初始化网络
--(void)initNetWork;
+- (void)initNetWork;
 
 //初始化监听
--(void)initObserver;
+- (void)initObserver;
 
 // 初始化启动图、广告页等
--(void)initLaunchView;
+- (void)initLaunchView;
 
 //获取本地存储的用户信息
--(void) initUserInfo;
+- (void) initUserInfo;
 
 //获取收货地址和订单信息
--(void)initAddressAndOrderData;
+- (void)initAddressAndOrderData;
 
 //环信相关
 - (void)initEasemob;
 
 //初始化三方SDK
--(void)initThirdSDK;
+- (void)initThirdSDK;
 
 //检查版本更新, showView:是否在有新版本并且处在不强制不弹窗的情况下显示界面
 - (void)checkAppVersion:(BOOL)showView completion:(void(^)(BOOL hasUpdate))completion;
@@ -66,8 +66,8 @@
 /**
  当前顶层控制器
  */
--(UIViewController*) getCurrentVC;
--(UIViewController*) getCurrentUIVC;
+- (UIViewController*) getCurrentVC;
+- (UIViewController*) getCurrentUIVC;
 
 - (void)pushLoginVC;
 - (void)enterRootViewVC;

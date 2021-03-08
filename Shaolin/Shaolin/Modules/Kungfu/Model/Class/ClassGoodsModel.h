@@ -15,14 +15,14 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *classGoodsId;
 @property (nonatomic, copy) NSString *classGoodsName;
 @property (nonatomic, copy) NSString *video;
-@property (nonatomic, copy) NSString *update_time;
+@property (nonatomic, copy) NSString *updateTime;
 /**观看时长*/
 @property (nonatomic, copy) NSString *value;
 @property (nonatomic, copy) NSString *image;
 /**是否可以试看 0：不能试看  1：可以试看*/
-@property (nonatomic, copy) NSString *try_watch;
+@property (nonatomic, copy) NSString *tryLook;
 
-@property (nonatomic, copy) NSString *video_id;
+@property (nonatomic, copy) NSString *attrId;
 
 @end
 

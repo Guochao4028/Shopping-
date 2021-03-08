@@ -66,7 +66,7 @@ static NSString *const kDefaultAddressTableCellIdentifier = @"DefaultAddressTabl
 
 @implementation CreateAddressView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [self initData];
@@ -76,12 +76,12 @@ static NSString *const kDefaultAddressTableCellIdentifier = @"DefaultAddressTabl
 }
 
 #pragma mark - methods
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.tableView];
     [self addSubview:self.saveButton];
 }
 
--(void)initData{
+- (void)initData{
     NSArray *cellContentArray = @[
         @{@"title":SLLocalizedString(@"收货人"),@"content":SLLocalizedString(@"请填写收货人姓名"), @"isMore":@"0", @"isNumber":@"0", @"txt":@""},
   @{@"title":SLLocalizedString(@"手机号"),@"content":SLLocalizedString(@"请填写收货人手机号"), @"isMore":@"0", @"isNumber":@"1", @"txt":@""},
@@ -162,7 +162,7 @@ static NSString *const kDefaultAddressTableCellIdentifier = @"DefaultAddressTabl
 }
 
 #pragma mark - action
--(void)tapSave{
+- (void)tapSave{
     [self endEditing:YES];
     NSMutableDictionary *dic = [NSMutableDictionary dictionary];
     
@@ -204,32 +204,32 @@ static NSString *const kDefaultAddressTableCellIdentifier = @"DefaultAddressTabl
         }
     }
 
-    if (self.country_id != nil) {
-       [dic setValue:self.country_id forKey:@"country_id"];
+    if (self.country_id != nil && self.country_id.length > 0 && [self.country_id isEqualToString:@"0"] == NO) {
+       [dic setValue:self.country_id forKey:@"countryId"];
     }
     
-    if (self.province_id != nil) {
-       [dic setValue:self.province_id forKey:@"province_id"];
+    if (self.province_id != nil && self.province_id.length > 0 && [self.province_id isEqualToString:@"0"] == NO) {
+       [dic setValue:self.province_id forKey:@"provinceId"];
     }
     
-    if (self.city_id != nil) {
-       [dic setValue:self.city_id forKey:@"city_id"];
+    if (self.city_id != nil && self.city_id.length > 0 && [self.city_id isEqualToString:@"0"] == NO) {
+       [dic setValue:self.city_id forKey:@"cityId"];
     }
     
-    if (self.area_id != nil) {
-       [dic setValue:self.area_id forKey:@"re_id"];
+    if (self.area_id != nil && self.area_id.length > 0 && [self.area_id isEqualToString:@"0"] == NO) {
+       [dic setValue:self.area_id forKey:@"reId"];
     }
     
     if (self.country_s != nil) {
-       [dic setValue:self.country_s forKey:@"country_s"];
+       [dic setValue:self.country_s forKey:@"countryS"];
     }
     
     if (self.province_s != nil) {
-       [dic setValue:self.province_s forKey:@"province_s"];
+       [dic setValue:self.province_s forKey:@"provinceS"];
     }
     
     if (self.city_s != nil) {
-          [dic setValue:self.city_s forKey:@"city_s"];
+          [dic setValue:self.city_s forKey:@"cityS"];
        }
     
     
@@ -272,7 +272,7 @@ static NSString *const kDefaultAddressTableCellIdentifier = @"DefaultAddressTabl
 
 #pragma mark - UITableViewDelegate && UITableViewDataSource
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return 2;
 }
 
@@ -285,7 +285,7 @@ static NSString *const kDefaultAddressTableCellIdentifier = @"DefaultAddressTabl
     }
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     
     if (section == 0) {
         return 10;
@@ -293,23 +293,23 @@ static NSString *const kDefaultAddressTableCellIdentifier = @"DefaultAddressTabl
     return 0.01;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     return 0.01;
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     UIView *view = [[UIView alloc] init];
     view.backgroundColor = [UIColor clearColor];
     return view;
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
     UIView *view = [[UIView alloc] init];
     view.backgroundColor = KTextGray_FA;
     return view;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     CGFloat tableViewH = 0;
     if (indexPath.section == 0) {
         tableViewH = 50;
@@ -354,7 +354,7 @@ static NSString *const kDefaultAddressTableCellIdentifier = @"DefaultAddressTabl
 }
 
 #pragma mark -  CreateAddressTableViewCellDelegate
--(void)createAddressCell:(CreateAddressTableViewCell *)cell tap:(BOOL)istap{
+- (void)createAddressCell:(CreateAddressTableViewCell *)cell tap:(BOOL)istap{
     [self endEditing:YES];
     self.temCell = cell;
     if (self.isAgainOpen == NO) {
@@ -504,7 +504,7 @@ static NSString *const kDefaultAddressTableCellIdentifier = @"DefaultAddressTabl
 
 #pragma mark - getter / setter
 
--(UITableView *)tableView{
+- (UITableView *)tableView{
     
     if (_tableView == nil) {
         _tableView = [[UITableView alloc]initWithFrame:self.bounds];
@@ -529,7 +529,7 @@ static NSString *const kDefaultAddressTableCellIdentifier = @"DefaultAddressTabl
     
 }
 
--(UIButton *)saveButton{
+- (UIButton *)saveButton{
     
     if (_saveButton == nil) {
         _saveButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -550,7 +550,7 @@ static NSString *const kDefaultAddressTableCellIdentifier = @"DefaultAddressTabl
 
 }
 
--(AreaView *)areaView{
+- (AreaView *)areaView{
     
     if (_areaView == nil) {
         _areaView = [[AreaView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
@@ -563,26 +563,26 @@ static NSString *const kDefaultAddressTableCellIdentifier = @"DefaultAddressTabl
 
 }
 
--(void)setAddressListModel:(AddressListModel *)addressListModel{
+- (void)setAddressListModel:(AddressListModel *)addressListModel{
     _addressListModel = addressListModel;
     
     
     if (addressListModel != nil) {
         NSMutableString *addressStr = [NSMutableString string];
            
-           if (addressListModel.country_s != nil) {
-              [addressStr appendString:addressListModel.country_s];
+           if (addressListModel.countryS != nil) {
+              [addressStr appendString:addressListModel.countryS];
            }
            
-           if (addressListModel.province_s != nil) {
-              [addressStr appendString:[NSString stringWithFormat:@" %@", addressListModel.province_s]];
+           if (addressListModel.provinceS != nil) {
+              [addressStr appendString:[NSString stringWithFormat:@" %@", addressListModel.provinceS]];
            }
            
-           if (addressListModel.city_s != nil) {
-              [addressStr appendString:[NSString stringWithFormat:@" %@",addressListModel.city_s]];
+           if (addressListModel.cityS != nil) {
+              [addressStr appendString:[NSString stringWithFormat:@" %@",addressListModel.cityS]];
            }
-           if (addressListModel.re_s != nil) {
-               [addressStr appendString:[NSString stringWithFormat:@" %@",addressListModel.re_s]];
+           if (addressListModel.reS != nil) {
+               [addressStr appendString:[NSString stringWithFormat:@" %@",addressListModel.reS]];
            }
            
            
@@ -613,19 +613,19 @@ static NSString *const kDefaultAddressTableCellIdentifier = @"DefaultAddressTabl
             }
         }
         
-        self.country_id = addressListModel.country_id;
-        self.province_id = addressListModel.province_id;
-        self.city_id = addressListModel.city_id;
-        self.area_id = addressListModel.re_id;
+        self.country_id = addressListModel.countryId;
+        self.province_id = addressListModel.provinceId;
+        self.city_id = addressListModel.cityId;
+        self.area_id = addressListModel.reId;
         
             
-            self.country_s = addressListModel.country_s;
+            self.country_s = addressListModel.countryS;
             
-            self.province_s = addressListModel.province_s;
+            self.province_s = addressListModel.provinceS;
             
-            self.city_s = addressListModel.city_s;
+            self.city_s = addressListModel.cityS;
             
-            self.area_s = addressListModel.re_s;
+            self.area_s = addressListModel.reS;
         
         self.isDefault = [addressListModel.status boolValue];
            
@@ -633,7 +633,7 @@ static NSString *const kDefaultAddressTableCellIdentifier = @"DefaultAddressTabl
     }
 }
 
--(void)setIsEnabled:(BOOL)isEnabled{
+- (void)setIsEnabled:(BOOL)isEnabled{
     _isEnabled = isEnabled;
     [self.saveButton setEnabled:isEnabled];
 }

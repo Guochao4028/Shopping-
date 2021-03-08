@@ -15,9 +15,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, weak)id<SearchNavgationViewDelegate> delegate;
 
--(void)becomeFirstResponder;
+- (void)becomeFirstResponder;
 
--(void)resignFirstResponder;
+- (void)resignFirstResponder;
 
 @property(nonatomic, copy)NSString *titleStr;
 
@@ -27,9 +27,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @optional
 
--(void)tapBack;
+- (void)tapBack;
 
--(void)searchNavgationView:(SearchNavgationView *)navgationView searchWord:(NSString *)text;
+- (void)searchNavgationView:(SearchNavgationView *)navgationView searchWord:(NSString *)text;
 
 
 

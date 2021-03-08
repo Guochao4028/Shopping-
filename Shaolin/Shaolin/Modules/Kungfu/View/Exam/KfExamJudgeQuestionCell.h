@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface KfExamJudgeQuestionCell : UITableViewCell
 
 
--(void) updateWithQuestion:(QuestionModel *)question answerDic:(NSMutableDictionary *)answerDic examModel:(ExamDetailModel *)examModel cellTag:(NSInteger)cellTag;
+- (void) updateWithQuestion:(QuestionModel *)question answerDic:(NSMutableDictionary *)answerDic examModel:(ExamDetailModel *)examModel cellTag:(NSInteger)cellTag;
 
 
 +(instancetype)xibRegistrationCell;

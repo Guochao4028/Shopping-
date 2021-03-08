@@ -21,7 +21,7 @@
 
 @implementation StoreCollectionReusableView
 
--(id)initWithFrame:(CGRect)frame{
+- (id)initWithFrame:(CGRect)frame{
     
     self=[super initWithFrame:frame];
     
@@ -35,14 +35,14 @@
     
 }
 
--(void)initUI{
+- (void)initUI{
     
     [self addSubview:self.menuView];
 }
 
 
 #pragma mark - action
--(void)tuijian{
+- (void)tuijian{
     NSLog(@"%s", __func__);
     [self.menuView.tuijianButton setTitleColor:kMainYellow forState:UIControlStateNormal];
     
@@ -62,7 +62,7 @@
     }
 }
 
--(void)xiaoliang{
+- (void)xiaoliang{
     NSLog(@"%s", __func__);
     [self.menuView.tuijianButton setTitleColor:KTextGray_333 forState:UIControlStateNormal];
     
@@ -82,7 +82,7 @@
     }
 }
 
--(void)jiage{
+- (void)jiage{
     NSLog(@"%s", __func__);
     [self.menuView.tuijianButton setTitleColor:KTextGray_333 forState:UIControlStateNormal];
     
@@ -113,7 +113,7 @@
     
 }
 
--(void)zhijian{
+- (void)zhijian{
     NSLog(@"%s", __func__);
     [self.menuView.tuijianButton setTitleColor:KTextGray_333 forState:UIControlStateNormal];
     
@@ -133,7 +133,7 @@
     }
 }
 
--(void)qiehuan{
+- (void)qiehuan{
     [self.menuView.qiehuanButton setSelected:!self.menuView.qiehuanButton.isSelected];
     
     if ([self.delegagte respondsToSelector:@selector(collectionReusableView:tapGrid:)] == YES) {
@@ -144,7 +144,7 @@
 
 #pragma mark - getter
 
--(StoreMenuView *)menuView{
+- (StoreMenuView *)menuView{
     
     if (_menuView == nil) {
         _menuView = [[StoreMenuView alloc]initWithFrame:self.bounds];
@@ -158,7 +158,7 @@
     return _menuView;
 }
 
--(void)setIsHasDefault:(BOOL)isHasDefault{
+- (void)setIsHasDefault:(BOOL)isHasDefault{
     
     _isHasDefault = isHasDefault;
     

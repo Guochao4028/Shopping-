@@ -15,7 +15,7 @@
 
 @implementation KfSearchBarView
 
--(void)awakeFromNib {
+- (void)awakeFromNib {
     [super awakeFromNib];
     
     [self.searchTF setDelegate:self];
@@ -41,7 +41,7 @@
     }
 }
 
--(BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
     if (self.tfBeginEditing) {
         self.tfBeginEditing();
     }
@@ -49,7 +49,7 @@
 }
 
 
--(BOOL)textFieldShouldReturn:(UITextField *)textField{
+- (BOOL)textFieldShouldReturn:(UITextField *)textField{
     
     if (self.searchHandle) {
         self.searchHandle(self.searchTF.text);
@@ -65,7 +65,7 @@
     return YES;
 }
 
-//-(void)setSearchType:(KfSearchType)searchType {
+//- (void)setSearchType:(KfSearchType)searchType {
 //    _searchType = searchType;
 //}
 

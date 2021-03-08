@@ -29,7 +29,7 @@
 }
 
 
--(void)setIsOpen:(BOOL)isOpen{
+- (void)setIsOpen:(BOOL)isOpen{
     [self.defaultSwitch setOn:isOpen];
 }
 

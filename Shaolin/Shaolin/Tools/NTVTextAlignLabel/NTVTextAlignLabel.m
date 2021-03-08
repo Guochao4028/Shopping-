@@ -10,17 +10,17 @@
 
 @implementation NTVTextAlignLabel
 @synthesize ntvTextAlignment = _ntvTextAlignment;
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
             self.ntvTextAlignment = NTVTextAlignmentMiddle;
     }
     return self;
 }
--(void)setNtvTextAlignment:(NTVTextAlignment)ntvTextAlignment{
+- (void)setNtvTextAlignment:(NTVTextAlignment)ntvTextAlignment{
     _ntvTextAlignment = ntvTextAlignment;
     [self setNeedsDisplay];
 }
--(CGRect)textRectForBounds:(CGRect)bounds limitedToNumberOfLines:(NSInteger)numberOfLines{
+- (CGRect)textRectForBounds:(CGRect)bounds limitedToNumberOfLines:(NSInteger)numberOfLines{
     CGRect textRect = [super textRectForBounds:bounds limitedToNumberOfLines:numberOfLines];
     switch (self.ntvTextAlignment) {
         case NTVTextAlignmentMiddle:
@@ -52,7 +52,7 @@
     return textRect;
 }
 
--(void)drawTextInRect:(CGRect)rect{
+- (void)drawTextInRect:(CGRect)rect{
     CGRect actualRect = [self textRectForBounds:rect limitedToNumberOfLines:self.numberOfLines];
     [super drawTextInRect:actualRect];
 }

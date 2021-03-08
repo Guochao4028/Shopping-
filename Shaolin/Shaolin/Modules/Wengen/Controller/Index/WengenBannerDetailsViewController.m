@@ -38,24 +38,31 @@
     [self initUI];
 }
 
--(void)initData{
+- (void)initData{
 
     
     self.pageNumber = 1;
     
+    MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
+    
     NSMutableDictionary *param = [NSMutableDictionary dictionary];
     
-    [param setValue:[NSString stringWithFormat:@"%ld", self.pageNumber] forKey:@"page"];
-    
+    [param setValue:[NSString stringWithFormat:@"%ld", self.pageNumber] forKey:@"pageNum"];
+    [param setValue:@"10"forKey:@"pageSize"];
     if ([self.type isEqualToString:@"Recommend"] == YES) {
-
+        
+//        [param setValue:@"1" forKey:@"isNew"];
+        
         [[DataManager shareInstance]getRecommendGoods:param Callback:^(NSArray *result) {
+            [hud hideAnimated:YES];
             [self.dataArray addObjectsFromArray:result];
             [self.collectionView reloadData];
             [self.collectionView.mj_footer setHidden:NO];
         }];
     }else{
+//        [param setValue:@"1" forKey:@"isDelicate"];
         [[DataManager shareInstance]getStrictSelectionGoods:param Callback:^(NSArray *result) {
+            [hud hideAnimated:YES];
             [self.dataArray addObjectsFromArray:result];;
             [self.collectionView reloadData];
             [self.collectionView.mj_footer setHidden:NO];
@@ -63,7 +70,7 @@
     }
 }
 
--(void)initUI{
+- (void)initUI{
     [self.view addSubview:self.collectionView];
     
     [self.collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -77,18 +84,20 @@
 }
 
 //刷新
--(void)updata{
+- (void)updata{
     self.pageNumber = 1;
     
     [self.dataArray removeAllObjects];
     
     NSMutableDictionary *param = [NSMutableDictionary dictionary];
     
-    [param setValue:[NSString stringWithFormat:@"%ld", self.pageNumber] forKey:@"page"];
+    [param setValue:[NSString stringWithFormat:@"%ld", self.pageNumber] forKey:@"pageNum"];
+    [param setValue:@"10"forKey:@"pageSize"];
     
     [self.collectionView.mj_footer resetNoMoreData];
     
     if ([self.type isEqualToString:@"Recommend"] == YES) {
+//        [param setValue:@"1" forKey:@"isNew"];
 
         [[DataManager shareInstance]getRecommendGoods:param Callback:^(NSArray *result) {
             
@@ -98,6 +107,7 @@
         }];
         
     }else{
+//        [param setValue:@"1" forKey:@"isDelicate"];
         [[DataManager shareInstance]getStrictSelectionGoods:param Callback:^(NSArray *result) {
             [self.dataArray addObjectsFromArray:result];
             [self.collectionView.mj_header endRefreshing];
@@ -108,14 +118,15 @@
 }
 
 //加载更多
--(void)loadMoreData{
+- (void)loadMoreData{
     self.pageNumber ++;
     NSMutableDictionary *param = [NSMutableDictionary dictionary];
     
-    [param setValue:[NSString stringWithFormat:@"%ld", self.pageNumber] forKey:@"page"];
+    [param setValue:[NSString stringWithFormat:@"%ld", self.pageNumber] forKey:@"pageNum"];
+    [param setValue:@"10"forKey:@"pageSize"];
     
     if ([self.type isEqualToString:@"Recommend"] == YES) {
-
+//        [param setValue:@"1" forKey:@"isNew"];
         [[DataManager shareInstance]getRecommendGoods:param Callback:^(NSArray *result) {
             
             [self.dataArray addObjectsFromArray:result];
@@ -129,6 +140,7 @@
         }];
         
     }else{
+//        [param setValue:@"1" forKey:@"isDelicate"];
         [[DataManager shareInstance]getStrictSelectionGoods:param Callback:^(NSArray *result) {
             [self.dataArray addObjectsFromArray:result];
             [self.collectionView.mj_footer endRefreshing];
@@ -145,20 +157,20 @@
 
 #pragma mark - UICollectionViewDelegate && UICollectionViewDataSource
 
--(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
     
     return self.dataArray.count;
 }
 
 
--(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     WengenGoodsCollectionCell * cell  = [collectionView dequeueReusableCellWithReuseIdentifier:@"WengenGoodsCollectionCell" forIndexPath:indexPath];
     cell.model = [self.dataArray objectAtIndex:indexPath.row];
     
     return cell;
 }
 
--(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     
     WengenGoodsModel *model = [self.dataArray objectAtIndex:indexPath.row];
     
@@ -178,7 +190,7 @@
 }
 
 #pragma mark - setter / getgter
--(UICollectionView *)collectionView{
+- (UICollectionView *)collectionView{
     
     if (_collectionView == nil) {
 
@@ -206,7 +218,7 @@
 
 }
 
--(NSMutableArray *)dataArray{
+- (NSMutableArray *)dataArray{
     if (_dataArray == nil) {
         _dataArray = [NSMutableArray array];
     }

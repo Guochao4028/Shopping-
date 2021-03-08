@@ -17,9 +17,9 @@ NS_ASSUME_NONNULL_BEGIN
 @interface HomeManager : NSObject
 + (instancetype)sharedInstance;
 // 发现首页列表
-//-(void)getHomeListFieldld:(NSString *)field PageNum:(NSString *)page PageSize:(NSString *)pageSize Success:(void (^)(NSURLSessionDataTask * task, id responseObject))success failure:(void (^)(NSURLSessionDataTask * task, NSError * error))failure;
+//- (void)getHomeListFieldld:(NSString *)field PageNum:(NSString *)page PageSize:(NSString *)pageSize Success:(void (^)(NSURLSessionDataTask * task, id responseObject))success failure:(void (^)(NSURLSessionDataTask * task, NSError * error))failure;
 
--(void)getHomeListFieldld:(NSString *)field
+- (void)getHomeListFieldld:(NSString *)field
                   PageNum:(NSString *)page
                  PageSize:(NSString *)pageSize
                   Success:(SLSuccessDicBlock)success
@@ -28,8 +28,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 // 发现的标签栏
-//-(void)getHomeSegmentFieldldSuccess:(void (^)(NSURLSessionDataTask * task, id responseObject))success failure:(void (^)(NSURLSessionDataTask * task, NSError * error))failure;
--(void)getHomeSegmentFieldldSuccess:(SLSuccessDicBlock)success failure:(SLFailureReasonBlock)failure finish:(SLFinishedResultBlock)finish;
+//- (void)getHomeSegmentFieldldSuccess:(void (^)(NSURLSessionDataTask * task, id responseObject))success failure:(void (^)(NSURLSessionDataTask * task, NSError * error))failure;
+- (void)getHomeSegmentFieldldSuccess:(SLSuccessDicBlock)success failure:(SLFailureReasonBlock)failure finish:(SLFinishedResultBlock)finish;
 
 
 
@@ -53,16 +53,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 // 发布文章
-- (void)postTextAndPhotoWithTitle:(NSString *)title Introduction:(NSString *)introductionStr Source:(NSString *)source Author:(NSString *)author Content:(NSString *)content Type:(NSString *)type State:(NSString *)state CreateId:(NSString *)createId CreateName:(NSString *)name CreateType:(NSString *)createType CoverUrlPlist:(NSArray *)plistArr WithBlock:(void(^)(id responseObject, NSError *error))completion;
+- (void)postTextAndPhotoWithTitle:(NSString *)title Introduction:(NSString *)introductionStr Source:(NSString *)source Author:(NSString *)author Content:(NSString *)content Type:(NSString *)type State:(NSString *)state CreateId:(NSString *)createId CreateName:(NSString *)name CreateType:(NSString *)createType CoverUrlPlist:(NSArray *)plistArr WithBlock:(void(^)(id responseObject, NSString *error))completion;
 // 修改文章
-- (void)postUserChangeTextWithTitle:(NSString *)title Introduction:(NSString *)introductionStr textId:(NSString *)textId Content:(NSString *)content Type:(NSString *)type State:(NSString *)state CreateId:(NSString *)createId CreateName:(NSString *)name CreateType:(NSString *)createType Coverurilids:(NSArray *)coverurlidsArr CoverUrlPlist:(NSArray *)plistArr WithBlock:(void(^)(id responseObject, NSError *error))completion;
-//敏感词判断
-- (void)postTextContentCheck:(NSString *)str WithBlock:(void(^)(id responseObject, NSError *error))completion;
+- (void)postUserChangeTextWithTitle:(NSString *)title Introduction:(NSString *)introductionStr textId:(NSString *)textId Content:(NSString *)content Type:(NSString *)type State:(NSString *)state CreateId:(NSString *)createId CreateName:(NSString *)name CreateType:(NSString *)createType Coverurilids:(NSArray *)coverurlidsArr CoverUrlPlist:(NSArray *)plistArr WithBlock:(void(^)(id responseObject, NSString *error))completion;
 
+//- (void)postSharedContentId:(NSString *)contentId Type:(NSString *)type Kind:(NSString *)kind MemberId:(NSString *)memerId MemberName:(NSString *)memberName Success:(void (^)(NSURLSessionDataTask * task, id responseObject))success failure:(void (^)(NSURLSessionDataTask * task, NSError * error))failure;
 
-//-(void)postSharedContentId:(NSString *)contentId Type:(NSString *)type Kind:(NSString *)kind MemberId:(NSString *)memerId MemberName:(NSString *)memberName Success:(void (^)(NSURLSessionDataTask * task, id responseObject))success failure:(void (^)(NSURLSessionDataTask * task, NSError * error))failure;
-
--(void)postSharedContentId:(NSString *)contentId
+- (void)postSharedContentId:(NSString *)contentId
                       Type:(NSString *)type
                       Kind:(NSString *)kind
                   MemberId:(NSString *)memerId
@@ -78,8 +75,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 // 发现点赞
-//-(void)postPraiseContentId:(NSString *)contentId Type:(NSString *)type Kind:(NSString *)kind MemberId:(NSString *)memerId MemberName:(NSString *)memberName Success:(void (^)(NSURLSessionDataTask * task, id responseObject))success failure:(void (^)(NSURLSessionDataTask * task, NSError * error))failure;
--(void)postPraiseContentId:(NSString *)contentId Type:(NSString *)type Kind:(NSString *)kind MemberId:(NSString *)memerId MemberName:(NSString *)memberName
+//- (void)postPraiseContentId:(NSString *)contentId Type:(NSString *)type Kind:(NSString *)kind MemberId:(NSString *)memerId MemberName:(NSString *)memberName Success:(void (^)(NSURLSessionDataTask * task, id responseObject))success failure:(void (^)(NSURLSessionDataTask * task, NSError * error))failure;
+- (void)postPraiseContentId:(NSString *)contentId Type:(NSString *)type Kind:(NSString *)kind MemberId:(NSString *)memerId MemberName:(NSString *)memberName
    Success:(SLSuccessDicBlock)success
    failure:(SLFailureReasonBlock)failure
     finish:(SLFinishedResultBlock)finish;
@@ -88,10 +85,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 // 发现取消点赞
-- (void)postPraiseCancleArray:(NSMutableArray *)plistArr WithBlock:(void(^)(id responseObject, NSError *error))completion;
+- (void)postPraiseCancleArray:(NSMutableArray *)plistArr WithBlock:(void(^)(id responseObject, NSString *error))completion;
 // 发现收藏
-//-(void)postCollectionContentId:(NSString *)contentId Type:(NSString *)type Kind:(NSString *)kind MemberId:(NSString *)memerId MemberName:(NSString *)memberName Success:(void (^)(NSURLSessionDataTask * task, id responseObject))success failure:(void (^)(NSURLSessionDataTask * task, NSError * error))failure;
--(void)postCollectionContentId:(NSString *)contentId
+//- (void)postCollectionContentId:(NSString *)contentId Type:(NSString *)type Kind:(NSString *)kind MemberId:(NSString *)memerId MemberName:(NSString *)memberName Success:(void (^)(NSURLSessionDataTask * task, id responseObject))success failure:(void (^)(NSURLSessionDataTask * task, NSError * error))failure;
+- (void)postCollectionContentId:(NSString *)contentId
                           Type:(NSString *)type
                           Kind:(NSString *)kind
                       MemberId:(NSString *)memerId
@@ -104,7 +101,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 // 发现取消收藏
-- (void)postCollectionCancleArray:(NSMutableArray *)plistArr WithBlock:(void(^)(id responseObject, NSError *error))completion;
+- (void)postCollectionCancleArray:(NSMutableArray *)plistArr WithBlock:(void(^)(id responseObject, NSString *error))completion;
 // 发现热搜
 //- (void)getTopicTabbarStr:(NSString *)tabbarStr Success:(void (^)(NSURLSessionDataTask * task, id responseObject))success failure:(void (^)(NSURLSessionDataTask * task, NSError * error))failure;
 - (void)getTopicTabbarStr:(NSString *)tabbarStr
@@ -146,8 +143,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 
--(void)startRequestWithUrl:(NSString *)url params:(NSDictionary *)params WithBlock:(void(^)(id responseObject, NSError *error))completion;
--(void)cancleRequestWithUrl:(NSString *)url params:(NSMutableArray *)params WithBlock:(void(^)(id responseObject, NSError *error))completion;
+- (void)startRequestWithUrl:(NSString *)url params:(NSDictionary *)params WithBlock:(void(^)(id responseObject, NSString *error))completion;
+- (void)cancleRequestWithUrl:(NSString *)url params:(NSMutableArray *)params WithBlock:(void(^)(id responseObject, NSString *error))completion;
 @end
 
 NS_ASSUME_NONNULL_END

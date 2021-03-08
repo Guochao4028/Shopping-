@@ -22,7 +22,7 @@ static NSString *const kAddressListTableViewCellIdentifier = @"AddressListTableV
 
 @implementation AddressListView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [self initUI];
@@ -30,7 +30,7 @@ static NSString *const kAddressListTableViewCellIdentifier = @"AddressListTableV
     return self;
 }
 
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.createButton];
     [self addSubview:self.tableView];
     
@@ -38,7 +38,7 @@ static NSString *const kAddressListTableViewCellIdentifier = @"AddressListTableV
 
 
 #pragma mark - action
--(void)tapButtonAction{
+- (void)tapButtonAction{
     if ([self.delegate respondsToSelector:@selector(addressListView:tap:)] == YES) {
         [self.delegate addressListView:self tap:YES];
     }
@@ -51,27 +51,27 @@ static NSString *const kAddressListTableViewCellIdentifier = @"AddressListTableV
     return self.dataArray.count;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     return 0.01;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     return 0.01;
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     UIView *view = [[UIView alloc] init];
     view.backgroundColor = [UIColor clearColor];
     return view;
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
     UIView *view = [[UIView alloc] init];
     view.backgroundColor = KTextGray_FA;
     return view;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     CGFloat tableViewH = 0;
     tableViewH = 68;
     return tableViewH;
@@ -87,13 +87,13 @@ static NSString *const kAddressListTableViewCellIdentifier = @"AddressListTableV
 }
 
 #pragma mark -  AddressListTableViewCellDelegate
--(void)addressListCell:(AddressListTableViewCell *)cell tap:(AddressListModel *)model{
+- (void)addressListCell:(AddressListTableViewCell *)cell tap:(AddressListModel *)model{
     if ([self.delegate respondsToSelector:@selector(addressListView:isModify:)] == YES) {
         [self.delegate addressListView:self isModify:model];
     }
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
     AddressListModel *model = self.dataArray[indexPath.row];
     
@@ -106,7 +106,7 @@ static NSString *const kAddressListTableViewCellIdentifier = @"AddressListTableV
 
 #pragma mark - getter / setter
 
--(UITableView *)tableView{
+- (UITableView *)tableView{
     
     if (_tableView == nil) {
         CGFloat temHeigth = CGRectGetHeight(self.bounds) - CGRectGetMinY(self.createButton.frame);
@@ -129,7 +129,7 @@ static NSString *const kAddressListTableViewCellIdentifier = @"AddressListTableV
 
 }
 
--(UIButton *)createButton{
+- (UIButton *)createButton{
    if (_createButton == nil) {
         _createButton = [UIButton buttonWithType:UIButtonTypeCustom];
 
@@ -150,7 +150,7 @@ static NSString *const kAddressListTableViewCellIdentifier = @"AddressListTableV
     return _createButton;
 }
 
--(void)setDataArray:(NSArray *)dataArray{
+- (void)setDataArray:(NSArray *)dataArray{
     _dataArray = dataArray;
     [self.tableView reloadData];
 }

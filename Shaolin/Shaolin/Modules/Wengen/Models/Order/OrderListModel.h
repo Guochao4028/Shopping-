@@ -35,47 +35,105 @@ NS_ASSUME_NONNULL_BEGIN
 //
 //@property(nonatomic, copy)NSString *num;
 
-/**
- 用于判断一个商品，多个商品
- */
-@property(nonatomic, copy)NSString *num_type;
-/**
- 1：待付款，2：待发货，3：待收货，4：已收货，5：完成，6：取消 7：支付超时',
- */
-@property(nonatomic, copy)NSString *status;
-/**
- 0：未分配（待支付），1：实体，2：虚拟 (已弃用)
- */
-@property(nonatomic, copy)NSString *is_virtual;//(已弃用)
-
-
-/**
- 0 未评价 1 已评价
- */
-@property(nonatomic, copy)NSString *evaluate_status;
-/**
- 是否退款
- */
-@property(nonatomic, copy)NSString *if_refund;
-/**
-订单逻辑用order_car_sn
-*/
-@property(nonatomic, copy)NSString *order_car_sn;
-/**
- 显示用order_sn
- */
-@property(nonatomic, copy)NSString *order_sn;
-
-@property(nonatomic, copy)NSString *order_car_money;
-
-///商品数组
-@property(nonatomic, strong)NSArray *order_goods;
+///**
+// 用于判断一个商品，多个商品
+// */
+//@property(nonatomic, copy)NSString *num_type;
+///**
+// 1：待付款，2：待发货，3：待收货，4：已收货，5：完成，6：取消 7：支付超时',
+// */
+//@property(nonatomic, copy)NSString *status;
+///**
+// 0：未分配（待支付），1：实体，2：虚拟 (已弃用)
+// */
+//@property(nonatomic, copy)NSString *is_virtual;//(已弃用)
+//
+//
+///**
+// 0 未评价 1 已评价
+// */
+//@property(nonatomic, copy)NSString *evaluate_status;
+///**
+// 是否退款
+// */
+//@property(nonatomic, copy)NSString *if_refund;
+///**
+//订单逻辑用order_car_sn
+//*/
+//@property(nonatomic, copy)NSString *order_car_sn;
+///**
+// 显示用order_sn
+// */
+//@property(nonatomic, copy)NSString *order_sn;
+//
+//@property(nonatomic, copy)NSString *order_car_money;
+//
+/////商品数组
+//@property(nonatomic, strong)NSArray *order_goods;
 
 ///计算出来的 cell 高度
 @property(nonatomic, assign)CGFloat cellHight;
 
 /// 保存tableview 的位置
 @property(nonatomic, strong)NSIndexPath *tableViewIndexPath;
+
+@property(nonatomic, copy)NSString *orderId;
+/// 1：待付款，2：待发货，3：待收货，4：已收货，5：完成，6：取消 7：支付超时
+@property(nonatomic, copy)NSString *status;
+/// 0 未评价 1 已评价
+@property(nonatomic, copy)NSString *evaluateStatus;
+/// 金额
+@property(nonatomic, copy)NSString *money;
+/// 是否退款  1 未申请  2 已申请
+@property(nonatomic, copy)NSString *ifRefund;
+///分订单 订单号
+@property(nonatomic, copy)NSString *orderSn;
+///总订单号
+@property(nonatomic, copy)NSString *orderCarSn;
+///商品图片
+@property(nonatomic, strong)NSArray *goodsImages;
+///商品数量
+@property(nonatomic, copy)NSString *amount;
+///商品详情
+@property(nonatomic, copy)NSString *desc;
+///商品名称
+@property(nonatomic, copy)NSString *goodsName;
+///1 实物 2虚拟
+@property(nonatomic, copy)NSString *isVirtual;
+///1 已开票
+@property(nonatomic, copy)NSString *isInvoice;
+/// 法会需要
+@property(nonatomic, copy)NSString *cateId;
+///评星
+@property(nonatomic, assign)float star;
+///1 普通商品  2 教程  3 报名 5: 水陆法会  6 :佛事 7: 建寺安僧 8:普通法会
+@property(nonatomic, copy)NSString *type;
+///0 国内 1.国外
+@property(nonatomic, copy)NSString *isForeign;
+///0 未审核  1 审核通过 2 审核未通过  法会 是否开发票  只有1是开发票
+@property(nonatomic, copy)NSString *orderCheck;
+
+@property(nonatomic, copy)NSString *appStoreId;
+
+@property(nonatomic, copy)NSString *goodsId;
+
+///店铺ID 数组
+@property(nonatomic, strong)NSArray *clubIds;
+
+///法务时才有效 是否显示回执
+@property(nonatomic, copy)NSString * needReturnReceipt;
+///法务时才有效。是否直接付款(0. 不直接付款 1.直接付款)
+@property(nonatomic, copy)NSString * payable;
+///法务时才有效。receiptCause  回执原因
+@property(nonatomic, copy)NSString * receiptCause;
+///法务时才有效。iM 聊天
+@property(nonatomic, copy)NSString * iM;
+
+
+- (BOOL)isRiteGoodsType;
+
+- (BOOL)isKungfuGoodsType;
+
 
 @end
 
@@ -121,4 +179,27 @@ NS_ASSUME_NONNULL_END
          }]
      }]
  },
+ 
+ 
+ "id":2531,
+                "status":7,
+                "evaluateStatus":0,
+                "money":19.8,
+                "ifRefund":1,
+                "orderSn":"20201015457920250",
+                "orderCarSn":"20201015457920250",
+                "goodsImages":[
+                    "https://static.oss.cdn.oss.gaoshier.cn/image/55bcabb1-2d7a-4a1b-b3f4-ae14ce5a058d.png"
+                ],
+                "amount":1,
+                "desc":"河南郑州特产嵩山少林寺酥饼素饼礼盒 核桃味1桶",
+                "goodsName":"嵩山少林寺酥饼素饼礼盒",
+                "isVirtual":0,
+                "isInvoice":0,
+                "cateId":"441",
+                "star":"0",
+                "type":1,
+                "isForeign":0,
+                "OrderCheck":0
+            },
  */

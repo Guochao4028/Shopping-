@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol CustomerServiceTabelHeardViewDelegate <NSObject>
 
--(void)customerServiceTabelHeardView:(CustomerServiceTabelHeardView *)heardView tapCell:(CustomerServieListModel *)model;
+- (void)customerServiceTabelHeardView:(CustomerServiceTabelHeardView *)heardView tapCell:(CustomerServieListModel *)model;
 
 @end
 

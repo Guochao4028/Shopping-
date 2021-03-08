@@ -15,7 +15,11 @@ NS_ASSUME_NONNULL_BEGIN
 @interface ShoppingCartListModel : NSObject
 
 
-@property(nonatomic, strong)NSArray<GoodsStoreInfoModel *> *club;
+//@property(nonatomic, strong)NSArray<GoodsStoreInfoModel *> *club;
+
+@property(nonatomic, copy)NSString *clubId;
+@property(nonatomic, copy)NSString *clubName;
+@property(nonatomic, copy)NSString *isSelf;
 
 @property(nonatomic, strong)NSArray<ShoppingCartGoodsModel *> *goods;
 

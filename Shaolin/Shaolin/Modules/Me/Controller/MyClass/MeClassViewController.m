@@ -26,11 +26,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self initData];
-    [self setUI];
+    [self setupUI];
     // Do any additional setup after loading the view.
 }
 
-- (void)setUI{
+- (void)setupUI{
     [self addChildViewController:self.pageViewController];
     [self.view addSubview:self.pageViewController.view];
 }
@@ -42,10 +42,12 @@
 - (XLPageViewController *)pageViewController {
     if (!_pageViewController){
         XLPageViewControllerConfig *config = [XLPageViewControllerConfig defaultConfig];
-        config.titleWidth = kWidth/4;
+        config.titleWidth = kWidth/2;
         config.titleViewHeight = SLChange(48);
         config.titleSpace = 0;
-        config.titleViewInset = UIEdgeInsetsMake(0, kWidth/4, 0, kWidth/4);
+        config.titleViewInset = UIEdgeInsetsMake(0, 0, 0, 0);
+        config.titleNormalFont = kRegular(14);
+        config.titleSelectedFont = kRegular(15);
         
         _pageViewController = [[XLPageViewController alloc] initWithConfig:config];
         _pageViewController.view.frame = CGRectMake(0, 0, kWidth, kHeight);

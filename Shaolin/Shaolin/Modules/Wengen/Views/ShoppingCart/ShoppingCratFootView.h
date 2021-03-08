@@ -12,13 +12,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ShoppingCratFootView : UIView
 //全选按钮上的方法
--(void)selectedAllTarget:(nullable id)target action:(SEL)action;
+- (void)selectedAllTarget:(nullable id)target action:(SEL)action;
 
 //结算按钮上的方法
--(void)settlementTarget:(nullable id)target action:(SEL)action;
+- (void)settlementTarget:(nullable id)target action:(SEL)action;
 
 //删除按钮上的方法
--(void)deleteTarget:(nullable id)target action:(SEL)action;
+- (void)deleteTarget:(nullable id)target action:(SEL)action;
 //是否全选
 @property(nonatomic, assign)BOOL isAll;
 //选中的商品数量

@@ -29,7 +29,7 @@
     // Configure the view for the selected state
 }
 
--(void)setModel:(NSDictionary *)model{
+- (void)setModel:(NSDictionary *)model{
     [self.titleLabel setText:[NSString stringWithFormat:@"%@：",model[@"key"]]];
     [self.viewLabel setText:model[@"val"]];
 }

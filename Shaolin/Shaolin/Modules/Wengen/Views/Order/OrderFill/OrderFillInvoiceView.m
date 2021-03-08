@@ -62,12 +62,20 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
 //记录是否要显示邮箱  yes 显示。no 不显示
 //只有电子发票才显示邮箱，纸质发票不显示
 @property(nonatomic, assign)BOOL isViewEmail;
+//
+@property(nonatomic, assign)CGPoint beginPoint;
+
+@property(nonatomic, assign)CGPoint currentPoint;
+
+@property(nonatomic, assign)CGPoint endPoint;
+
+@property(nonatomic, assign)CGFloat distanceY;
 
 @end
 
 @implementation OrderFillInvoiceView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
         self. isPersonal = YES;
         self.isSpecial = NO;
@@ -77,7 +85,7 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
 }
 
 #pragma mark - methods
--(void)initUI{
+- (void)initUI{
     [self setBackgroundColor:[UIColor colorWithWhite:0 alpha:0.6]];
     
     [self addSubview:self.firstPage];
@@ -99,7 +107,7 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
         
         if (isInvoices == NO) {
             [weakSelf slideDirection:NO withCurrentView:weakSelf.contentView withLastView:weakSelf.firstPage completion:^(BOOL finished) {
-                
+                [weakSelf.contentView setHidden:YES];
                 weakSelf.firstPage.isDaw = NO;
                 
             }];
@@ -116,10 +124,9 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
     
     [self.tableView reloadData];
     
-    
 }
 
--(void)disappear{
+- (void)disappear{
     [UIView animateWithDuration:0.3 animations:^{
         self.alpha = 0;
     } completion:^(BOOL finished) {
@@ -157,11 +164,11 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
 }
 
 #pragma mark - action
--(void)closeAction{
+- (void)closeAction{
     [self disappear];
 }
 
--(void)invoiceInformation{
+- (void)invoiceInformation{
     NSString *invoiceStr = @"电子普通发票：\n\
     (1) 电子普通票是税局认可的有效收付款\n\
     凭证，其法律效力、基本用途及使用规定同 \n\
@@ -196,7 +203,7 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
     
 }
 
--(void)determineAction{
+- (void)determineAction{
     
     [self endEditing:YES];
     
@@ -312,11 +319,11 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
 
 #pragma mark - UITableViewDelegate && UITableViewDataSource
 
--(CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     return 0.01;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     if (self.isInvoices == YES) {
         if (self.isSpecial == NO) {
             if (self.isViewEmail) {
@@ -334,7 +341,7 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
     return 0.01;
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     
     if (self.isInvoices == YES) {
         
@@ -376,7 +383,7 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
     return nil;
 }
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     if (self.isInvoices == YES) {
         if (self.isSpecial == NO) {
             if (self.isViewEmail) {
@@ -390,7 +397,7 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
     return  0;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     if (self.isInvoices == YES) {
         return 1;
         
@@ -398,7 +405,7 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
     return  0;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     CGFloat rowHeight = 0;
     
     if (self.isSpecial == NO) {
@@ -433,7 +440,7 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
     
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     if (self.isSpecial == NO) {
         
@@ -484,12 +491,12 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
 
 #pragma mark - OrderFillInvoiceTabelHeadViewDelegate
 //发票类型选择
--(void)orderFillInvoiceTabelHeadView:(OrderFillInvoiceTabelHeadView *)view tapView:(BOOL)istap{
+- (void)orderFillInvoiceTabelHeadView:(OrderFillInvoiceTabelHeadView *)view tapView:(BOOL)istap{
     self.isSpecial = istap;
     [self.tableView reloadData];
 }
 //发票形式选择
--(void)orderFillInvoiceTabelHeadView:(OrderFillInvoiceTabelHeadView *)view tapViewChangeProformaInvoice:(NSString *)invoiceShape{
+- (void)orderFillInvoiceTabelHeadView:(OrderFillInvoiceTabelHeadView *)view tapViewChangeProformaInvoice:(NSString *)invoiceShape{
     NSInteger invoiceShapeInteger = [invoiceShape integerValue];
     if (invoiceShapeInteger == 2) {
         self.isViewEmail = YES;
@@ -501,13 +508,13 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
 
 #pragma mark - OrderFillInvoiceFirstPageViewDelegate
 //点击关闭
--(void)orderFillInvoiceFirstPageView:(OrderFillInvoiceFirstPageView *)view clooseView:(BOOL)isCloose{
+- (void)orderFillInvoiceFirstPageView:(OrderFillInvoiceFirstPageView *)view clooseView:(BOOL)isCloose{
     [self disappear];
 }
 
 
 //点击确定
--(void)orderFillInvoiceFirstPageView:(OrderFillInvoiceFirstPageView *)view determine:(BOOL)isDetermine{
+- (void)orderFillInvoiceFirstPageView:(OrderFillInvoiceFirstPageView *)view determine:(BOOL)isDetermine{
     if (self.isInvoices == NO) {
         if ([self.delegate respondsToSelector:@selector(orderFillInvoiceView:tapNotDevelopmentTicket:)]) {
             [self.delegate orderFillInvoiceView:self tapNotDevelopmentTicket:self.isInvoices];
@@ -518,12 +525,12 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
 
 
 //不开发票
--(void)orderFillInvoiceFirstPageView:(OrderFillInvoiceFirstPageView *)view noDraw:(BOOL)isDetermine{
+- (void)orderFillInvoiceFirstPageView:(OrderFillInvoiceFirstPageView *)view noDraw:(BOOL)isDetermine{
     self.isInvoices = NO;
 }
 
 //开发票
--(void)orderFillInvoiceFirstPageView:(OrderFillInvoiceFirstPageView *)view draw:(BOOL)isDetermine{
+- (void)orderFillInvoiceFirstPageView:(OrderFillInvoiceFirstPageView *)view draw:(BOOL)isDetermine{
     self.isInvoices = YES;
     self.tabelFooterView.isInvoice = self.isInvoices;
     [self.tableView reloadData];
@@ -535,7 +542,7 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
 
 #pragma mark - 私有方法
 #pragma mark - 增值税表头
--(UITableViewHeaderFooterView *)p_vatSpecialInvoiceHeader:(UITableViewHeaderFooterView *)view inSection:(NSInteger)section{
+- (UITableViewHeaderFooterView *)p_vatSpecialInvoiceHeader:(UITableViewHeaderFooterView *)view inSection:(NSInteger)section{
     
     UILabel *titleLabel;
     UILabel *subTitleLabel;
@@ -566,7 +573,7 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
 }
 
 #pragma mark - 发票抬头
--(UITableViewHeaderFooterView *)p_InvoiceTitleHeader:(UITableViewHeaderFooterView *)view inSection:(NSInteger)section isPersonal:(BOOL)isPersonal{
+- (UITableViewHeaderFooterView *)p_InvoiceTitleHeader:(UITableViewHeaderFooterView *)view inSection:(NSInteger)section isPersonal:(BOOL)isPersonal{
     
     OrderFillInvoiceRiseView *headView;
     if(view == nil){
@@ -586,7 +593,7 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
 }
 
 #pragma mark - 电子发票 在 发票抬头的基础上就邮箱
--(UITableViewHeaderFooterView *)p_InvoiceTitleAndEmailHeader:(UITableViewHeaderFooterView *)view inSection:(NSInteger)section isPersonal:(BOOL)isPersonal{
+- (UITableViewHeaderFooterView *)p_InvoiceTitleAndEmailHeader:(UITableViewHeaderFooterView *)view inSection:(NSInteger)section isPersonal:(BOOL)isPersonal{
     
     if (section == 0) {
         view = [self p_InvoiceTitleHeader:view inSection:section isPersonal:isPersonal];
@@ -608,27 +615,40 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
 
 #pragma mark - getter / setter
 
--(UIView *)contentView{
+- (UIView *)contentView{
     
     if (_contentView == nil) {
         _contentView = [[UIView alloc]initWithFrame:CGRectMake(0, 162, ScreenWidth, ScreenHeight - 162)];
         [_contentView setBackgroundColor:[UIColor colorWithWhite:1 alpha:1]];
         _contentView.layer.cornerRadius = SLChange(12.5);
+        
+        UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(movePanGestureRecognizer:)];
+        
+        [_contentView addGestureRecognizer:panGestureRecognizer];
+        
+        _contentView.userInteractionEnabled = YES;
+
     }
     return _contentView;
 }
 
--(OrderFillInvoiceFirstPageView *)firstPage{
+- (OrderFillInvoiceFirstPageView *)firstPage{
     if (_firstPage== nil) {
         _firstPage = [[OrderFillInvoiceFirstPageView alloc]initWithFrame:CGRectMake(0, 162, ScreenWidth, ScreenHeight - 162)];
         [_firstPage setBackgroundColor:[UIColor colorWithWhite:1 alpha:1]];
         _firstPage.layer.cornerRadius = SLChange(12.5);
         [_firstPage setDelegate:self];
+        
+        UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(movePanGestureRecognizer:)];
+        
+        [_firstPage addGestureRecognizer:panGestureRecognizer];
+        
+        _firstPage.userInteractionEnabled = YES;
     }
     return _firstPage;
 }
 
--(UIView *)titleView{
+- (UIView *)titleView{
     
     if (_titleView == nil) {
         _titleView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, 56)];
@@ -659,7 +679,7 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
     
 }
 
--(UITableView *)tableView{
+- (UITableView *)tableView{
     if (_tableView == nil) {
         
         CGFloat y = CGRectGetMaxY(self.titleView.frame);
@@ -688,7 +708,7 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
     return _tableView;
 }
 
--(UIButton *)determineButton{
+- (UIButton *)determineButton{
     
     if (_determineButton == nil) {
         _determineButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -706,7 +726,7 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
     
 }
 
--(OrderFillInvoiceTabelHeadView *)tableHeadView{
+- (OrderFillInvoiceTabelHeadView *)tableHeadView{
     
     if (_tableHeadView == nil) {
         _tableHeadView = [[OrderFillInvoiceTabelHeadView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, 200)];
@@ -716,15 +736,62 @@ static NSString *const kReceiveTicketsTableCellIdentifier = @"ReceiveTicketsTabl
     
 }
 
--(OrderFillInvoiceTabelFooterView *)tabelFooterView{
+- (OrderFillInvoiceTabelFooterView *)tabelFooterView{
     if (_tabelFooterView == nil) {
         _tabelFooterView = [[OrderFillInvoiceTabelFooterView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, 124)];
     }
     return _tabelFooterView;
 }
 
--(void)setQualificationsModel:(InvoiceQualificationsModel *)qualificationsModel{
+- (void)setQualificationsModel:(InvoiceQualificationsModel *)qualificationsModel{
     _qualificationsModel = qualificationsModel;
+}
+
+
+//下拉关闭
+- (void)movePanGestureRecognizer:(UIPanGestureRecognizer *)pan {
+    
+    UIView *tempView;
+    
+    if (self.contentView.isHidden) {
+        tempView = self.firstPage;
+    }else{
+        tempView = self.contentView;
+    }
+    
+    if (pan.state == UIGestureRecognizerStateBegan) {
+        self.beginPoint = [pan locationInView:tempView.superview];
+        
+    } else if (pan.state == UIGestureRecognizerStateChanged) {
+        self.currentPoint = [pan locationInView:tempView.superview];
+        self.distanceY = (self.currentPoint.y - self.beginPoint.y) + 162;
+        // 2.判断视图y值是否超出屏幕范围。
+        if (self.distanceY >= 162 && self.distanceY <= self.height) {
+            // 3.移动视图的y值。
+            tempView.y = self.distanceY;
+        }
+    } else if (pan.state == UIGestureRecognizerStateEnded) {
+        self.endPoint = [pan locationInView:self.superview];
+//        if (self.endPoint.y - self.currentPoint.y > 0) {
+        if (self.endPoint.y >= 400) {
+            // 下滑
+            [UIView animateWithDuration:0.3f animations:^{
+                tempView.y = self.height;
+            } completion:^(BOOL finished) {
+                [self endEditing:YES];
+                [self setHidden:YES];
+                tempView.y = 162;
+            }];
+        }
+        else {
+            // 上滑
+            [UIView animateWithDuration:0.3f animations:^{
+                tempView.y = 162;
+            }];
+        }
+    } else {
+        self.contentView.y = 162;
+    }
 }
 
 

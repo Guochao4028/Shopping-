@@ -23,7 +23,7 @@
 @end
 
 @implementation ForgetPassWordVc
--(void)viewWillAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
 }
@@ -32,7 +32,7 @@
     [self layoutView];
     [self.leftBtn setTitle:[NSString stringWithFormat:@"  %@", SLLocalizedString(@"忘记密码")] forState:(UIControlStateNormal)];
 }
--(void)layoutView{
+- (void)layoutView{
     UIImageView *image1 = [[UIImageView alloc]init];
     image1.image = [UIImage imageNamed:@"手机"];
     [self.view addSubview:image1];
@@ -163,11 +163,11 @@
         make.centerX.mas_equalTo(self.view);
     }];
 }
--(void)leftAction
+- (void)leftAction
 {
     [self.navigationController popViewControllerAnimated:YES];
 }
--(UIButton *)clearBtn {
+- (UIButton *)clearBtn {
     if (!_clearBtn) {
            _clearBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
            [_clearBtn setImage:[UIImage imageNamed:@"forget_close"] forState:(UIControlStateNormal)];
@@ -175,7 +175,7 @@
        }
        return _clearBtn;
 }
--(UIButton *)lookBtn {
+- (UIButton *)lookBtn {
     if (!_lookBtn) {
            _lookBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
            [_lookBtn setImage:[UIImage imageNamed:@"闭眼"] forState:(UIControlStateNormal)];
@@ -197,7 +197,7 @@
     self.phoneTf.text = @"";
 }
 
--(UITextField *)phoneTf
+- (UITextField *)phoneTf
 {
     if (!_phoneTf) {
         _phoneTf = [[UITextField alloc] init];
@@ -213,7 +213,7 @@
     }
     return _phoneTf;
 }
--(UITextField *)codeTf
+- (UITextField *)codeTf
 {
     if (!_codeTf) {
         _codeTf = [[UITextField alloc] init];
@@ -246,7 +246,7 @@
     return _sendBtn;
 }
 #pragma mark - 发生验证码
--(void)tapVerBtnAction:(id)sender
+- (void)tapVerBtnAction:(id)sender
 {
     if (self.phoneTf.text.length == 0) {
         [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请输入手机号") view:self.view afterDelay:TipSeconds];
@@ -320,7 +320,7 @@
     });
     dispatch_resume(_timer);
 }
--(UITextField *)passWordTf
+- (UITextField *)passWordTf
 {
     if (!_passWordTf) {
         _passWordTf = [[UITextField alloc] init];
@@ -355,7 +355,7 @@
     }
     return _doneBtn;
 }
--(void)doneAction {
+- (void)doneAction {
     if (self.phoneTf.text.length == 0) {
         [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请输入手机号") view:self.view afterDelay:TipSeconds];
         return;
@@ -381,7 +381,7 @@
     }
     
     if (![self.passWordTf.text passwordComplexityVerification]) {
-        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"密码需要包含字母大小写和数字，请重新输入") view:self.view afterDelay:TipSeconds];
+        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"密码需要包含字母和数字，请重新输入") view:self.view afterDelay:TipSeconds];
         return;
     }
     

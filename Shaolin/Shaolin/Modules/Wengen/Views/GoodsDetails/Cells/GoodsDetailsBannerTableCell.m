@@ -48,14 +48,14 @@
 
 #pragma mark - methods
 
--(void)initUI{
+- (void)initUI{
     
 //    [self.contentView addSubview:self.scrolView];
     
 }
 
 //#pragma mark - XQCarouselDelegate
-//-(void)carousel:(XQCarousel *)view didScrollToIndex:(NSInteger)index{
+//- (void)carousel:(XQCarousel *)view didScrollToIndex:(NSInteger)index{
 ////    NSInteger index = scrollView.contentOffset.x/ScreenWidth;
 ////    scrollView.contentOffset = CGPointMake(index*self.bounds.size.width, 0);
 //    NSInteger count = self.model.img_data.count;
@@ -64,29 +64,29 @@
 //}
 
 #pragma mark - GoodsVideoViewDelegate
--(void)carousel:(GoodsVideoView *)view didScrollToIndex:(NSInteger)index{
-    NSInteger count = self.model.img_data.count;
+- (void)carousel:(GoodsVideoView *)view didScrollToIndex:(NSInteger)index{
+    NSInteger count = self.model.imgDataList.count;
     [self.pageLabel setText: [NSString stringWithFormat:@"%ld/%ld", index+1, count]];
 }
 
 #pragma mark - SDCycleScrollViewDelegate
 - (void)cycleScrollView:(SDCycleScrollView *)cycleScrollView didScrollToIndex:(NSInteger)index{
-    NSInteger count = self.model.img_data.count;
+    NSInteger count = self.model.imgDataList.count;
      [self.pageLabel setText: [NSString stringWithFormat:@"%ld/%ld", index+1, count]];
 }
 
 #pragma mark - setter / getter
 
 
--(void)setModel:(GoodsInfoModel *)model{
+- (void)setModel:(GoodsInfoModel *)model{
     _model = model;
     
     [self.contentView setBackgroundColor:[UIColor whiteColor]];
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    NSInteger count = model.img_data.count;
+    NSInteger count = model.imgDataList.count;
     
-    if (model.video_url != nil && model.video_url.length != 0) {
+    if (model.videoUrl != nil && model.videoUrl.length != 0) {
 //        
 //        NSMutableArray *tem = [NSMutableArray array];
 //        
@@ -99,9 +99,9 @@
 //        }
         [self.contentView addSubview:self.carousel];
         
-        [self.carousel setDataArray:model.img_data];
+        [self.carousel setDataArray:model.imgDataList];
         
-        [self.carousel setVideoUrl:model.video_url];
+        [self.carousel setVideoUrl:model.videoUrl];
 //
 //        self.carousel.isHasVideo = YES;
 //        self.carousel.contentArray = tem;
@@ -111,13 +111,11 @@
         if (self.bannerView) {
             [self.bannerView setHidden:YES];
         }
-       
-        
         
     }else{
         
         [self.contentView addSubview:self.bannerView];
-        self.bannerView.imageURLStringsGroup = model.img_data;
+        self.bannerView.imageURLStringsGroup = model.imgDataList;
     }
     
     if (count > 1) {
@@ -128,7 +126,7 @@
     }
 }
 
--(SDCycleScrollView *)bannerView{
+- (SDCycleScrollView *)bannerView{
     if (_bannerView == nil) {
         _bannerView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, ScreenWidth , ScreenWidth) delegate:self placeholderImage:[UIImage imageNamed:@"default_banner"]];
         _bannerView.hidesForSinglePage = YES;
@@ -139,7 +137,7 @@
     return _bannerView;
 }
 
--(GoodsVideoView *)carousel{
+- (GoodsVideoView *)carousel{
     if (_carousel == nil) {
         _carousel = [[GoodsVideoView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenWidth)];
         [_carousel setDelegate:self];
@@ -153,7 +151,7 @@
 
 
 
--(UILabel *)pageLabel{
+- (UILabel *)pageLabel{
     if (_pageLabel == nil) {
         _pageLabel = [[UILabel alloc]initWithFrame:CGRectMake(ScreenWidth - 56, ScreenWidth - (22+16), 56, 22)];
         [_pageLabel setFont:kMediumFont(15)];

@@ -32,7 +32,7 @@
 
 @implementation StoreOneViewController
 
--(void)viewWillAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     //[self setNavigationBarYellowTintColor];
 }
@@ -47,7 +47,7 @@
        [self.leftBtn setImage:[UIImage imageNamed:@"real_left"] forState:(UIControlStateNormal)];
     [self.view addSubview:self.tableView];
     
-    [self setUI];
+    [self setupUI];
     
 }
 - (void)setData {
@@ -75,22 +75,22 @@
 //           self.personNameTf.userInteractionEnabled = NO;
 //           self.personEmailTf.userInteractionEnabled =NO;
 //       }
-    if (self.model.true_name.length){
-        self.personNameTf.text = self.model.true_name;
+    if (self.model.trueName.length){
+        self.personNameTf.text = self.model.trueName;
     }
     if (self.model.email.length){
         self.personEmailTf.text = self.model.email;
     }
-    if (self.model.business_license_number.length){
-        [self.licenceBtn setTitle:self.model.business_license_number forState:UIControlStateNormal];
+    if (self.model.businessLicenseNumber.length){
+        [self.licenceBtn setTitle:self.model.businessLicenseNumber forState:UIControlStateNormal];
     }
     if (self.model.idcard.length){
         [self.personBtn setTitle:self.model.idcard forState:UIControlStateNormal];
     }
-    if (self.model.organization_number.length){
-        [self.organizationBtn setTitle:self.model.organization_number forState:UIControlStateNormal];
+    if (self.model.organizationNumber.length){
+        [self.organizationBtn setTitle:self.model.organizationNumber forState:UIControlStateNormal];
     }
-    if ([self.model.step isEqualToString:@"4"] || [self.model.step isEqualToString:@"5"]){
+    if ([self.model.step isEqualToString:@"4"] || [self.model.step isEqualToString:@"5"] || (NotNilAndNull(self.model.taxNumber) && self.model.taxNumber.length)){
         [self.taxBtn setTitle:SLLocalizedString(@"已填写") forState:(UIControlStateNormal)];
     }
 //    [self.personBtn setTitle:SLLocalizedString(@"已填写") forState:(UIControlStateNormal)];
@@ -103,7 +103,7 @@
     [self setData];
 }
 
-- (void)setUI {
+- (void)setupUI {
     UIView *line1 = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWidth, 10)];
     line1.backgroundColor = RGBA(250, 250, 250, 1);
     [self.view addSubview:line1];
@@ -117,16 +117,16 @@
     image.image = [UIImage imageNamed:@"storeOne_image"];
     [viewWihte addSubview:image];
     
-    self.lookBtn = [[UIButton alloc]initWithFrame:CGRectMake(kWidth/2-SLChange(45), SLChange(90), SLChange(90), SLChange(16.5))];
-     [self.lookBtn setImage:[UIImage imageNamed:@"问号"] forState:(UIControlStateNormal)];
-    [self.lookBtn setTitle:SLLocalizedString(@"查看拒绝原因 ") forState:(UIControlStateNormal)];
+    self.lookBtn = [[UIButton alloc]initWithFrame:CGRectMake(kWidth/2-SLChange(55), SLChange(90), SLChange(110), SLChange(16.5))];
+     [self.lookBtn setImage:[UIImage imageNamed:@"realName_Reason_Yellow"] forState:(UIControlStateNormal)];
+    [self.lookBtn setTitle:SLLocalizedString(@"查看拒绝原因  ") forState:(UIControlStateNormal)];
     [self.lookBtn setTitleColor:kMainYellow forState:(UIControlStateNormal)];
-    [self.lookBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, -self.lookBtn.imageView.image.size.width, 0, self.lookBtn.imageView.image.size.width)];
+    [self.lookBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, -self.lookBtn.imageView.image.size.width , 0, self.lookBtn.imageView.image.size.width)];
     [self.lookBtn setImageEdgeInsets:UIEdgeInsetsMake(0, self.lookBtn.titleLabel.bounds.size.width, 0, -self.lookBtn.titleLabel.bounds.size.width)];
     self.lookBtn.titleLabel.font = kRegular(12);
     [self.lookBtn addTarget:self action:@selector(lookAction) forControlEvents:(UIControlEventTouchUpInside)];
     [viewWihte addSubview:self.lookBtn];
-    if ([self.statusStr isEqualToString:@"3"]) {
+    if ([self reviewedFail]) {
         self.lookBtn.hidden = NO;
     }else {
         self.lookBtn.hidden = YES;
@@ -145,7 +145,7 @@
 }
 - (void)lookAction {
     _checkView = [[StoreRefusedView alloc]initWithFrame:CGRectMake(0, 0, kWidth, kHeight)];
-    _checkView.statusLabel.text = self.checkStr;
+    _checkView.statusLabel.text = NotNilAndNull(self.checkStr)?self.checkStr:@"未填写";
     _checkView.determineTextAction = ^{
         
     };
@@ -153,16 +153,16 @@
     
 }
 
--(BOOL)textFieldShouldReturn:(UITextField *)textField {
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [self.view endEditing:YES];
     return YES;;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return 6;
 }
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
@@ -194,7 +194,7 @@
         
     return cell;
 }
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
    WEAKSELF
     if (indexPath.row == 0) {
         
@@ -203,63 +203,65 @@
     }else {
         if (![self checkCellClick:indexPath.row - 2]) return;
         if (indexPath.row == 2) {
-            if (![self.licenceBtn.titleLabel.text isEqualToString:SLLocalizedString(@"未填写")]) {
+            if ([self.licenceBtn.titleLabel.text isEqualToString:SLLocalizedString(@"未填写")] || [self reviewedFail]) {
+                BusinessLicenseVc *buVc = [[BusinessLicenseVc alloc]init];
+                buVc.model = self.model;
+                buVc.BusinessBlock = ^(NSString * _Nonnull stepStr, NSString * _Nonnull licenseNum) {
+                    weakSelf.stepStr = stepStr;
+                    [weakSelf.licenceBtn setTitle:licenseNum forState:(UIControlStateNormal)];
+                    //            [weakSelf.licenceBtn setTitle:SLLocalizedString(@"已填写") forState:(UIControlStateNormal)];
+                };
+                //跳转页面
+                [self.navigationController pushViewController:buVc animated:YES];
+            } else {
 //                [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"已填写营业执照相关信息") view:self.view afterDelay:TipSeconds];
-                return;
             }
-            BusinessLicenseVc *buVc = [[BusinessLicenseVc alloc]init];
-            buVc.model = self.model;
-            buVc.BusinessBlock = ^(NSString * _Nonnull stepStr, NSString * _Nonnull licenseNum) {
-                weakSelf.stepStr = stepStr;
-                [weakSelf.licenceBtn setTitle:licenseNum forState:(UIControlStateNormal)];
-                //            [weakSelf.licenceBtn setTitle:SLLocalizedString(@"已填写") forState:(UIControlStateNormal)];
-            };
-            //跳转页面
-            [self.navigationController pushViewController:buVc animated:YES];
         }else if (indexPath.row == 3) {
-            if (![self.personBtn.titleLabel.text isEqualToString:SLLocalizedString(@"未填写")]) {
+            if ([self.personBtn.titleLabel.text isEqualToString:SLLocalizedString(@"未填写")] || [self reviewedFail]) {
+
+                UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"LegalPersonViewController" bundle:nil];
+                LegalPersonViewController *secondController = [mainStory instantiateViewControllerWithIdentifier:@"legalPerson"];
+                secondController.model = self.model;
+                secondController.LegaalPersonBlock = ^(NSString * _Nonnull stepStr, NSString * _Nonnull idCardNum) {
+                    weakSelf.stepStr = stepStr;
+                    [weakSelf.personBtn setTitle:idCardNum forState:(UIControlStateNormal)];
+                    //            [weakSelf.personBtn setTitle:SLLocalizedString(@"已填写") forState:(UIControlStateNormal)];
+                };
+                //跳转页面
+                [self.navigationController pushViewController:secondController animated:YES];
+            } else {
 //                [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"已填写法人证件相关信息") view:self.view afterDelay:TipSeconds];
-                return;
             }
-            UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"LegalPersonViewController" bundle:nil];
-            LegalPersonViewController *secondController = [mainStory instantiateViewControllerWithIdentifier:@"legalPerson"];
-            secondController.LegaalPersonBlock = ^(NSString * _Nonnull stepStr, NSString * _Nonnull idCardNum) {
-                weakSelf.stepStr = stepStr;
-                [weakSelf.personBtn setTitle:idCardNum forState:(UIControlStateNormal)];
-                //            [weakSelf.personBtn setTitle:SLLocalizedString(@"已填写") forState:(UIControlStateNormal)];
-            };
-            //跳转页面
-            [self.navigationController pushViewController:secondController animated:YES];
-            
         }else if (indexPath.row == 4) {
-            if (![self.organizationBtn.titleLabel.text isEqualToString:SLLocalizedString(@"未填写")]) {
+            if ([self.organizationBtn.titleLabel.text isEqualToString:SLLocalizedString(@"未填写")] || [self reviewedFail]) {
+                OrganizationViewController *organization = [[OrganizationViewController alloc] initWithNibName:@"OrganizationViewController" bundle:nil];
+                organization.model = self.model;
+                organization.InstitutionBlock = ^(NSString * _Nonnull stepStr, NSString * _Nonnull code) {
+                    weakSelf.stepStr = stepStr;
+                    [weakSelf.organizationBtn setTitle:code forState:(UIControlStateNormal)];
+                    //            [weakSelf.organizationBtn setTitle:SLLocalizedString(@"已填写") forState:(UIControlStateNormal)];
+                };
+                //跳转页面
+                [self.navigationController pushViewController:organization animated:YES];
+            } else {
 //                [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"已填写组织机构代码证相关信息") view:self.view afterDelay:TipSeconds];
-                return;
             }
-            
-            OrganizationViewController *organization = [[OrganizationViewController alloc] initWithNibName:@"OrganizationViewController" bundle:nil];
-            organization.InstitutionBlock = ^(NSString * _Nonnull stepStr, NSString * _Nonnull code) {
-                weakSelf.stepStr = stepStr;
-                [weakSelf.organizationBtn setTitle:code forState:(UIControlStateNormal)];
-                //            [weakSelf.organizationBtn setTitle:SLLocalizedString(@"已填写") forState:(UIControlStateNormal)];
-            };
-            //跳转页面
-            [self.navigationController pushViewController:organization animated:YES];
         }else {
-            if (![self.taxBtn.titleLabel.text isEqualToString:SLLocalizedString(@"未填写")]) {
+            if ([self.taxBtn.titleLabel.text isEqualToString:SLLocalizedString(@"未填写")] || [self reviewedFail]) {
+                TaxInformationVc *vc = [[TaxInformationVc alloc]init];
+                vc.model = self.model;
+                vc.TaxInformationBlock = ^(NSString * _Nonnull stepStr) {
+                    weakSelf.stepStr = stepStr;
+                    [weakSelf.taxBtn setTitle:SLLocalizedString(@"已填写") forState:(UIControlStateNormal)];
+                };
+                [self.navigationController pushViewController:vc animated:YES];
+            } else {
 //                [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"已填写税务登记证相关信息") view:self.view afterDelay:TipSeconds];
-                return;
             }
-            TaxInformationVc *vc = [[TaxInformationVc alloc]init];
-            vc.TaxInformationBlock = ^(NSString * _Nonnull stepStr) {
-                weakSelf.stepStr = stepStr;
-                [weakSelf.taxBtn setTitle:SLLocalizedString(@"已填写") forState:(UIControlStateNormal)];
-            };
-            [self.navigationController pushViewController:vc animated:YES];
         }
     }
 }
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.row ==4) {
         return SLChange(75);
@@ -280,6 +282,10 @@
     return _tableView;
     
 }
+// 店铺审核失败
+- (BOOL) reviewedFail {
+    return [self.model.status isEqualToString:@"3"];
+}
 
 - (BOOL)checkCellClick:(NSInteger)idx{
     NSArray *tipsArray = @[
@@ -288,6 +294,7 @@
         SLLocalizedString(@"请填写组织机构代码证信息"),
         SLLocalizedString(@"请填写税务登记证信息")
     ];
+    if ([self reviewedFail]) return YES;
     NSInteger stepNum = [self.stepStr intValue];
     if (stepNum == idx) return YES;
     
@@ -301,10 +308,10 @@
 }
 
 - (void)postReloadUserStoreOpenInformationNotification{
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"MeViewController_reloadUserStoreOpenInformation" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"MeViewControllerDidReloadUserStoreOpenInformationDataNotfication" object:nil];
 }
 #pragma mark - 联系人名称
--(UITextField *)personNameTf
+- (UITextField *)personNameTf
 {
     if (!_personNameTf) {
         _personNameTf = [[GCTextField alloc] initWithFrame:CGRectMake(SLChange(123),0, kWidth -SLChange(143), SLChange(53))];
@@ -325,7 +332,7 @@
     return _personNameTf;
 }
 #pragma mark - 联系人邮箱
--(UITextField *)personEmailTf {
+- (UITextField *)personEmailTf {
     if (!_personEmailTf) {
         _personEmailTf = [[GCTextField alloc] initWithFrame:CGRectMake(SLChange(123),0, kWidth -SLChange(143), SLChange(53))];
         _personEmailTf.inputType = CCCheckEmail;
@@ -447,6 +454,7 @@
             self.stepStr  = @"5";
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 StoreTwoViewController *vC = [[StoreTwoViewController alloc]init];
+                vC.model = self.model;
                 [self.navigationController pushViewController:vC animated:YES];
             });
         } else {

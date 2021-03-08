@@ -18,12 +18,13 @@ typedef NS_ENUM(NSInteger, CellPosition) {
 
 @interface AllTableViewCell : UITableViewCell
 @property (nonatomic) CellPosition cellPosition;
+@property (nonatomic, copy) NSString *identifier;
 
--(void)setFoundModel:(FoundModel *)f indexpath:(NSIndexPath *)indexPath;
--(NSString *)compaareCurrentTime:(NSDate *)compareDate;
--(NSDate *)nsstringConversionNSDate:(NSString *)dateStr;
+- (void)setFoundModel:(FoundModel *)f indexpath:(NSIndexPath *)indexPath;
+- (NSString *)compaareCurrentTime:(NSDate *)compareDate;
+- (NSDate *)nsstringConversionNSDate:(NSString *)dateStr;
 
--(UIImage *)getShowImage;
+- (UIImage *)getShowImage;
 @end
 
 

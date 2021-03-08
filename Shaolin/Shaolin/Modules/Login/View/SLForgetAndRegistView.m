@@ -41,7 +41,7 @@
     
     return self;
 }
--(void)layoutView:(NSString *)title
+- (void)layoutView:(NSString *)title
 {
     
     UIView *v = [[UIView alloc]initWithFrame:self.frame];
@@ -108,7 +108,7 @@
      [self.codeTextField resignFirstResponder];
 }
 
--(void)layoutSubviews
+- (void)layoutSubviews
 {
     [super layoutSubviews];
     [self.bgView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -188,7 +188,7 @@
         make.height.mas_equalTo(SLChange(45));
     }];
 }
--(UIView *)bgView
+- (UIView *)bgView
 {
     if (!_bgView) {
         _bgView = [[UIView alloc]init];
@@ -199,7 +199,7 @@
     }
     return _bgView;
 }
--(UIButton *)closeBtn
+- (UIButton *)closeBtn
 {
     if (!_closeBtn) {
         _closeBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
@@ -208,7 +208,7 @@
     }
     return _closeBtn;
 }
--(UILabel *)titleLabe
+- (UILabel *)titleLabe
 {
     if (!_titleLabe) {
         _titleLabe = [[UILabel alloc]init];
@@ -254,7 +254,7 @@
     }
     return _inputImage2;
 }
--(UITextField *)codeTextField
+- (UITextField *)codeTextField
 {
     if (!_codeTextField) {
         _codeTextField = [[UITextField alloc] init];
@@ -325,7 +325,7 @@
     return _lookBtn;
 }
 
--(UIButton *)registBtn
+- (UIButton *)registBtn
 {
     if (!_registBtn) {
         _registBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
@@ -341,7 +341,7 @@
 }
 
 #pragma mark - 关闭按钮
--(void)closeAction
+- (void)closeAction
 {
     __weak typeof(self)weakSelf =self;
        [UIView animateWithDuration:0.5 animations:^{
@@ -355,7 +355,7 @@
     }
 }
 #pragma mark - 查看密码
--(void)lookAction:(UIButton *)button
+- (void)lookAction:(UIButton *)button
 {
       button.selected = !button.selected;
     if (button.selected) {
@@ -366,7 +366,7 @@
        }
 }
 #pragma mark - 发生验证码
--(void)tapVerBtnAction:(id)sender
+- (void)tapVerBtnAction:(id)sender
 {
     
     NSString *str;
@@ -411,7 +411,7 @@
     }];
     
 }
--(void)registAction:(UIButton *)btn
+- (void)registAction:(UIButton *)btn
 {
     if (self.phoneTextField.text.length == 0) {
         [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请输入手机号") view:self afterDelay:TipSeconds];
@@ -438,7 +438,7 @@
     }
     
     if (![self.passWordTextField.text passwordComplexityVerification]) {
-        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"密码需要包含字母大小写和数字，请重新输入") view:self afterDelay:TipSeconds];
+        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"密码需要包含字母和数字，请重新输入") view:self afterDelay:TipSeconds];
         return;
     }
     
@@ -553,7 +553,7 @@
      [self.passWordTextField resignFirstResponder];
      [self.codeTextField resignFirstResponder];
 }
--(void)textFieldDidEndEditing:(UITextField *)textField
+- (void)textFieldDidEndEditing:(UITextField *)textField
 {
     if ([self.titleStr isEqualToString:SLLocalizedString(@"注册账号")]) {
         if (textField == self.phoneTextField) {
@@ -598,9 +598,12 @@
     if ([NSString isContainsEmoji:string]) {
         return NO;
     }
-    if (self.passWordTextField == textField){
-        return [string onlyNumbersAndEnglish];
+    if ([string isEqualToString:@" "]) {
+        return NO;
     }
+//    if (self.passWordTextField == textField){
+//        return [string onlyNumbersAndEnglish];
+//    }
     return YES;
 }
 /*

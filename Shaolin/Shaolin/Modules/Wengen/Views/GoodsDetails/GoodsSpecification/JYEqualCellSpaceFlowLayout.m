@@ -14,17 +14,17 @@
 @end
 
 @implementation JYEqualCellSpaceFlowLayout
--(instancetype)init{
+- (instancetype)init{
     return [self initWithType:AlignWithCenter betweenOfCell:5.0];
 }
--(void)setBetweenOfCell:(CGFloat)betweenOfCell{
+- (void)setBetweenOfCell:(CGFloat)betweenOfCell{
     _betweenOfCell = betweenOfCell;
     self.minimumInteritemSpacing = betweenOfCell;
 }
--(instancetype)initWthType:(AlignType)cellType{
+- (instancetype)initWthType:(AlignType)cellType{
     return [self initWithType:cellType betweenOfCell:5.0];
 }
--(instancetype)initWithType:(AlignType)cellType betweenOfCell:(CGFloat)betweenOfCell{
+- (instancetype)initWithType:(AlignType)cellType betweenOfCell:(CGFloat)betweenOfCell{
     self = [super init];
     if (self){
         self.scrollDirection = UICollectionViewScrollDirectionVertical;
@@ -75,7 +75,7 @@
     return layoutAttributes;
 }
 //调整属于同一行的cell的位置frame
--(void)setCellFrameWith:(NSMutableArray*)layoutAttributes{
+- (void)setCellFrameWith:(NSMutableArray*)layoutAttributes{
     CGFloat nowWidth = 0.0;
     switch (_cellType) {
         case AlignWithLeft:

@@ -12,25 +12,6 @@
 #import "MeClassListModel.h"
 #import "KungfuClassDetailViewController.h"
 #import "DefinedURLs.h"
-// TODO: 启动测试数据
-//#define MECLASS_TEST
-/*
- * MeClassListVCData 是一个用来 解释collectionView中有多少组，组标题，每个组有多少数据 的数据类型
- * 包含headTitle(组头标题),subDatas(一组内的数据条数)两个key
- * 例：
-    MeClassListVCData:@[
-    @{
-        MeClassHeadTitle:title,(组头标题)
-        MeClassSubDatas:@[
-            model,(刷新cell所用的数据模型)
-            model,
-        ]
-    },
-    @{
-        ...
-    },
- ]
- */
 
 typedef NSArray <NSDictionary *> * MeClassListVCData;
 NSString * const MeClassListViewControllerReloadData = @"MeClassListViewControllerReloadData.shaolin.commonVC";
@@ -41,7 +22,6 @@ static NSString *const MeClassVCSubDatas = @"MeClassVCSubDatas";
 @interface MeClassListViewController () <UITableViewDelegate, UITableViewDataSource>
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSMutableArray *tableViewDataArray;
-@property (nonatomic, strong) MeClassListVCData collectionViewData;
 @property (nonatomic) NSInteger page;
 @end
 
@@ -56,7 +36,7 @@ static NSString *const MeClassVCSubDatas = @"MeClassVCSubDatas";
     [super viewDidLoad];
     self.page = 1;
     self.tableViewDataArray = [@[] mutableCopy];
-    [self setUI];
+    [self setupUI];
     [self addNotification];
 }
 
@@ -64,40 +44,13 @@ static NSString *const MeClassVCSubDatas = @"MeClassVCSubDatas";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadMeClassListVCData:) name:MeClassListViewControllerReloadData object:nil];
 }
 
-#pragma mark - test
-- (void)testData{
-    NSMutableArray *tableArray = [@[] mutableCopy];
-    NSMutableArray *collectionViewData = [@[] mutableCopy];
-    NSInteger count = arc4random()%2 + 1;
-    NSArray *headArray = @[SLLocalizedString(@"此前一周"), SLLocalizedString(@"更早")];
-    for (int i = 0; i < count; i++){
-        NSInteger subCount = arc4random()%10 + 1;
-        NSMutableArray *subViewData = [@[] mutableCopy];
-        for (int j = 0; j < subCount; j++){
-            MeClassListModel *model = [[MeClassListModel alloc] init];
-            if ([self isCourseBuyHistory]){
-                model.testStr = @"1";
-            }
-            [subViewData addObject:model];
-            [tableArray addObject:model];
-        }
-        NSDictionary *dict = @{
-            MeClassVCHeadTitle : headArray[i],
-            MeClassVCSubDatas : subViewData,
-        };
-        [collectionViewData addObject:dict];
-        
-    }
-    self.tableViewDataArray = tableArray;
-    self.collectionViewData = collectionViewData;
-}
 #pragma mark - UI
 - (void)reloadCollectionView{
     [self.tableView reloadData];
     [self.tableView layoutIfNeeded];
 }
 
-- (void)setUI{
+- (void)setupUI{
     [self.view addSubview:self.tableView];
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.mas_equalTo(0);
@@ -175,7 +128,8 @@ static NSString *const MeClassVCSubDatas = @"MeClassVCSubDatas";
         url = Me_POST_CourseBuyHistory;
     }
     NSDictionary *params = @{
-        @"page" : [NSString stringWithFormat:@"%ld", self.page],
+        @"pageNum" : [NSString stringWithFormat:@"%ld", self.page],
+        @"pageSize" : @"10"
     };
     [[MeManager sharedInstance] postMeClassList:url params:params finish:^(id  _Nonnull responseObject, NSString * _Nonnull errorReason) {
 //         [hud hideAnimated:YES];
@@ -186,8 +140,7 @@ static NSString *const MeClassVCSubDatas = @"MeClassVCSubDatas";
         [weakSelf reloadCollectionView];
 #else
         if ([ModelTool checkResponseObject:responseObject]){
-            NSDictionary *data = responseObject[DATAS];
-            NSArray *arr = [data objectForKey:LIST];
+            NSArray *arr = responseObject[DATAS][DATAS];
             NSArray *dataList = [MeClassListModel mj_objectArrayWithKeyValuesArray:arr];
             if ([weakSelf isCourseBuyHistory]){
                 for (MeClassListModel *model in dataList){
@@ -195,7 +148,6 @@ static NSString *const MeClassVCSubDatas = @"MeClassVCSubDatas";
                 }
             }
             [weakSelf.tableViewDataArray addObjectsFromArray:dataList];
-//            weakSelf.collectionViewData = [weakSelf tableViewDataArrayToMeClassListVCData];
             if (finish) finish(dataList);
         } else {
             [ShaolinProgressHUD singleTextAutoHideHud:errorReason];
@@ -232,47 +184,13 @@ static NSString *const MeClassVCSubDatas = @"MeClassVCSubDatas";
     }];
 }
 
-- (MeClassListVCData)tableViewDataArrayToMeClassListVCData{
-    //TODO: 该方法未完成
-    NSMutableArray *collectionViewData = [@[] mutableCopy];
-    NSInteger allCount = self.tableViewDataArray.count;
-    if (allCount == 0) return nil;
-    NSInteger count1 = allCount -  arc4random()%allCount;
-    NSInteger count2 = allCount - count1;
-    NSArray *array = @[@(count1), @(count2)];
-    NSArray *headArray = @[SLLocalizedString(@"此前一周"), SLLocalizedString(@"更早")];
-    for (int i = 0; i < array.count; i++){
-        NSInteger subCount = [array[i] intValue];
-        NSMutableArray *subViewData = [@[] mutableCopy];
-        for (int j = 0; j < subCount; j++){
-            NSObject *obj = [NSObject new];
-            [subViewData addObject:obj];
-        }
-        NSDictionary *dict = @{
-            MeClassVCHeadTitle : headArray[i],
-            MeClassVCSubDatas : subViewData,
-        };
-        if (subViewData.count){
-            [collectionViewData addObject:dict];
-        }
-    }
-    return collectionViewData;
-}
 #pragma mark - tableCollectionView Delegate & DataSource
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-//    return self.collectionViewData.count;
-//    return 1;
     return self.tableViewDataArray.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-//    NSDictionary *dict = self.collectionViewData[section];
-//       NSArray *datas = [dict objectForKey:MeClassVCSubDatas];
-//       if ([datas isKindOfClass:[NSArray class]]){
-//           return datas.count;
-//       }
     return 1;
-//    return self.tableViewDataArray.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -283,16 +201,6 @@ static NSString *const MeClassVCSubDatas = @"MeClassVCSubDatas";
     }
     MeClassListModel *model = self.tableViewDataArray[indexPath.section];
     cell.model = model;
-//    if (self.collectionViewData.count > indexPath.section){
-//        NSDictionary *dict = self.collectionViewData[indexPath.section];
-//        NSArray *datas = [dict objectForKey:MeClassVCSubDatas];
-//        if (datas.count > indexPath.row){
-//            cell.model = datas[indexPath.row];
-//        }
-//    }
-#ifdef MECLASS_TEST
-    [cell testUI];
-#endif
     return cell;
 }
 
@@ -309,7 +217,7 @@ static NSString *const MeClassVCSubDatas = @"MeClassVCSubDatas";
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 10;//SLChange(24.5);//SLLocalizedString(@"此前一周"), SLLocalizedString(@"更早") 所在的headerView
+    return 10;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -319,24 +227,6 @@ static NSString *const MeClassVCSubDatas = @"MeClassVCSubDatas";
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidth, 10)];
     view.backgroundColor = KTextGray_FA;
-    
-    UILabel *titleLabel = [[UILabel alloc] init];
-    titleLabel.textAlignment = NSTextAlignmentLeft;
-    titleLabel.textColor = [UIColor colorForHex:@"0A0809"];
-    titleLabel.font = kRegular(12);
-    [view addSubview:titleLabel];
-    
-    [titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(SLChange(15));
-        make.bottom.mas_equalTo(0);
-        make.size.mas_equalTo(view);
-    }];
-    
-    NSDictionary *dict = self.collectionViewData[section];
-    NSString *title = [dict objectForKey:MeClassVCHeadTitle];
-    if (!title) title = @"";
-    titleLabel.text = title;
-    
     return view;
 }
 #pragma mark - Notification

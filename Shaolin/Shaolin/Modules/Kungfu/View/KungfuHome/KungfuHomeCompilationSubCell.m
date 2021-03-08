@@ -34,14 +34,14 @@
 }
 
 
--(void)setCellModel:(ClassListModel *)cellModel {
+- (void)setCellModel:(ClassListModel *)cellModel {
     _cellModel = cellModel;
     
     self.nameLabel.text = cellModel.name;
     
     NSString *timeStr = [ModelTool calculatedTimeWith:CalculatedTimeTypeDonotSecond secondStr:cellModel.weight];
     
-    self.contentLabel.text = [NSString stringWithFormat:@"%@ · %@",cellModel.level_name,timeStr];
+    self.contentLabel.text = [NSString stringWithFormat:@"%@ · %@",cellModel.levelName,timeStr];
     [self.classImgv sd_setImageWithURL:[NSURL URLWithString:cellModel.cover] placeholderImage:[UIImage imageNamed:@"default_small"]];
 }
 

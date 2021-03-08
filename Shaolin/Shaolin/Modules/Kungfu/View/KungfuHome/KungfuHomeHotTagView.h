@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol WTagViewDelegate <NSObject>
 
--(void)WTagView:(UIView*)tagView fetchWordToTextFiled:(NSString *)KeyWord;
+- (void)WTagView:(UIView*)tagView fetchWordToTextFiled:(NSString *)KeyWord;
 
 @end
 
@@ -32,7 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  标签文本数组的赋值
  */
--(void)setTagWithTagArray:(NSArray *)arr;
+- (void)setTagWithTagArray:(NSArray *)arr;
 
 @end
 

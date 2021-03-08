@@ -29,7 +29,7 @@ static NSString *const kGoodsSpecificationTypeCollectionCellIdentifier = @"Goods
 
 @implementation GoodsSpecificationTypeView
 
--(instancetype)initWithFrame:(CGRect)frame {
+- (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         [self initUI];
@@ -43,14 +43,14 @@ static NSString *const kGoodsSpecificationTypeCollectionCellIdentifier = @"Goods
 }
 
 #pragma mark - methods
--(void)initUI{
+- (void)initUI{
     [self setBackgroundColor:[UIColor whiteColor]];
     [self addSubview:self.titleLabel];
     [self addSubview:self.collectionView];
 }
 
 //计算Collection高度
--(CGFloat)calculateCollectionHeight:(NSArray *)dataArray{
+- (CGFloat)calculateCollectionHeight:(NSArray *)dataArray{
     CGFloat heigth = 0;
     
     heigth = [self.collectionView.collectionViewLayout collectionViewContentSize].height;
@@ -67,14 +67,14 @@ static NSString *const kGoodsSpecificationTypeCollectionCellIdentifier = @"Goods
 }
 
 ///刷新数据
--(void)reloadData{
+- (void)reloadData{
     [self.collectionView reloadData];
 }
 
 
 #pragma mark - UICollectionViewDelegate && UICollectionViewDataSource
 
--(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
     return self.dataArray.count;
 }
 
@@ -102,7 +102,7 @@ static NSString *const kGoodsSpecificationTypeCollectionCellIdentifier = @"Goods
     return CGSizeMake(width, 30);
 }
 
--(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     GoodsSpecificationTypeCollectionCell * cell  = [collectionView dequeueReusableCellWithReuseIdentifier:kGoodsSpecificationTypeCollectionCellIdentifier forIndexPath:indexPath];
 
     cell.model = self.dataArray[indexPath.row];
@@ -110,7 +110,7 @@ static NSString *const kGoodsSpecificationTypeCollectionCellIdentifier = @"Goods
     return cell;
 }
 
--(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 //    if (self.typeViewSelectedBlcok != nil) {
 //        self.typeViewSelectedBlcok(self, indexPath.row);
 //    }
@@ -126,7 +126,7 @@ static NSString *const kGoodsSpecificationTypeCollectionCellIdentifier = @"Goods
 
 #pragma mark - setter / getter
 
--(UILabel *)titleLabel{
+- (UILabel *)titleLabel{
     
     if (_titleLabel == nil) {
         _titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(16, 10, ScreenWidth - 31, 20)];
@@ -136,7 +136,7 @@ static NSString *const kGoodsSpecificationTypeCollectionCellIdentifier = @"Goods
     return _titleLabel;
 }
 
--(UICollectionView *)collectionView{
+- (UICollectionView *)collectionView{
     
     if (_collectionView == nil) {
         
@@ -161,12 +161,12 @@ static NSString *const kGoodsSpecificationTypeCollectionCellIdentifier = @"Goods
 
 }
 
--(void)setTitleStr:(NSString *)titleStr{
+- (void)setTitleStr:(NSString *)titleStr{
     _titleStr = titleStr;
     [self.titleLabel setText:titleStr];
 }
 
--(void)setDataArray:(NSArray *)dataArray{
+- (void)setDataArray:(NSArray *)dataArray{
     
     _dataArray = dataArray;
     
@@ -180,7 +180,7 @@ static NSString *const kGoodsSpecificationTypeCollectionCellIdentifier = @"Goods
 }
 
 
--(CGFloat)height{
+- (CGFloat)height{
     return self.tagHeight;
 }
 

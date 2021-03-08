@@ -9,7 +9,7 @@
 #import "PostPureTextCell.h"
 
 @implementation PostPureTextCell
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
@@ -17,7 +17,7 @@
     }
     return self;
 }
--(void)setupView
+- (void)setupView
 {
       [self.contentView addSubview:self.titleLabe];
       [self.contentView addSubview:self.contentLabel];
@@ -57,7 +57,7 @@
         }];
     
 }
--(void)setMePostManagerModel:(MePostManagerModel *)f indexpath:(NSIndexPath *)indexPath
+- (void)setMePostManagerModel:(MePostManagerModel *)f indexpath:(NSIndexPath *)indexPath
 {
      f.cellHeight = 100;
      self.titleLabe.text = f.title;
@@ -93,7 +93,7 @@
                        make.left.mas_equalTo(SLChange(15));
                   }];
     }
-    NSDate *date= [self nsstringConversionNSDate:f.returnTime];
+    NSDate *date= [self nsstringConversionNSDate:f.releaseTime];
     self.timeLabel.text = [NSString stringWithFormat:@"%@",[self compaareCurrentTime:date]];
 
     if(f.abstracts.length == 0 ) {
@@ -104,7 +104,7 @@
    
     
 }
--(void)layoutSubviews
+- (void)layoutSubviews
 {
     [super layoutSubviews];
     
@@ -131,7 +131,7 @@
     
 }
 
--(UILabel *)titleLabe
+- (UILabel *)titleLabe
 {
     if (!_titleLabe) {
         _titleLabe = [[UILabel alloc] init];
@@ -143,7 +143,7 @@
     }
     return _titleLabe;
 }
--(UILabel *)contentLabel
+- (UILabel *)contentLabel
 {
     if (!_contentLabel) {
         _contentLabel = [[UILabel alloc] init];
@@ -155,7 +155,7 @@
     }
     return _contentLabel;
 }
--(UILabel *)statusLabel
+- (UILabel *)statusLabel
 {
     if (!_statusLabel) {
         _statusLabel = [[UILabel alloc] init];
@@ -165,7 +165,7 @@
     }
     return _statusLabel;
 }
--(UILabel *)timeLabel
+- (UILabel *)timeLabel
 {
     if (!_timeLabel) {
         _timeLabel = [[UILabel alloc] init];
@@ -176,7 +176,7 @@
     }
     return _timeLabel;
 }
--(UIButton *)refusedBtn
+- (UIButton *)refusedBtn
 {
     if (!_refusedBtn) {
         _refusedBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
@@ -190,7 +190,7 @@
 }
 
 #pragma mark - 查看拒绝原因
--(void)refuseAction
+- (void)refuseAction
 {
     if (self.lookRefusedTextAction) {
         self.lookRefusedTextAction(self.indexPath);

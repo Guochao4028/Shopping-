@@ -16,11 +16,12 @@
 #import "RiteSecondLevelListViewCell.h"
 
 @interface RiteSecondLevelListViewController () <XLPageViewControllerDelegate, XLPageViewControllerDataSrouce>
-@property (nonatomic, strong) NSArray *datas;
+@property (nonatomic, strong) NSArray<RiteSecondLevelModel *> *datas;
 @property (nonatomic, strong) UIImageView *formBackImageView;//水墨风背景
 @property (nonatomic, strong) UIImageView *formLotusImageView;//莲花
 @property (nonatomic, strong) XLPageViewControllerConfig *config;
 @property (nonatomic, strong) XLPageViewController *pageViewController;
+@property (nonatomic) BOOL isGroup;
 @end
 
 @implementation RiteSecondLevelListViewController
@@ -30,12 +31,11 @@
     // Do any additional setup after loading the view.
     [self.view addSubview:self.formBackImageView];
     self.view.clipsToBounds = YES;
-    [self initPageViewController];
-    
+    self.isGroup = YES;
     [self buildData];
     
     if ([self.pujaType isEqualToString:@"4"]){
-        self.titleLabe.text = SLLocalizedString(@"功德");
+        self.titleLabe.text = SLLocalizedString(@"功德募捐");
     } else if ([self.pujaType isEqualToString:@"3"]){
         self.titleLabe.text = SLLocalizedString(@"佛事");
     } else if ([self.pujaType isEqualToString:@"2"]){
@@ -78,7 +78,7 @@
     self.config = config;
     
     self.pageViewController = [[XLPageViewController alloc] initWithConfig:config];
-    self.pageViewController.view.frame = CGRectMake(0, 0, kWidth, kHeight);
+    self.pageViewController.view.frame = CGRectMake(0, 0, kWidth, kHeight - NavBar_Height - BottomMargin_X);
     self.pageViewController.delegate = self;
     self.pageViewController.dataSource = self;
     [self.pageViewController registerClass:[RiteSecondLevelListViewCell class] forTitleViewCellWithReuseIdentifier:@"RiteSecondLevelListViewCell"];
@@ -88,39 +88,46 @@
 }
 
 - (void)buildData {
-    [self initPageViewController];
     NSString *code = self.pujaCode ? self.pujaCode : @"";
     NSString *type = self.pujaType ? self.pujaType : @"";
     NSDictionary *params = @{
-        @"code" : code,
         @"type" : type,
+        @"code" : code,
     };
+    
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
     [ActivityManager getRiteReservationList:params success:nil failure:nil finish:^(id  _Nonnull responseObject, NSString * _Nonnull errorReason) {
         [hud hideAnimated:YES];
         self.datas = @[];
         if ([ModelTool checkResponseObject:responseObject]){
-            NSArray *datas = responseObject[DATAS];
-            self.datas = [RiteSecondLevelModel mj_objectArrayWithKeyValuesArray:datas];
-            if (self.datas.count){
+            id datas = responseObject[DATAS];
+            if ([datas isKindOfClass:[NSArray class]]) {
+                self.isGroup = YES;
+                NSArray *datas = responseObject[DATAS];
+                self.datas = [RiteSecondLevelModel mj_objectArrayWithKeyValuesArray:datas];
+            } else {
+                self.isGroup = [datas[@"group"] boolValue];
+                NSArray *list = datas[LIST];
+                self.datas = [RiteSecondLevelModel mj_objectArrayWithKeyValuesArray:list];
+            }
+            [self initPageViewController];
+            if (self.datas.count && self.isGroup){
                 self.config.titleWidth = CGRectGetWidth(self.view.frame)/self.datas.count;
-                if (self.datas.count > 1){
-                    self.config.backgroundSelectedColor = [UIColor lgf_GradientFromColor:[UIColor colorForHex:@"E2CBA6"] toColor:kMainYellow height:50];
-                    self.config.titleSelectedColor = UIColor.whiteColor;
-                    self.config.shadowLineColor = [UIColor whiteColor];
-                } else {
-                    self.config.backgroundSelectedColor = KTextGray_FA;
-                    self.config.titleSelectedColor = kMainYellow;
-                    self.config.shadowLineColor = kMainYellow;
-                }
+                self.config.backgroundSelectedColor = [UIColor lgf_GradientFromColor:[UIColor colorForHex:@"E2CBA6"] toColor:kMainYellow height:50];
+                self.config.titleSelectedColor = UIColor.whiteColor;
+                self.config.shadowLineColor = [UIColor whiteColor];
             } else {
                 self.config.titleWidth = 0;
+                self.config.titleViewHeight = 0;
+                self.config.backgroundSelectedColor = KTextGray_FA;
+                self.config.titleSelectedColor = kMainYellow;
+                self.config.shadowLineColor = kMainYellow;
             }
+            [self.pageViewController reloadData];
+            self.pageViewController.selectedIndex = 0;
         } else {
             [ShaolinProgressHUD singleTextAutoHideHud:errorReason];
         }
-        [self.pageViewController reloadData];
-        self.pageViewController.selectedIndex = 0;
     }];
 }
 
@@ -129,8 +136,11 @@
     RiteThreeLevelListViewController *vc = [[RiteThreeLevelListViewController alloc] init];
     vc.pujaType = self.pujaType;
     vc.pujaCode = self.pujaCode;
-    RiteSecondLevelModel *model = self.datas[index];
-    vc.riteSecondLevelModel = model;
+    vc.datas = self.datas;
+    vc.isGroup = self.isGroup;
+    vc.selectIndex = index;
+//    RiteSecondLevelModel *model = self.datas[index];
+//    vc.riteSecondLevelModel = model;
     return vc;
 }
 
@@ -140,7 +150,7 @@
 }
 
 - (NSInteger)pageViewControllerNumberOfPage {
-    return self.datas.count;
+    return self.isGroup ? self.datas.count : 1;
 }
 
 - (void)pageViewController:(XLPageViewController *)pageViewController didSelectedAtIndex:(NSInteger)index {

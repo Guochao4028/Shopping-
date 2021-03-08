@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic,strong) UIImageView *imageV;
 @property(nonatomic,strong) UILabel *nameLabel;
 @property(nonatomic,strong) UIButton *deleteBtn;
--(void)setMePostManagerModel:(FoundModel *)model indexpath:(NSIndexPath *)indexPath;
+- (void)setMePostManagerModel:(FoundModel *)model indexpath:(NSIndexPath *)indexPath;
 @end
 
 NS_ASSUME_NONNULL_END

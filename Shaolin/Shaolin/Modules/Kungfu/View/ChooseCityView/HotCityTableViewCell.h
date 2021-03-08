@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @protocol HotCityTableViewCellDelegate <NSObject>
--(void)hotCityTableViewCell:(HotCityTableViewCell *)cell tapItem:(HotCityModel *)model;
+- (void)hotCityTableViewCell:(HotCityTableViewCell *)cell tapItem:(HotCityModel *)model;
 @end
 
 NS_ASSUME_NONNULL_END

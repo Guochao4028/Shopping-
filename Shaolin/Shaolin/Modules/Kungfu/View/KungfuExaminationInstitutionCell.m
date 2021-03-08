@@ -14,11 +14,11 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        [self setUI];
+        [self setupUI];
     }
     return self;
 }
-- (void)setUI {
+- (void)setupUI {
     UIView *view = [[UIView alloc]init];
     view.layer.cornerRadius = 4;
     view.layer.masksToBounds = YES;

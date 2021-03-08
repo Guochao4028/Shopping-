@@ -21,11 +21,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol SearchMenuViewDelegate <NSObject>
 
--(void)searchMenuView:(SearchMenuView *)view tapStarView:(BOOL)isTap;
+- (void)searchMenuView:(SearchMenuView *)view tapStarView:(BOOL)isTap;
 
--(void)searchMenuView:(SearchMenuView *)view tapPriceView:(BOOL)isTap;
+- (void)searchMenuView:(SearchMenuView *)view tapPriceView:(BOOL)isTap;
 
--(void)searchMenuView:(SearchMenuView *)view tapSalesVolumeView:(BOOL)isTap;
+- (void)searchMenuView:(SearchMenuView *)view tapSalesVolumeView:(BOOL)isTap;
 
 @end
 

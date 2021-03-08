@@ -26,7 +26,7 @@
 
 @implementation SearchNavgationView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [[NSBundle mainBundle] loadNibNamed:@"SearchNavgationView" owner:self options:nil];
@@ -38,7 +38,7 @@
 #pragma mark - methods
 
 /// 初始化UI
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.contentView];
     [self.contentView setFrame:self.bounds];
     [self.searchView.layer setCornerRadius:16];
@@ -47,17 +47,17 @@
     [self.searchTextField setReturnKeyType:UIReturnKeySearch];
 }
 
--(void)becomeFirstResponder{
+- (void)becomeFirstResponder{
     if (!self.searchTextField.isFirstResponder) {
            [self.searchTextField becomeFirstResponder];
        }
 }
 
--(void)resignFirstResponder{
+- (void)resignFirstResponder{
     [self.searchTextField resignFirstResponder];
 }
 
--(void)forwardingSearchWord{
+- (void)forwardingSearchWord{
     [self resignFirstResponder];
     NSString *str = self.searchTextField.text;
     if ([self.delegate respondsToSelector:@selector(searchNavgationView:searchWord:)] == YES) {
@@ -84,7 +84,7 @@
 
 #pragma mark - UITextFieldDelegate
 
--(BOOL)textFieldShouldReturn:(UITextField *)textField{
+- (BOOL)textFieldShouldReturn:(UITextField *)textField{
     [self forwardingSearchWord];
     return YES;
 }
@@ -96,7 +96,7 @@
     return YES;
 }
 #pragma mark -  getter / setter
--(void)setTitleStr:(NSString *)titleStr{
+- (void)setTitleStr:(NSString *)titleStr{
     _titleStr = titleStr;
     [self.searchTextField setText:titleStr];
 }

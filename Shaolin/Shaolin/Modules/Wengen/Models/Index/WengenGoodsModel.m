@@ -10,9 +10,15 @@
 
 @implementation WengenGoodsModel
 
+//+ (NSDictionary *)mj_replacedKeyFromPropertyName{
+//    return @{
+//             @"goodsId" : @"id",
+//             @"img_data": @"imgDataList"
+//             };
+//}
 + (NSDictionary *)mj_replacedKeyFromPropertyName{
     return @{
-             @"goodsId" : @"id",
+             @"goodsId" : @"id"
              };
 }
 

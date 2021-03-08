@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, strong)NSString *userId;
 @property(nonatomic, strong)NSString *searchContent;
 
--(void)addSearchWordWithDataArray:(NSMutableArray *)dataArray;
+- (void)addSearchWordWithDataArray:(NSMutableArray *)dataArray;
 
 @end
 

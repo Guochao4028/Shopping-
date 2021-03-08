@@ -23,6 +23,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, assign)BOOL isSelected;
 
+@property(nonatomic, copy)NSString *catSort;
+@property(nonatomic, copy)NSString *createTime;
+@property(nonatomic, copy)NSString *isDisplay;
+@property(nonatomic, copy)NSString *pid;
+@property(nonatomic, copy)NSArray *goodsCate;
+
+
 @end
 
 NS_ASSUME_NONNULL_END

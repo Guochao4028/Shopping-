@@ -50,13 +50,13 @@ static CGFloat chatTextInputHeight  = 34; //默认输入框的高度
     self = [super initWithFrame:frame];
     if (self) {
         NSLog(@"self.frame =:%@",NSStringFromCGRect(self.frame));
-        [self setUI];
+        [self setupUI];
         //        [self addNotification];
     }
     return self;
 }
 
--(void)setUI{
+- (void)setupUI{
     
     self.backgroundColor = [UIColor whiteColor];
     //  输入框
@@ -73,6 +73,7 @@ static CGFloat chatTextInputHeight  = 34; //默认输入框的高度
         if (self.inputWordBlock) {
             self.inputWordBlock(textView.text);
             textView.text = @"";
+            return NO;
         }
     }
     
@@ -89,14 +90,14 @@ static CGFloat chatTextInputHeight  = 34; //默认输入框的高度
     return YES;
 }
 
--(void)textViewDidEndEditing:(UITextView *)textView{
+- (void)textViewDidEndEditing:(UITextView *)textView{
     if (textView.text.length == 0) {
         [self.sendButton setEnabled:NO];
         [self.sendButton setBackgroundColor:kMainLightYellow];
     }
 }
 
--(void)sendAction{
+- (void)sendAction{
     
     if (self.chatText.text.length > 0) {
         if (self.inputWordBlock) {
@@ -108,8 +109,6 @@ static CGFloat chatTextInputHeight  = 34; //默认输入框的高度
             }
         }
     }
-    
-   
 }
 
 #pragma mark - setter / getter
@@ -117,7 +116,7 @@ static CGFloat chatTextInputHeight  = 34; //默认输入框的高度
 /**
  输入框容器
  */
--(UIView *)inputViewContainer{
+- (UIView *)inputViewContainer{
     if (!_inputViewContainer){
         _inputViewContainer =[[UIView alloc]init];
         _inputViewContainer.frame =CGRectMake(0, 0, ScreenWidth, inputViewDefaultHeight);
@@ -140,7 +139,7 @@ static CGFloat chatTextInputHeight  = 34; //默认输入框的高度
 }
 
 //聊天输入框
--(UITextView *)chatText{
+- (UITextView *)chatText{
     if (!_chatText) {
         _chatText =[[UITextView alloc]init];
         CGFloat w = 257, h = chatTextInputHeight;
@@ -174,7 +173,7 @@ static CGFloat chatTextInputHeight  = 34; //默认输入框的高度
     return _chatText;
 }
 
--(UIButton *)sendButton{
+- (UIButton *)sendButton{
     
     if (_sendButton == nil) {
         _sendButton = [UIButton buttonWithType:UIButtonTypeCustom];

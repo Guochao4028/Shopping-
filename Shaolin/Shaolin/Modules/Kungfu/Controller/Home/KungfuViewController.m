@@ -27,6 +27,9 @@
 #import "UIButton+Block.h"
 #import "UIImage+LGFImage.h"
 
+#import "LevelModel.h"
+#import "DataManager.h"
+
 static NSString *const typeCellId = @"typeTableCell";
 
 @interface KungfuViewController ()<XLPageViewControllerDelegate,XLPageViewControllerDataSrouce,UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate>
@@ -63,11 +66,11 @@ static NSString *const typeCellId = @"typeTableCell";
     [rightButton setImage:[UIImage imageNamed:@"ScanQRCode"] forState:UIControlStateNormal];
 }
 
--(void)viewWillDisappear:(BOOL)animated {
+- (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
 }
 
--(void)viewDidDisappear:(BOOL)animated {
+- (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
 }
 
@@ -77,6 +80,15 @@ static NSString *const typeCellId = @"typeTableCell";
     [self buildData];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(kungFuPageChange:) name:KNotificationKungfuPageChange object:nil];
+    
+    NSArray *dbDataArray =[[ModelTool shareInstance]selectALL:[LevelModel class] tableName:@"level"];
+    
+    if ([dbDataArray count] == 0) {
+        //level表里数据不存在。调用接口 装填数据
+        [[DataManager shareInstance]getLevelList:@{} callbacl:^(NSDictionary *result) {
+        }];
+    }
+    
 }
 
 - (void) kungFuPageChange:(NSNotification *)noti {
@@ -140,13 +152,13 @@ static NSString *const typeCellId = @"typeTableCell";
     [self.navigationController pushViewController:vc animated:YES];
 }
 
--(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     
     [self.view endEditing:YES];
     [self hideTypeTable];
 }
 
--(void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+- (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     [self.view endEditing:YES];
     [self hideTypeTable];
 }
@@ -195,7 +207,7 @@ static NSString *const typeCellId = @"typeTableCell";
 }
 
 - (void)pushWebViewViewController:(NSString *)url{
-    NSString *token = [SLAppInfoModel sharedInstance].access_token;
+    NSString *token = [SLAppInfoModel sharedInstance].accessToken;
     url = [NSString stringWithFormat:@"%@&token=%@",url, token];
     KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:url type:KfWebView_unknown];
     webVC.disableRightGesture = YES;
@@ -265,13 +277,13 @@ static NSString *const typeCellId = @"typeTableCell";
 
 #pragma mark - tableviewDelegate && dataSource
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
     return self.typeTableList.count;
 }
 
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:typeCellId];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -294,7 +306,7 @@ static NSString *const typeCellId = @"typeTableCell";
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     //    if (indexPath.row == 0) {
     //        self.classType = KfClassType_free;
@@ -309,7 +321,7 @@ static NSString *const typeCellId = @"typeTableCell";
     [self hideTypeTable];
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 40;
 }
@@ -421,7 +433,7 @@ static NSString *const typeCellId = @"typeTableCell";
     return _typeTable;
 }
 
--(UIView *)bgAlphaView {
+- (UIView *)bgAlphaView {
     if (!_bgAlphaView) {
         _bgAlphaView = [[UIView alloc] initWithFrame: CGRectMake(0, 0, kScreenWidth, kScreenHeight)];
 //        _bgAlphaView.backgroundColor = [UIColor hexColor:@"ffffff" alpha:0];
@@ -430,7 +442,7 @@ static NSString *const typeCellId = @"typeTableCell";
 }
 
 #pragma mark - setter
--(void)setTypeString:(NSString *)typeString {
+- (void)setTypeString:(NSString *)typeString {
     _typeString = typeString;
     NSString *placeholder = [NSString stringWithFormat:@"%@%@", SLLocalizedString(@"搜索"), typeString];
     [self.searchView setPlaceholder:placeholder];

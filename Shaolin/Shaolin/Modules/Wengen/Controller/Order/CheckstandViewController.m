@@ -30,6 +30,7 @@
 #import "OrderHomePageViewController.h"
 #import "ThirdpartyAuthorizationManager.h"
 
+#import "SLRouteManager.h"
 #import "WSIAPManager.h"
 #import <StoreKit/StoreKit.h>
 #import "NSString+Tool.h"
@@ -56,12 +57,12 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
 //支付类型  1.微信2.支付宝3.余额4.苹果虚拟币5.凭证支付
 @property(nonatomic, assign)NSInteger payType;
 
-
+@property (nonatomic, strong) NSNotification *notification;
 @end
 
 @implementation CheckstandViewController
 
--(void)dealloc {
+- (void)dealloc {
     NSLog(@"支付台页面释放了");
     [[ThirdpartyAuthorizationManager sharedInstance] receiveCompletionBlock:nil];
 }
@@ -74,20 +75,23 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
     [self initData];
     [self initUI];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkOrderNoState:) name:ThirdpartyApplicationWillEnterForeground object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkOrderNoState:) name:ApplicationWillEnterForegroundNotification object:nil];
     
     //    [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
     
 }
 
--(void)viewWillAppear:(BOOL)animated{
+- (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    
-//    WEAKSELF
-//    [[ThirdpartyAuthorizationManager sharedInstance] receiveCompletionBlock:^(ThirdpartyAuthorizationMessageCode code, Message * _Nonnull message) {
-//        // TODO: 验证订单状态
-//        [weakSelf checkOrderNoState];
-//    }];
+    WEAKSELF
+    [[ThirdpartyAuthorizationManager sharedInstance] receiveCompletionBlock:^(ThirdpartyAuthorizationMessageCode code, Message * _Nonnull message) {
+        // TODO: 验证订单状态
+        if (code == ThirdpartyAuthorizationCodeTips){
+            [ShaolinProgressHUD singleTextAutoHideHud:message.reason];
+        } else {
+            [weakSelf checkOrderNoState:weakSelf.notification];
+        }
+    }];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -95,7 +99,7 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
 }
 
 #pragma mark - methods
--(void)initUI{
+- (void)initUI{
     
     [self.view setBackgroundColor:[UIColor whiteColor]];
     [self.view addSubview:self.priceLabel];
@@ -103,15 +107,15 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
     [self.view addSubview:self.payButton];
 }
 
--(void)initData{
+- (void)initData{
     xx_weakify(self);
     
     if (self.isCourse) {
-        MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
-        [[DataManager shareInstance]userBalanceCallback:^(Message *message) {
+//        MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
+//        [[DataManager shareInstance]userBalanceCallback:^(Message *message) {
             
-            [hud hideAnimated:YES];
-            weakSelf.iosMoney = message.extensionDic[@"iosMoney"];
+//            [hud hideAnimated:YES];
+//            weakSelf.iosMoney = message.extensionDic[@"iosMoney"];
             
             NSString *string = weakSelf.iosMoney == nil? 0:weakSelf.iosMoney;
             NSArray *tem = @[
@@ -127,18 +131,18 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
             [self reloadPayButton:0];
             [self.tableView reloadData];
             
-        }];
+//        }];
         
     }else{
-        MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
-        [[DataManager shareInstance]userBalanceCallback:^(Message *message) {
+//        MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
+//        [[DataManager shareInstance]userBalanceCallback:^(Message *message) {
             
-            [hud hideAnimated:YES];
-            weakSelf.accountBalance = message.extensionDic[@"balance"];
+//            [hud hideAnimated:YES];
+//            weakSelf.accountBalance = message.extensionDic[@"balance"];
             
             NSString *string = weakSelf.accountBalance == nil? 0:weakSelf.accountBalance;
             BOOL flag = NO;
-            float balancePayment = string.floatValue;
+//            float balancePayment = string.floatValue;
             NSString *amountTotal = [self.goodsAmountTotal substringFromIndex:1];
             if (self.accountBalance.integerValue > amountTotal.integerValue){
                 flag = YES;
@@ -207,13 +211,13 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
             //
             //                }];
             //            }
-        }];
+//        }];
     }
 }
 
 #pragma mark - action
 //支付
--(void)payButtonAction:(UIButton *)sender{
+- (void)payButtonAction:(UIButton *)sender{
     [sender setEnabled: NO];
     
     if (self.payType == 3) {
@@ -222,32 +226,33 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
         //        [self balancePayment];
         
     }else if (self.payType == 1 || self.payType == 2 || self.payType == 5){
-        if (self.payType == 1){
-            [ShaolinProgressHUD singleTextAutoHideHud:@"微信支付暂未接入"];
-            [sender setEnabled: YES];
-            return;
-        }
         //微信支付1， 支付宝支付2，凭证支付5
         WEAKSELF
         MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
-        [[DataManager shareInstance]orderPay:@{@"ordercode" :self.order_no, @"orderMoney": [self.goodsAmountTotal substringFromIndex:1], @"payType":[NSString stringWithFormat:@"%ld",self.payType], @"activityCode":self.activityCode, @"examProofCode":self.examProofCode} Callback:^(Message *message) {
+        NSDictionary *params = @{@"orderCarId" :self.orderCarId, @"orderMoney": [self.goodsAmountTotal substringFromIndex:1], @"payType":[NSString stringWithFormat:@"%ld",self.payType], @"activityCode":self.activityCode, @"examProofCode":self.examProofCode};
+        
+        [[DataManager shareInstance]orderPay:params Callback:^(Message *message) {
             [hud hideAnimated:YES];
             if (message.isSuccess){
                 NSDictionary *dict = message.extensionDic[DATAS];
                 if (self.payType == 1){
-                    [sender setEnabled: YES];
-                    [[ThirdpartyAuthorizationManager sharedInstance] payByThirdpartyType:ThirdpartyType_WX dict:dict];
+                    [[ThirdpartyAuthorizationManager sharedInstance] payByThirdpartyType:ThirdpartyTypeWX dict:dict];
                 } else if (self.payType == 2){
-                    [sender setEnabled: YES];
-                    [[ThirdpartyAuthorizationManager sharedInstance] payByThirdpartyType:ThirdpartyType_Ali dict:dict];
+                    [[ThirdpartyAuthorizationManager sharedInstance] payByThirdpartyType:ThirdpartyTypeAli dict:dict];
+                } else {
+                    [weakSelf checkOrderNoState:weakSelf.notification];
                 }
             } else {
-                [weakSelf checkOrderNoState:nil];
+                if (message.reason && message.reason.length){
+                    [ShaolinProgressHUD singleTextAutoHideHud:message.reason];
+                }
+                [weakSelf checkOrderNoState:weakSelf.notification];
             }
+            [sender setEnabled: YES];
         }];
     }else if (self.payType == 1){
         //微信支付
-        [[ThirdpartyAuthorizationManager sharedInstance] payByThirdpartyType:ThirdpartyType_WX dict:@{}];
+        [[ThirdpartyAuthorizationManager sharedInstance] payByThirdpartyType:ThirdpartyTypeWX dict:@{}];
     }else if (self.payType == 4){
         //苹果虚拟币
         [sender setEnabled: YES];
@@ -255,7 +260,7 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
         
     }else if (self.payType == 5){
         //凭证支付
-        [[DataManager shareInstance]orderPay:@{@"ordercode" :self.order_no, @"orderMoney": [self.goodsAmountTotal substringFromIndex:1], @"payType":@"5", @"activityCode":self.activityCode, @"examProofCode":self.examProofCode} Callback:^(Message *message) {
+        [[DataManager shareInstance]orderPay:@{@"orderCarId" :self.orderCarId, @"orderMoney": [self.goodsAmountTotal substringFromIndex:1], @"payType":@"5", @"activityCode":self.activityCode, @"examProofCode":self.examProofCode} Callback:^(Message *message) {
             
             if (message.isSuccess) {
                 PaySuccessViewController *paySuccessVC = [[PaySuccessViewController alloc]init];
@@ -271,7 +276,7 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
 }
 
 //#pragma mark - OrderPay 用于0元商品支付
-//-(void)freeOrderPay {
+//- (void)freeOrderPay {
 //    [[DataManager shareInstance] orderPay:@{@"ordercode" :self.order_no, @"orderMoney": [self.goodsAmountTotal substringFromIndex:1], @"payType":@"3"} Callback:^(Message *message) {
 //
 //        if (message.isSuccess) {
@@ -289,7 +294,7 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
 //    }];
 //}
 //#pragma mark - 余额支付
-//-(void)balancePayment{
+//- (void)balancePayment{
 //    [[MeManager sharedInstance] queryPayPassWordStatusSuccess:^(id  _Nonnull responseObject) {
 //        NSNumber *number = responseObject;
 //        if (![number isKindOfClass:[NSNumber class]]) return;
@@ -375,11 +380,15 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
 
 #pragma mark - notification
 - (void)checkOrderNoState:(NSNotification *)notification{
+    if (notification && (self.notification == notification)) return;
+    UIViewController *currentVC = [SLRouteManager findCurrentShowingViewController];
+    if (currentVC != self) return;
+    
+    self.notification = notification;
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:@""];
-    dispatch_time_t when = 0.1;
-    if (notification) when = 1.0;
+    dispatch_time_t when = 1.0;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(when * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        NSDictionary *params = @{@"ordercode":self.order_no};
+        NSDictionary *params = @{@"orderCarId":self.orderCarId};
         [[DataManager shareInstance] checkPay:params Callback:^(Message *message) {
             [hud hideAnimated:YES];
             NSArray *vcArray = self.navigationController.viewControllers;
@@ -389,112 +398,118 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
                 }
             }
             if (message.isSuccess){
-                PaySuccessViewController *paySuccessVC = [[PaySuccessViewController alloc]init];
-                [self.navigationController pushViewController:paySuccessVC animated:YES];
+                if (self.paySuccessfulBlock) {
+                    self.paySuccessfulBlock(self.order_no, self.orderCarId);
+                    [self.payButton setEnabled: YES];
+                } else {
+                    PaySuccessViewController *paySuccessVC = [[PaySuccessViewController alloc]init];
+                    [self.navigationController pushViewController:paySuccessVC animated:YES];
+                }
             }
+            self.notification = nil;
         }];
     });
 }
 
 #pragma mark - 余额支付
--(void)balancePayment{
-    [[MeManager sharedInstance] queryPayPassWordStatusSuccess:^(id  _Nonnull responseObject) {
-        NSNumber *number = responseObject;
-        if (![number isKindOfClass:[NSNumber class]]) return;
-        if ([number boolValue] == NO)
-        {
-            PayPasswordSetupVc * v = [PayPasswordSetupVc new];
-            [self.navigationController pushViewController:v animated:YES];
-            [self.payButton setEnabled: YES];
-        }else {
-            NSString *amountTotal = [self.goodsAmountTotal substringFromIndex:1];
-            if (self.accountBalance.integerValue < amountTotal.integerValue) {
-                
-                [SMAlert setConfirmBtBackgroundColor:kMainYellow];
-                [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
-                [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
-                [SMAlert setCancleBtTitleColor:KTextGray_333];
-                [SMAlert setAlertBackgroundColor:[UIColor colorWithWhite:0 alpha:0.5]];
-                UIView *customView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 300, 100-38)];
-                UILabel *title = [[UILabel alloc]initWithFrame:CGRectMake(0, 10, 300, 21)];
-                [title setFont:kMediumFont(15)];
-                [title setTextColor:KTextGray_333];
-                title.text = @"余额不足是否充值？";
-                [title setTextAlignment:NSTextAlignmentCenter];
-                [customView addSubview:title];
-                
-                [SMAlert showCustomView:customView stroke:YES confirmButton:[SMButton initWithTitle:@"立即充值" clickAction:^{
-               
-                    UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"BalanceManagementVc" bundle:nil];
-                    BalanceManagementVc *secondController = [mainStory instantiateViewControllerWithIdentifier:@"BalanceManagement"];
-                    secondController.hidesBottomBarWhenPushed = YES;
-                    //跳转页面
-                    [self.navigationController pushViewController:secondController animated:YES];
-                }] cancleButton:[SMButton initWithTitle:SLLocalizedString(@"取消") clickAction:^{
-                    [self.payButton setEnabled: YES];
-
-                    //                       [XXAlertView showWithText:@"余额不足" view:self.view];
-                    
-                }]];
-                [self.payButton setEnabled: YES];
-                return;
-            }
-            
-            //                NSString *title = sender.titleLabel.text;
-            //                if ([title rangeOfString:@"余额支付"].location != NSNotFound) {
-            //
-            //                    NSLog(@"%@", self.order_no);
-            
-            PayView *pay = [[PayView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
-            [pay setPriceStr:[self.priceLabel text]];
-            [[ShaolinProgressHUD frontWindow] addSubview:pay];
-            
-            [pay setGoneBlock:^(BOOL isGone) {
-                [self.payButton setEnabled: YES];
-            }];
-            
-            [pay setInputPassword:^(NSString * _Nonnull password) {
-                
-                NSLog(@"password : %@", password);
-                
-                [[DataManager shareInstance]payPasswordCheck:@{@"payPassword":password} Callback:^(Message *message) {
-                    [pay gone];
-                    if (message.isSuccess) {
-                        [[DataManager shareInstance]orderPay:@{@"ordercode" :self.order_no, @"orderMoney": [self.goodsAmountTotal substringFromIndex:1], @"payType":@"3"} Callback:^(Message *message) {
-                            
-                            if (self.paySuccessfulBlock) {
-                                self.paySuccessfulBlock(self.order_no);
-                                [self.payButton setEnabled: YES];
-
-                                return;
-                            }
-                            
-                            PaySuccessViewController *paySuccessVC = [[PaySuccessViewController alloc]init];
-                            [self.navigationController pushViewController:paySuccessVC animated:YES];
-                            [self.payButton setEnabled: YES];
-
-                        }];
-                        
-                    }else{
-                        [ShaolinProgressHUD singleTextHud:message.reason view:self.view afterDelay:TipSeconds];
-                        [self.payButton setEnabled: YES];
-
-                    }
-                    
-                }];
-            }];
-            
-            
-            //                }else{
-            //                    PaySuccessViewController *paySuccessVC = [[PaySuccessViewController alloc]init];
-            //                    [self.navigationController pushViewController:paySuccessVC animated:YES];
-            //                }
-        }
-    } failure:nil finish:nil];
+- (void)balancePayment{
+//    [[MeManager sharedInstance] queryPayPassWordStatusSuccess:^(id  _Nonnull responseObject) {
+//        NSNumber *number = responseObject;
+//        if (![number isKindOfClass:[NSNumber class]]) return;
+//        if ([number boolValue] == NO)
+//        {
+//            PayPasswordSetupVc * v = [PayPasswordSetupVc new];
+//            [self.navigationController pushViewController:v animated:YES];
+//            [self.payButton setEnabled: YES];
+//        }else {
+//            NSString *amountTotal = [self.goodsAmountTotal substringFromIndex:1];
+//            if (self.accountBalance.integerValue < amountTotal.integerValue) {
+//                
+//                [SMAlert setConfirmBtBackgroundColor:kMainYellow];
+//                [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
+//                [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
+//                [SMAlert setCancleBtTitleColor:KTextGray_333];
+//                [SMAlert setAlertBackgroundColor:[UIColor colorWithWhite:0 alpha:0.5]];
+//                UIView *customView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 300, 100-38)];
+//                UILabel *title = [[UILabel alloc]initWithFrame:CGRectMake(0, 10, 300, 21)];
+//                [title setFont:kMediumFont(15)];
+//                [title setTextColor:KTextGray_333];
+//                title.text = @"余额不足是否充值？";
+//                [title setTextAlignment:NSTextAlignmentCenter];
+//                [customView addSubview:title];
+//                
+//                [SMAlert showCustomView:customView stroke:YES confirmButton:[SMButton initWithTitle:@"立即充值" clickAction:^{
+//               
+//                    UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"BalanceManagementVc" bundle:nil];
+//                    BalanceManagementVc *secondController = [mainStory instantiateViewControllerWithIdentifier:@"BalanceManagement"];
+//                    secondController.hidesBottomBarWhenPushed = YES;
+//                    //跳转页面
+//                    [self.navigationController pushViewController:secondController animated:YES];
+//                }] cancleButton:[SMButton initWithTitle:SLLocalizedString(@"取消") clickAction:^{
+//                    [self.payButton setEnabled: YES];
+//
+//                    //                       [XXAlertView showWithText:@"余额不足" view:self.view];
+//                    
+//                }]];
+//                [self.payButton setEnabled: YES];
+//                return;
+//            }
+//            
+//            //                NSString *title = sender.titleLabel.text;
+//            //                if ([title rangeOfString:@"余额支付"].location != NSNotFound) {
+//            //
+//            //                    NSLog(@"%@", self.order_no);
+//            
+//            PayView *pay = [[PayView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
+//            [pay setPriceStr:[self.priceLabel text]];
+//            [[ShaolinProgressHUD frontWindow] addSubview:pay];
+//            
+//            [pay setGoneBlock:^(BOOL isGone) {
+//                [self.payButton setEnabled: YES];
+//            }];
+//            
+//            [pay setInputPassword:^(NSString * _Nonnull password) {
+//                
+//                NSLog(@"password : %@", password);
+//                
+//                [[DataManager shareInstance]payPasswordCheck:@{@"payPassword":password} Callback:^(Message *message) {
+//                    [pay gone];
+//                    if (message.isSuccess) {
+//                        [[DataManager shareInstance]orderPay:@{@"ordercode" :self.order_no, @"orderMoney": [self.goodsAmountTotal substringFromIndex:1], @"payType":@"3"} Callback:^(Message *message) {
+//                            
+//                            if (self.paySuccessfulBlock) {
+//                                self.paySuccessfulBlock(self.order_no);
+//                                [self.payButton setEnabled: YES];
+//
+//                                return;
+//                            }
+//                            
+//                            PaySuccessViewController *paySuccessVC = [[PaySuccessViewController alloc]init];
+//                            [self.navigationController pushViewController:paySuccessVC animated:YES];
+//                            [self.payButton setEnabled: YES];
+//
+//                        }];
+//                        
+//                    }else{
+//                        [ShaolinProgressHUD singleTextHud:message.reason view:self.view afterDelay:TipSeconds];
+//                        [self.payButton setEnabled: YES];
+//
+//                    }
+//                    
+//                }];
+//            }];
+//            
+//            
+//            //                }else{
+//            //                    PaySuccessViewController *paySuccessVC = [[PaySuccessViewController alloc]init];
+//            //                    [self.navigationController pushViewController:paySuccessVC animated:YES];
+//            //                }
+//        }
+//    } failure:nil finish:nil];
 }
 
 //#pragma mark - 苹果虚拟币
-//-(void)iosMoneyPay{
+//- (void)iosMoneyPay{
 //    [[MeManager sharedInstance] queryPayPassWordStatusSuccess:^(id  _Nonnull responseObject) {
 //        NSNumber *number = responseObject;
 //        if (![number isKindOfClass:[NSNumber class]]) return;
@@ -586,7 +601,7 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
 
 #pragma mark - WengenNavgationViewDelegate
 //返回按钮
--(void)leftAction{
+- (void)leftAction{
     
     [SMAlert setConfirmBtBackgroundColor:kMainYellow];
     [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
@@ -604,7 +619,10 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
     UILabel *neirongLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, CGRectGetMaxY(title.frame)+10, 270, 38)];
     [neirongLabel setFont:kRegular(13)];
     [neirongLabel setTextColor:KTextGray_333];
-    neirongLabel.text = SLLocalizedString(@"您的订单在30分钟内未支付将被取消，请尽快完成支付。");
+    
+    if (!self.isRite) {
+        neirongLabel.text = SLLocalizedString(@"您的订单在30分钟内未支付将被取消，请尽快完成支付。");
+    }
     neirongLabel.numberOfLines = 0;
     [customView addSubview:neirongLabel];
     
@@ -679,7 +697,7 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
 }
 
 #pragma mark - IAP内购相关
--(void)iosMoneyPay{
+- (void)iosMoneyPay{
     
 
     if (![WSIAPManager canMakePayments]) {
@@ -809,7 +827,7 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
     [WSIAPManager addPaymentWithProductId:productId success:^(SKPaymentTransaction * _Nonnull transaction) {
         
         // 支付成功后，调用updateTransaction将订单保存至本地
-        [self updateTransaction:transaction checkType:WSIAPCheckWait customIdentifier:self.order_no];
+        [self updateTransaction:transaction checkType:WSIAPCheckWait customIdentifier:[NSString stringWithFormat:@"%@",self.orderCarId]];
         
     } failure:^(NSString * _Nonnull errorString) {
         [ShaolinProgressHUD hideSingleProgressHUD];
@@ -827,14 +845,15 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
         [self checkReceipWithIapModel:iapModel];
     }];
 }
-
+//2544
 
 /// 检查购买凭据
 /// @param iapModel iapModel
 - (void) checkReceipWithIapModel:(WSIAPModel *)iapModel {
     
-    if (IsNilOrNull(iapModel) || iapModel.customIdentifier.length == 0) {
+    if (IsNilOrNull(iapModel) || IsNilOrNull(iapModel.customIdentifier) || iapModel.customIdentifier.length == 0) {
         [self showAlertWithTitle:@"关联订单获取失败" msg:@"如果您已扣款成功，请稍后尝试重启App或联系客服人员，将会恢复您的订单"];
+        [ShaolinProgressHUD hideSingleProgressHUD];
         return;
     }
     
@@ -952,20 +971,20 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
     }
 }
 #pragma mark - UITableViewDelegate & UITableViewDataSource
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return 1;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     return 0.01;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     
     return 44;
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     static NSString *hIdentifier = @"hIdentifier";
     
     UITableViewHeaderFooterView *view= [tableView dequeueReusableHeaderFooterViewWithIdentifier:hIdentifier];
@@ -989,23 +1008,23 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
     return view;
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
     
     UIView *view = [[UIView alloc] init];
     view.backgroundColor = KTextGray_FA;
     return view;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     
     return self.dataArray.count;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return 44;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     CheckstandTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCheckstandTableViewCellIdentifier];
     
@@ -1014,7 +1033,7 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [self reloadPayButton:indexPath.row];
     [tableView reloadData];
 }
@@ -1023,7 +1042,7 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
 
 
 #pragma mark - getter / setter
--(UILabel *)priceLabel{
+- (UILabel *)priceLabel{
     
     if (_priceLabel == nil) {
         CGFloat y = 30;
@@ -1035,7 +1054,7 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
 }
 
 
--(UITableView *)tableView{
+- (UITableView *)tableView{
     
     if (_tableView == nil) {
         CGFloat y = CGRectGetMaxY(self.priceLabel.frame)+52;
@@ -1052,7 +1071,7 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
     
 }
 
--(UIButton *)payButton{
+- (UIButton *)payButton{
     
     if (_payButton == nil) {
         _payButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -1074,7 +1093,7 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
 
 
 
--(void)setGoodsAmountTotal:(NSString *)goodsAmountTotal{
+- (void)setGoodsAmountTotal:(NSString *)goodsAmountTotal{
     if ([goodsAmountTotal hasPrefix:@"¥"]){
         goodsAmountTotal = [goodsAmountTotal substringFromIndex:1];
     }
@@ -1108,7 +1127,7 @@ static NSString *const kCheckstandTableViewCellIdentifier = @"CheckstandTableVie
     
 }
 
--(NSMutableArray *)dataArray{
+- (NSMutableArray *)dataArray{
     if (_dataArray == nil) {
         
         //        NSArray *tem = @[

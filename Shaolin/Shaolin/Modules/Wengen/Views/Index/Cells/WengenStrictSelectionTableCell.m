@@ -52,7 +52,7 @@ static NSString *const kWengenStrictSelectionItemCollectionCellIdentifier = @"We
 
 #pragma mark - methods
 
--(void)initUI{
+- (void)initUI{
 //    self.selectionStyle = UITableViewCellSelectionStyleNone;
 //    [self.pageControl setHidden:YES];
 //    self.collectionView.delegate = self;
@@ -71,13 +71,13 @@ static NSString *const kWengenStrictSelectionItemCollectionCellIdentifier = @"We
 
 #pragma mark - action
 
--(void)strictSelectionAction{
+- (void)strictSelectionAction{
     if([self.delegate respondsToSelector:@selector(tapStrictSelectionItem:)]){
             [self.delegate tapStrictSelectionItem:YES];
         }
 }
 
--(void)recommendedAction{
+- (void)recommendedAction{
     
     if ([self.delegate respondsToSelector:@selector(tapRecommendedItem:)]) {
         [self.delegate tapRecommendedItem:YES];
@@ -85,7 +85,7 @@ static NSString *const kWengenStrictSelectionItemCollectionCellIdentifier = @"We
     
 }
 
-//-(void)tapBannerAction{
+//- (void)tapBannerAction{
 //    if ([self.delegate respondsToSelector:@selector(tapBanner:)]) {
 //        [self.delegate tapBanner:self.bannerModel];
 //    }
@@ -93,7 +93,7 @@ static NSString *const kWengenStrictSelectionItemCollectionCellIdentifier = @"We
 //
 //#pragma mark - UICollectionViewDataSource & UICollectionViewDelegate
 //
-//-(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+//- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
 //    return self.goodsArray.count;
 //}
 //
@@ -101,7 +101,7 @@ static NSString *const kWengenStrictSelectionItemCollectionCellIdentifier = @"We
 //    return CGSizeMake((ScreenWidth - (32+5)) / 3, 170);
 //}
 //
-//-(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+//- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
 //   WengenStrictSelectionItemCollectionCell * cell  = [collectionView dequeueReusableCellWithReuseIdentifier:kWengenStrictSelectionItemCollectionCellIdentifier forIndexPath:indexPath];
 //
 //    cell.model = self.goodsArray[indexPath.row];
@@ -109,7 +109,7 @@ static NSString *const kWengenStrictSelectionItemCollectionCellIdentifier = @"We
 //    return cell;
 //}
 //
-//-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+//- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 //    if([self.delegate respondsToSelector:@selector(tapStrictSelectionGoodsItem:)]){
 //        [self.delegate tapStrictSelectionGoodsItem:self.goodsArray[indexPath.row]];
 //    }
@@ -117,7 +117,7 @@ static NSString *const kWengenStrictSelectionItemCollectionCellIdentifier = @"We
 
 //#pragma mark - UIScrollViewDelegate
 //
-//-(void)scrollViewDidScroll:(UIScrollView *)scrollView{
+//- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
 //   CGFloat pagewidth = ScreenWidth - 32;
 //    int page = floor((scrollView.contentOffset.x - pagewidth/2)/pagewidth)+1;
 //
@@ -128,7 +128,7 @@ static NSString *const kWengenStrictSelectionItemCollectionCellIdentifier = @"We
 //
 //#pragma mark - setter / getter
 //
-//-(void)setGoodsArray:(NSArray<WengenGoodsModel *> *)goodsArray{
+//- (void)setGoodsArray:(NSArray<WengenGoodsModel *> *)goodsArray{
 //    _goodsArray = goodsArray;
 //    [self.collectionView reloadData];
 //
@@ -143,7 +143,7 @@ static NSString *const kWengenStrictSelectionItemCollectionCellIdentifier = @"We
 //    [self.strictSelectionBannerImageView setImage:[UIImage imageNamed:@"yanxuanbanner"]];
 //}
 //
-//-(void)setBannerModel:(WengenBannerModel *)bannerModel{
+//- (void)setBannerModel:(WengenBannerModel *)bannerModel{
 //    _bannerModel = bannerModel;
 //
 //    [self.strictSelectionBannerImageView sd_setImageWithURL:[NSURL URLWithString:bannerModel.imgUrl]];

@@ -13,7 +13,7 @@
 + (NSDictionary *)mj_replacedKeyFromPropertyName{
     return @{
              @"enterId" : @"id",
-             @"imageUrl": @"img_url"
+             @"imageUrl": @[@"img_url", @"imgUrl"]
              };
 }
 

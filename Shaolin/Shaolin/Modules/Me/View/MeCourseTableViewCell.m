@@ -8,6 +8,7 @@
 
 #import "MeCourseTableViewCell.h"
 #import "MeCouresModel.h"
+#import "NSString+Tool.h"
 
 @interface MeCourseTableViewCell()
 @property (nonatomic, strong) UIImageView *courseVideoImageView;
@@ -24,12 +25,12 @@
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        [self setUI];
+        [self setupUI];
     }
     return self;
 }
 
-- (void)setUI{
+- (void)setupUI{
 //    self.contentView.backgroundColor = [UIColor clearColor];
 //    self.backgroundColor = [UIColor clearColor];
     self.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -137,13 +138,13 @@
         return;
     }
     
-    self.courseTitleLabel.text = model.name;
+    self.courseTitleLabel.text = model.goodsName;
     
     
 //    self.descLabel.text = [self filterHTML:[self filterHTML:model.intro]];
-    self.descLabel.text = model.goods_value;
+    self.descLabel.text = model.goodsValue;
     
-    self.priceLabel.text = [NSString stringWithFormat:@"¥%@", model.old_price];
+    self.priceLabel.text = [model.oldPrice formattingPriceString];
     [self.courseVideoImageView sd_setImageWithURL:[NSURL URLWithString:model.cover] placeholderImage:[UIImage imageNamed:@"default_small"]];
     NSInteger weight = [model.weight integerValue];
     NSInteger hour = weight/60;

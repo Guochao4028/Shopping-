@@ -18,7 +18,7 @@
 @end
 
 @implementation StoreInfoViewController
--(NSMutableArray *)dataArr
+- (NSMutableArray *)dataArr
 {
     if (!_dataArr) {
         _dataArr = [NSMutableArray array];
@@ -31,15 +31,15 @@
     self.titleLabe.textColor = [UIColor whiteColor];
     [self.leftBtn setImage:[UIImage imageNamed:@"real_left"] forState:(UIControlStateNormal)];
     
-    [self setUI];
+    [self setupUI];
 }
 
--(void)viewWillAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     //[self setNavigationBarYellowTintColor];
 }
 
-- (void)setUI {
+- (void)setupUI {
    
     UIButton *button = [[UIButton alloc]init];
     [button setTitle:SLLocalizedString(@"准备好了，开始填写入驻信息") forState:(UIControlStateNormal)];

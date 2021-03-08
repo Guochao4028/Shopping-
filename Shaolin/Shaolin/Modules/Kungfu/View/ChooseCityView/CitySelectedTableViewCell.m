@@ -33,7 +33,7 @@
     // Configure the view for the selected state
 }
 
--(void)setTitleStr:(NSString *)titleStr{
+- (void)setTitleStr:(NSString *)titleStr{
     _titleStr  = titleStr;
     [self.titleLabel setText:titleStr];
 }

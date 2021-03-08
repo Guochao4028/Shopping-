@@ -12,6 +12,12 @@
 
 @implementation ShoppingCartListModel
 
++ (NSDictionary *)mj_replacedKeyFromPropertyName{
+    return @{
+             @"goods" : @"goodsList",
+             };
+}
+
 + (NSDictionary *)mj_objectClassInArray{
     return @{@"club" : @"GoodsStoreInfoModel",
              @"goods":@"ShoppingCartGoodsModel"

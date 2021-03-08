@@ -27,11 +27,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol WengenStrictSelectionTableCellDelegate <NSObject>
 
--(void)tapBanner:(WengenBannerModel *)bannerModel;
--(void)tapStrictSelectionGoodsItem:(WengenGoodsModel *)goodsModel;
+- (void)tapBanner:(WengenBannerModel *)bannerModel;
+- (void)tapStrictSelectionGoodsItem:(WengenGoodsModel *)goodsModel;
 
--(void)tapStrictSelectionItem:(BOOL)isSelected;
--(void)tapRecommendedItem:(BOOL)isSelected;
+- (void)tapStrictSelectionItem:(BOOL)isSelected;
+- (void)tapRecommendedItem:(BOOL)isSelected;
 
 @end
 

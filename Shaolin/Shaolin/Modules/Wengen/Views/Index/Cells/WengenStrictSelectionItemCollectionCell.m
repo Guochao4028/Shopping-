@@ -42,9 +42,9 @@
 }
 
 #pragma mark - methods
--(void)setModel:(WengenGoodsModel *)model{
+- (void)setModel:(WengenGoodsModel *)model{
     //商品图片
-    NSString *imgeUrlStr = [model.img_data firstObject];
+    NSString *imgeUrlStr = [model.imgDataList firstObject];
     [self.goodsImageView sd_setImageWithURL:[NSURL URLWithString:imgeUrlStr] placeholderImage:[UIImage imageNamed:@"default_small"]];
     //商品名称
     [self.goodsNameLabel setText:model.name];
@@ -53,10 +53,10 @@
     //商品价格
        NSString *priceStr ;
        
-       if ([model.is_discount boolValue] == YES) {
-           priceStr = [NSString stringWithFormat:@"¥%@",model.old_price];
-       }else{
+       if ([model.isDiscount boolValue] == YES) {
            priceStr = [NSString stringWithFormat:@"¥%@",model.price];
+       }else{
+           priceStr = [NSString stringWithFormat:@"¥%@",model.oldPrice];
        }
 //    NSString *priceStr = [NSString stringWithFormat:@"¥%@",model.old_price];
     
@@ -73,19 +73,19 @@
     self.goodsPriceLabel.attributedText = [priceStr moneyStringWithFormatting:MoneyStringFormattingMoneyCoincidenceType fontArrat:@[kMediumFont(13), kMediumFont(16)]];
     
     
-    float oldPrice = [model.old_price floatValue];
+    float oldPrice = [model.oldPrice floatValue];
     float price = [model.price floatValue];
     float newPrice = price - oldPrice;
     
-    if ( newPrice > 0 && [model.is_discount boolValue]) {
+    if (newPrice > 0 && [model.isDiscount boolValue]) {
         self.isHiddenSellView = NO;
         [self.sellPriceLabel setText:[NSString stringWithFormat:@"¥%.f", newPrice]];
     }else{
         self.isHiddenSellView = YES;
     }
     
-    BOOL is_self = [model.is_self boolValue];
-    if (is_self) {
+    BOOL isSelf = [model.isSelf boolValue];
+    if (isSelf) {
         [self.proprietaryImageView setHidden:NO];
         self.proprietaryImageViewW.constant = 35;
         self.proprietaryGayW.constant = 5;
@@ -100,7 +100,7 @@
 
 #pragma mark - setter / getter
 
--(void)setIsHiddenSellView:(BOOL)isHiddenSellView{
+- (void)setIsHiddenSellView:(BOOL)isHiddenSellView{
     _isHiddenSellView = isHiddenSellView;
     [self.sellView setHidden:isHiddenSellView];
   

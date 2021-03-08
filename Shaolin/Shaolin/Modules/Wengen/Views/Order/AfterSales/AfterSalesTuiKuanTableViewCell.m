@@ -8,7 +8,8 @@
 
 #import "AfterSalesTuiKuanTableViewCell.h"
 #import "GoodsStoreInfoModel.h"
-#import "OrderDetailsModel.h"
+
+#import "OrderDetailsNewModel.h"
 
 @interface AfterSalesTuiKuanTableViewCell ()
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
@@ -31,10 +32,10 @@
     // Configure the view for the selected state
 }
 
--(void)setModel:(OrderDetailsModel *)model{
+- (void)setModel:(OrderDetailsGoodsModel *)model{
     _model = model;
     
-    NSString *fee = self.model.shipping_fee;
+    NSString *fee = self.model.shippingFee;
        
        if (!IsNilOrNull(fee)) {
            [self.shippingFeeLabel setText:[NSString stringWithFormat:@"¥%@", fee]];
@@ -46,7 +47,7 @@
 }
 
 
--(void)setStoreInfoModel:(GoodsStoreInfoModel *)storeInfoModel {
+- (void)setStoreInfoModel:(GoodsStoreInfoModel *)storeInfoModel {
     _storeInfoModel = storeInfoModel;
     
     if (IsNilOrNull(storeInfoModel)) {
@@ -56,7 +57,7 @@
     [self.phoneNumberLabel setText:storeInfoModel.phone];
     [self.addressLabel setText:[NSString stringWithFormat:SLLocalizedString(@"地址：%@"),storeInfoModel.address]];
     
-    NSString *fee = self.model.shipping_fee;
+    NSString *fee = self.model.shippingFee;
     
     if (IsNilOrNull(fee)) {
         [self.shippingFeeLabel setText:fee];

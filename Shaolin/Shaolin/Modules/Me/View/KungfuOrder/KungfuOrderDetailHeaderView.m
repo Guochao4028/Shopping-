@@ -10,6 +10,8 @@
 #import "OrderDetailsModel.h"
 #import "NSString+Tool.h"
 
+#import "OrderDetailsNewModel.h"
+
 @interface KungfuOrderDetailHeaderView()
 
 @property (weak, nonatomic) IBOutlet UIImageView *statusIcon;
@@ -22,6 +24,8 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *phoneLabel;
+
+@property(nonatomic, strong)dispatch_source_t timer;
 
 @end
 
@@ -42,28 +46,34 @@
     }
 }
 
--(void)setDetailsModel:(OrderDetailsModel *)detailsModel {
+- (void)setDetailsModel:(OrderDetailsNewModel *)detailsModel {
     _detailsModel = detailsModel;
     
     NSString * nameStr ;
     NSString * telephoneStr ;
+    
+    OrderAddressModel *addressModel = detailsModel.address;
+    nameStr = addressModel.name;
+    telephoneStr = addressModel.phone;
+    
+    OrderDetailsGoodsModel *goodsModel = [detailsModel.goods firstObject];
 
 
-    if ([detailsModel.type intValue] == 3) {
+    if ([goodsModel.type intValue] == 3) {
         // 活动
-        nameStr = detailsModel.order_user_realName;
-        telephoneStr = detailsModel.order_user_telephone;
-        
+//        nameStr = detailsModel.order_user_realName;
+//        telephoneStr = detailsModel.order_user_telephone;
+
         if (nameStr.length == 0) {
-            nameStr = [SLAppInfoModel sharedInstance].realname;
+            nameStr = [SLAppInfoModel sharedInstance].realName;
             telephoneStr = [SLAppInfoModel sharedInstance].phoneNumber;
         }
     } else {
-        nameStr = NotNilAndNull([SLAppInfoModel sharedInstance].nickname)?[SLAppInfoModel sharedInstance].nickname:[SLAppInfoModel sharedInstance].realname;
-        if (detailsModel.name.length > 0) {
-            nameStr = detailsModel.name;
+        
+        if (nameStr.length == 0) {
+            nameStr = [SLAppInfoModel sharedInstance].nickName;
+            telephoneStr = [SLAppInfoModel sharedInstance].phoneNumber;
         }
-        telephoneStr = [SLAppInfoModel sharedInstance].phoneNumber;
     }
     
    
@@ -76,10 +86,16 @@
     if ([detailsModel.status isEqualToString:@"1"])
     {
         [self obligationLayout];
-        NSString *currentTime  = detailsModel.time;
-        NSString *createTimeStr  = detailsModel.create_time;
+//        NSString *currentTime  = detailsModel.time;
+//        NSString *createTimeStr  = detailsModel.create_time;
         
-        NSInteger create = [NSString timeSwitchTimestamp:createTimeStr andFormatter:@"YYYY-MM-dd HH:mm:ss"];
+        NSString *currentTimeStr  = detailsModel.time;
+        NSString *createTimeStr  = detailsModel.createTime2TimeStamp;
+        
+//        NSInteger create = [NSString timeSwitchTimestamp:createTimeStr andFormatter:@"YYYY-MM-dd HH:mm:ss"];
+        
+        NSInteger currentTime = [currentTimeStr integerValue] / 1000;
+        NSInteger createTime = [createTimeStr integerValue] / 1000;
         /**
          1800 = 30 * 60(30分钟 时间 转秒)
          ([currentTime integerValue] - [createTime integerValue]) 剩下的时间
@@ -89,16 +105,20 @@
          活动和法会 是2个小时  120分钟
          */
         ///1：实物，2：教程，3：报名，5:法事佛事类型-法会，6:法事佛事类型-佛事， 7:法事佛事类型-建寺供僧
-        NSInteger timeDifference = (1800 - ([currentTime integerValue] - create));
+//        NSInteger timeDifference = (1800 - ([currentTime integerValue] - create));
 //        if ([detailsModel.type intValue] == 3) {
 //            timeDifference =((120 * 60) - ([currentTime integerValue] - create));
 //        }
         
+        NSInteger timeDifference = ((30 * 60) - (currentTime - createTime));
         [self timerFireWithTimeLeft:timeDifference];
         
     }else if ([detailsModel.status isEqualToString:@"6"]
               || [detailsModel.status isEqualToString:@"7"] )
     {
+        if (self.timer) {
+            dispatch_source_cancel(self.timer);
+        }
         [self cancelLayout];
     }else if ([detailsModel.status isEqualToString:@"4"]
               ||[detailsModel.status isEqualToString:@"5"])
@@ -110,18 +130,18 @@
     
 }
 
--(void)timerFireWithTimeLeft:(NSInteger)timeLeft {
+- (void)timerFireWithTimeLeft:(NSInteger)timeLeft {
     
     //设置倒计时时间
     __block NSInteger timeout = timeLeft;
     dispatch_queue_t global = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    dispatch_source_t timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, global);
-    dispatch_source_set_timer(timer, DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC, 0 * NSEC_PER_SEC);
-    dispatch_source_set_event_handler(timer, ^{
+    self.timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, global);
+    dispatch_source_set_timer(self.timer, DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC, 0 * NSEC_PER_SEC);
+    dispatch_source_set_event_handler(self.timer, ^{
         timeout --;
         if (timeout <= 0) {
             //关闭定
-            dispatch_source_cancel(timer);
+            dispatch_source_cancel(self.timer);
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (self.timeOutHandle) {
                     self.timeOutHandle();
@@ -135,12 +155,12 @@
                 } else {
                     title = [NSString stringWithFormat:SLLocalizedString(@"%ld秒"),(long)timeout];
                 }
-                self.contentLabel.text = [NSString stringWithFormat:SLLocalizedString(@"需付款：¥%@  剩余：%@"),self.detailsModel.orderPrice,title];
+                self.contentLabel.text = [NSString stringWithFormat:SLLocalizedString(@"需付款：¥%@  剩余：%@"),self.detailsModel.money,title];
             });
         }
     });
     
-    dispatch_resume(timer);
+    dispatch_resume(self.timer);
 }
 
 
@@ -150,7 +170,7 @@
     
     self.payBtn.hidden = NO;
     
-    self.contentLabel.text = [NSString stringWithFormat:SLLocalizedString(@"需付款：¥%@  剩余：1分钟"),self.detailsModel.orderPrice];
+    self.contentLabel.text = [NSString stringWithFormat:SLLocalizedString(@"需付款：¥%@  剩余：1分钟"),self.detailsModel.money];
 }
 
 - (void) cancelLayout {
@@ -159,9 +179,10 @@
     
     self.payBtn.hidden = YES;
     
-    NSString *cannel = self.detailsModel.cannel.length == 0? @"支付超时": self.detailsModel.cannel;
+    NSString *cannel = self.detailsModel.cancel.length == 0? @"支付超时": self.detailsModel.cancel;
     
     self.contentLabel.text = [NSString stringWithFormat:SLLocalizedString(@"取消原因：%@"),cannel];
+    
 }
 
 - (void) completeLayout{

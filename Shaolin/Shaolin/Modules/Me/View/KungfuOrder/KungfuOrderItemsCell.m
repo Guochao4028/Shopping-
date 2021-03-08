@@ -46,13 +46,13 @@
 @implementation KungfuOrderItemsCell
 
 
--(void)layoutSubviews {
+- (void)layoutSubviews {
     [super layoutSubviews];
     
-    if ([self.orderModel.num_type isEqualToString:@"1"]) {
+    if ([self.orderModel.amount isEqualToString:@"1"]) {
         self.priceLabel.textAlignment = NSTextAlignmentCenter;
-    }
-    if ([self.orderModel.num_type isEqualToString:@"2"]) {
+    }else{
+//        ([self.orderModel.num_type isEqualToString:@"2"]) {
         self.priceLabel.textAlignment = NSTextAlignmentRight;
     }
 }
@@ -86,7 +86,7 @@
 
 #pragma mark - UICollectionViewDataSource & UICollectionViewDelegate
 
--(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
     return self.goodsImagesArray.count;
 }
 
@@ -94,14 +94,14 @@
     return CGSizeMake(110, 110);
 }
 
--(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     OrdeItemImageCollectionViewCell * cell  = [collectionView dequeueReusableCellWithReuseIdentifier:@"OrdeItemImageCollectionViewCell" forIndexPath:indexPath];
 
     cell.imageStr = self.goodsImagesArray[indexPath.row];
     
-    OrderGoodsModel *goodsItem = self.goodsArray[indexPath.row];
+//    OrderGoodsModel *goodsItem = self.goodsArray[indexPath.row];
     
-    if ([goodsItem.goods_type intValue] == 2) {
+    if ([self.orderModel.type intValue] == 2) {
         // 教程
         cell.playIcon.hidden = NO;
     } else {
@@ -127,19 +127,19 @@
 }
 
 ///更新布局
--(void)updateLayout:(OrderListModel *)listModel{
+- (void)updateLayout:(OrderListModel *)listModel{
    
-    [self.orderNoLabel setText:[NSString stringWithFormat:SLLocalizedString(@"订单编号：%@"), listModel.order_car_sn]];
-    NSArray *orderStoreArray = listModel.order_goods;
-    
-    OrderStoreModel *storeModel = [orderStoreArray firstObject];
-    
-    NSArray *orderGoodsArray = storeModel.goods;
-    
-    OrderGoodsModel *goodsModel = [orderGoodsArray firstObject];
+    [self.orderNoLabel setText:[NSString stringWithFormat:SLLocalizedString(@"订单编号：%@"), listModel.orderCarSn]];
+//    NSArray *orderStoreArray = listModel.order_goods;
+//
+//    OrderStoreModel *storeModel = [orderStoreArray firstObject];
+//
+//    NSArray *orderGoodsArray = storeModel.goods;
+//
+//    OrderGoodsModel *goodsModel = [orderGoodsArray firstObject];
     
 
-    NSString *status = goodsModel.status;
+    NSString *status = listModel.status;
 
     if ([status isEqualToString:@"1"] == YES) {
         [self obligationLayout];
@@ -149,30 +149,33 @@
         [self completeLayout];
     }
     
-    NSInteger numTotal = 0;
-    for ( OrderStoreModel *storeItem  in orderStoreArray) {
-        for (OrderGoodsModel *goodsItem in storeItem.goods) {
-            numTotal += goodsItem.num.integerValue;
-            if ([goodsItem.goods_image count]>0) {
-                [self.goodsImagesArray addObject:goodsItem.goods_image[0]];
-                [self.goodsArray addObject:goodsItem];
-            }
-        }
-    }
+    NSInteger numTotal = [listModel.amount integerValue];
+    self.goodsImagesArray = [listModel.goodsImages mutableCopy];
+//    [self.goodsArray addObject:goodsItem];
+
+//    for ( OrderStoreModel *storeItem  in orderStoreArray) {
+//        for (OrderGoodsModel *goodsItem in storeItem.goods) {
+//            numTotal += goodsItem.num.integerValue;
+//            if ([goodsItem.goods_image count]>0) {
+//                [self.goodsImagesArray addObject:goodsItem.goods_image[0]];
+//                [self.goodsArray addObject:goodsItem];
+//            }
+//        }
+//    }
     
     [self.collectionView reloadData];
     
     [self.numberLabel setText:[NSString stringWithFormat:SLLocalizedString(@"共%ld件"), (long)numTotal]];
     
     
-    BOOL is_invoice = [goodsModel.is_invoice boolValue];
+    BOOL is_invoice = [listModel.isInvoice boolValue];
           NSString *buttonTitle = SLLocalizedString(@"查看发票");
           if (is_invoice == NO) {
               buttonTitle = SLLocalizedString(@"补开发票");
           }
        
        
-       float goodsMoney = [listModel.order_car_money floatValue];
+       float goodsMoney = [listModel.money floatValue];
        
        if (goodsMoney == 0) {
            [self.completeCheckInvoiceButton setHidden:YES];
@@ -186,7 +189,7 @@
 }
 
 ///待付款
--(void)obligationLayout{
+- (void)obligationLayout{
     [self.instructionsLabel setHidden:NO];
     [self.instructionsLabel setText:SLLocalizedString(@"等待付款")];
     [self.deleteButton setHidden:YES];
@@ -196,7 +199,7 @@
 }
 
 ///已取消
--(void)cancelLayout{
+- (void)cancelLayout{
     [self.instructionsLabel setHidden:YES];
     [self.deleteButton setHidden:NO];
     [self.cancelLabel setHidden:NO];
@@ -205,7 +208,7 @@
 }
 
 ///已完成
--(void)completeLayout{
+- (void)completeLayout{
     [self.instructionsLabel setHidden:YES];
     [self.deleteButton setHidden:NO];
     [self.cancelLabel setHidden:YES];
@@ -215,22 +218,22 @@
 
 
 #pragma mark - setter / getter
--(void)setOrderModel:(OrderListModel *)orderModel {
+- (void)setOrderModel:(OrderListModel *)orderModel {
     _orderModel = orderModel;
     
     [self.goodsImagesArray removeAllObjects];
-    [self.priceLabel setText:orderModel.order_car_money];
+    [self.priceLabel setText:orderModel.money];
     [self updateLayout:orderModel];
 }
 
--(NSMutableArray *)goodsImagesArray{
+- (NSMutableArray *)goodsImagesArray{
     if (_goodsImagesArray == nil) {
         _goodsImagesArray = [NSMutableArray array];
     }
     return _goodsImagesArray;
 }
 
--(NSMutableArray *)goodsArray {
+- (NSMutableArray *)goodsArray {
     if (_goodsArray == nil) {
         _goodsArray = [NSMutableArray array];
     }

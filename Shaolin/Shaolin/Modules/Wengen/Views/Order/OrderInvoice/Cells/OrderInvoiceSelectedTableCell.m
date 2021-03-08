@@ -27,7 +27,7 @@
     // Configure the view for the selected state
 }
 
--(void)setModel:(NSDictionary *)model{
+- (void)setModel:(NSDictionary *)model{
     _model = model;
     NSString *isSelectStr = model[@"isSelect"];
     NSString *title = model[@"title"];

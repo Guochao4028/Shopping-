@@ -57,7 +57,7 @@
 
 @implementation RiteRegistrationDetailsViewController
 
--(void)viewWillAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 }
 
@@ -68,7 +68,7 @@
     [self requestApplyDetailInfo];
 }
 
--(void) initUI
+- (void) initUI
 {
     self.titleLabe.text = @"报名详情";
 //    self.view.backgroundColor = KTextGray_FA;
@@ -82,7 +82,7 @@
 {
     NSString *url;
     
-    NSString *token = [SLAppInfoModel sharedInstance].access_token;
+    NSString *token = [SLAppInfoModel sharedInstance].accessToken;
     
     
     //1:水陆法会 2 普通法会 3 全年佛事 4 建寺安僧
@@ -170,9 +170,15 @@
             
         }
         
-        [self.titleList addObject:[self getFormattingString:@"斋主姓名"]];
+        if (model.zhaizhuName.length) {
+            [self.titleList addObject:[self getFormattingString:@"斋主姓名"]];
+        }
         
-        [self.titleList addObject:[self getFormattingString:@"联系电话"]];
+        if (model.contactNumber.length) {
+            [self.titleList addObject:[self getFormattingString:@"联系电话"]];
+        }
+       
+        
         [self.titleList addObject:[self getFormattingString:@"联系地址"]];
         
         if (model.greetings.length ) {
@@ -200,7 +206,7 @@
     }];
 }
 
--(void)seeMemorialTablet{
+- (void)seeMemorialTablet{
     NSLog(@"%s", __func__);
     
     ShowBigImageViewController *vc = [[ShowBigImageViewController alloc] init];
@@ -281,7 +287,7 @@
 
 #pragma mark - delegate && dataSources
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (!self.contentList) {
         return 0;
@@ -289,7 +295,7 @@
     return self.titleList.count;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSString * titleStr = self.titleList[indexPath.row];
     UITableViewCell *cell;
@@ -337,7 +343,7 @@
     return cell;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSString *titleStr = self.titleList[indexPath.row];
     NSString *contentStr = self.contentList[indexPath.row];
@@ -362,7 +368,8 @@
     }
     
     if ([titleStr containsString:SLLocalizedString(@"联系方式")]) {
-        return 75;
+//        return 75;
+        return 48;
     }
     
     if ([titleStr containsString:SLLocalizedString(@"牌位")]) {
@@ -384,7 +391,7 @@
 
 
 #pragma mark - setter && getter
--(UITableView *)tableView
+- (UITableView *)tableView
 {
     if (!_tableView) {
         _tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 15, kWidth, kHeight - NavBar_Height - 15) style:(UITableViewStylePlain)];
@@ -408,7 +415,7 @@
     return _tableView;
 }
 
--(void)setDetailModel:(RiteRegistrationDetailsModel *)detailModel {
+- (void)setDetailModel:(RiteRegistrationDetailsModel *)detailModel {
     
     _detailModel = detailModel;
     //1:水陆法会 2 普通法会 3 全年佛事 4 建寺安僧
@@ -443,10 +450,18 @@
         [self.contentList addObject:[self getNotNilString:detailModel.disasterName]];
     }
     
-    [self.contentList addObject:[self getNotNilString:detailModel.zhaizhuName]];
+    
+    if (detailModel.zhaizhuName.length) {
+        [self.contentList addObject:[self getNotNilString:detailModel.zhaizhuName]];
+    }
+    
+    if (detailModel.contactNumber.length) {
+        [self.contentList addObject:[self getNotNilString:detailModel.contactNumber]];
+    }
     
     
-    [self.contentList addObject:[self getNotNilString:detailModel.contactNumber]];
+    
+//    [self.contentList addObject:[self getNotNilString:detailModel.contactNumber]];
     [self.contentList addObject:[self getNotNilString:detailModel.contactAddress]];
     
     if (detailModel.greetings.length ) {
@@ -471,16 +486,16 @@
     [self.tableView reloadData];
 }
 
--(NSString *)getNotNilString:(NSString *)text {
+- (NSString *)getNotNilString:(NSString *)text {
     return NotNilAndNull(text)?text:@"";
 }
 
--(NSString *)getFormattingString:(NSString *)text {
+- (NSString *)getFormattingString:(NSString *)text {
     return [NSString stringWithFormat:@"%@：", SLLocalizedString(text)];
 }
 
 
--(NSString *)getTimeString:(NSString *)startTime endTime:(NSString *)endTime
+- (NSString *)getTimeString:(NSString *)startTime endTime:(NSString *)endTime
 {
     
     NSString * result = @"";
@@ -501,7 +516,7 @@
     return result;
 }
 
--(NSArray *)titleList {
+- (NSArray *)titleList {
     if (!_titleList) {
         _titleList = [NSMutableArray array];
         
@@ -509,14 +524,14 @@
     return _titleList;
 }
 
--(NSMutableArray *)contentList {
+- (NSMutableArray *)contentList {
     if (!_contentList) {
         _contentList = [NSMutableArray new];
     }
     return _contentList;
 }
 
--(UIView *)tableFooterView {
+- (UIView *)tableFooterView {
     if (!_tableFooterView) {
         _tableFooterView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.view.width, 40)];
         

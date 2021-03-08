@@ -27,7 +27,11 @@
 #import "ReturnGoodsDetailVc.h"
 #import "DataManager.h"
 #import "SMAlert.h"
-#import "EMChatViewController.h"
+#import "CustomerServicViewController.h"
+#import "OrderDetailsNewModel.h"
+
+#import "GoodsStoreInfoModel.h"
+
 
 @interface AfterSalesProgressViewController ()<WengenNavgationViewDelegate, UITableViewDelegate, UITableViewDataSource>
 
@@ -56,14 +60,15 @@
     [self initUI];
 }
 
--(void)viewWillAppear:(BOOL)animated{
+- (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    [[ModelTool shareInstance]setIsOrderListNeedRefreshed:YES];
 }
 
--(void)initData{
+- (void)initData{
     
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
-    [[DataManager shareInstance]getRefundInfo:@{@"id":self.orderNo} Callback:^(NSObject *object) {
+    [[DataManager shareInstance]getRefundInfo:@{@"orderId":self.orderNo} Callback:^(NSObject *object) {
         [hud hideAnimated:YES];
         if([object isKindOfClass:[OrderRefundInfoModel class]] == YES){
             self.detailsModel = (OrderRefundInfoModel *)object;
@@ -107,7 +112,7 @@
     }];
 }
 
--(void)initUI{
+- (void)initUI{
     [self.view setBackgroundColor:BackgroundColor_White];
     [self.view addSubview:self.navgationView];
     [self.view addSubview:self.bgView];
@@ -116,7 +121,7 @@
 }
 
 //撤销申请
--(void)applyCancelAction{
+- (void)applyCancelAction{
     
     
     [SMAlert setConfirmBtBackgroundColor:kMainYellow];
@@ -134,7 +139,7 @@
     [customView addSubview:title];
     [SMAlert showCustomView:customView stroke:YES confirmButton:[SMButton initWithTitle:SLLocalizedString(@"确定") clickAction:^{
         
-        [[DataManager shareInstance]cannelRefund:@{@"id":self.detailsModel.order_no} Callback:^(Message *message) {
+        [[DataManager shareInstance]cannelRefund:@{@"id":self.detailsModel.orderId} Callback:^(Message *message) {
             
             if (message.isSuccess) {
                 [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"撤销成功") view:self.view afterDelay:TipSeconds];
@@ -151,36 +156,36 @@
 }
 
 //填写收货地址
--(void)numberAction{
+- (void)numberAction{
     
     ReturnGoodsDetailVc *returnGoodsVC = [[ReturnGoodsDetailVc alloc]init];
     returnGoodsVC.storeId = self.storeId;
-    returnGoodsVC.orderNo = self.detailsModel.order_no;
+    returnGoodsVC.orderNo = self.detailsModel.orderId;
     [self.navigationController pushViewController:returnGoodsVC animated:YES];
     
 }
 
 #pragma mark - WengenNavgationViewDelegate
--(void)tapBack{
+- (void)tapBack{
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - UITableViewDelegate && UITableViewDataSource
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return 1;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     return 0.01;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     
     return 0.01;
 }
 
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     UIView *v = [[UIView alloc]init] ;
     
     [v setBackgroundColor:[UIColor redColor]];
@@ -188,11 +193,11 @@
 }
 
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return 3;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     CGFloat tableH = 0;
     switch (indexPath.row) {
         case 0:
@@ -212,7 +217,7 @@
     return tableH;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell;
     
     switch (indexPath.row) {
@@ -252,13 +257,28 @@
 - (void)btnServiceAction:(UIButton *)btn{
     NSInteger indexTag = btn.tag - 100;
     NSLog(@"indexTag=>%ld",(long)indexTag);
-    EMChatViewController *chatVC = [[EMChatViewController alloc] initWithConversationId:@"2" type:EMConversationTypeChat createIfNotExist:YES];
-    [self.navigationController pushViewController:chatVC animated:YES];
+//    EMChatViewController *chatVC = [[EMChatViewController alloc] initWithConversationId:@"2" type:EMConversationTypeChat createIfNotExist:YES];
+//    [self.navigationController pushViewController:chatVC animated:YES];
+    
+ 
+    [[DataManager shareInstance]getStoreInfo:@{@"clubId":self.storeId} Callback:^(NSObject *object) {
+        GoodsStoreInfoModel *storeInfoModel = (GoodsStoreInfoModel *)object;
+        CustomerServicViewController *servicVC = [[CustomerServicViewController alloc]init];
+        servicVC.servicType = @"1";
+        servicVC.imID = storeInfoModel.im;
+        servicVC.chatName = storeInfoModel.name;
+        [self.navigationController pushViewController:servicVC animated:YES];
+    }];
+
+    
+    
+    
+   
 }
 
 #pragma mark - getter / setter
 
--(WengenNavgationView *)navgationView{
+- (WengenNavgationView *)navgationView{
     
     if (_navgationView == nil) {
         //状态栏高度
@@ -281,7 +301,7 @@
 
 
 
--(AfterSalesProgressHeardView *)heardView{
+- (AfterSalesProgressHeardView *)heardView{
     if (_heardView == nil) {
 //        CGFloat y = CGRectGetMaxY(self.navgationView.frame);
         _heardView = [[AfterSalesProgressHeardView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, 94)];
@@ -289,7 +309,7 @@
     return _heardView;
 }
 
--(UITableView *)tableView{
+- (UITableView *)tableView{
     
     if (_tableView == nil) {
         CGFloat y =  CGRectGetMaxY(self.navgationView.frame) ;
@@ -316,7 +336,7 @@
 }
 
 
--(AfterSalesProgressFooterView *)footerView{
+- (AfterSalesProgressFooterView *)footerView{
     if (_footerView == nil) {
         _footerView = [[AfterSalesProgressFooterView alloc]initWithFrame:CGRectMake(0, ScreenHeight - 49 - kBottomSafeHeight, ScreenWidth, 49)];
         [_footerView applyCancelTarget:self action:@selector(applyCancelAction)];
@@ -329,7 +349,7 @@
     return _footerView;
 }
 
--(UIView *)bgView{
+- (UIView *)bgView{
     
     if (_bgView == nil) {
         _bgView = [[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(self.navgationView.frame), ScreenWidth, 135)];

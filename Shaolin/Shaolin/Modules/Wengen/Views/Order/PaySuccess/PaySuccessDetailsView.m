@@ -18,7 +18,7 @@
 
 @implementation PaySuccessDetailsView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [[NSBundle mainBundle] loadNibNamed:@"PaySuccessDetailsView" owner:self options:nil];
@@ -28,7 +28,7 @@
 }
 
 /// 初始化UI
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.contentView];
     [self.contentView setFrame:self.bounds];
     
@@ -40,7 +40,7 @@
     
 }
 
--(void)queryTarget:(id)target action:(SEL)action{
+- (void)queryTarget:(id)target action:(SEL)action{
     [self.normalButton addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
 }
 

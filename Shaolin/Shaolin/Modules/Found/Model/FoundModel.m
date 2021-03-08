@@ -14,7 +14,7 @@
 #import "LongPhotoCell.h"
 #import "PureTextTableViewCell.h"
 @implementation FoundModel
--(NSString *)cellIdentifier
+- (NSString *)cellIdentifier
 {
     if ([self.type isEqualToString:@"1"]) {
         return NSStringFromClass([StickCell class]);
@@ -23,13 +23,13 @@
         return NSStringFromClass([AdvertisingOneCell class]);
     }else
     {
-        if (self.coverurlList.count == 0) {
+        if (self.coverUrlList.count == 0) {
              return NSStringFromClass([PureTextTableViewCell class]);
            
-        }else if(self.coverurlList.count == 1 || self.coverurlList.count == 2)
+        }else if(self.coverUrlList.count == 1 || self.coverUrlList.count == 2)
         {
             BOOL photoType = NO;
-            for (NSDictionary * dic in self.coverurlList) {
+            for (NSDictionary * dic in self.coverUrlList) {
                 NSString * urlStr = [dic objectForKey:@"route"];
                 if (NotNilAndNull(urlStr) && urlStr.length != 0) {
                     photoType = YES;
@@ -77,6 +77,9 @@
             flag = NO;
             [[SLAppInfoModel sharedInstance] setNil];
             [[NSNotificationCenter defaultCenter]postNotificationName:MODELTOOL_CHECKRESPONSEOBJECT_DELETEUSER object:nil];
+            printf("  ===========================================================================================\n");
+            printf("||后台返回10018，发送MODELTOOL_CHECKRESPONSEOBJECT_DELETEUSER消息，进入LoginViewController\n");
+            printf("  ===========================================================================================\n");
         }else{
             //其他状态码
             flag = NO;

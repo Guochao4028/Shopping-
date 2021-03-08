@@ -9,7 +9,7 @@
 #import "OrderTrackingTableViewCell.h"
 
 @implementation OrderTrackingTableViewCell
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     
@@ -25,7 +25,7 @@
      [self.contentView addSubview:self.contentLabel];
      [self.contentView addSubview:self.timeLabel];
 }
--(void)layoutSubviews {
+- (void)layoutSubviews {
     [super layoutSubviews];
     [self.iconImage mas_makeConstraints:^(MASConstraintMaker *make) {
         make.size.mas_equalTo(SLChange(30));

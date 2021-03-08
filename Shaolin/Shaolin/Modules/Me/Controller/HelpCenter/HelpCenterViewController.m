@@ -15,7 +15,7 @@
 
 @implementation HelpCenterViewController
 
--(void)viewWillAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
     //[self setNavigationBarYellowTintColor];
@@ -27,7 +27,7 @@
     [self setupWebView];
     
 }
--(void)setupWebView
+- (void)setupWebView
 {
     
     WKWebViewConfiguration *webConfiguration = [WKWebViewConfiguration new];
@@ -39,7 +39,7 @@
     _webView.navigationDelegate = self;
     
     _webView.scrollView.scrollEnabled = NO;
-    [_webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:URL_H5_Help([SLAppInfoModel sharedInstance].access_token)]]];
+    [_webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:URL_H5_Help([SLAppInfoModel sharedInstance].accessToken)]]];
     [self.view addSubview:self.webView];
    
     

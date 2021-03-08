@@ -51,7 +51,7 @@
     }
 }
 
--(void)setStoreInfoModel:(GoodsStoreInfoModel *)storeInfoModel{
+- (void)setStoreInfoModel:(GoodsStoreInfoModel *)storeInfoModel{
     _storeInfoModel = storeInfoModel;
     if (storeInfoModel == nil) {
         return;

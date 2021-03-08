@@ -265,19 +265,19 @@
 
 #pragma mark --UITableViewDelegate
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return 2;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    if ( section == 0){
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    if (section == 0){
         return 1;
     }else{
         return 2;
     }
 }
 
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     static NSString *HeaderIdentifier = @"header";
     UITableViewHeaderFooterView * headerView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:HeaderIdentifier];
@@ -308,7 +308,7 @@
     return headerView;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     if (indexPath.section == 0) {
        
         return (ceil([self.hotCityArray count]/3.0) *52) +15;
@@ -318,15 +318,15 @@
     return 0;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     return CGFLOAT_MIN;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     return 50;
 }
 
--(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     UITableViewCell *cell = [[UITableViewCell alloc]init];
     if (indexPath.section == 0) {
@@ -350,7 +350,7 @@
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     if (indexPath.section == 1) {
         if (indexPath.row == 0) {
             NSLog(@"国内");
@@ -378,7 +378,7 @@
 
 
 #pragma mark - HotCityTableViewCellDelegate
--(void)hotCityTableViewCell:(HotCityTableViewCell *)cell tapItem:(HotCityModel *)model{
+- (void)hotCityTableViewCell:(HotCityTableViewCell *)cell tapItem:(HotCityModel *)model{
     if (self.selectString) {
         self.selectString(model);
         [self.navigationController popViewControllerAnimated:YES];
@@ -387,7 +387,7 @@
 
 #pragma mark - getter / setter
 
--(UITableView *)tableView{
+- (UITableView *)tableView{
     
     if (_tableView == nil) {
         _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-NavBar_Height) style:UITableViewStylePlain];
@@ -404,7 +404,7 @@
     
 }
 
--(AreaView *)areaView{
+- (AreaView *)areaView{
     
     if (_areaView == nil) {
         _areaView = [[AreaView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];

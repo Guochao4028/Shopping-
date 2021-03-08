@@ -72,7 +72,7 @@
     [self showAlertWithInfoString:SLLocalizedString(@"退出页面数据将无法保存，确定退出吗？") isBack:YES];
 }
 
--(void)initUI{
+- (void)initUI{
     [self.view setBackgroundColor:[UIColor whiteColor]];
     
     self.titleLabe.text = SLLocalizedString(@"填写报名信息");
@@ -83,7 +83,7 @@
     
 }
 
--(void)initData{
+- (void)initData{
     
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
     //学历
@@ -189,11 +189,15 @@
         self.registModel.birthTime = self.model.birthTime;
     }
     
-    if (IsNilOrNull(self.registModel.realName) || IsNilOrNull(self.registModel.idCard) || IsNilOrNull(self.registModel.birthTime)) {
+    BOOL noRealName = (IsNilOrNull(self.registModel.realName) || self.registModel.realName.length == 0);
+    BOOL noIdCard = (IsNilOrNull(self.registModel.idCard) || self.registModel.idCard.length == 0);
+    BOOL noBirthTime = (IsNilOrNull(self.registModel.birthTime) || self.registModel.birthTime.length == 0);
+    
+    if (noRealName || noIdCard || noBirthTime) {
         SLAppInfoModel *infoModel = [SLAppInfoModel sharedInstance];
-        self.registModel.realName = infoModel.realname;
-        self.registModel.birthTime = infoModel.birthtime;
-        self.registModel.idCard = infoModel.idcard;
+        self.registModel.realName = infoModel.realName;
+        self.registModel.birthTime = infoModel.idCardTime;
+        self.registModel.idCard = infoModel.idCard;
     }
     
     self.isExamine = [self.model.activityTypeId integerValue] == 4 ? YES :NO;
@@ -262,8 +266,6 @@
     }
     
     NSString *nationality = self.registModel.nationality.length == 0 ? @"" : self.registModel.nationality;
-    
-    
     
     if (self.isExamine) {
         
@@ -477,7 +479,9 @@
 
 #pragma mark - event
 - (void)freeOrderPayWithOrderCode:(NSString *)orderCode money:(NSString *)money {
-    [[DataManager shareInstance] orderPay:@{@"ordercode" :orderCode, @"orderMoney": money, @"payType":@"6"} Callback:^(Message *message) {
+    MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
+    [[DataManager shareInstance] orderPay:@{@"orderCarId" :orderCode, @"orderMoney": money, @"payType":@"6"} Callback:^(Message *message) {
+        [hud hideAnimated:YES];
         if (message.isSuccess) {
             // 支付成功
             PaySuccessViewController *paySuccessVC = [[PaySuccessViewController alloc] init];
@@ -619,20 +623,21 @@
                 }
                 NSString * price = dic[@"money"];
                 NSString * orderCode = dic[@"orderCode"];
+                NSString * orderCarId = dic[@"orderCarId"];
                 if (IsNilOrNull(price) || IsNilOrNull(orderCode)) {
                     return;;
                 }
                 if ([price floatValue] == 0.00) {
                     // activityCode目前只用于凭证支付，先不考虑
-                    [self freeOrderPayWithOrderCode:orderCode money:price];
+                    [self freeOrderPayWithOrderCode:orderCarId money:price];
                     return;
                 }
                 CheckstandViewController *checkstandVC = [[CheckstandViewController alloc]init];
                 checkstandVC.isActivity = YES;
 
-                checkstandVC.goodsAmountTotal = [NSString stringWithFormat:@"¥%@", dic[@"money"]];
-                checkstandVC.order_no = dic[@"orderCode"];
-
+                checkstandVC.goodsAmountTotal = [NSString stringWithFormat:@"¥%@", price];
+                checkstandVC.order_no = orderCode;
+                checkstandVC.orderCarId = [NSString stringWithFormat:@"%@", orderCarId];
                 checkstandVC.activityCode = self.activityCode;
                 [self.navigationController pushViewController:checkstandVC animated:YES];
 
@@ -674,31 +679,31 @@
 
 #pragma mark - UITableViewDelegate && UITableViewDataSource
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return self.dataArray.count;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     return 0.01;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     return 0.01;
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     UIView *view = [[UIView alloc] init];
     view.backgroundColor = [UIColor clearColor];
     return view;
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
     UIView *view = [[UIView alloc] init];
     view.backgroundColor = KTextGray_FA;
     return view;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     NSMutableDictionary *dic = [self.dataArray objectAtIndex:section];
     NSString *type = dic[@"type"];
     if ([type isEqualToString:@"3"] == NO) {
@@ -715,13 +720,13 @@
     return 1;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     NSMutableDictionary *dic = [self.dataArray objectAtIndex:indexPath.section];
     NSString *type = dic[@"type"];
     if ([type isEqualToString:@"1"] == YES || [type isEqualToString:@"2"] == YES) {
         
         return 50;
-    }else if ( [type isEqualToString:@"4"] == YES) {
+    }else if ([type isEqualToString:@"4"] == YES) {
         CGFloat cellHeight = [dic[@"cellHeight"] floatValue];
         return cellHeight;
     }else{
@@ -760,7 +765,7 @@
     return 50;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     
     NSMutableDictionary *dic = self.dataArray[indexPath.section];
@@ -828,7 +833,7 @@
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
     NSMutableDictionary *dic = [self.dataArray objectAtIndex:indexPath.section];
     NSString *type = dic[@"type"];
@@ -862,7 +867,7 @@
 #pragma mark - EnrollmentRegistrationHeardViewDelegate
 
 //上传图片
--(void)enrollmentRegistrationHeardView:(EnrollmentRegistrationHeardView *)view tapUploadPictures:(BOOL)isTap{
+- (void)enrollmentRegistrationHeardView:(EnrollmentRegistrationHeardView *)view tapUploadPictures:(BOOL)isTap{
     NSLog(@"%s", __func__);
     TZImagePickerController  *imagePicker=  [[TZImagePickerController alloc]initWithMaxImagesCount:1 delegate:self];
     imagePicker.showSelectBtn = NO;
@@ -952,7 +957,7 @@
 
 #pragma mark - EnrollmentRegistrationLowerLevelTableCellDelegate
 
--(void)enrollmentRegistrationLowerLevelTableCell:(EnrollmentRegistrationLowerLevelTableCell *)cell didSelectItemAtIndexPath:(NSIndexPath *)indexPath currentData:(NSDictionary *)dic{
+- (void)enrollmentRegistrationLowerLevelTableCell:(EnrollmentRegistrationLowerLevelTableCell *)cell didSelectItemAtIndexPath:(NSIndexPath *)indexPath currentData:(NSDictionary *)dic{
     
     NSString *title = dic[@"title"];
     NSArray *subArray = dic[@"subArray"];
@@ -1076,7 +1081,7 @@
 }
 
 #pragma mark - getter / setter
--(UITableView *)tableView{
+- (UITableView *)tableView{
     
     if (_tableView == nil) {
         _tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight - NavBar_Height - 44 - 20)];
@@ -1095,7 +1100,7 @@
     
 }
 
--(UIButton *)submitButton{
+- (UIButton *)submitButton{
     
     if (_submitButton == nil) {
         _submitButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -1112,7 +1117,7 @@
     return _submitButton;
 }
 
--(EnrollmentRegistrationHeardView *)heardView{
+- (EnrollmentRegistrationHeardView *)heardView{
     
     if (_heardView == nil) {
         //        _heardView = [[EnrollmentRegistrationHeardView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, 165)];
@@ -1123,7 +1128,7 @@
     return _heardView;
 }
 
--(EnrollmentRegistModel *)registModel {
+- (EnrollmentRegistModel *)registModel {
     if (!_registModel) {
         _registModel = [EnrollmentRegistModel new];
         _registModel.activityCode = self.activityCode;
@@ -1216,14 +1221,14 @@
 }
 
 
--(NSMutableArray *)dataArray{
+- (NSMutableArray *)dataArray{
     if (_dataArray == nil) {
         _dataArray = [NSMutableArray array];
     }
     return _dataArray;
 }
 
--(DQBirthDateView *)birthView{
+- (DQBirthDateView *)birthView{
     if (_birthView == nil) {
         _birthView = [DQBirthDateView new];
         _birthView.delegate = self;

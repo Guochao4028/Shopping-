@@ -22,9 +22,9 @@ NS_ASSUME_NONNULL_BEGIN
 // 获取用户交易明细
 - (void)getUserConsumerDetails:(NSDictionary *)params success:(void (^_Nullable)(id responseObject))success failure:(void (^_Nullable)(NSString * _Nullable errorReason))failure finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish;
 //获取用户余额
-- (void)getUserBalanceSuccess:(void (^_Nullable)(id responseObject))success failure:(void (^_Nullable)(NSString *errorReason))failure finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish;
+//- (void)getUserBalanceSuccess:(void (^_Nullable)(id responseObject))success failure:(void (^_Nullable)(NSString *errorReason))failure finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish;
 //查询用户是否设置支付密码
-- (void)queryPayPassWordStatusSuccess:(void (^_Nullable)(id responseObject))success failure:(void (^_Nullable)(NSString *errorReason))failure finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish;
+//- (void)queryPayPassWordStatusSuccess:(void (^_Nullable)(id responseObject))success failure:(void (^_Nullable)(NSString *errorReason))failure finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish;
 // 修改个人资料
 - (void)changeUserDataHeaderUrl:(NSString *)headerStr NickName:(NSString *)nickNameStr Sex:(NSString *)sexStr Birthday:(NSString *)birthdayStr Email:(NSString *)emailStr SigName:(NSString *)sigName Phone:(NSString *)phoneStr success:(void (^_Nullable)(id responseObject))success failure:(void (^_Nullable)(NSString *errorReason))failure finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish;
 // 修改手机号码
@@ -44,15 +44,15 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)getPersonAuthenticationResult:(NSDictionary *)params finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish;
 
 // 退出登录
-- (void)postOutLoginSuccess:(void (^_Nullable)(id responseObject))success failure:(void (^_Nullable)(NSString *errorReason))failure finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish;
+//- (void)postOutLoginSuccess:(void (^_Nullable)(id responseObject))success failure:(void (^_Nullable)(NSString *errorReason))failure finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish;
 // 获取我的活动
 - (void)postMeActivityList:(NSDictionary *)params finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish;
 // 我的教程
 - (void)postMeClassList:(NSString *)url params:(NSDictionary *)params finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish;
 // 我的 考试凭证
-- (void)postExamProof:(NSDictionary *)params finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish;
+//- (void)postExamProof:(NSDictionary *)params finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish;
 // 获取发文管理列表
--(void)getWebNewsinformationListState:(NSString *)state PageNum:(NSString *)page PageSize:(NSString *)pageSize success:(void (^_Nullable)(id responseObject))success failure:(void (^_Nullable)(NSString *errorReason))failure finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish;
+- (void)getWebNewsinformationListState:(NSString *)state PageNum:(NSString *)page PageSize:(NSString *)pageSize success:(void (^_Nullable)(id responseObject))success failure:(void (^_Nullable)(NSString *errorReason))failure finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish;
 // 获取草稿箱列表
 - (void)getDraftboxListState:(NSString *)state PageNum:(NSString *)page PageSize:(NSString *)pageSize success:(void (^_Nullable)(id responseObject))success failure:(void (^_Nullable)(NSString *errorReason))failure finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish;
 // 查看被拒原因
@@ -104,17 +104,17 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)postLogisticsListBlock:(void (^_Nullable)(id responseObject, NSString *errorReason))finish;
 
 // 苹果内购验证
-//-(void)postIAPCheckWithReceipt:(NSString *)receipt payCode:(NSString *)payCode thirdOrderCode:(NSString *) thirdOrderCode callback:(void (^) (BOOL result))call;
--(void)postIAPCheckWithReceipt:(NSString *)receipt ordercode:(NSString *)ordercode callback:(void (^) (NSString * code, BOOL result))call;
+//- (void)postIAPCheckWithReceipt:(NSString *)receipt payCode:(NSString *)payCode thirdOrderCode:(NSString *) thirdOrderCode callback:(void (^) (BOOL result))call;
+- (void)postIAPCheckWithReceipt:(NSString *)receipt ordercode:(NSString *)ordercode callback:(void (^) (NSString * code, BOOL result))call;
 
 // 苹果充值档位获取
--(void)postIAPListAndBlock:(void(^)(NSArray * list))block;
+//- (void)postIAPListAndBlock:(void(^)(NSArray * list))block;
 
 // 实名认证回显
--(void)postShareAppDetailAndBlock:(void (^_Nullable)(id responseObject, NSString *errorReason))finis;
+- (void)postShareAppDetailAndBlock:(void (^_Nullable)(id responseObject, NSString *errorReason))finis;
 
 // 苹果充值档位获取
--(void)postIAPListAndBlock:(void(^)(NSArray * list))block;
+- (void)postIAPListAndBlock:(void(^)(NSArray * list))block;
 
 
 // 检查版本更新

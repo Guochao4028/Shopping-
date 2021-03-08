@@ -18,7 +18,7 @@
 
 @implementation StoreMenuView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [[NSBundle mainBundle] loadNibNamed:@"StoreMenuView" owner:self options:nil];
@@ -27,32 +27,32 @@
     return self;
 }
 
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.contentView];
     [self.contentView setFrame:self.bounds];
 }
 
--(void)tuijianTarget:(nullable id)target action:(SEL)action{
+- (void)tuijianTarget:(nullable id)target action:(SEL)action{
     [self.tuijianButton addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
 }
 
--(void)xiaoliangTarget:(nullable id)target action:(SEL)action{
+- (void)xiaoliangTarget:(nullable id)target action:(SEL)action{
     [self.xiaoliangButton addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
 
 }
 
--(void)jiageTarget:(nullable id)target action:(SEL)action{
+- (void)jiageTarget:(nullable id)target action:(SEL)action{
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:target action:action];
     [self.jiageView addGestureRecognizer:tap];
 
 }
 
--(void)zhijianTarget:(nullable id)target action:(SEL)action{
+- (void)zhijianTarget:(nullable id)target action:(SEL)action{
     [self.zhijianButton addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
 
 }
 
--(void)qiehuanTarget:(nullable id)target action:(SEL)action{
+- (void)qiehuanTarget:(nullable id)target action:(SEL)action{
     [self.qiehuanButton addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
 
 }

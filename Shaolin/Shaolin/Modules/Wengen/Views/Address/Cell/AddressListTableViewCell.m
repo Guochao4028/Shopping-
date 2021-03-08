@@ -47,7 +47,7 @@
     // Configure the view for the selected state
 }
 
--(void)setModel:(AddressListModel *)model{
+- (void)setModel:(AddressListModel *)model{
     _model = model;
     
     [self.addressNameLabel setText:model.realname];
@@ -73,22 +73,22 @@
     
     NSMutableString *addressStr = [NSMutableString string];
     
-    if (NotNilAndNull(model.country_s)) {
-        if ([model.country_s isEqualToString:SLLocalizedString(@"中国")] == NO) {
-            [addressStr appendString:[NSString stringWithFormat:@"%@ ", model.country_s]];
+    if (NotNilAndNull(model.countryS)) {
+        if ([model.countryS isEqualToString:SLLocalizedString(@"中国")] == NO) {
+            [addressStr appendString:[NSString stringWithFormat:@"%@ ", model.countryS]];
         }
     }
     
     
-    if (NotNilAndNull(model.province_s)) {
-       [addressStr appendString:[NSString stringWithFormat:@"%@", model.province_s]];
+    if (NotNilAndNull(model.provinceS)) {
+       [addressStr appendString:[NSString stringWithFormat:@"%@", model.provinceS]];
     }
     
-    if (NotNilAndNull(model.city_s)) {
-       [addressStr appendString:[NSString stringWithFormat:@" %@",model.city_s]];
+    if (NotNilAndNull(model.cityS)) {
+       [addressStr appendString:[NSString stringWithFormat:@" %@",model.cityS]];
     }
-    if (NotNilAndNull(model.re_s)) {
-        [addressStr appendString:[NSString stringWithFormat:@" %@",model.re_s]];
+    if (NotNilAndNull(model.reS)) {
+        [addressStr appendString:[NSString stringWithFormat:@" %@",model.reS]];
     }
     if (NotNilAndNull(model.address)) {
         [addressStr appendString:[NSString stringWithFormat:@" %@",model.address]];

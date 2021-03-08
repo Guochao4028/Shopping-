@@ -29,11 +29,11 @@ typedef void(^ShoppingCratTableCellSelectBlock)(NSIndexPath *indexPath);
 
 @protocol ShoppingCratTableCellDelegate <NSObject>
 //选择
--(void)shoppingCratTableCell:(ShoppingCratTableCell *)cellView lcotion:(NSIndexPath *)indexPath model:(ShoppingCartGoodsModel *)model;
+- (void)shoppingCratTableCell:(ShoppingCratTableCell *)cellView lcotion:(NSIndexPath *)indexPath model:(ShoppingCartGoodsModel *)model;
 //商品数量
--(void)shoppingCratTableCell:(ShoppingCratTableCell *)cellView calculateCount:(NSInteger)count model:(ShoppingCartGoodsModel *)model;
+- (void)shoppingCratTableCell:(ShoppingCratTableCell *)cellView calculateCount:(NSInteger)count model:(ShoppingCartGoodsModel *)model;
 //规格
--(void)shoppingCratTableCell:(ShoppingCratTableCell *)cellView jumpSpecificationsViewWithLcotion:(NSIndexPath *)indexPath model:(ShoppingCartGoodsModel *)model;
+- (void)shoppingCratTableCell:(ShoppingCratTableCell *)cellView jumpSpecificationsViewWithLcotion:(NSIndexPath *)indexPath model:(ShoppingCartGoodsModel *)model;
 
 @end
 

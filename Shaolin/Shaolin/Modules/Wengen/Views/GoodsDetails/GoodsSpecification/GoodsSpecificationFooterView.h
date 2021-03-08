@@ -17,11 +17,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, assign)BOOL isShowInsufficientInventory;
 
--(void)addCartTarget:(nullable id)target action:(SEL)action;
+- (void)addCartTarget:(nullable id)target action:(SEL)action;
 
--(void)buyTarget:(nullable id)target action:(SEL)action;
+- (void)buyTarget:(nullable id)target action:(SEL)action;
 
--(void)determineTarget:(nullable id)target action:(SEL)action;
+- (void)determineTarget:(nullable id)target action:(SEL)action;
 
 @end
 

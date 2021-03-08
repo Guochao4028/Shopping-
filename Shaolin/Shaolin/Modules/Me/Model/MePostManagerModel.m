@@ -10,7 +10,7 @@
 #import "PostPureTextCell.h"
 #import "PostManagementCell.h"
 @implementation MePostManagerModel
--(NSString *)cellIdentifier
+- (NSString *)cellIdentifier
 {
     if ([self.kind isEqualToString:@"1"]) {
         return NSStringFromClass([PostPureTextCell class]);

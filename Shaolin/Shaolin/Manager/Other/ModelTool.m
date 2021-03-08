@@ -31,6 +31,10 @@
 
 #import "OrderListModel.h"
 
+#import "OrderDetailsNewModel.h"
+
+#import "SaveBuyCarModel.h"
+
 @interface ModelTool ()
 
 @property(nonatomic, copy)NSString * dbPath;
@@ -54,6 +58,9 @@
             flag = NO;
             [[SLAppInfoModel sharedInstance]setNil];
             [[NSNotificationCenter defaultCenter]postNotificationName:MODELTOOL_CHECKRESPONSEOBJECT_DELETEUSER object:nil];
+            printf("  ===========================================================================================\n");
+            printf("||后台返回10018，发送MODELTOOL_CHECKRESPONSEOBJECT_DELETEUSER消息，进入LoginViewController\n");
+            printf("  ===========================================================================================\n");
         }else{
             //其他状态码
             flag = NO;
@@ -150,8 +157,6 @@
     
 }
 
-
-
 //字符串转拼音，返回首字母
 +(NSString *)firstCharactor:(NSString *)aString{
     //转成了可变字符串
@@ -183,7 +188,7 @@
         NSDictionary *dic = responseObject;
         if ([dic isKindOfClass:[NSDictionary class]]){
             NSMutableDictionary *userDic =  [[NSMutableDictionary alloc]initWithDictionary:dic];
-            [userDic setObject:[SLAppInfoModel sharedInstance].access_token forKey:kToken];
+            [userDic setObject:[SLAppInfoModel sharedInstance].accessToken forKey:kToken];
             
             NSDictionary *allDic = [[NSDictionary alloc]initWithDictionary:userDic];
             NSLog(@"%@",allDic);
@@ -251,7 +256,17 @@
             for (ShoppingCartGoodsModel *goodsModel in model.goods) {
                 
                 if (goodsModel.isSelected) {
-                    float price = [goodsModel.current_price floatValue];
+                    
+//                    BOOL isDiscount = [goodsModel.isDiscount boolValue];
+                    float price;
+//                    if (isDiscount) {
+                        price = [goodsModel.price floatValue];
+//                    }else{
+//                        price = [goodsModel.oldPrice floatValue];
+//                    }
+                    
+                    
+//                    float price = [goodsModel.current_price floatValue];
                     int count = [goodsModel.num intValue];
                     
                     totaPrice += (price * count);
@@ -261,8 +276,16 @@
     }else if(type == CalculateShoppingCartGoodsModelType){
         for (ShoppingCartGoodsModel *goodsModel in listModel) {
             
+//            float price = [goodsModel.current_price floatValue];
             
-            float price = [goodsModel.current_price floatValue];
+//            BOOL isDiscount = [goodsModel.isDiscount boolValue];
+            float price;
+//            if (isDiscount) {
+                price = [goodsModel.price floatValue];
+//            }else{
+//                price = [goodsModel.oldPrice floatValue];
+//            }
+            
             int count = [goodsModel.num intValue];
             
             totaPrice += (price * count);
@@ -285,16 +308,27 @@ numericalValidationType:(NumericalValidationType)type
     if (checkType == CheckInventoryCartType) {
         if (type == NumericalValidationAddType) {
 
-            [[DataManager shareInstance]incrCarNum:dic Callback:^(Message *message) {
-                
+//            [[DataManager shareInstance]incrCarNum:dic Callback:^(Message *message) {
+//
+//                counting(number, message.isSuccess, message);
+//            }];
+            
+            [[DataManager shareInstance]changeGoodsNum:dic Callback:^(Message *message) {
                 counting(number, message.isSuccess, message);
+
             }];
 
         }else if (type == NumericalValidationSubType){
-            [[DataManager shareInstance]decrCarNum:dic Callback:^(Message *message) {
-                
+//            [[DataManager shareInstance]decrCarNum:dic Callback:^(Message *message) {
+//
+//                counting(number, message.isSuccess, message);
+//            }];
+            
+            [[DataManager shareInstance]changeGoodsNum:dic Callback:^(Message *message) {
                 counting(number, message.isSuccess, message);
+
             }];
+
         }
     }else if (checkType == CheckInventoryGoodsType){
         [[DataManager shareInstance]checkStock:dic Callback:^(Message *message){
@@ -322,26 +356,35 @@ numericalValidationType:(NumericalValidationType)type
        dispatch_queue_t queue = dispatch_get_global_queue(0, 0);
        dispatch_group_async(group, queue, ^{
            
-           for (OrderDetailsModel *goodsItem in goodsArray) {
+           for (OrderDetailsGoodsModel *goodsItem in goodsArray) {
                dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
                NSMutableDictionary *param = [NSMutableDictionary dictionary];
-               [param setValue:goodsItem.num forKey:@"num"];
-               [param setValue:goodsItem.goods_id forKey:@"goods_id"];
-               [param setValue:goodsItem.goods_attr_id forKey:@"goods_attr_id"];
+               [param setValue:goodsItem.goodsNum forKey:@"num"];
+               [param setValue:goodsItem.goodsId forKey:@"goodsId"];
+               if (goodsItem.goodsAttId) {
+                   [param setValue:goodsItem.goodsAttId forKey:@"attrId"];
+               }
+               
                
                [param setValue:goodsItem.type forKey:@"type"];
                
                [[DataManager shareInstance]addCar:param Callback:^(Message *message) {
                    
                    if (message.isSuccess == YES) {
-                       NSMutableDictionary *goodsItemDic = [NSMutableDictionary dictionary];
+//                       NSMutableDictionary *goodsItemDic = [NSMutableDictionary dictionary];
                        
-                       [goodsItemDic setValue:goodsItem.goods_id forKey:@"goods_id"];
-                       if (goodsItem.goods_attr_id != nil) {
-                           [goodsItemDic setValue:goodsItem.goods_attr_id forKey:@"goods_attr_id"];
+                       SaveBuyCarModel *buyCarModel = [[SaveBuyCarModel alloc]init];
+                       buyCarModel.goodsId = goodsItem.goodsId;
+                       
+                       
+//                       [goodsItemDic setValue:goodsItem.goodsId forKey:@"goods_id"];
+                       if (goodsItem.goodsAttId != nil) {
+//                           [goodsItemDic setValue:goodsItem.goodsAttId forKey:@"goods_attr_id"];
+                           buyCarModel. goodsAttrId = goodsItem.goodsAttId;
                        }
                        
-                       [goodsIdArray addObject:goodsItemDic];
+//                       [goodsIdArray addObject:goodsItemDic];
+                       [goodsIdArray addObject:buyCarModel];
                    }
                    
                    dispatch_semaphore_signal(semaphore);
@@ -356,11 +399,22 @@ numericalValidationType:(NumericalValidationType)type
            dispatch_group_notify(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
               dispatch_async(dispatch_get_main_queue(), ^{
                   
-                NSArray *tempArray = [NSArray arrayWithContentsOfFile:KAgainBuyCarPath];
+                  for (SaveBuyCarModel *model in goodsIdArray) {
+                      
+                      NSString *goodsId = model.goodsId;
+                      
+                      NSString *goodsAttrId = model.goodsAttrId;
+                      
+                      [[ModelTool shareInstance] deleteTableEnum:TableNameSaveBuyCar where:[NSString stringWithFormat:@"goodsId = '%@' and goodsAttrId = '%@' and userId = '%@'", goodsId, goodsAttrId, model.userID]];
+                      
+                      [[ModelTool shareInstance] insert:model tableEnum:TableNameSaveBuyCar];
+                  }
                   
-                  [goodsIdArray addObjectsFromArray:tempArray];
-                  
-                  [goodsIdArray writeToFile:KAgainBuyCarPath atomically:YES];
+//                NSArray *tempArray = [NSArray arrayWithContentsOfFile:KAgainBuyCarPath];
+//
+//                  [goodsIdArray addObjectsFromArray:tempArray];
+//
+//                  [goodsIdArray writeToFile:KAgainBuyCarPath atomically:YES];
                   
                   call(nil);
                   
@@ -386,17 +440,20 @@ numericalValidationType:(NumericalValidationType)type
         }
     }
     
-    for (OrderDetailsModel *goodsItem in goodsArray) {
+    for (OrderDetailsGoodsModel *goodsItem in goodsArray) {
         ShoppingCartGoodsModel *cartGoodModel = [[ShoppingCartGoodsModel alloc]init];
-        cartGoodModel.name = goodsItem.goods_name;
+//        cartGoodModel.name = goodsItem.goods_name;
+        cartGoodModel.goodsName = goodsItem.goodsName;
         cartGoodModel.desc = goodsItem.desc;
-        cartGoodModel.img_data = goodsItem.goods_image;
-        cartGoodModel.price = goodsItem.money;
-        cartGoodModel.current_price = goodsItem.money;
+        cartGoodModel.imgDataList = goodsItem.goodsImages;
+        cartGoodModel.price = goodsItem.goodsPrice;
+//        cartGoodModel.current_price = goodsItem.money;
+        cartGoodModel.oldPrice = goodsItem.goodsPrice;
         cartGoodModel.stock = @"1";
-        cartGoodModel.store_type = @"1";
-        cartGoodModel.num = goodsItem.num;
-        cartGoodModel.goods_id = goodsItem.goods_id;
+        cartGoodModel.storeType = @"1";
+        cartGoodModel.num = goodsItem.goodsNum;
+        cartGoodModel.goodsId = goodsItem.goodsId;
+        cartGoodModel.appStoreId = goodsItem.appStoreId;
         
         [saveGoodsArray addObject:cartGoodModel];
     }
@@ -449,6 +506,52 @@ numericalValidationType:(NumericalValidationType)type
     return storeArray;
 }
 
+/// 拼装订单数据
++(NSArray *)assembleOrderDetailsData:(OrderDetailsNewModel *)model{
+    NSMutableArray *storeArray = [NSMutableArray array];
+    
+    if ([model.clubs count] == 0) {
+        OrderStoreModel *storeModel = [[OrderStoreModel alloc]init];
+        [storeArray addObject:storeModel];
+        for (OrderStoreModel *storeItem in storeArray) {
+            NSMutableArray *goodsArray = [NSMutableArray array];
+            for (OrderDetailsGoodsModel *goodsModel in model.goods) {
+               
+                [goodsArray addObject:goodsModel];
+            }
+            
+            storeItem.goods = goodsArray;
+        }
+    }else{
+        for (OrderClubsInfoModel *clubsModel in model.clubs) {
+            
+            OrderStoreModel *storeModel = [[OrderStoreModel alloc]init];
+            storeModel.storeId = clubsModel.orderClubsInfoModelId;
+            storeModel.name = clubsModel.name;
+            storeModel.is_self = clubsModel.isSelf;
+           
+            [storeArray addObject:storeModel];
+        }
+     
+        for (OrderStoreModel *storeItem in storeArray) {
+            NSMutableArray *goodsArray = [NSMutableArray array];
+            for (OrderDetailsGoodsModel *goodsModel in model.goods) {
+                if ([goodsModel.clubId isEqualToString:storeItem.storeId] == YES) {
+                    goodsModel.clubName = storeItem.name;
+                    [goodsArray addObject:goodsModel];
+                    
+                }
+            }
+            
+            storeItem.goods = goodsArray;
+        }
+        
+    }
+    
+    
+    return storeArray;
+}
+
 
 /// 根据订单列表数据 计算高度 并返回数据
 +(NSArray *)calculateHeight:(NSArray<OrderListModel *> *)dataArray{
@@ -461,7 +564,7 @@ numericalValidationType:(NumericalValidationType)type
 //
 //        if ([num_type isEqualToString:@"1"] == YES || num_type == nil) {
 //
-//            if ( [is_virtual isEqualToString:@"1"]) {
+//            if ([is_virtual isEqualToString:@"1"]) {
 //                listModel.cellHight = 235;
 //
 //            }else if ([is_virtual isEqualToString:@"0"]) {
@@ -510,7 +613,7 @@ numericalValidationType:(NumericalValidationType)type
 //                }
 //            }
 //        }else{
-//             if ( [is_virtual isEqualToString:@"1"]) {
+//             if ([is_virtual isEqualToString:@"1"]) {
 //                           listModel.cellHight = 235;
 //
 //                       }else if ([is_virtual isEqualToString:@"0"]) {
@@ -568,26 +671,47 @@ numericalValidationType:(NumericalValidationType)type
         //订单状态
         NSInteger statusInteger = [listModel.status integerValue];
         
-        NSArray *orderStoreArray = listModel.order_goods;
-        OrderStoreModel *storeModel = [orderStoreArray firstObject];
-        OrderGoodsModel *goodsModel = [storeModel.goods firstObject];
-        NSInteger goods_type = [goodsModel.goods_type integerValue];
+//        NSArray *orderStoreArray = listModel.order_goods;
+//        OrderStoreModel *storeModel = [orderStoreArray firstObject];
+//        OrderGoodsModel *goodsModel = [storeModel.goods firstObject];
+//        NSInteger goods_type = [goodsModel.goods_type integerValue];
+        NSInteger type = [listModel.type integerValue];
         CGFloat cellHight = 225;
         
         ///1：实物，2：教程，3：报名，5:法事佛事类型-法会，6:法事佛事类型-佛事， 7:法事佛事类型-建寺供僧 8:普通法会 4:交流会
-        if (goods_type == 2 || goods_type == 3 || goods_type == 4) {
+//        if (goods_type == 2 || goods_type == 3 || goods_type == 4) {
+//            if (statusInteger == 6 || statusInteger == 7) {
+//                cellHight = 180;
+//            }
+//        }
+//
+        if (type == 2 || type == 3 || type == 4) {
             if (statusInteger == 6 || statusInteger == 7) {
                 cellHight = 180;
             }
         }
         
-        if (goods_type == 1) {
-            if([goodsModel.status isEqualToString:@"2"] && [goodsModel.is_invoice isEqualToString:@"0"]){
-                
-                if ([goodsModel.is_foreign isEqualToString:@"1"]) {
-                    cellHight = 225 - 30;
-                }
+//        if (goods_type == 1) {
+//            if([goodsModel.status isEqualToString:@"2"] && [goodsModel.is_invoice isEqualToString:@"0"]){
+//
+//                if ([goodsModel.is_foreign isEqualToString:@"1"]) {
+//                    cellHight = 225 - 30;
+//                }
+//            }
+//        }
+        
+        
+        if (type == 1) {
+            float goodsMoney = [listModel.money floatValue];
+            if (goodsMoney == 0 && statusInteger == 2) {
+                cellHight = 225 - 30;
             }
+//            if(statusInteger == 2 && [listModel.isInvoice isEqualToString:@"0"]){
+//
+//                if ([listModel.isForeign isEqualToString:@"1"]) {
+//                    cellHight = 225 - 30;
+//                }
+//            }
         }
         
         listModel.cellHight = cellHight;
@@ -646,14 +770,18 @@ numericalValidationType:(NumericalValidationType)type
 
 
 /// 创建数据库
--(void)createBatabase{
+- (void)createBatabase{
     
    NSArray *sqlStringsArray = @[
        @"CREATE TABLE level('id' INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL , 'classification' VARCHAR(255), 'levelId' VARCHAR(30), 'createTime' VARCHAR(255), 'fid' VARCHAR(255), 'name' VARCHAR(255), 'number' VARCHAR(255), 'type' VARCHAR(255), 'value' VARCHAR(255), 'levelType' VARCHAR(255));",
        @"CREATE TABLE searchHistory('id' INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL , 'userId' VARCHAR(255), 'type' VARCHAR(30), 'searchContent' VARCHAR(255));",
+       ///分享，关注，点赞
+       @"CREATE TABLE thumbFollowShare('id' INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL , 'userId' VARCHAR(255), 'type' VARCHAR(30), 'itemId' VARCHAR(255),'itemType' VARCHAR(255),'itemKind' VARCHAR(255), 'updateStatus' VARCHAR(30), 'time' VARCHAR(30), 'sharedCount' VARCHAR(30), 'pujaType' VARCHAR(30), 'buddhismId' VARCHAR(30), 'buddhismTypeId' VARCHAR(30));",
+       ///购物车 商品表
+       @"CREATE TABLE saveBuyCar('userId' VARCHAR(255), 'goodsId' VARCHAR(255), 'goodsAttrId' VARCHAR(255));",
    ];
     
-    NSArray *tableNames = @[@"level", @"searchHistory"];
+    NSArray *tableNames = @[@"level", @"searchHistory", @"thumbFollowShare", @"againBuyCar"];
     
     
     NSFileManager * fileManager = [NSFileManager defaultManager];
@@ -773,7 +901,9 @@ numericalValidationType:(NumericalValidationType)type
     }
 }
 
-
+- (BOOL)insert:(id)model tableEnum:(TableNameEnum)tableEnum {
+    return [self insert:model tableName:[self getTableName:tableEnum]];
+}
 ///插入数据 到数据库
 - (BOOL)insert:(id)model tableName:(NSString*)tbName{
     
@@ -806,6 +936,10 @@ numericalValidationType:(NumericalValidationType)type
 }
 
 ///按条件查询
+- (NSArray*)select:(Class)model tableEnum:(TableNameEnum)tableEnum where:(NSString*)str {
+    return [self select:model tableName:[self getTableName:tableEnum] where:str];
+}
+
 - (NSArray*)select:(Class)model tableName:(NSString*)tbName where:(NSString*)str{
     NSString *sql = [NSString stringWithFormat:@"select * from %@ where %@",tbName,str];
     NSArray *array = [self getModelAllProperty:[model class]];
@@ -832,6 +966,10 @@ numericalValidationType:(NumericalValidationType)type
 }
 
 ///查询所有
+- (NSArray*)selectALL:(Class)model tableEnum:(TableNameEnum)tableEnum {
+    return [self selectALL:model tableName:[self getTableName:tableEnum]];
+}
+
 - (NSArray*)selectALL:(Class)model tableName:(NSString*)tbName {
     FMDatabase *db = [FMDatabase databaseWithPath:self.dbPath];
     NSString *sql = [NSString stringWithFormat:@"select * from %@ ",tbName];
@@ -855,9 +993,46 @@ numericalValidationType:(NumericalValidationType)type
     return [allArray copy];
 }
 
+///修改表数据数据
+- (BOOL)update:(id)model tableEnum:(TableNameEnum)tableEnum where:(NSString*)str {
+    return [self update:model tableName:[self getTableName:tableEnum] where:str];
+}
+
+- (BOOL)update:(id)model tableName:(NSString*)tbName where:(NSString*)str{
+    FMDatabase *db = [FMDatabase databaseWithPath:self.dbPath];
+    NSArray *array = [self getModelAllProperty:[model class]];
+    NSMutableString *sql = [NSMutableString stringWithFormat:@"UPDATE %@ SET ",tbName];
+    
+    for (int i = 0; i < array.count; i++) {
+        NSDictionary *dic = array[i];
+        NSString *pro = [dic objectForKey:@"name"];
+        [sql appendFormat:@"%@ = '%@'",pro,[model valueForKey:pro]];
+        if (i < array.count - 1){
+            [sql appendString:@","];
+        }
+    }
+    
+    if (str.length){
+        [sql appendFormat:@" where %@",str];
+    }
+    NSLog(@"修改数据 : %@",sql);
+    [db open];
+    BOOL result = [db executeUpdate:[sql copy]];
+    [db close];
+    NSLog(@"更新数据:%@",result ? @"成功":@"失败");
+    return result;
+}
+
+- (BOOL)deleteTableEnum:(TableNameEnum)tableEnum where:(NSString*)str {
+    return [self deleteTableName:[self getTableName:tableEnum] where:str];
+}
+
 - (BOOL)deleteTableName:(NSString*)tbName where:(NSString*)str{
     FMDatabase *db = [FMDatabase databaseWithPath:self.dbPath];
-    NSString *sql = [NSString stringWithFormat:@"delete from %@ where %@",tbName,str];
+    NSString *sql = [NSString stringWithFormat:@"delete from %@",tbName];;
+    if (str.length) {
+        sql = [NSString stringWithFormat:@"%@ where %@", sql, str];
+    }
     NSLog(@"删除数据 : %@",sql);
     [db open];
     BOOL result = [db executeUpdate:sql];
@@ -866,6 +1041,25 @@ numericalValidationType:(NumericalValidationType)type
     return result;
 }
 
+
+- (NSString *)getTableName:(TableNameEnum)tableNameEnum {
+    switch (tableNameEnum) {
+        case TableNameLevel:
+            return @"level";
+            break;
+        case TableNameSearchHistory:
+            return @"searchHistory";
+            break;
+        case TableNameThumbFollowShare:
+            return @"thumbFollowShare";
+            break;
+        case TableNameSaveBuyCar:
+            return @"saveBuyCar";
+            break;
+        default:
+            return @"";
+    }
+}
 #pragma mark - 单例构造
 +(instancetype)shareInstance{
     static ModelTool *_sharedSingleton = nil;
@@ -882,7 +1076,7 @@ numericalValidationType:(NumericalValidationType)type
     return [ModelTool shareInstance];
 }
 
--(id)copyWithZone:(nullable NSZone *)zone {
+- (id)copyWithZone:(nullable NSZone *)zone {
     return [ModelTool shareInstance];
 }
 
@@ -956,13 +1150,13 @@ numericalValidationType:(NumericalValidationType)type
     NSMutableDictionary *dic = [NSMutableDictionary dictionary];
     NSMutableDictionary *companyDic = [NSMutableDictionary dictionary];
     // 取出所有的 单号 去重
-    for (OrderDetailsModel *goodsModel in dataArray) {
-        
-        
-        [companyDic setValue:goodsModel.logistics_name forKey:goodsModel.logistics_name];
-        [dic setValue:goodsModel.logistics_no forKey:goodsModel.logistics_no];
+    for (OrderDetailsGoodsModel *goodsModel in dataArray) {
+
+
+        [companyDic setValue:goodsModel.logisticsName forKey:goodsModel.logisticsName];
+        [dic setValue:goodsModel.logisticsNo forKey:goodsModel.logisticsNo];
     }
-    
+
     if ([[companyDic allValues] count] == 1) {
         if ([[dic allValues] count] == 1) {
             stortModel.isUnifiedNumber = YES;
@@ -972,6 +1166,7 @@ numericalValidationType:(NumericalValidationType)type
     }else{
         stortModel.isUnifiedNumber = NO;
     }
+
     
     
     //如果 不是统一快递单号
@@ -985,9 +1180,9 @@ numericalValidationType:(NumericalValidationType)type
                 NSMutableArray *itemArray = [NSMutableArray array];
                 
                 
-                for (OrderDetailsModel *goodsModel in dataArray) {
+                for (OrderDetailsGoodsModel *goodsModel in dataArray) {
                     
-                    if ([goodsModel.logistics_no isEqualToString:numberStr] == YES && [goodsModel.logistics_name isEqualToString:name] == YES) {
+                    if ([goodsModel.logisticsNo isEqualToString:numberStr] == YES && [goodsModel.logisticsName isEqualToString:name] == YES) {
                         [itemArray addObject:goodsModel];
                     }
                 }
@@ -999,8 +1194,9 @@ numericalValidationType:(NumericalValidationType)type
                     //存储 多个商品 所有订单号
                     NSMutableArray *allOrderNumberArray = [NSMutableArray array];
                     NSString *status;
-                    for (OrderDetailsModel *goodsModel in itemArray) {
-                        [allOrderNumberArray addObject:goodsModel.order_no];
+                    for (OrderDetailsGoodsModel *goodsModel in itemArray) {
+//                        [allOrderNumberArray addObject:goodsModel.order_no];
+                        [allOrderNumberArray addObject:goodsModel.orderId];
                         status = goodsModel.status;
                     }
                     
@@ -1044,14 +1240,13 @@ numericalValidationType:(NumericalValidationType)type
         NSString *status;
         //处理 多个商品 显示
         if ([dataArray count] > 1) {
-            for (OrderDetailsModel *goodsModel in dataArray) {
-                [allOrderNumberArray addObject:goodsModel.order_no];
+            for (OrderDetailsGoodsModel *goodsModel in dataArray) {
+                [allOrderNumberArray addObject:goodsModel.orderId];
                 status = goodsModel.status;
             }
             
-            OrderDetailsModel *model = [[OrderDetailsModel alloc]init];
+            OrderDetailsGoodsModel *model = [[OrderDetailsGoodsModel alloc]init];
             model.allOrderNoStr = [allOrderNumberArray componentsJoinedByString:@","];
-            model.order_sn = orderId;
             model.isOperationPanel = YES;
             model.status = status;
             [goodsArray addObjectsFromArray:dataArray];
@@ -1060,7 +1255,7 @@ numericalValidationType:(NumericalValidationType)type
         }else{
             //处理 单个商品 显示
             
-            for (OrderDetailsModel *model in dataArray) {
+            for (OrderDetailsGoodsModel *model in dataArray) {
                 model.isSelfViewOperationPanel = YES;
             }
             [goodsArray addObjectsFromArray:dataArray];

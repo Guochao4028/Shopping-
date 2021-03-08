@@ -10,7 +10,7 @@
 
 @implementation PayPasswordChangeView
 
--(void)awakeFromNib {
+- (void)awakeFromNib {
     [super awakeFromNib];
     
     self.firstPasswordTF.delegate = self;

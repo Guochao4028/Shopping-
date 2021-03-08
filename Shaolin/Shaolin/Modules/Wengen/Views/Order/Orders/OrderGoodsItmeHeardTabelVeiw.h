@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @protocol OrderGoodsItmeHeardTabelVeiwDelegate <NSObject>
--(void)orderGoodsItmeHeardTabelVeiw:(OrderGoodsItmeHeardTabelVeiw *)cell jummp:(OrderStoreModel *)model;
+- (void)orderGoodsItmeHeardTabelVeiw:(OrderGoodsItmeHeardTabelVeiw *)cell jummp:(OrderStoreModel *)model;
 @end
 
 NS_ASSUME_NONNULL_END

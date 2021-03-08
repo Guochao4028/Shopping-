@@ -35,7 +35,7 @@
     // Configure the view for the selected state
 }
 
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
@@ -111,21 +111,23 @@
     
     //model.weight 是秒
     NSString *timeStr = [ModelTool calculatedTimeWith:CalculatedTimeTypeDonotSecond secondStr:model.weight];
-    self.levelLabel.text = [NSString stringWithFormat:SLLocalizedString(@" %@ · %@ "), model.level_name, timeStr, model.user_num];
-    self.priceLabel.text = [NSString stringWithFormat:@"¥%@  ",NotNilAndNull(model.price)?model.price:SLLocalizedString(@"")];
+    self.levelLabel.text = [NSString stringWithFormat:SLLocalizedString(@" %@ · %@ "), model.levelName, timeStr, model.userNum];
 
-    self.contentLabel.text = NotNilAndNull(model.goods_value)?model.goods_value:@"";
+    self.contentLabel.text = NotNilAndNull(model.goodsValue)?model.goodsValue:@"";
     
     [self.imageClass sd_setImageWithURL:[NSURL URLWithString:model.cover] placeholderImage:[UIImage imageNamed:@"default_small"]];
     
+    self.imageBuy.hidden = ![model.isBuy isEqualToString:@"1"];
     
-    self.imageBuy.hidden = ![model.is_buy isEqualToString:@"1"];
+    float oldPrice = [NotNilAndNull(model.oldPrice)?model.oldPrice:@"" floatValue];
+    self.priceLabel.text = [NSString stringWithFormat:@"¥ %.2f",oldPrice];
+    
 }
 
 
 #pragma mark - getter
 
--(UIImageView *)imageClass {
+- (UIImageView *)imageClass {
     if (!_imageClass) {
         _imageClass = [[UIImageView alloc] init];
         _imageClass.layer.cornerRadius = 3;
@@ -136,7 +138,7 @@
     return _imageClass;
 }
 
--(UIImageView *)imageBuy {
+- (UIImageView *)imageBuy {
     if (!_imageBuy) {
         _imageBuy = [[UIImageView alloc] init];
         _imageBuy.image = [UIImage imageNamed:@"bought"];

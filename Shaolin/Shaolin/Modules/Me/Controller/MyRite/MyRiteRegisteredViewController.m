@@ -81,7 +81,7 @@ static NSString *const riteCellId = @"MyRiteRegisteredCell";
     return !self.riteList.count;
 }
 
--(CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
+- (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
     return -30;
 }
 
@@ -99,15 +99,15 @@ static NSString *const riteCellId = @"MyRiteRegisteredCell";
 }
 
 #pragma mark - delegate && dataSources
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.riteList.count;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     MyRiteRegisteredCell * cell = [tableView dequeueReusableCellWithIdentifier:riteCellId];
     
@@ -124,16 +124,16 @@ static NSString *const riteCellId = @"MyRiteRegisteredCell";
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     MyRiteCellModel * model = self.riteList[indexPath.row];
     NSString *url;
-    NSString *token = [SLAppInfoModel sharedInstance].access_token;
+    NSString *token = [SLAppInfoModel sharedInstance].accessToken;
     
-    if ([model.type isEqualToString:@"3"] || [model.type isEqualToString:@"4"]) {
-        url = URL_H5_RiteThreeDetail(model.type, model.code, model.buddhismTypeId, token);
+    if ([model.pujaType isEqualToString:@"3"] || [model.pujaType isEqualToString:@"4"]) {
+        url = URL_H5_RiteThreeDetail(model.pujaType, model.pujaCode, model.buddhismTypeId, token);
     }else{
-        url = URL_H5_RiteDetail(model.code, token);
+        url = URL_H5_RiteDetail(model.pujaCode, token);
        
     }
     
@@ -142,7 +142,7 @@ static NSString *const riteCellId = @"MyRiteRegisteredCell";
     [self.navigationController pushViewController:webVC animated:YES];
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 123;
 }
 
@@ -178,7 +178,7 @@ static NSString *const riteCellId = @"MyRiteRegisteredCell";
     return _infoTable;
 }
 
--(NSMutableArray *)riteList {
+- (NSMutableArray *)riteList {
     if (!_riteList) {
         _riteList = [NSMutableArray new];
     }

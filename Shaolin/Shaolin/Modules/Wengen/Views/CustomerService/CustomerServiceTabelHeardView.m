@@ -24,7 +24,7 @@
 
 @implementation CustomerServiceTabelHeardView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
         [[NSBundle mainBundle] loadNibNamed:@"CustomerServiceTabelHeardView" owner:self options:nil];
         [self initUI];
@@ -33,7 +33,7 @@
 }
 
 #pragma mark - methods
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.contentView];
     [self.contentView setFrame:self.bounds];
     [self.tableView setDelegate:self];
@@ -50,15 +50,15 @@
 
 #pragma mark - UITableViewDelegate, UITableViewDataSource
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.dataArray.count;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return 45.5;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     CustomerServiceHeardTableCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CustomerServiceHeardTableCell"];
     
     [cell setModel:[self.dataArray objectAtIndex:indexPath.row]];
@@ -66,7 +66,7 @@
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     if ([self.delegate respondsToSelector:@selector(customerServiceTabelHeardView:tapCell:)]) {
         [self.delegate customerServiceTabelHeardView:self tapCell:[self.dataArray objectAtIndex:indexPath.row]];
     }
@@ -74,7 +74,7 @@
 
 
 #pragma mark - setter / getter
--(void)setDataArray:(NSArray *)dataArray{
+- (void)setDataArray:(NSArray *)dataArray{
     _dataArray = dataArray;
     if ([dataArray count]) {
         self.problemListViewH.constant = 256;

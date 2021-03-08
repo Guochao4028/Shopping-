@@ -36,7 +36,7 @@
     }
     return self;
 }
--(void)click:(UIButton *)btn
+- (void)click:(UIButton *)btn
 {
     if(_cityArray.count==1&btn.tag==0)
     {

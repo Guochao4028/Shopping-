@@ -35,6 +35,16 @@ static  NSString* firseCellid = @"firseCell";
     //[self setNavigationBarYellowTintColor];
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter]removeObserver:self];
+}
+
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -46,14 +56,22 @@ static  NSString* firseCellid = @"firseCell";
     self.deleteArray = [@[] mutableCopy];
     
     [self.view addSubview:self.tableView];
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(selectEditCell) name:@"selectEditTextSelect" object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(selectEditCell:) name:@"selectEditTextSelect" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(normalEditCell) name:@"selectEditTextNormal" object:nil];
     
     [self.tableView.mj_header beginRefreshing];
 }
 
-- (void)selectEditCell {
+- (void)selectEditCell:(NSNotification*)notf {
     
+    
+    NSLog(@"self.foundArray.count : %ld", self.foundArray.count);
+    if (self.foundArray.count == 0){
+        UIButton *button = notf.object;
+        button.selected = NO;
+        [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"暂无可编辑内容")];
+        return;
+    }
     //点击编辑的时候清空删除数组
     [self.deleteArray removeAllObjects];
     
@@ -170,7 +188,7 @@ static  NSString* firseCellid = @"firseCell";
     return !self.foundArray.count;
 }
 
--(CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
+- (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
     return -70;
 }
 
@@ -184,7 +202,7 @@ static  NSString* firseCellid = @"firseCell";
     return [[NSAttributedString alloc] initWithString:text attributes:attributes];
 }
 
-//-(NSAttributedString *)descriptionForEmptyDataSet:(UIScrollView *)scrollView {
+//- (NSAttributedString *)descriptionForEmptyDataSet:(UIScrollView *)scrollView {
 //    NSString *text = SLLocalizedString(@"快去阅读文章吧");
 //    
 //    NSDictionary *attributes = @{NSFontAttributeName: [UIFont boldSystemFontOfSize:13.0f],
@@ -219,7 +237,7 @@ static  NSString* firseCellid = @"firseCell";
     return cell;
     
 }
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
     return SLChange(106);
@@ -232,12 +250,12 @@ static  NSString* firseCellid = @"firseCell";
     view.backgroundColor = KTextGray_FA;
     return view;
 }
--(NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
     return SLLocalizedString(@"删除");
 }
 
 
--(UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     //根据不同状态返回不同编辑模式
     
@@ -254,13 +272,18 @@ static  NSString* firseCellid = @"firseCell";
     }
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
     if (tableView.editing) {
         NSLog(@"选中");
         
         [self.deleteArray addObject:[self.foundArray objectAtIndex:indexPath.row]];
+        
+        
+        if ([self.deleteArray count] == [self.foundArray count]) {
+            [self.bottomView.allBtn setSelected:YES];
+        }
         
     }else {
         
@@ -273,15 +296,13 @@ static  NSString* firseCellid = @"firseCell";
         }
         if ([model.type isEqualToString:@"1"]) {
             if ([model.state isEqualToString:@"6"]) {
-                if ([model.kind isEqualToString:@"1"] || [model.kind isEqualToString:@"2"]) {
-                    FoundDetailsViewController *vC = [[FoundDetailsViewController alloc]init];
-                    vC.hideNavigationBar = YES;
-                    vC.idStr = model.id;
-                    vC.tabbarStr =tabbarSt;
-                    vC.typeStr = model.type;
-                    vC.hidesBottomBarWhenPushed = YES;
-                    [self.navigationController pushViewController:vC animated:YES];
-                }
+                FoundDetailsViewController *vC = [[FoundDetailsViewController alloc]init];
+                vC.hideNavigationBar = YES;
+                vC.idStr = model.id;
+                vC.tabbarStr =tabbarSt;
+                vC.typeStr = model.type;
+                vC.hidesBottomBarWhenPushed = YES;
+                [self.navigationController pushViewController:vC animated:YES];
             }else {
                 ReadingNoDataViewController *reVC = [[ReadingNoDataViewController alloc]init];
                 reVC.hidesBottomBarWhenPushed = YES;
@@ -290,15 +311,13 @@ static  NSString* firseCellid = @"firseCell";
             }
         }else {
             if ([model.state isEqualToString:@"2"]) {
-                if ([model.kind isEqualToString:@"1"] || [model.kind isEqualToString:@"2"]) {
-                    FoundDetailsViewController *vC = [[FoundDetailsViewController alloc]init];
-                    vC.hideNavigationBar = YES;
-                    vC.idStr = model.id;
-                    vC.tabbarStr =tabbarSt;
-                    vC.typeStr = model.type;
-                    vC.hidesBottomBarWhenPushed = YES;
-                    [self.navigationController pushViewController:vC animated:YES];
-                }
+                FoundDetailsViewController *vC = [[FoundDetailsViewController alloc]init];
+                vC.hideNavigationBar = YES;
+                vC.idStr = model.id;
+                vC.tabbarStr =tabbarSt;
+                vC.typeStr = model.type;
+                vC.hidesBottomBarWhenPushed = YES;
+                [self.navigationController pushViewController:vC animated:YES];
             }else {
                 ReadingNoDataViewController *reVC = [[ReadingNoDataViewController alloc]init];
                 reVC.hidesBottomBarWhenPushed = YES;
@@ -316,6 +335,11 @@ static  NSString* firseCellid = @"firseCell";
         NSLog(@"取消选中");
         
         [self.deleteArray removeObject:[self.foundArray objectAtIndex:indexPath.row]];
+        if ([self.deleteArray count] == [self.foundArray count]) {
+            [self.bottomView.allBtn setSelected:YES];
+        }else{
+            [self.bottomView.allBtn setSelected:NO];
+        }
     }else{
         NSLog(@"取消跳转");
     }
@@ -377,7 +401,7 @@ static  NSString* firseCellid = @"firseCell";
     }
     
 }
--(void)hiddenBoomtoView
+- (void)hiddenBoomtoView
 {
     //     [self.rightBtn setSelected:NO];
     [[NSNotificationCenter defaultCenter]postNotificationName:@"NormalButton" object:nil];
@@ -399,12 +423,12 @@ static  NSString* firseCellid = @"firseCell";
         _tableView.showsHorizontalScrollIndicator = NO;
         _tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
         //        _tableView.rowHeight = 227;
-        
+        WEAKSELF
         self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-            [self update];
+            [weakSelf update];
         }];
         self.tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
-            [self loadNowMoreAction];
+            [weakSelf loadNowMoreAction];
         }];
         
         _tableView.emptyDataSetDelegate = self;
@@ -416,7 +440,7 @@ static  NSString* firseCellid = @"firseCell";
     }
     return _tableView;
 }
--(NSMutableArray *)deleteArray
+- (NSMutableArray *)deleteArray
 {
     if (!_deleteArray) {
         _deleteArray = [NSMutableArray array];
@@ -429,7 +453,7 @@ static  NSString* firseCellid = @"firseCell";
     }
     return _foundArray;
 }
--(PostManagementBottomView *)bottomView
+- (PostManagementBottomView *)bottomView
 {
     if (!_bottomView) {
         _bottomView = [[PostManagementBottomView alloc]initWithFrame:CGRectMake(0, kHeight-SLChange(40)-BottomMargin_X-NavBar_Height-48, kWidth, SLChange(40)+BottomMargin_X)];

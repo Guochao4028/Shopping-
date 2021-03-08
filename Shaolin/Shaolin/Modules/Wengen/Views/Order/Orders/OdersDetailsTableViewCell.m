@@ -10,6 +10,7 @@
 
 #import "OrderDetailsModel.h"
 #import "InvoiceModel.h"
+#import "OrderDetailsNewModel.h"
 
 @interface OdersDetailsTableViewCell ()
 @property (weak, nonatomic) IBOutlet UILabel *ordersNumberLabel;
@@ -49,10 +50,10 @@
 
 #pragma mark - setter / getter
 
--(void)setModel:(OrderDetailsModel *)model{
+- (void)setModel:(OrderDetailsNewModel *)model{
     _model = model;
     
-    NSString *order_sn = model.order_sn;
+    NSString *order_sn = model.orderSn;
     
     [self.ordersNumberLabel setText:order_sn];
     
@@ -60,8 +61,8 @@
     
     self.ordersNumberLabelW.constant = size.width+1;
     
-    [self.orderTimeLabel setText:model.create_time];
-    [self.payTimeLabel setText:model.pay_time];
+    [self.orderTimeLabel setText:model.createTime];
+    [self.payTimeLabel setText:model.payTime];
     
     
     switch (self.orderDetailsType) {
@@ -91,48 +92,53 @@
 //    } else if ([model.invoice.type isEqualToString:@"2"]) {
 //        [self.invoiceTypeLabel setText:SLLocalizedString(@"单位")];
 //    }
-    NSInteger invoice_type =  [model.invoice.invoice_type integerValue];
     
-    if (invoice_type == 0) {
-        [self.invoiceTypeLabel setText:SLLocalizedString(@"不开发票")];
-    } else if (invoice_type == 1) {
-        [self.invoiceTypeLabel setText:SLLocalizedString(@"普通发票")];
-    } else if (invoice_type == 2) {
-        [self.invoiceTypeLabel setText:SLLocalizedString(@"增值税发票")];
+    
+//    NSInteger invoice_type =  [model.invoice.invoice_type integerValue];
+//
+//    if (invoice_type == 0) {
+//        [self.invoiceTypeLabel setText:SLLocalizedString(@"不开发票")];
+//    } else if (invoice_type == 1) {
+//        [self.invoiceTypeLabel setText:SLLocalizedString(@"普通发票")];
+//    } else if (invoice_type == 2) {
+//        [self.invoiceTypeLabel setText:SLLocalizedString(@"增值税发票")];
+//    }else{
+//        [self.invoiceTypeLabel setText:SLLocalizedString(@"不开发票")];
+//    }
+//
+    
+    if ([model.isInvoice boolValue] == YES) {
+        if ([model.isOrdinary boolValue] == NO) {
+            [self.invoiceTypeLabel setText:SLLocalizedString(@"普通发票")];
+        }else{
+            [self.invoiceTypeLabel setText:SLLocalizedString(@"增值税发票")];
+        }
+        
     }else{
         [self.invoiceTypeLabel setText:SLLocalizedString(@"不开发票")];
     }
     
     
-    
-    if ([model.pay_type isEqualToString:@"0"]) {
+    if ([model.payType isEqualToString:@"0"]) {
         [self.payTypeLabel setText:SLLocalizedString(@"在线支付")];
-    }
-    
-    if ([model.pay_type isEqualToString:@"1"]) {
+    }else if ([model.payType isEqualToString:@"1"]) {
         [self.payTypeLabel setText:SLLocalizedString(@"微信支付")];
-    }
-    
-    if ([model.pay_type isEqualToString:@"2"]) {
+    }else if ([model.payType isEqualToString:@"2"]) {
         [self.payTypeLabel setText:SLLocalizedString(@"支付宝支付")];
-    }
-    
-    if ([model.pay_type isEqualToString:@"3"]) {
+    }else if ([model.payType isEqualToString:@"3"]) {
         [self.payTypeLabel setText:SLLocalizedString(@"余额支付")];
-    }
-    
-    if ([model.pay_type isEqualToString:@"4"]) {
+    }else if ([model.payType isEqualToString:@"4"]) {
         [self.payTypeLabel setText:SLLocalizedString(@"虚拟币支付")];
-    }
-    
-    if ([model.pay_type isEqualToString:@"5"]) {
+    }else if ([model.payType isEqualToString:@"5"]) {
         [self.payTypeLabel setText:SLLocalizedString(@"凭证支付")];
+    }else{
+        [self.payTypeLabel setText:SLLocalizedString(@"无")];
     }
 }
 
 - (IBAction)duplicateNumberAction:(UIButton *)sender {
     UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-    NSString *order_sn = self.model.order_sn;
+    NSString *order_sn = self.model.orderSn;
     pasteboard.string = order_sn;
     [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"复制成功") view:WINDOWSVIEW afterDelay:TipSeconds];
     

@@ -27,7 +27,7 @@
     // Configure the view for the selected state
 }
 
--(void)setModel:(NSDictionary *)model{
+- (void)setModel:(NSDictionary *)model{
     NSString *isSelectStr = model[@"isSelect"];
     BOOL isSelect = [isSelectStr boolValue];
     if (isSelect == YES) {

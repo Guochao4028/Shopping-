@@ -31,10 +31,10 @@
 //     [self.scrollView addSubview:self.sdcScrollView];
     
     [self.view addSubview:self.sdcScrollView];
-    [self setUI];
+    [self setupUI];
     [self requestBanner];
 }
-- (void)setUI {
+- (void)setupUI {
     UILabel *lookLabel = [[UILabel alloc]init];
     lookLabel.text = SLLocalizedString(@"查询帮助");
     lookLabel.textColor = kMainYellow;
@@ -105,7 +105,7 @@
     }];
 }
 
--(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     [self.view endEditing:YES];
 }
 

@@ -33,7 +33,7 @@ static NSString *const cerCellId = @"KfCertificateCell";
 @implementation KfCertificateCheckViewController
 
 
--(void)viewWillAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     if ([self.navigationBarWhiteTintColor boolValue]){
         [self setNavigationBarWhiteTintColor];
@@ -66,7 +66,7 @@ static NSString *const cerCellId = @"KfCertificateCell";
     }];
 }
 
--(void)layoutView
+- (void)layoutView
 {
     WEAKSELF
     self.tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, kWidth, kHeight - NavBar_Height) style:(UITableViewStyleGrouped)];
@@ -118,12 +118,12 @@ static NSString *const cerCellId = @"KfCertificateCell";
 }
 
 
--(void)checkLogistics:(CertificateModel *)model{
+- (void)checkLogistics:(CertificateModel *)model{
     SLAppInfoModel *appInfoModel = [[SLAppInfoModel sharedInstance] getCurrentUserInfo];
     
-    NSString *urlStr = URL_H5_CertificateTrack(model.certificateId, appInfoModel.access_token);
+    NSString *urlStr = URL_H5_CertificateTrack(model.certificateId, appInfoModel.accessToken);
     
-    WengenWebViewController *webVC = [[WengenWebViewController alloc]initWithUrl:urlStr title:SLLocalizedString(@"查看物流")];
+    WengenWebViewController *webVC = [[WengenWebViewController alloc]initWithUrl:urlStr title:SLLocalizedString(@"订单跟踪")];
     [self.navigationController pushViewController:webVC animated:YES];
 }
 
@@ -169,7 +169,7 @@ static NSString *const cerCellId = @"KfCertificateCell";
     return !self.cerList.count;
 }
 
--(CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
+- (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
     return -30;
 }
 
@@ -189,16 +189,16 @@ static NSString *const cerCellId = @"KfCertificateCell";
 
 #pragma mark - delegate && dataSources
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return self.cerList.count;
 }
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return 1;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     WEAKSELF
     KfCertificateCell * cell = [tableView dequeueReusableCellWithIdentifier:cerCellId];
@@ -222,7 +222,7 @@ static NSString *const cerCellId = @"KfCertificateCell";
      
     return cell;
 }
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     CertificateModel *model = self.cerList[indexPath.section];
     KfCertificateBigImgViewController * vc = [KfCertificateBigImgViewController new];
@@ -230,25 +230,25 @@ static NSString *const cerCellId = @"KfCertificateCell";
     [self.navigationController pushViewController:vc animated:YES];
     
 }
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 223;
 }
--(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
     return 0.001;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     return 15;
 }
--(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
     UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 0, 0)];
     return v;
 }
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWidth, 15)];
     
@@ -258,7 +258,7 @@ static NSString *const cerCellId = @"KfCertificateCell";
 
 #pragma mark - getter && setter
 
--(KfReceiveCerView *)receiveView {
+- (KfReceiveCerView *)receiveView {
     WEAKSELF
     if (!_receiveView) {
         _receiveView = [[[NSBundle mainBundle] loadNibNamed:@"KfReceiveCerView" owner:self options:nil] objectAtIndex:0];
@@ -268,14 +268,14 @@ static NSString *const cerCellId = @"KfCertificateCell";
         WEAKSELF
         _receiveView.chooseHandle = ^(NSDictionary * _Nonnull params) {
             [weakSelf.view endEditing:YES];
-            MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
-            [[KungfuManager sharedInstance] getApplicationCertificate:params callback:^(Message *message) {
-                [hud hideAnimated:YES];
-                [weakSelf showAlert];
-                if (message.isSuccess){
-                    [weakSelf loadData];
-                }
-            }];
+//            MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
+//            [[KungfuManager sharedInstance] getApplicationCertificate:params callback:^(Message *message) {
+//                [hud hideAnimated:YES];
+//                [weakSelf showAlert];
+//                if (message.isSuccess){
+//                    [weakSelf loadData];
+//                }
+//            }];
             [weakSelf hideReciveView];
         };
         
@@ -284,7 +284,7 @@ static NSString *const cerCellId = @"KfCertificateCell";
 }
 
 
--(UIView *)alphaView {
+- (UIView *)alphaView {
     if (!_alphaView) {
         _alphaView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidth, kScreenHeight)];
         _alphaView.backgroundColor = UIColor.blackColor;

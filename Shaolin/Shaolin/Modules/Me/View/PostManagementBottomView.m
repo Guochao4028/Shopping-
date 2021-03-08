@@ -18,7 +18,7 @@
     }
     return self;
 }
--(void)layoutSubviews
+- (void)layoutSubviews
 {
     [super layoutSubviews];
     [self.allBtn mas_makeConstraints:^(MASConstraintMaker *make) {

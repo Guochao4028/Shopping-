@@ -11,7 +11,7 @@
 @implementation PayPasswordSetupView
 
 
--(void)awakeFromNib {
+- (void)awakeFromNib {
     [super awakeFromNib];
     
     self.phoneTF.delegate = self;

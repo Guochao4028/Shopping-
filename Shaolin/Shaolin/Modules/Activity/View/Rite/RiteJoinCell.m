@@ -34,7 +34,7 @@
 
 @implementation RiteJoinCell
 
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         self.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -68,20 +68,20 @@
 
 }
 
--(void)reservationHandle {
+- (void)reservationHandle {
     if (self.reservationHandleBlock) {
         self.reservationHandleBlock();
     }
 }
 
--(void)donateHandle {
+- (void)donateHandle {
     if (self.donateHandleBlock) {
         self.donateHandleBlock();
     }
 }
 
 
--(void)layoutSubviews {
+- (void)layoutSubviews {
     
     [self.leftView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(15);
@@ -91,7 +91,7 @@
     }];
     
     [self.leftImgv mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.size.mas_equalTo(CGSizeMake(54, 50));
+        make.size.mas_equalTo(CGSizeMake(54, 52));
         make.centerY.centerX.mas_equalTo(self.leftView);
     }];
     
@@ -113,7 +113,7 @@
         make.right.mas_equalTo(-15);
         make.width.mas_equalTo((kScreenWidth - 30 - 13)/2);
         make.centerY.mas_equalTo(self.contentView);
-        make.height.mas_equalTo(54);
+        make.height.mas_equalTo(52);
     }];
     
     [self.rightImgv mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -160,7 +160,7 @@
 }
 
 
-//-(UIButton *)joinBtn {
+//- (UIButton *)joinBtn {
 //    if (!_joinBtn) {
 //        _joinBtn = [UIButton new];
 //        [_joinBtn setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
@@ -176,7 +176,7 @@
 //    return _joinBtn;
 //}
 
-//-(UIImageView *)arrowIcon {
+//- (UIImageView *)arrowIcon {
 //    if (!_arrowIcon) {
 //        _arrowIcon = [[UIImageView alloc] initWithFrame:CGRectZero];
 //        _iconImgv.contentMode = UIViewContentModeScaleAspectFill;
@@ -185,7 +185,7 @@
 //    return _arrowIcon;
 //}
 
-//-(UILabel *)riteTitleLabel{
+//- (UILabel *)riteTitleLabel{
 //    if (!_riteTitleLabel) {
 //        _riteTitleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
 //        _riteTitleLabel.font = kMediumFont(13);
@@ -195,7 +195,7 @@
 //        return _riteTitleLabel;
 //}
 
-//-(UIImageView *)bgImageView{
+//- (UIImageView *)bgImageView{
 //    if (!_bgImageView) {
 //        _bgImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
 //        _bgImageView.contentMode = UIViewContentModeScaleAspectFill;
@@ -204,7 +204,7 @@
 //    return _bgImageView;
 //}
 
--(UIButton *)leftBtn {
+- (UIButton *)leftBtn {
     if (!_leftBtn) {
         _leftBtn = [UIButton new];
 //        [_leftBtn setImage:[UIImage imageNamed:@"rite_reservation"] forState:UIControlStateNormal];
@@ -213,7 +213,7 @@
     return _leftBtn;
 }
 
--(UIButton *)rightBtn {
+- (UIButton *)rightBtn {
     if (!_rightBtn) {
         _rightBtn = [UIButton new];
 //        [_rightBtn setImage:[UIImage imageNamed:@"rite_donate"] forState:UIControlStateNormal];
@@ -223,7 +223,7 @@
 }
 
 
--(UIView *)leftView {
+- (UIView *)leftView {
     if (!_leftView) {
         _leftView = [UIView new];
         _leftView.backgroundColor = [UIColor whiteColor];
@@ -235,7 +235,7 @@
     return _leftView;
 }
 
--(UILabel *)leftFirstLabel {
+- (UILabel *)leftFirstLabel {
     if (!_leftFirstLabel) {
         _leftFirstLabel = [UILabel new];
         _leftFirstLabel.font = kMediumFont(19);
@@ -245,7 +245,7 @@
     return _leftFirstLabel;
 }
 
--(UILabel *)leftSecondLabel {
+- (UILabel *)leftSecondLabel {
     if (!_leftSecondLabel) {
         _leftSecondLabel = [UILabel new];
         _leftSecondLabel.font = kMediumFont(19);
@@ -256,7 +256,7 @@
     return _leftSecondLabel;
 }
 
--(UIImageView *)leftImgv {
+- (UIImageView *)leftImgv {
     if (!_leftImgv) {
         _leftImgv = [UIImageView new];
         _leftImgv.image = [UIImage imageNamed:@"new_rite_leftIcon"];
@@ -264,7 +264,7 @@
     return _leftImgv;
 }
 
--(UIView *)rightView {
+- (UIView *)rightView {
     if (!_rightView) {
         _rightView = [UIView new];
         _rightView.backgroundColor = [UIColor whiteColor];
@@ -276,7 +276,7 @@
     return _rightView;
 }
 
--(UILabel *)rightFirstLabel {
+- (UILabel *)rightFirstLabel {
     if (!_rightFirstLabel) {
         _rightFirstLabel = [UILabel new];
         _rightFirstLabel.backgroundColor = UIColor.clearColor;
@@ -287,7 +287,7 @@
     return _rightFirstLabel;
 }
 
--(UILabel *)rightSecondLabel {
+- (UILabel *)rightSecondLabel {
     if (!_rightSecondLabel) {
         _rightSecondLabel = [UILabel new];
         _rightSecondLabel.backgroundColor = UIColor.clearColor;
@@ -298,7 +298,7 @@
     return _rightSecondLabel;
 }
 
--(UIImageView *)rightImgv {
+- (UIImageView *)rightImgv {
     if (!_rightImgv) {
         _rightImgv = [UIImageView new];
         _rightImgv.image = [UIImage imageNamed:@"new_rite_rightIcon"];

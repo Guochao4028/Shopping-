@@ -38,7 +38,7 @@
 
 #pragma mark - UICollectionViewDataSource & UICollectionViewDelegate
 
--(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
     return self.dataArray.count;
 }
 
@@ -49,7 +49,7 @@
     return CGSizeMake(width, 40);
 }
 
--(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     HotCityCollectionViewCell * cell  = [collectionView dequeueReusableCellWithReuseIdentifier:@"HotCityCollectionViewCell" forIndexPath:indexPath];
 
     cell.model = self.dataArray[indexPath.row];
@@ -57,13 +57,13 @@
     return cell;
 }
 
--(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     if([self.delegate respondsToSelector:@selector(hotCityTableViewCell:tapItem:)]){
         [self.delegate hotCityTableViewCell:self tapItem:self.dataArray[indexPath.row]];
     }
 }
 
--(void)setDataArray:(NSArray *)dataArray{
+- (void)setDataArray:(NSArray *)dataArray{
     
     _dataArray = dataArray;
     

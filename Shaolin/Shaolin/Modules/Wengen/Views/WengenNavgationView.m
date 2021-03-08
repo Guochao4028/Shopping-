@@ -24,7 +24,7 @@
 
 @implementation WengenNavgationView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [[NSBundle mainBundle] loadNibNamed:@"WengenNavgationView" owner:self options:nil];
@@ -36,7 +36,7 @@
 #pragma mark - methods
 
 /// 初始化UI
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.contentView];
     [self.contentView setFrame:self.bounds];
     
@@ -44,13 +44,13 @@
 }
 
 /// 重写系统方法
--(void)setFrame:(CGRect)frame{
+- (void)setFrame:(CGRect)frame{
     [super setFrame:frame];
     [self.contentView setFrame:self.bounds];
 }
 
 
--(void)rightTarget:(id)target action:(SEL)action{
+- (void)rightTarget:(id)target action:(SEL)action{
     [self.rightButton addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
 }
 
@@ -63,12 +63,12 @@
 
 #pragma mark - setter / getter
 
--(void)setTitleStr:(NSString *)titleStr{
+- (void)setTitleStr:(NSString *)titleStr{
     _titleStr = titleStr;
     [self.titleLabel setText:titleStr];
 }
 
--(void)setRightStr:(NSString *)rightStr{
+- (void)setRightStr:(NSString *)rightStr{
     _rightStr = rightStr;
     [self.rightLabel setText:rightStr];
     [self.rightButton setEnabled:YES];

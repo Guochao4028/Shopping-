@@ -25,7 +25,7 @@
     // Initialization code
 }
 
--(void)setIsPlaying:(BOOL)isPlaying {
+- (void)setIsPlaying:(BOOL)isPlaying {
     _isPlaying = isPlaying;
     
     if (isPlaying) {
@@ -33,7 +33,7 @@
         self.timeLabel.textColor = kMainYellow;
         self.tryIcon.image = nil;
         
-        if (![self.detailModel.buy boolValue] && [self.model.try_watch intValue] == 1) {
+        if (![self.detailModel.buy boolValue] && [self.model.tryLook intValue] == 1) {
             // 未购买且教程课节是试看时，显示试看标志
             self.tryIcon.image = [UIImage imageNamed:@"try_icon_red"];
         }
@@ -42,7 +42,7 @@
         self.timeLabel.textColor = KTextGray_999;
         self.tryIcon.image = nil;
         
-        if (![self.detailModel.buy boolValue] && [self.model.try_watch intValue] == 1) {
+        if (![self.detailModel.buy boolValue] && [self.model.tryLook intValue] == 1) {
             // 未购买且教程课节是试看时，显示试看标志
             self.tryIcon.image = [UIImage imageNamed:@"try_icon_black"];
         }
@@ -57,7 +57,7 @@
     
     
     self.classSubTitleLabel.text = [NSString stringWithFormat:@"%@ %@",indexName,className];
-    self.timeLabel.text = model ? [NSString stringWithFormat:SLLocalizedString(@"%@ 更新"), model.update_time] : @"";
+    self.timeLabel.text = model ? [NSString stringWithFormat:SLLocalizedString(@"%@ 更新"), model.updateTime] : @"";
     
 //    if ([model.try_watch intValue] == 1) {
 //        //可以试看

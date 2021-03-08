@@ -9,7 +9,7 @@
 #import "StickCell.h"
 
 @implementation StickCell
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
@@ -18,7 +18,7 @@
     return self;
 }
 
--(void)setFoundModel:(FoundModel *)f indexpath:(NSIndexPath *)indexPath
+- (void)setFoundModel:(FoundModel *)f indexpath:(NSIndexPath *)indexPath
 {
     
     NSString * optionStr = [NSString stringWithFormat:@"%@",f.title];
@@ -34,7 +34,7 @@
 }
 
 
--(void)setupView
+- (void)setupView
 {
     [self.contentView addSubview:self.titleL];
     [self.contentView addSubview:self.stickLabel];
@@ -83,7 +83,7 @@
         }];
     }
 }
--(UILabel *)titleL
+- (UILabel *)titleL
 {
     if (!_titleL) {
         _titleL = [[UILabelLeftTopAlign alloc]init];
@@ -94,7 +94,7 @@
     }
     return _titleL;
 }
--(UILabel *)stickLabel
+- (UILabel *)stickLabel
 {
     if (!_stickLabel) {
         _stickLabel = [[UILabel alloc]init];
@@ -104,7 +104,7 @@
     }
     return _stickLabel;
 }
--(UILabel *)nameLabel
+- (UILabel *)nameLabel
 {
     if (!_nameLabel) {
         _nameLabel = [[UILabel alloc]init];
@@ -115,7 +115,7 @@
     }
     return _nameLabel;
 }
-//-(void)layoutSubviews
+//- (void)layoutSubviews
 //{
 //    [super layoutSubviews];
 //

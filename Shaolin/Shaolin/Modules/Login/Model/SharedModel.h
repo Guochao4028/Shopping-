@@ -30,6 +30,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-extern NSString *SharedModelType_URL;
-extern NSString *SharedModelType_Video;
+extern NSString *SharedModelURLType;
+extern NSString *SharedModelVideoType;
 NS_ASSUME_NONNULL_END

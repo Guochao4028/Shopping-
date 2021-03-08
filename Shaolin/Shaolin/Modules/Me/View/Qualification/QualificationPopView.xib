@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="QualificationPopView">
+            <connections>
+                <outlet property="contentView" destination="iN0-l3-epB" id="9rC-fl-eoF"/>
+                <outlet property="floatingTopLayoutConstraint" destination="2Dg-ze-5rx" id="cgJ-QV-usF"/>
+                <outlet property="refusedLabel" destination="BWR-He-TW0" id="haS-LZ-MR2"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PeC-66-Yud">
+                    <rect key="frame" x="16" y="165" width="382" height="196"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rVF-Gx-lNT">
+                            <rect key="frame" x="346" y="16" width="20" height="20"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="20" id="IKc-Ig-L54"/>
+                                <constraint firstAttribute="width" constant="20" id="cdi-4V-Bgc"/>
+                            </constraints>
+                            <state key="normal" image="popviewClose"/>
+                            <connections>
+                                <action selector="closeAction:" destination="-1" eventType="touchUpInside" id="T0y-z3-mLB"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vPu-RN-tfM">
+                            <rect key="frame" x="161" y="150" width="60" height="30"/>
+                            <color key="backgroundColor" red="0.75686274509803919" green="0.63921568627450975" blue="0.45490196078431372" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="30" id="pDd-6r-30o"/>
+                                <constraint firstAttribute="width" constant="60" id="rXP-u3-wdX"/>
+                            </constraints>
+                            <state key="normal" title="确定">
+                                <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                            </state>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="number" keyPath="lgf_CornerRadius">
+                                    <real key="value" value="4"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
+                            <connections>
+                                <action selector="closeAction:" destination="-1" eventType="touchUpInside" id="8ic-IC-N28"/>
+                            </connections>
+                        </button>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BWR-He-TW0">
+                            <rect key="frame" x="16" y="44" width="350" height="92"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="196" id="EUx-C0-kKa"/>
+                        <constraint firstAttribute="trailing" secondItem="rVF-Gx-lNT" secondAttribute="trailing" constant="16" id="Qcz-Si-pVZ"/>
+                        <constraint firstItem="vPu-RN-tfM" firstAttribute="top" secondItem="BWR-He-TW0" secondAttribute="bottom" constant="14" id="Sc9-3e-M4m"/>
+                        <constraint firstItem="vPu-RN-tfM" firstAttribute="centerX" secondItem="PeC-66-Yud" secondAttribute="centerX" id="bn2-jC-rnf"/>
+                        <constraint firstItem="BWR-He-TW0" firstAttribute="leading" secondItem="PeC-66-Yud" secondAttribute="leading" constant="16" id="drg-kP-cNJ"/>
+                        <constraint firstAttribute="bottom" secondItem="vPu-RN-tfM" secondAttribute="bottom" constant="16" id="e4b-Zx-taY"/>
+                        <constraint firstItem="rVF-Gx-lNT" firstAttribute="top" secondItem="PeC-66-Yud" secondAttribute="top" constant="16" id="eSD-HB-9zN"/>
+                        <constraint firstItem="BWR-He-TW0" firstAttribute="top" secondItem="rVF-Gx-lNT" secondAttribute="bottom" constant="8" id="rnn-Qi-dXh"/>
+                        <constraint firstAttribute="trailing" secondItem="BWR-He-TW0" secondAttribute="trailing" constant="16" id="xbk-1c-sIs"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <constraints>
+                <constraint firstItem="PeC-66-Yud" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="121" id="2Dg-ze-5rx"/>
+                <constraint firstItem="PeC-66-Yud" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="16" id="8Bw-1h-hiX"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="PeC-66-Yud" secondAttribute="trailing" constant="16" id="lEP-u3-L85"/>
+            </constraints>
+            <userDefinedRuntimeAttributes>
+                <userDefinedRuntimeAttribute type="number" keyPath="lgf_CornerRadius">
+                    <real key="value" value="4"/>
+                </userDefinedRuntimeAttribute>
+            </userDefinedRuntimeAttributes>
+            <point key="canvasLocation" x="137.68115942028987" y="87.723214285714278"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="popviewClose" width="20" height="20.5"/>
+    </resources>
+</document>

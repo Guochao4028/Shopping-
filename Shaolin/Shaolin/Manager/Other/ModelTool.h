@@ -10,7 +10,14 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class AddressListModel, OrderListModel, OrderStoreModel;
+typedef NS_ENUM (NSInteger, TableNameEnum) {
+    TableNameLevel,
+    TableNameSearchHistory,
+    TableNameThumbFollowShare,
+    TableNameSaveBuyCar
+};
+
+@class AddressListModel, OrderListModel, OrderStoreModel, OrderDetailsNewModel;
 
 typedef void(^CountingChamber)(NSInteger currentCountNumber, BOOL isSuccess, Message *message);
 
@@ -30,6 +37,9 @@ typedef void(^CountingChamber)(NSInteger currentCountNumber, BOOL isSuccess, Mes
 
 ///订单列表是否需要刷新
 @property(nonatomic, assign)BOOL isOrderListNeedRefreshed;
+
+///筛选是否展开
+@property(nonatomic, assign)BOOL isScreeningSpread;
 
 ///处理 网络 地址数据
 +(void)processingAddressData:(NSString *)filePath;
@@ -64,6 +74,9 @@ typedef void(^CountingChamber)(NSInteger currentCountNumber, BOOL isSuccess, Mes
 /// 拼装订单数据
 +(NSArray *)assembleData:(NSArray *)goodsArray;
 
+///拼装订单数据(新版)
++(NSArray *)assembleOrderDetailsData:(OrderDetailsNewModel *)model;
+
 ///获取用户信息
 +(void)getUserData:(void (^_Nullable)(void))finish;
 
@@ -82,19 +95,30 @@ typedef void(^CountingChamber)(NSInteger currentCountNumber, BOOL isSuccess, Mes
 +(UIWindow *)lastWindow;
 
 /// 创建数据库
--(void)createBatabase;
+- (void)createBatabase;
 ///根据 类 创建数据表
 - (void)creatTable:(Class)cls tableName:(NSString*)tbName keyName:(NSString*)keyName primaryKey:(NSString*)key;
 ///插入数据 到数据库
 - (BOOL)insert:(id)model tableName:(NSString*)tbName;
+- (BOOL)insert:(id)model tableEnum:(TableNameEnum)tableEnum;
+
 ///查询所有
 - (NSArray*)selectALL:(Class)model tableName:(NSString*)tbName;
+- (NSArray*)selectALL:(Class)model tableEnum:(TableNameEnum)tableEnum;
+
 ///按条件查询
 - (NSArray*)select:(Class)model tableName:(NSString*)tbName where:(NSString*)str;
+- (NSArray*)select:(Class)model tableEnum:(TableNameEnum)tableEnum where:(NSString*)str;
+
+///修改表数据数据
+- (BOOL)update:(id)model tableName:(NSString*)tbName where:(NSString*)str;
+- (BOOL)update:(id)model tableEnum:(TableNameEnum)tableEnum where:(NSString*)str;
 
 ///清除表数据
 - (BOOL)deleteTableName:(NSString*)tbName where:(NSString*)str;
+- (BOOL)deleteTableEnum:(TableNameEnum)tableEnum where:(NSString*)str;
 
+- (NSString *)getTableName:(TableNameEnum)tableNameEnum;
 
 +(instancetype)shareInstance;
 

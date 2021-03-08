@@ -322,7 +322,7 @@ static inline CGFloat lgf_DegreesToRadians(CGFloat degrees) {
     while ( (curColor = [enumerator nextObject]) != nil )
     {
         NSUInteger tmpCount = [cls countForObject:curColor];
-        if ( tmpCount < MaxCount ) continue;
+        if (tmpCount < MaxCount ) continue;
         MaxCount=tmpCount;
         MaxColor=curColor;
         

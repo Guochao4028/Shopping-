@@ -24,7 +24,7 @@
 @property(nonatomic,strong) UIImageView *imageTwo;
 @property(nonatomic,strong) UIButton *moreBtn;//查看更多图片
 @property (nonatomic, strong) NSIndexPath *indexPath;
--(void)setMePostManagerModel:(MePostManagerModel *)f indexpath:(NSIndexPath *)indexPath;
+- (void)setMePostManagerModel:(MePostManagerModel *)f indexpath:(NSIndexPath *)indexPath;
 
 @end
 

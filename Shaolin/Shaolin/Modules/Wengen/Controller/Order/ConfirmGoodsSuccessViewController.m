@@ -38,26 +38,26 @@
 }
 
 #pragma mark - methods
--(void)initUI{
+- (void)initUI{
     [self.view setBackgroundColor:[UIColor whiteColor]];
     [self.view addSubview:self.navgationView];
     [self.view addSubview:self.successView];
 }
 
--(void)initData{
+- (void)initData{
     [self.successView setListModel:self.listModel];
 }
 
 #pragma mark - WengenNavgationViewDelegate
 //返回按钮
--(void)tapBack{
+- (void)tapBack{
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - ConfirmSuccessViewDelegate
--(void)confirmSuccessView:(ConfirmSuccessView *)view submit:(NSDictionary *)modelDic{
+- (void)confirmSuccessView:(ConfirmSuccessView *)view submit:(NSDictionary *)modelDic{
     NSMutableDictionary *param = [NSMutableDictionary dictionaryWithDictionary:modelDic];
-    [param setValue:self.listModel.order_car_sn forKey:@"order_id"];
+    [param setValue:self.listModel.orderCarSn forKey:@"orderId"];
     
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
     [[DataManager shareInstance]addEvaluate:param Callback:^(Message *message) {
@@ -71,7 +71,7 @@
     }];
 }
 
--(void)confirmSuccessView:(ConfirmSuccessView *)view stroe:(BOOL)isTap{
+- (void)confirmSuccessView:(ConfirmSuccessView *)view stroe:(BOOL)isTap{
     StoreViewController *storeVC = [[StoreViewController alloc]init];
 //    storeVC.storeId = self.listModel.club_id;
     [self.navigationController pushViewController:storeVC animated:YES];
@@ -79,7 +79,7 @@
 
 #pragma mark - getter / setter
 
--(WengenNavgationView *)navgationView{
+- (WengenNavgationView *)navgationView{
     
     if (_navgationView == nil) {
         //状态栏高度
@@ -100,7 +100,7 @@
 
 }
 
--(ConfirmSuccessView *)successView{
+- (ConfirmSuccessView *)successView{
     if (_successView == nil) {
         CGFloat y = CGRectGetMaxY(self.navgationView.frame);
         _successView = [[ConfirmSuccessView alloc]initWithFrame:CGRectMake(0, y, ScreenWidth, ScreenHeight - y)];

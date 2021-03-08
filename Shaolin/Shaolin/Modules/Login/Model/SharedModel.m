@@ -9,8 +9,8 @@
 #import "SharedModel.h"
 #import "UIImage+LGFImage.h"
 
-NSString *SharedModelType_URL = @"URL";
-NSString *SharedModelType_Video = @"Video";
+NSString *SharedModelURLType = @"URL";
+NSString *SharedModelVideoType = @"Video";
 @implementation SharedModel
 - (UIImage *)toThumbImage {
     if (!self.image) return nil;

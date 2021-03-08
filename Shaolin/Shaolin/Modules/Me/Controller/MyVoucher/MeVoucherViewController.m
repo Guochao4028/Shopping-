@@ -11,8 +11,6 @@
 #import "MeVoucherCollectionViewCell.h"
 #import "MeManager.h"
 
-//#define MEVOUCHERTEST
-
 static NSString *const MeVoucherCollectionViewCellIdentifier = @"MeVoucherCollectionViewCell";
 
 @interface MeVoucherViewController () <UICollectionViewDelegate, UICollectionViewDataSource>
@@ -41,7 +39,7 @@ static NSString *const MeVoucherCollectionViewCellIdentifier = @"MeVoucherCollec
     self.pageNum = 1;
     self.pageSize = 30;
     self.meVoucherList = [@[] mutableCopy];
-    [self setUI];
+    [self setupUI];
 }
 
 - (void)viewWillLayoutSubviews{
@@ -60,20 +58,11 @@ static NSString *const MeVoucherCollectionViewCellIdentifier = @"MeVoucherCollec
     }];
 }
 
-- (void)setUI{
+- (void)setupUI{
     [self.view addSubview:self.headerView];
     [self.view addSubview:self.voucherCollectionView];
 }
 
-#pragma mark - test
-- (NSArray *)testMevoucherList{
-    NSInteger count = arc4random()%15;
-    NSMutableArray *mArray = [@[] mutableCopy];
-    for (int i = 0; i < count; i++){
-        [mArray addObject:[MeVoucherModel new]];
-    }
-    return mArray;
-}
 #pragma mark - requestData
 - (void)update{
     self.pageNum = 1;
@@ -105,31 +94,27 @@ static NSString *const MeVoucherCollectionViewCellIdentifier = @"MeVoucherCollec
 }
 
 - (void)requestData:(void (^)(NSArray *downloadArray))finish{
-    NSDictionary *params = @{
-        @"pageSize" : [NSString stringWithFormat:@"%ld", self.pageSize],
-        @"pageNum" : [NSString stringWithFormat:@"%ld", self.pageNum],
-    };
+//    NSDictionary *params = @{
+//        @"pageSize" : [NSString stringWithFormat:@"%ld", self.pageSize],
+//        @"pageNum" : [NSString stringWithFormat:@"%ld", self.pageNum],
+//    };
 //    MBProgressHUD * hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
-    WEAKSELF
-    [[MeManager sharedInstance] postExamProof:params finish:^(id _Nonnull responseObject, NSString * _Nonnull errorReason) {
-//        [hud hideAnimated:YES];
-#ifdef MEVOUCHERTEST
-        weakSelf.meVoucherList = [weakSelf testMevoucherList];
-#else
-        if ([ModelTool checkResponseObject:responseObject]){
-            NSDictionary *data = responseObject[DATAS];
-            NSArray *array = [data objectForKey:DATAS];
-            NSArray *dataList = [MeVoucherModel mj_objectArrayWithKeyValuesArray:array];
-            [weakSelf.meVoucherList addObjectsFromArray:dataList];
-            if (finish) finish(dataList);
-        } else {
-            [ShaolinProgressHUD singleTextAutoHideHud:errorReason];
-            if (finish) finish(nil);
-        }
-#endif
-        [weakSelf reloadCollectionView];
-        [weakSelf.voucherCollectionView.mj_header endRefreshing];
-    }];
+//    WEAKSELF
+//    [[MeManager sharedInstance] postExamProof:params finish:^(id _Nonnull responseObject, NSString * _Nonnull errorReason) {
+////        [hud hideAnimated:YES];
+//        if ([ModelTool checkResponseObject:responseObject]){
+//            NSDictionary *data = responseObject[DATAS];
+//            NSArray *array = [data objectForKey:DATAS];
+//            NSArray *dataList = [MeVoucherModel mj_objectArrayWithKeyValuesArray:array];
+//            [weakSelf.meVoucherList addObjectsFromArray:dataList];
+//            if (finish) finish(dataList);
+//        } else {
+//            [ShaolinProgressHUD singleTextAutoHideHud:errorReason];
+//            if (finish) finish(nil);
+//        }
+//        [weakSelf reloadCollectionView];
+//        [weakSelf.voucherCollectionView.mj_header endRefreshing];
+//    }];
 }
 
 - (void)reloadCollectionView{
@@ -148,9 +133,6 @@ static NSString *const MeVoucherCollectionViewCellIdentifier = @"MeVoucherCollec
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     MeVoucherCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:MeVoucherCollectionViewCellIdentifier forIndexPath:indexPath];
     cell.model = self.meVoucherList[indexPath.row];
-#ifdef MEVOUCHERTEST
-    [cell testUI];
-#endif
     return cell;
 }
 

@@ -34,7 +34,7 @@
 }
 
 #pragma mark -  UITextFieldDelegate
--(void)textFieldDidEndEditing:(UITextField *)textField{
+- (void)textFieldDidEndEditing:(UITextField *)textField{
     if (textField == self.nameTextField) {
         self.name = textField.text;
     }
@@ -49,7 +49,7 @@
     
 }
 
--(void)setModel:(AddressListModel *)model{
+- (void)setModel:(AddressListModel *)model{
     _model = model;
     if (model.realname) {
         [self.nameTextField setText:model.realname];

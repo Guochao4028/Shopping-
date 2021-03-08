@@ -23,7 +23,7 @@
 
 @implementation AfterSalesProgressFooterView
 
- -(instancetype)initWithFrame:(CGRect)frame{
+ - (instancetype)initWithFrame:(CGRect)frame{
      if (self = [super initWithFrame:frame]) {
          [[NSBundle mainBundle] loadNibNamed:@"AfterSalesProgressFooterView" owner:self options:nil];
          [self initUI];
@@ -32,7 +32,7 @@
  }
 
 #pragma mark - methods
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.contentView];
     [self.contentView setFrame:self.bounds];
     
@@ -42,18 +42,18 @@
     [self modifiedButton:self.twoViewApplyCancelButton borderColor:KTextGray_96 cornerRadius:15];
 }
 
--(void)applyCancelTarget:(nullable id)target action:(SEL)action{
+- (void)applyCancelTarget:(nullable id)target action:(SEL)action{
     [self.oneViewApplyCancelButton addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
     [self.twoViewApplyCancelButton addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
 }
 
 //订单地址
--(void)numberTarget:(nullable id)target action:(SEL)action{
+- (void)numberTarget:(nullable id)target action:(SEL)action{
     [self.numberButton addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
 }
 
 ///装饰button
--(void)modifiedButton:(UIButton *)sender borderColor:(UIColor *)color cornerRadius:(CGFloat)radius{
+- (void)modifiedButton:(UIButton *)sender borderColor:(UIColor *)color cornerRadius:(CGFloat)radius{
     sender.layer.borderWidth = 1;
     sender.layer.borderColor = color.CGColor;
     sender.layer.cornerRadius = SLChange(radius);
@@ -62,7 +62,7 @@
 }
 
 
--(void)setModel:(OrderRefundInfoModel *)model{
+- (void)setModel:(OrderRefundInfoModel *)model{
     _model = model;
     
     NSString *refund_status = model.status;

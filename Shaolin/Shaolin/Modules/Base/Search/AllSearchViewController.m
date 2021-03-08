@@ -68,7 +68,7 @@
         [self.textField becomeFirstResponder];
     }
 }
--(void)viewWillAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     if ([self.tabbarStr isEqualToString:@"Activity"]) {
@@ -91,7 +91,7 @@
     self.hideNavigationBarView = YES;
 }
 #pragma mark - 热词
--(void)hotData
+- (void)hotData
 {
     [self.hotArray removeAllObjects];
     
@@ -143,7 +143,7 @@
     }];
     
 }
--(void)setSearchView
+- (void)setSearchView
 {
     if ([self.tabbarStr isEqualToString:@"Wengen"]) {
         [self.hotArray removeAllObjects];
@@ -166,7 +166,7 @@
     };
     [self.view addSubview:self.searchView];
 }
--(void)closeAction
+- (void)closeAction
 {
     __weak typeof(self)weakSelf =self;
     [SLSearchView animateWithDuration:0.5 animations:^{
@@ -177,7 +177,7 @@
     }];
 }
 
--(void)setupUI
+- (void)setupUI
 {
     UIView *view = [[UIView alloc] init];
     [self.view addSubview:view];
@@ -254,11 +254,11 @@
         make.top.mas_equalTo(view.mas_bottom).offset(SLChange(7));
     }];
 }
--(void)leftAction
+- (void)leftAction
 {
     [self.navigationController popViewControllerAnimated:YES];
 }
--(UITextField *)textField
+- (UITextField *)textField
 {
     if (!_textField) {
         _textField = [[UITextField alloc] init];
@@ -289,7 +289,7 @@
     [self dismissViewControllerAnimated:NO completion:nil];
 }
 
--(void)searchAction
+- (void)searchAction
 {
     if (self.textField.text.length == 0) {
         [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请输入搜索内容") view:self.view afterDelay:TipSeconds];

@@ -22,16 +22,16 @@
 
 @implementation BalanceViewController
 
--(void)viewWillAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
 }
 
--(void)viewWillDisappear:(BOOL)animated {
+- (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
 }
 
--(void)viewDidDisappear:(BOOL)animated {
+- (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
 }
 
@@ -54,7 +54,7 @@
     self.extendedLayoutIncludesOpaqueBars = YES;
 }
 
--(void)rightBtnAction{
+- (void)rightBtnAction{
     StatementViewController *vc = [[StatementViewController alloc]init];
     vc.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:vc animated:NO];

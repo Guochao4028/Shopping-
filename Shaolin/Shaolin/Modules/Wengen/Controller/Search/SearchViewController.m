@@ -35,7 +35,7 @@
     [self initUI];
 }
 
--(void)viewWillAppear:(BOOL)animated{
+- (void)viewWillAppear:(BOOL)animated{
     
     [super viewWillAppear:animated];
     self.historyArray = [[[ModelTool shareInstance] select:[SearchHistoryModel class] tableName:@"searchHistory" where:[NSString stringWithFormat:@"type = '%ld' AND userId = '%@' ORDER BY id DESC", SearchHistoryGoodsType, [SLAppInfoModel sharedInstance].id]] mutableCopy];
@@ -48,14 +48,14 @@
     [self.view addSubview:self.searchHistoryView];
 }
 
--(void)viewDidAppear:(BOOL)animated{
+- (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     [self.navgationView becomeFirstResponder];
 }
 
 
 
--(void)initUI{
+- (void)initUI{
     [self.view setBackgroundColor:[UIColor whiteColor]];
     [self.view addSubview:self.navgationView];
     [self.view addSubview:self.searchHistoryView];
@@ -185,7 +185,7 @@
     [NSKeyedArchiver archiveRootObject:testArr toFile:KGoodsHistorySearchPath];
 }
 
-//-(NSString*)subTextString:(NSString*)str len:(NSInteger)len{
+//- (NSString*)subTextString:(NSString*)str len:(NSInteger)len{
 //    if(str.length<=len)return str;
 //    int count=0;
 //    NSMutableString *sb = [NSMutableString string];
@@ -203,7 +203,7 @@
 //    return str;
 //}
 
--(NSString*)subModelTextString:(SearchHistoryModel*)model len:(NSInteger)len{
+- (NSString*)subModelTextString:(SearchHistoryModel*)model len:(NSInteger)len{
     NSString *searchContent = model.searchContent;
     if (searchContent.length<=len) return searchContent;
     int count=0;
@@ -245,12 +245,12 @@
 }
 
 #pragma mark - SearchNavgationViewDelegate
--(void)tapBack{
+- (void)tapBack{
     [self.navgationView resignFirstResponder];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
--(void)searchNavgationView:(SearchNavgationView *)navgationView searchWord:(NSString *)text{
+- (void)searchNavgationView:(SearchNavgationView *)navgationView searchWord:(NSString *)text{
     if (text.length == 0) {
         [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请输入搜索内容") view:self.view afterDelay:TipSeconds];
         return;
@@ -281,7 +281,7 @@
 
 #pragma mark - getter / setter
 
--(SearchNavgationView *)navgationView{
+- (SearchNavgationView *)navgationView{
     
     if (_navgationView == nil) {
         //状态栏高度
@@ -313,7 +313,7 @@
     return _searchHistoryView;
 }
 
--(NSMutableArray *)historyArray{
+- (NSMutableArray *)historyArray{
     if (!_historyArray) {
 //           _historyArray = [NSKeyedUnarchiver unarchiveObjectWithFile:KGoodsHistorySearchPath];
         

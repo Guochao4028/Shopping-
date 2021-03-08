@@ -39,7 +39,7 @@
     self.goodsImageView.layer.masksToBounds = YES;
 }
 
--(void)layoutSubviews {
+- (void)layoutSubviews {
     [super layoutSubviews];
 }
 
@@ -49,11 +49,11 @@
 
 
 #pragma mark - setter / getter
--(void)setGoodsModel:(WengenGoodsModel *)goodsModel{
+- (void)setGoodsModel:(WengenGoodsModel *)goodsModel{
     _goodsModel = goodsModel;
     
     //商品图片
-    NSString *imgeUrlStr = [goodsModel.img_data firstObject];
+    NSString *imgeUrlStr = [goodsModel.imgDataList firstObject];
     [self.goodsImageView sd_setImageWithURL:[NSURL URLWithString:imgeUrlStr]];
     
     //商品名称
@@ -67,14 +67,13 @@
     
     NSString *priceStr ;
     
-    if ([goodsModel.is_discount boolValue] == YES) {
-        priceStr = [NSString stringWithFormat:@"¥%@",goodsModel.old_price];
+    if ([goodsModel.isDiscount boolValue] == YES) {
+        priceStr = [NSString stringWithFormat:@"¥%@",goodsModel.price];
         
         
     }else{
-        priceStr = [NSString stringWithFormat:@"¥%@",goodsModel.price];
+        priceStr = [NSString stringWithFormat:@"¥%@",goodsModel.oldPrice];
     }
-    
     
     
 //    NSRange range = [priceStr rangeOfString:@"."];
@@ -94,11 +93,11 @@
     self.goodsPriceLabelW.constant = size.width+3.5;
     
     //销量
-    [self.userNumberLabel setText:[NSString stringWithFormat:SLLocalizedString(@"%@人付款"), goodsModel.user_num]];
+    [self.userNumberLabel setText:[NSString stringWithFormat:SLLocalizedString(@"%@人付款"), goodsModel.userNum]];
 }
 
 
--(UIBezierPath *)maskPath {
+- (UIBezierPath *)maskPath {
     if (!_maskPath) {
         _maskPath = [UIBezierPath bezierPath];
     }

@@ -11,6 +11,9 @@
 #import "OrderStoreModel.h"
 #import "OrderGoodsModel.h"
 
+#import "OrderDetailsNewModel.h"
+#import "NSString+Tool.h"
+
 @interface KungfuOrderGoodsCell()
 
 @property (weak, nonatomic) IBOutlet UIImageView *goodsImg;
@@ -22,6 +25,9 @@
 @property (weak, nonatomic) IBOutlet UIButton *addCarBtn;
 
 @property (weak, nonatomic) IBOutlet UILabel *levelLabel;
+
+@property (weak, nonatomic) IBOutlet UIImageView *iconSelf;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *shopLabelLeftCon;
 
 @property (strong, nonatomic) UIButton *bgPlayBtn;
 
@@ -49,7 +55,7 @@
 }
 
 
--(void)setModel:(OrderDetailsModel *)model{
+- (void)setModel:(OrderDetailsGoodsModel *)model{
     _model = model;
     
     self.addCarBtn.hidden = YES;
@@ -57,7 +63,7 @@
     if ([model.type intValue] == 2) {
         //教程
         self.storeNameLabel.text = SLLocalizedString(@"段品制教程");
-        [self.levelLabel setText:[NSString stringWithFormat:SLLocalizedString(@"所属位阶：%@"),model.goods_level]];
+//        [self.levelLabel setText:[NSString stringWithFormat:SLLocalizedString(@"所属位阶：%@"),model.goodsLevel]];
         self.bgPlayBtn.hidden = NO;
     }
     if ([model.type intValue] == 3) {
@@ -66,9 +72,9 @@
         self.storeNameLabel.text = [SLLocalizedString(@"段品制") stringByAppendingString:NotNilAndNull(model.intro)?model.intro:SLLocalizedString(@"活动")];
     }
     
-    self.nameLabel.text = model.goods_name;
+    self.nameLabel.text = model.goodsName;
     
-    [self.goodsImg sd_setImageWithURL:[NSURL URLWithString:model.goods_image[0]] placeholderImage:[UIImage imageNamed:@"default_small"]];
+    [self.goodsImg sd_setImageWithURL:[NSURL URLWithString:model.goodsImages[0]] placeholderImage:[UIImage imageNamed:@"default_small"]];
 
     
 //    self.nameLabel.text = model.name;
@@ -134,8 +140,9 @@
 //    }
 //    [self.goodsNameLabel setText:model.goods_name];
 //
-    [self.priceLabel setText:[NSString stringWithFormat:@"¥%@", model.final_price]];
-//
+    [self.priceLabel setText:[NSString stringWithFormat:@"¥%@", [model.goodsPrice formattedPrice]]];
+    
+  
 //    NSString *is_refund = model.is_refund;
 //    if ([is_refund isEqualToString:@"1"] == YES) {
 //        [self.afterSalesButton setTitleColor:KTextGray_333 forState:UIControlStateNormal];
@@ -144,6 +151,13 @@
 //        [self.afterSalesButton setTitleColor:KTextGray_999 forState:UIControlStateNormal];
 //        [self.statusAfterSalesButton setTitleColor:KTextGray_999 forState:UIControlStateNormal];
 //    }
+    if (NotNilAndNull(model.isSelf) && [model.isSelf isEqualToString:@"1"]) {
+        self.iconSelf.hidden = NO;
+        self.shopLabelLeftCon.constant = 59;
+    } else {
+        self.iconSelf.hidden = YES;
+        self.shopLabelLeftCon.constant = 16;
+    }
     
     
 }

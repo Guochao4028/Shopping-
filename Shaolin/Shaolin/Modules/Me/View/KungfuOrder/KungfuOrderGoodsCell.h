@@ -9,10 +9,10 @@
 #import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
-@class OrderDetailsModel;
+@class OrderDetailsGoodsModel;
 @interface KungfuOrderGoodsCell : UITableViewCell
 
-@property(nonatomic, strong) OrderDetailsModel * model;
+@property(nonatomic, strong) OrderDetailsGoodsModel * model;
 
 @end
 

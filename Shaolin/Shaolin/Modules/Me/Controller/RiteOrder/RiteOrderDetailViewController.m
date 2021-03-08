@@ -38,6 +38,7 @@
 
 #import "RiteRegistrationDetailsViewController.h"
 
+#import "OrderDetailsNewModel.h"
 
 
 @interface RiteOrderDetailViewController ()< UITableViewDelegate, UITableViewDataSource, RiteOrderDetailFooterViewDelegate>
@@ -46,31 +47,31 @@
 @property(nonatomic, strong) UIButton *backButton;
 @property(nonatomic, strong) UILabel *titleLabel;
 @property(nonatomic, strong) UITableView *tableView;
-@property(nonatomic, strong) OrderDetailsModel *detailsModel;
+@property(nonatomic, strong) OrderDetailsNewModel *detailsModel;
 @property(nonatomic, strong) NSArray *dataArray;
 @property(nonatomic, strong) NSMutableArray * orderInfoList;
 @property(nonatomic, strong) NSMutableArray * ordersubInfoList;
 @property(nonatomic, strong) RiteOrderDetailHeaderView * headerView;
 @property(nonatomic, strong) RiteOrderDetailFooterView *footerView;
 
-@property(nonatomic, copy)NSString *im;
+//@property(nonatomic, copy)NSString *im;
 
 
 @end
 
 @implementation RiteOrderDetailViewController
 
--(void)viewWillAppear:(BOOL)animated{
+- (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self setStatusBarWhiteTextColor];
     [self initData];
 }
 
--(void)viewDidAppear:(BOOL)animated {
+- (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 }
 
--(void)viewWillDisappear:(BOOL)animated{
+- (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
 //    [self.headerView deleteTimer];
 }
@@ -84,7 +85,7 @@
 }
 
 
--(void)initUI{
+- (void)initUI{
     
     [self.view addSubview:self.redView];
     [self.view addSubview:self.navgationView];
@@ -96,7 +97,7 @@
 
 /// 0元商品订单支付
 - (void)freeOrderPay {
-    [[DataManager shareInstance] orderPay:@{@"ordercode" :self.detailsModel.order_sn, @"orderMoney": self.orderPrice, @"payType":@"6"} Callback:^(Message *message) {
+    [[DataManager shareInstance] orderPay:@{@"orderCarId" :self.detailsModel.orderId, @"orderMoney": self.orderPrice, @"payType":@"6"} Callback:^(Message *message) {
         if (message.isSuccess) {
             // 支付成功
             PaySuccessViewController *paySuccessVC = [[PaySuccessViewController alloc] init];
@@ -107,7 +108,7 @@
     }];
 }
 
-- (void)initOrderInfoListWithOrderModel:(OrderDetailsModel *)orderModel
+- (void)initOrderInfoListWithOrderModel:(OrderDetailsNewModel *)orderModel
 {
     [self.orderInfoList removeAllObjects];
     [self.ordersubInfoList removeAllObjects];
@@ -117,37 +118,33 @@
     [self.orderInfoList addObject:@"支付方式："];
     
     //订单编号
-    [self.ordersubInfoList addObject:NotNilAndNull(orderModel.order_sn)?self.detailsModel.order_sn:@""];
+    [self.ordersubInfoList addObject:NotNilAndNull(orderModel.orderSn)?self.detailsModel.orderSn:@""];
     //下单时间
-    [self.ordersubInfoList addObject:NotNilAndNull(orderModel.create_time)?self.detailsModel.create_time:@""];
+    [self.ordersubInfoList addObject:NotNilAndNull(orderModel.createTime)?self.detailsModel.createTime:@""];
 
-    if ([orderModel.pay_type isEqualToString:@"0"]) {
+    if ([orderModel.payType isEqualToString:@"0"]) {
         [self.ordersubInfoList addObject:@"在线支付"];
-    }
-    
-    if ([orderModel.pay_type isEqualToString:@"1"]) {
+    }else if ([orderModel.payType isEqualToString:@"1"]) {
         [self.ordersubInfoList addObject:@"微信支付"];
-    }
-    
-    if ([orderModel.pay_type isEqualToString:@"2"]) {
+    }else if ([orderModel.payType isEqualToString:@"2"]) {
         [self.ordersubInfoList addObject:@"支付宝支付"];
-    }
-    
-    if ([orderModel.pay_type isEqualToString:@"3"]) {
+    }else if ([orderModel.payType isEqualToString:@"3"]) {
         [self.ordersubInfoList addObject:@"余额支付"];
-    }
-    
-    if ([orderModel.pay_type isEqualToString:@"4"]) {
+    }else if ([orderModel.payType isEqualToString:@"4"]) {
         [self.ordersubInfoList addObject:@"虚拟币支付"];
-    }
-    
-    if ([orderModel.pay_type isEqualToString:@"5"]) {
+    }else if ([orderModel.payType isEqualToString:@"5"]) {
         [self.ordersubInfoList addObject:@"凭证支付"];
+    }else{
+        [self.ordersubInfoList addObject:@"无"];
     }
     
     
     
     int status = [orderModel.status intValue];
+    
+    if (status == 1 && [orderModel.needReturnReceipt boolValue]) {
+        self.headerView.frame = CGRectMake(0, 0, self.headerView.width, 130);
+    }
     
     if (status == 6 || status == 7)
     {
@@ -158,45 +155,44 @@
         
         [self.orderInfoList addObject:@"支付时间："];
         //支付时间
-        [self.ordersubInfoList addObject:NotNilAndNull(self.detailsModel.pay_time)?self.detailsModel.pay_time:@""];
+        [self.ordersubInfoList addObject:NotNilAndNull(self.detailsModel.payTime)?self.detailsModel.payTime:@""];
         
-        if ([orderModel.order_check integerValue] == 1) {
+        if ([orderModel.orderCheck integerValue] == 1 && [orderModel.isInvoice integerValue] == 1) {
             [self.orderInfoList addObject:@"发票类型："];
             //发票类型
-            [self.ordersubInfoList addObject:self.detailsModel.invoiceTypeString];
+            if ([orderModel.isInvoice boolValue]) {
+                //发票类型
+                if ([orderModel.isOrdinary boolValue] == NO) {
+                    [self.ordersubInfoList addObject:@"普通发票"];
+                }else{
+                    [self.ordersubInfoList addObject:@"增值税发票"];
+                    
+                }
+            }else{
+                [self.ordersubInfoList addObject:@"不开发票"];
+            }
+           
         }
-        
-        
     }
 }
 
 - (void)initData{
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
-    [[DataManager shareInstance] getOrderInfo:@{@"order_id":self.orderId} Callback:^(NSObject *object) {
+    [[DataManager shareInstance] getOrderInfo:@{@"id":self.orderId} Callback:^(NSObject *object) {
         [hud hideAnimated:YES];
         
-        if([object isKindOfClass:[NSArray class]] == YES){
-            NSArray *tmpArray = (NSArray *)object;
-            if (tmpArray.count == 0){
+        if([object isKindOfClass:[OrderDetailsNewModel class]] == YES){
+            OrderDetailsNewModel *derailsNewModel = (OrderDetailsNewModel *)object;
+
+            if (derailsNewModel.goods.count == 0){
                 [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"订单获取异常")];
             }
             
-            NSArray *temp = [tmpArray copy];
-            NSString *status = @"9";
+            self.detailsModel = derailsNewModel;
             
-            for (OrderDetailsModel *model in tmpArray) {
-                int statusInt = [model.status intValue];
-                int temStatusInt = [status intValue];
-                if(temStatusInt > statusInt){
-                    status = model.status;
-                }
-            }
+            self.dataArray = [ModelTool assembleOrderDetailsData:derailsNewModel];
             
-            self.dataArray = [ModelTool assembleData:tmpArray];
             
-            self.detailsModel = temp[0];
-            self.detailsModel.status = status;
-            self.detailsModel.orderPrice = self.orderPrice;
             
             
             [self.footerView setDetailsModel:self.detailsModel];
@@ -205,22 +201,6 @@
             [self initOrderInfoListWithOrderModel:self.detailsModel];
             
             [self.headerView setDetailsModel:self.detailsModel];
-            
-            [[ActivityManager sharedInstance]postRiteRegistrationDetails:@{@"orderCode":self.orderId} Success:^(NSDictionary * _Nullable resultDic) {
-                
-                NSString * realName = resultDic[@"zhaizhuName"];
-                NSString * telephone = resultDic[@"contactNumber"];
-                
-                self.im = resultDic[@"pujaServiceIMId"];
-                
-                self.detailsModel.name = realName;
-                self.detailsModel.phone = telephone;
-                [self.headerView setDetailsModel:self.detailsModel];
-            } failure:^(NSString * _Nullable errorReason) {
-                
-            } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
-                
-            }];
             
             [self.tableView reloadData];
         } else if ([object isKindOfClass:[NSString class]]){
@@ -231,12 +211,13 @@
 
 
 #pragma mark - event
--(void)back{
+- (void)back{
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 // 去支付
--(void)payOrder{
+- (void)payOrder{
+    
     
     [[ModelTool shareInstance]setIsOrderListNeedRefreshed:YES];
     
@@ -249,7 +230,8 @@
     CheckstandViewController *checkstandVC = [[CheckstandViewController alloc]init];
     checkstandVC.goodsAmountTotal = [NSString stringWithFormat:@"¥%@", self.orderPrice];
     checkstandVC.isOrderState = YES;
-    checkstandVC.order_no = self.detailsModel.order_sn;
+    checkstandVC.order_no = self.detailsModel.orderId;
+    checkstandVC.isRite = YES;
     [self.navigationController pushViewController:checkstandVC animated:YES];
 }
 
@@ -258,9 +240,14 @@
 - (void)contactCustomerService:(UIButton *)btn{
 //    NSInteger indexTag =  btn.tag - 100;
     
+//    OrderClubsInfoModel *clubsInfo = [self.detailsModel.clubs lastObject];
+    
     CustomerServicViewController *servicVC = [[CustomerServicViewController alloc]init];
     servicVC.servicType = @"2";
+//    servicVC.imID = clubsInfo.im;
     servicVC.imID = self.im;
+    servicVC.chatName = @"客服";
+
     [self.navigationController pushViewController:servicVC animated:YES];
 //    EMChatViewController *chatVC = [[EMChatViewController alloc] initWithConversationId:@"2" type:EMConversationTypeChat createIfNotExist:YES];
 //    [self.navigationController pushViewController:chatVC animated:YES];
@@ -282,13 +269,13 @@
     [customView addSubview:title];
     [SMAlert showCustomView:customView stroke:YES confirmButton:[SMButton initWithTitle:@"确定" clickAction:^{
         MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
-        [[DataManager shareInstance]delOrder:@{@"id":self.detailsModel.order_sn} Callback:^(Message *message) {
+        [[DataManager shareInstance]delOrder:@{@"orderCarId":self.detailsModel.orderId} Callback:^(Message *message) {
             [hud hideAnimated:YES];
             if (message.isSuccess) {
                 
                 [[ModelTool shareInstance]setIsOrderListNeedRefreshed:YES];
                 
-                [ShaolinProgressHUD singleTextHud:@"删除成功" view:self.view afterDelay:TipSeconds];
+                [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"报名删除成功") view:WINDOWSVIEW afterDelay:TipSeconds];
                 [self.navigationController popViewControllerAnimated:YES];
 
             }else{
@@ -314,13 +301,14 @@
     [title setTextAlignment:NSTextAlignmentCenter];
     [customView addSubview:title];
     [SMAlert showCustomView:customView stroke:YES confirmButton:[SMButton initWithTitle:@"确定" clickAction:^{
-        [[DataManager shareInstance]cancelOrder:@{@"order_id":self.detailsModel.order_sn, @"cancel":@"其他"} Callback:^(Message *message) {
+        [[DataManager shareInstance]cancelOrder:@{@"orderCarId":self.detailsModel.orderId, @"cancel":@"其他"} Callback:^(Message *message) {
             if (message.isSuccess) {
                 
                 [[ModelTool shareInstance]setIsOrderListNeedRefreshed:YES];
                 
                 [ShaolinProgressHUD singleTextHud:@"提交成功，正在为您取消报名" view:self.view afterDelay:TipSeconds];
-                [self.navigationController popViewControllerAnimated:YES];
+//                [self.navigationController popViewControllerAnimated:YES];
+                [self initData];
             }else{
                 [ShaolinProgressHUD singleTextHud:message.reason view:self.view afterDelay:TipSeconds];
             }
@@ -333,57 +321,179 @@
 // 查看发票
 - (void)checkInvoice {
     
+//    SLAppInfoModel *appInfoModel = [[SLAppInfoModel sharedInstance] getCurrentUserInfo];
+//
+//    NSString *urlStr = URL_H5_InvoiceDetail(self.detailsModel.orderSn, self.detailsModel.orderId, appInfoModel.accessToken);
+//
+//    WengenWebViewController *webVC = [[WengenWebViewController alloc] initWithUrl:urlStr title:@"查看发票"];
+//    [self.navigationController pushViewController:webVC animated:YES];
+    
+    
     SLAppInfoModel *appInfoModel = [[SLAppInfoModel sharedInstance] getCurrentUserInfo];
     
-    NSString *urlStr = URL_H5_InvoiceDetail(self.detailsModel.order_sn, appInfoModel.access_token);
+    OrderClubsInfoModel *clubsInfo = [self.detailsModel.clubs lastObject];
     
-    WengenWebViewController *webVC = [[WengenWebViewController alloc] initWithUrl:urlStr title:@"查看发票"];
+    NSString *urlStr = URL_H5_InvoiceDetailAndClubId(self.detailsModel.orderSn, self.detailsModel.orderId, appInfoModel.accessToken, clubsInfo.orderClubsInfoModelId);
+    
+    WengenWebViewController *webVC = [[WengenWebViewController alloc]initWithUrl:urlStr title:SLLocalizedString(@"发票详情")];
     [self.navigationController pushViewController:webVC animated:YES];
+    
 }
 
 // 补开发票
 - (void)repairInvoice{
     [[ModelTool shareInstance]setIsOrderListNeedRefreshed:YES];
-    
-    
-    
-    
     OrderInvoiceFillOpenViewController * fillOpenVC= [[OrderInvoiceFillOpenViewController alloc]init];
-       fillOpenVC.orderSn = self.detailsModel.order_sn;
-       fillOpenVC.orderTotalSn = self.orderId;
-       [self.navigationController pushViewController:fillOpenVC animated:YES];
+    fillOpenVC.orderSn = self.detailsModel.orderSn;
+    fillOpenVC.orderId = self.detailsModel.orderId;
+    [self.navigationController pushViewController:fillOpenVC animated:YES];
 }
 
 #pragma mark - RiteOrderDetailFooterViewDelegate
--(void)riteOrderDetailFooterView:(RiteOrderDetailFooterView *)view delOrder:(OrderDetailsModel *)model{
+- (void)riteOrderDetailFooterView:(RiteOrderDetailFooterView *)view delOrder:(OrderDetailsNewModel *)model{
     [self deleteOrder];
 }
 
--(void)riteOrderDetailFooterView:(RiteOrderDetailFooterView *)view pay:(OrderDetailsModel *)model{
-    [self payOrder];
+- (void)riteOrderDetailFooterView:(RiteOrderDetailFooterView *)view pay:(OrderDetailsNewModel *)model{
+    
+    BOOL isPayable = [model.payable boolValue];
+    if (isPayable) {
+        [self payOrder];
+    }else{
+        ///显示回执内容
+        NSString *returnReceiptContentStr = model.receiptCause;
+        if (returnReceiptContentStr.length == 0) {
+            returnReceiptContentStr = @"请等待回执，回执后方可付款。";
+        }
+        [ShaolinProgressHUD singleTextHud:returnReceiptContentStr view:WINDOWSVIEW afterDelay:TipSeconds];
+    }
+    
+    
 }
 
--(void)riteOrderDetailFooterView:(RiteOrderDetailFooterView *)view cancelOrder:(OrderDetailsModel *)model{
+- (void)riteOrderDetailFooterView:(RiteOrderDetailFooterView *)view cancelOrder:(OrderDetailsNewModel *)model{
     
     [self cancelOrder];
 }
 
--(void)riteOrderDetailFooterView:(RiteOrderDetailFooterView *)view lookInvoice:(OrderDetailsModel *)model{
+- (void)riteOrderDetailFooterView:(RiteOrderDetailFooterView *)view lookInvoice:(OrderDetailsNewModel *)model{
     [self checkInvoice];
 }
 
--(void)riteOrderDetailFooterView:(RiteOrderDetailFooterView *)cell repairInvoice:(OrderDetailsModel *)model{
+- (void)riteOrderDetailFooterView:(RiteOrderDetailFooterView *)cell repairInvoice:(OrderDetailsNewModel *)model{
     [self repairInvoice];
 }
+
+-(void)riteOrderDetailFooterView:(RiteOrderDetailFooterView *)cell returnReceipt:(OrderDetailsNewModel *)model{
+    //是否直接付款
+    BOOL isPayable = [model.payable boolValue];
+    // 订单状态
+    ///1：待付款，2：待发货，3：待收货，4：已收货，5：完成，6：取消 7：支付超时
+    NSInteger status = [model.status integerValue];
+    if (status == 1 && isPayable == YES) {
+        ///显示支付按钮
+        [self p_returnReceiptPayable:model];
+    }else{
+        ///显示回执内容
+        NSString *returnReceiptContentStr = model.receiptCause;
+        
+        if (returnReceiptContentStr.length == 0 && (status == 1 && status != 0)) {
+            returnReceiptContentStr = @"请等待回执，回执后方可付款。";
+        }
+        
+        if (returnReceiptContentStr.length == 0 && (status >= 6 || status == 0)) {
+            returnReceiptContentStr = @"订单已取消";
+        }
+        
+        if (returnReceiptContentStr.length == 0 && (status >1 && status < 6)) {
+            returnReceiptContentStr = @"暂无回执";
+        }
+        
+        [self p_returnReceiptCause:model returnReceiptContent:returnReceiptContentStr];
+    }
+}
+
+///查看回执 有 支付按钮
+-(void)p_returnReceiptPayable:(OrderDetailsNewModel *)model{
+    
+    NSString *returnReceiptContentStr = model.receiptCause;
+    if (returnReceiptContentStr.length == 0 ) {
+        returnReceiptContentStr = @"暂无回执";
+    }
+    
+    [SMAlert setConfirmBtBackgroundColor:kMainYellow];
+    [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
+    [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
+    [SMAlert setCancleBtTitleColor:KTextGray_333];
+    [SMAlert setAlertBackgroundColor:[UIColor colorWithWhite:0 alpha:0.5]];
+   
+    
+    
+    
+    UIView *customView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 300, 130)];
+    UILabel *title = [[UILabel alloc]initWithFrame:CGRectMake(0, 10, 300, 21)];
+    [title setFont:kMediumFont(15)];
+    [title setTextColor:KTextGray_333];
+    title.text = SLLocalizedString(@"回执内容");
+    [title setTextAlignment:NSTextAlignmentCenter];
+    [customView addSubview:title];
+    
+    UILabel *neirongLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, CGRectGetMaxY(title.frame)+20, 270, 60)];
+    [neirongLabel setFont:kRegular(16)];
+    [neirongLabel setTextColor:KTextGray_333];
+    neirongLabel.text = returnReceiptContentStr;
+    [neirongLabel setTextAlignment:NSTextAlignmentCenter];
+    [customView addSubview:neirongLabel];
+    
+    
+    
+    [SMAlert showCustomView:customView stroke:YES confirmButton:[SMButton initWithTitle:@"去支付" clickAction:^{
+        [self payOrder];
+    }] cancleButton:[SMButton initWithTitle:@"取消" clickAction:nil]];
+}
+
+
+
+///查看回执 没有 支付按钮 只有回执信息
+-(void)p_returnReceiptCause:(OrderDetailsNewModel *)model returnReceiptContent:(NSString *)contentStr{
+    [SMAlert setConfirmBtBackgroundColor:[UIColor whiteColor]];
+    [SMAlert setConfirmBtTitleColor:kMainYellow];
+    
+    [SMAlert setAlertBackgroundColor:[UIColor colorWithWhite:0 alpha:0.5]];
+    
+
+    
+    UIView *customView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 300, 130)];
+    UILabel *title = [[UILabel alloc]initWithFrame:CGRectMake(0, 10, 300, 21)];
+    [title setFont:kMediumFont(15)];
+    [title setTextColor:KTextGray_333];
+    title.text = SLLocalizedString(@"回执内容");
+    [title setTextAlignment:NSTextAlignmentCenter];
+    [customView addSubview:title];
+    
+    UILabel *neirongLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, CGRectGetMaxY(title.frame)+20, 270, 60)];
+    [neirongLabel setFont:kRegular(16)];
+    [neirongLabel setTextColor:KTextGray_333];
+    neirongLabel.text = contentStr;
+    [neirongLabel setTextAlignment:NSTextAlignmentCenter];
+    
+    [customView addSubview:neirongLabel];
+    
+    
+    [SMAlert showCustomView:customView confirmButton:[SMButton initWithTitle:@"确定" clickAction:^{
+        
+    }]];
+}
+
 
 
 #pragma mark - UITableViewDelegate && UITableViewDataSource
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return  2;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
 
     if (section == 0) {
         return 64;
@@ -397,7 +507,7 @@
 
 
 
--(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
 
     if (section == 0 || section == 1) {
         return 10;
@@ -406,7 +516,7 @@
 }
 
 
--(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
 
 //     return [UIView new];
     if (section == 0) {
@@ -422,14 +532,14 @@
 }
 
 
--(UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
 
     UIView *view = [[UIView alloc] init];
     view.backgroundColor = KTextGray_FA;
     return view;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     
     if (section == 0) {
         OrderStoreModel *model = self.dataArray[section];
@@ -442,7 +552,7 @@
     return 1;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     if (indexPath.section == 0) {
         
@@ -463,12 +573,12 @@
 
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
    if (indexPath.section == 0) {
        RiteOrderGoodsTableViewCell * goodsItemCell = [tableView dequeueReusableCellWithIdentifier:@"RiteOrderGoodsTableViewCell"];
        
        OrderStoreModel *model = self.dataArray[indexPath.section];
-       OrderDetailsModel *goodsModel = model.goods[indexPath.row];
+       OrderDetailsGoodsModel *goodsModel = model.goods[indexPath.row];
        
        goodsItemCell.model = goodsModel;
        return goodsItemCell;
@@ -492,14 +602,14 @@
     
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section > [self.dataArray count]-1) {
         return;
     }
     
     RiteRegistrationDetailsViewController *riteRegistrationDetailsVC = [[RiteRegistrationDetailsViewController alloc]init];
-    [riteRegistrationDetailsVC setOrderCode:self.orderId];
+    [riteRegistrationDetailsVC setOrderCode:self.detailsModel.orderSn];
     [self.navigationController pushViewController:riteRegistrationDetailsVC animated:YES];
     
 }
@@ -522,7 +632,7 @@
 }
 
 
-//-(void)orderGoodsItmeTableViewCell:(OrderGoodsItmeTableViewCell *)cell addCart:(OrderDetailsModel *)model{
+//- (void)orderGoodsItmeTableViewCell:(OrderGoodsItmeTableViewCell *)cell addCart:(OrderDetailsModel *)model{
 //
 //    NSMutableDictionary *param = [NSMutableDictionary dictionary];
 //    [param setValue:model.num forKey:@"num"];
@@ -539,7 +649,7 @@
 
 #pragma mark - getter / setter
 
--(UIView *)navgationView{
+- (UIView *)navgationView{
     if (_navgationView == nil) {
         //状态栏高度
         CGFloat barHeight ;
@@ -562,7 +672,7 @@
     return _navgationView;
 }
 
--(UIButton *)backButton{
+- (UIButton *)backButton{
     if (_backButton == nil) {
         _backButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [_backButton setFrame:CGRectMake(16, 0, 30, 40)];
@@ -571,7 +681,7 @@
     return _backButton;
 }
 
--(UILabel *)titleLabel{
+- (UILabel *)titleLabel{
     if (_titleLabel == nil) {
         CGFloat x = (ScreenWidth - 100)/2;
         _titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(x, 0, 100, 40)];
@@ -585,7 +695,7 @@
 }
 
 
--(UITableView *)tableView{
+- (UITableView *)tableView{
     
     if (_tableView == nil) {
         CGFloat y = CGRectGetMaxY(self.navgationView.frame);
@@ -619,7 +729,7 @@
     
 }
 
--(RiteOrderDetailHeaderView *)headerView{
+- (RiteOrderDetailHeaderView *)headerView{
     WEAKSELF
     if (_headerView == nil) {
         _headerView = [[RiteOrderDetailHeaderView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, 190)];
@@ -631,7 +741,7 @@
 
             weakSelf.detailsModel.status = @"7";
             
-            weakSelf.detailsModel.cannel = @"支付超时";
+            weakSelf.detailsModel.cancel = @"支付超时";
 
             [weakSelf.headerView setDetailsModel:weakSelf.detailsModel];
 //            [weakSelf.footerView setDetailsModel:weakSelf.detailsModel];
@@ -645,7 +755,7 @@
     return _headerView;
 }
 
--(RiteOrderDetailFooterView *)footerView{
+- (RiteOrderDetailFooterView *)footerView{
     if (_footerView == nil) {
         _footerView = [[RiteOrderDetailFooterView alloc]initWithFrame:CGRectMake(0, self.view.height - 49 - kBottomSafeHeight, kWidth, 49)];
         [_footerView setDelegate:self];
@@ -653,21 +763,21 @@
     return _footerView;
 }
 
--(NSMutableArray *)orderInfoList {
+- (NSMutableArray *)orderInfoList {
     if (!_orderInfoList) {
         _orderInfoList = [NSMutableArray new];
     }
     return _orderInfoList;
 }
 
--(NSMutableArray *)ordersubInfoList {
+- (NSMutableArray *)ordersubInfoList {
     if (!_ordersubInfoList) {
         _ordersubInfoList = [NSMutableArray new];
     }
     return _ordersubInfoList;
 }
 
--(UIView *)redView {
+- (UIView *)redView {
     if (!_redView) {
         _redView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kWidth, kHeight/2)];
         _redView.backgroundColor = kMainYellow;

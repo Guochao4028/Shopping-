@@ -20,7 +20,7 @@
 
 @implementation RiteMarqueeCell
 
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         self.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -49,7 +49,7 @@
     }
 }
 
--(void)layoutSubviews {
+- (void)layoutSubviews {
     
     if (self.marqueeList.count){
         WengenBannerModel *banner = self.marqueeList.firstObject;
@@ -75,7 +75,7 @@
 }
 
 
--(UIImageView *)iconImgv {
+- (UIImageView *)iconImgv {
     if (!_iconImgv) {
         _iconImgv = [[UIImageView alloc] initWithFrame:CGRectMake(16, 8, 16, 14)];
 //        _iconImgv.contentMode = UIViewContentModeScaleAspectFill;

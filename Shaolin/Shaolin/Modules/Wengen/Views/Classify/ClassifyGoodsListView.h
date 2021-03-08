@@ -13,11 +13,11 @@ NS_ASSUME_NONNULL_BEGIN
 @class WengenGoodsModel;
 @protocol ClassifyGoodsListViewDelegate <NSObject>
 
--(void)tapGoodsItem:(WengenGoodsModel *)goodsModel;
+- (void)tapGoodsItem:(WengenGoodsModel *)goodsModel;
 
--(void)refresh:(UICollectionView *)collectionView;
+- (void)refresh:(UICollectionView *)collectionView;
 
--(void)loadData:(UICollectionView *)collectionView;
+- (void)loadData:(UICollectionView *)collectionView;
 
 @end
 

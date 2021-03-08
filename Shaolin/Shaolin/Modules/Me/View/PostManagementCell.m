@@ -7,12 +7,13 @@
 //
 
 #import "PostManagementCell.h"
+#import "DefinedURLs.h"
 
 @interface PostManagementCell()
 @property(nonatomic,strong) NSArray *imageArr;
 @end
 @implementation PostManagementCell
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
@@ -20,7 +21,7 @@
     }
     return self;
 }
--(void)setupView
+- (void)setupView
 {
     [self.contentView addSubview:self.titleLabe];
     [self.contentView addSubview:self.contentLabel];
@@ -96,7 +97,7 @@
         make.edges.mas_equalTo(0);
     }];
 }
--(void)setMePostManagerModel:(MePostManagerModel *)f indexpath:(NSIndexPath *)indexPath
+- (void)setMePostManagerModel:(MePostManagerModel *)f indexpath:(NSIndexPath *)indexPath
 {
     
     f.cellHeight = 100;
@@ -147,19 +148,19 @@
         self.plaayerBtn.hidden = YES;
         self.imageArr = @[];
         // array = [f.coverurl componentsSeparatedByString:@","];
-        self.imageArr = f.coverurlList;
+        self.imageArr = f.coverUrlList;
         if (self.imageArr.count ==1) {
             self.imageOne.hidden = YES;
             self.imageTwo.hidden = YES;
             self.bigImage.hidden = NO;
             NSString *urlStr;
-            for (NSDictionary *dic in f.coverurlList) {
+            for (NSDictionary *dic in f.coverUrlList) {
                 urlStr = [dic objectForKey:@"route"];
             }
             [self.bigImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",urlStr]] placeholderImage:[UIImage imageNamed:@"default_small"]];
         }else if (self.imageArr.count==2)
         {
-            self.moreBtn.hidden = YES;
+            self.moreBtn.hidden = NO;
             self.imageOne.hidden = NO;
             self.imageTwo.hidden = NO;
             self.bigImage.hidden = YES;
@@ -181,16 +182,16 @@
         self.imageTwo.hidden = YES;
         self.bigImage.hidden = NO;
         NSString *urlStr;
-        for (NSDictionary *dic in f.coverurlList) {
+        for (NSDictionary *dic in f.coverUrlList) {
             urlStr = [dic objectForKey:@"route"];
         }
         [self.bigImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",urlStr,Video_First_Photo]] placeholderImage:[UIImage imageNamed:@"default_big"]];
     }
-    NSDate *date= [self nsstringConversionNSDate:f.returnTime];
+    NSDate *date= [self nsstringConversionNSDate:f.releaseTime];
     self.timeLabel.text = [NSString stringWithFormat:@"%@",[self compaareCurrentTime:date]];
     
 }
--(void)layoutSubviews
+- (void)layoutSubviews
 {
     [super layoutSubviews];
     
@@ -216,7 +217,7 @@
     
 }
 
--(UILabel *)titleLabe
+- (UILabel *)titleLabe
 {
     if (!_titleLabe) {
         _titleLabe = [[UILabel alloc] init];
@@ -228,7 +229,7 @@
     }
     return _titleLabe;
 }
--(UILabel *)contentLabel
+- (UILabel *)contentLabel
 {
     if (!_contentLabel) {
         _contentLabel = [[UILabel alloc] init];
@@ -240,7 +241,7 @@
     }
     return _contentLabel;
 }
--(UILabel *)statusLabel
+- (UILabel *)statusLabel
 {
     if (!_statusLabel) {
         _statusLabel = [[UILabel alloc] init];
@@ -250,7 +251,7 @@
     }
     return _statusLabel;
 }
--(UILabel *)timeLabel
+- (UILabel *)timeLabel
 {
     if (!_timeLabel) {
         _timeLabel = [[UILabel alloc] init];
@@ -261,7 +262,7 @@
     }
     return _timeLabel;
 }
--(UIButton *)refusedBtn
+- (UIButton *)refusedBtn
 {
     if (!_refusedBtn) {
         _refusedBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
@@ -275,14 +276,14 @@
 }
 
 #pragma mark - 查看拒绝原因
--(void)refuseAction
+- (void)refuseAction
 {
     if (self.lookRefusedTextAction) {
         self.lookRefusedTextAction(self.indexPath);
     }
 }
 
--(UIImageView *)imageOne
+- (UIImageView *)imageOne
 {
     if (!_imageOne) {
         _imageOne = [[UIImageView alloc]init];
@@ -302,7 +303,7 @@
     return _imageOne;
 }
 
--(UIImageView *)imageTwo
+- (UIImageView *)imageTwo
 {
     if (!_imageTwo) {
         _imageTwo = [[UIImageView alloc]init];
@@ -324,7 +325,7 @@
     }
     return _imageTwo;
 }
-//-(void)oneBigImageView:(UITapGestureRecognizer *)tap
+//- (void)oneBigImageView:(UITapGestureRecognizer *)tap
 //{
 //    NSDictionary *dicc = @{@"selectImage":self.imageArr};
 //      [[NSNotificationCenter defaultCenter]postNotificationName:@"SelectLookOneImage" object:nil userInfo:dicc];
@@ -343,7 +344,7 @@
 //    // 3.显示(浏览)
 //    [photoBroseView show];
 //}
--(void)twoBigImageView:(UITapGestureRecognizer *)tap
+- (void)twoBigImageView:(UITapGestureRecognizer *)tap
 {
     //    PYPhotoBrowseView *photoBroseView = [[PYPhotoBrowseView alloc] init];
     //
@@ -355,7 +356,7 @@
     //    // 3.显示(浏览)
     //    [photoBroseView show];
 }
--(UIImageView *)bigImage
+- (UIImageView *)bigImage
 {
     if (!_bigImage) {
         _bigImage = [[UIImageView alloc]init];
@@ -366,7 +367,7 @@
     }
     return _bigImage;
 }
--(UIButton *)moreBtn
+- (UIButton *)moreBtn
 {
     if (!_moreBtn) {
         _moreBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
@@ -375,7 +376,7 @@
     }
     return _moreBtn;
 }
--(UIButton *)plaayerBtn
+- (UIButton *)plaayerBtn
 {
     if (!_plaayerBtn) {
         _plaayerBtn = [[UIButton alloc]init];
@@ -384,7 +385,7 @@
     }
     return _plaayerBtn;
 }
--(void)playerAction:(UIButton *)btn
+- (void)playerAction:(UIButton *)btn
 {
     
 }

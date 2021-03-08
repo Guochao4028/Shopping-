@@ -17,6 +17,7 @@
 #import "ExamDetailModel.h"
 #import "KfExamViewController.h"
 #import "AppDelegate+AppService.h"
+#import "RunloopResidentThread.h"
 
 // 引入 JPush 功能所需头文件
 #import "JPUSHService.h"
@@ -61,8 +62,12 @@
     // 初始化广告相关
     [self initLaunchView];
     
-    // 获取收货地址和订单信息
-    [self initAddressAndOrderData];
+//    // 获取收货地址和订单信息  (放到 商城 页面)
+//    [self initAddressAndOrderData];
+    
+    
+    // 创建常驻线程
+    [[RunloopResidentThread sharedInstance] postThumbFollowShareData];
     
 //    //注册极光推送
 //    [self registerNotifications:launchOptions];
@@ -168,6 +173,7 @@
         [JPUSHService handleRemoteNotification:userInfo];
     }
     completionHandler(UNNotificationPresentationOptionAlert); // 需要执行这个方法，选择是否提醒用户，有 Badge、Sound、Alert 三种类型可以选择设置
+    
 }
 
 // iOS 10 Support
@@ -193,7 +199,7 @@
 }
 
 
--(void)registerNotifications:(NSDictionary *)launchOptions{
+- (void)registerNotifications:(NSDictionary *)launchOptions{
     
    //Required
     //notice: 3.0.0 及以后版本注册可以这样写，也可以继续用之前的注册方式

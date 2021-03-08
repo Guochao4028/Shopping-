@@ -9,7 +9,7 @@
 #import "PersonDataCell.h"
 
 @implementation PersonDataCell
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
@@ -20,7 +20,7 @@
     return self;
 }
 
--(void)layoutSubviews {
+- (void)layoutSubviews {
     [super layoutSubviews];
     
     [self.titleLabe mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -56,7 +56,7 @@
 }
 
 
--(UILabel *)titleLabe {
+- (UILabel *)titleLabe {
     if (!_titleLabe) {
         _titleLabe = [[UILabel alloc]init];
         _titleLabe.textColor = KTextGray_666;
@@ -66,7 +66,7 @@
     }
     return _titleLabe;
 }
--(UILabel *)contentLabel {
+- (UILabel *)contentLabel {
     if (!_contentLabel) {
         _contentLabel = [[UILabel alloc]init];
         _contentLabel.textAlignment = NSTextAlignmentLeft;
@@ -77,7 +77,7 @@
     return _contentLabel;
 }
 
--(UIView *)lineView {
+- (UIView *)lineView {
     if (!_lineView) {
         _lineView = [[UIView alloc]init];
         _lineView.backgroundColor = KTextGray_FA;

@@ -26,7 +26,7 @@
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        [self setUI];
+        [self setupUI];
     }
     return self;
 }
@@ -46,7 +46,7 @@
 - (void)setModel:(MeClassListModel *)model{
     _model = model;
     self.titleLabel.text = model.name;
-    self.contentLabel.text = model.goods_value;
+    self.contentLabel.text = model.goodsValue;
     NSInteger time = [model.weight integerValue];
     NSInteger minute = time/60;
     NSInteger second = time%60;
@@ -58,7 +58,7 @@
     [self.imageV sd_setImageWithURL:[NSURL URLWithString:model.cover] placeholderImage:[UIImage imageNamed:@"shaolinlogo"]];
 }
 #pragma mark - UI
-- (void)setUI{
+- (void)setupUI{
     
     [self.contentView addSubview:self.backView];
     

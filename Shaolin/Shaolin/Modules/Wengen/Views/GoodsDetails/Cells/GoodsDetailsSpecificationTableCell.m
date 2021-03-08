@@ -51,7 +51,7 @@
 }
 
 #pragma mark - action
--(void)tapAction{
+- (void)tapAction{
     
     if([self.delegate respondsToSelector:@selector(goodsDetailsSpecificationTableCell:tapAction:loction:)]){
         [self.delegate goodsDetailsSpecificationTableCell:self tapAction:self.model loction:self.indexPath];
@@ -61,38 +61,38 @@
 
 #pragma mark - UITableViewDelegate & UITableViewDataSource
 
--(CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     return 0.01;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     return 0.01;
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     UIView *view = [[UIView alloc] init];
     view.backgroundColor = [UIColor clearColor];
     return view;
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
     
         UIView *view = [[UIView alloc] init];
         view.backgroundColor = KTextGray_FA;
         return view;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
    
     return self.dataArray.count;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     CGFloat tableViewH = 30;
     return tableViewH;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell;
     
     SpecificationParameterTableViewCell *parameterCell = [tableView dequeueReusableCellWithIdentifier:@"SpecificationParameterTableViewCell"];
@@ -109,12 +109,12 @@
 
 #pragma mark - setter / getter
 
--(void)setModel:(GoodsInfoModel *)model{
+- (void)setModel:(GoodsInfoModel *)model{
     _model = model;
-    self.dataArray = model.goods_value;
+    self.dataArray = model.goodsValueList;
     [self.tableView reloadData];
     
-    NSInteger goods_valueCount = [model.goods_value count];
+    NSInteger goods_valueCount = [model.goodsValueList count];
     if (goods_valueCount <=  8) {
         
         [self.instructionsLabel setHidden:YES];

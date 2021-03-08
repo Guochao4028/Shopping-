@@ -22,7 +22,7 @@
 }
 
 #pragma mark - setter / getter
--(void)setImageUrl:(NSString *)imageUrl{
+- (void)setImageUrl:(NSString *)imageUrl{
     _imageUrl = imageUrl;
     [self.potoImageView sd_setImageWithURL:[NSURL URLWithString:imageUrl] placeholderImage:[UIImage imageNamed:@"default_small"]];
 }

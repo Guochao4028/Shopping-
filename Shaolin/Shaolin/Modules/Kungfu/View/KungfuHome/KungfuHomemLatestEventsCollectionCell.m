@@ -27,7 +27,7 @@
 }
 
 
--(void)setCellModel:(EnrollmentListModel *)cellModel {
+- (void)setCellModel:(EnrollmentListModel *)cellModel {
     _cellModel = cellModel;
     
     [self.eventsImgv sd_setImageWithURL:[NSURL URLWithString:cellModel.mechanismImage] placeholderImage:[UIImage imageNamed:@"default_big"]];

@@ -23,9 +23,9 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @protocol AddressListViewDelegate <NSObject>
--(void)addressListView:(AddressListView *)view tap:(BOOL)istap;
--(void)addressListView:(AddressListView *)view isModify:(AddressListModel *)model;
--(void)addressListView:(AddressListView *)view isTap:(AddressListModel *)model;
+- (void)addressListView:(AddressListView *)view tap:(BOOL)istap;
+- (void)addressListView:(AddressListView *)view isModify:(AddressListModel *)model;
+- (void)addressListView:(AddressListView *)view isTap:(AddressListModel *)model;
 
 @end
 

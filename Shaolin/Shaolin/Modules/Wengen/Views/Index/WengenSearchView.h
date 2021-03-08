@@ -14,9 +14,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @optional
 
--(void)tapShopping;
--(void)tapBack;
--(void)tapSearch;
+- (void)tapShopping;
+- (void)tapBack;
+- (void)tapSearch;
 
 @end
 

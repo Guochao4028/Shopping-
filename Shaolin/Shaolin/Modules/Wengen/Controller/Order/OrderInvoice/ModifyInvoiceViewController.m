@@ -125,27 +125,27 @@
     
     [self p_processInitData];
     
-    self.fillModel.order_id = self.orderSn;
+    self.fillModel.orderCarId = self.orderId;
     
 }
 
 #pragma mark - action
 
--(void)submit{
+- (void)submit{
     
     [self.view endEditing:YES];
     
     self.fillModel.type = self.isPersonal == YES ? @"1" : @"2";
-    self.fillModel.invoice_type = @"1";
-    self.fillModel.is_paper = @"2";
+    self.fillModel.invoiceType = @"1";
+    self.fillModel.isPaper = @"2";
     
     
     //记录必填的数组
     NSArray * mandatoryArray;
     if (self.isPersonal) {
-        mandatoryArray = @[@"buy_name", @"revice_phone"];
+        mandatoryArray = @[@"buyName", @"revicePhone"];
     }else{
-        mandatoryArray = @[@"buy_name", @"duty_num", @"revice_phone"];
+        mandatoryArray = @[@"buyName", @"dutyNum", @"revicePhone"];
     }
     
     __block BOOL modelComplete = YES;
@@ -167,20 +167,20 @@
             if (valueIsNil){
                 modelComplete = NO;
                 tipMsg = SLLocalizedString(@"请输入");
-                if ([property.name isEqualToString:@"buy_name"]) {
+                if ([property.name isEqualToString:@"buyName"]) {
                     tipMsg = SLLocalizedString(@"请输入抬头名称");
                 }
                 
-                if ([property.name isEqualToString:@"duty_num"]) {
+                if ([property.name isEqualToString:@"dutyNum"]) {
                     tipMsg = SLLocalizedString(@"请输入单位税号");
                 }
                 
-                if ([property.name isEqualToString:@"revice_phone"]) {
+                if ([property.name isEqualToString:@"revicePhone"]) {
                     tipMsg = SLLocalizedString(@"请输入收票人手机号码");
                 }
                 
                 *stop = YES;
-            } else if ([property.name isEqualToString:@"revice_phone"] && valueStr.length != 11){
+            } else if ([property.name isEqualToString:@"revicePhone"] && valueStr.length != 11){
                 tipMsg = SLLocalizedString(@"请输入正确的手机号码");
                 modelComplete = NO;
                 *stop = YES;
@@ -213,6 +213,12 @@
         
         NSMutableDictionary *param = [NSMutableDictionary dictionaryWithDictionary:dic];
         
+        if (self.clubId) {
+            [param setValue:self.clubId forKey:@"clubId"];
+        }else{
+            [param setValue:self.h5InvoiceModel.clubId forKey:@"clubId"];
+        }
+        
         if(self.isAgain){
             //重开发票
             [self againInvoice:param];
@@ -226,7 +232,7 @@
 }
 
 ///重开发票
--(void)againInvoice:(NSDictionary *)param{
+- (void)againInvoice:(NSDictionary *)param{
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
     
     [[DataManager shareInstance]invoicing:param Callback:^(Message *message) {
@@ -251,7 +257,7 @@
 }
 
 ///修改发票
--(void)modifyInvoice:(NSDictionary *)param{
+- (void)modifyInvoice:(NSDictionary *)param{
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
 
     [[DataManager shareInstance]editInvoice:param Callback:^(Message *message) {
@@ -277,27 +283,27 @@
 #pragma mark - private
 
 //表单数据回显
--(void)initTableData{
+- (void)initTableData{
     
     if (self.isPersonal) {
-        NSString *buy_name = self.h5InvoiceModel.buy_name;
+        NSString *buy_name = self.h5InvoiceModel.buyName;
         NSMutableDictionary *mutableDic = [self.personalArray lastObject];
         [mutableDic setValue:buy_name forKey:@"content"];
-        self.fillModel.buy_name = buy_name;
+        self.fillModel.buyName = buy_name;
     }else{
-        NSString *buy_name = self.h5InvoiceModel.buy_name;
-        NSString *duty_num = self.h5InvoiceModel.duty_num;
+        NSString *buy_name = self.h5InvoiceModel.buyName;
+        NSString *duty_num = self.h5InvoiceModel.dutyNum;
         NSString *address = self.h5InvoiceModel.address;
         NSString *phone = self.h5InvoiceModel.phone;
         NSString *bank = self.h5InvoiceModel.bank;
-        NSString *bank_sn = self.h5InvoiceModel.bank_sn;
+        NSString *bank_sn = self.h5InvoiceModel.bankSn;
         
-        self.fillModel.buy_name = buy_name;
-        self.fillModel.duty_num = duty_num;
+        self.fillModel.buyName = buy_name;
+        self.fillModel.dutyNum = duty_num;
         self.fillModel.address = address;
         self.fillModel.phone = phone;
         self.fillModel.bank = bank;
-        self.fillModel.bank_sn = bank_sn;
+        self.fillModel.bankSn = bank_sn;
 
         
         for (NSMutableDictionary *mutableDic in self.unitArray) {
@@ -318,7 +324,7 @@
         }
     }
     
-    NSString *revice_phone = self.h5InvoiceModel.revice_phone;
+    NSString *revice_phone = self.h5InvoiceModel.revicePhone;
     
     NSString *email = self.h5InvoiceModel.email;
 
@@ -331,18 +337,18 @@
         }
     }
     
-    self.fillModel.revice_phone = revice_phone;
+    self.fillModel.revicePhone = revice_phone;
     self.fillModel.email = email;
 }
 
--(void)p_processInitData{
+- (void)p_processInitData{
     [self.dataArray addObject:self.baseArray];
     [self.dataArray addObject:self.areaArray];
     [self.tableView reloadData];
 }
 
 ///处理个人数据
--(void)p_processPersonalData{
+- (void)p_processPersonalData{
     
     if ([self.baseArray containsObject:[self.unitArray lastObject]]) {
         [self.baseArray removeObjectsInArray:self.unitArray];
@@ -360,7 +366,7 @@
 }
 
 ///处理单位数据
--(void)p_processUnitData{
+- (void)p_processUnitData{
     
     if ([self.baseArray containsObject:[self.personalArray lastObject]]) {
         [self.baseArray removeObjectsInArray:self.personalArray];
@@ -377,7 +383,7 @@
 }
 
 #pragma mark - 抬头类型
--(void)p_invoiceTitleType:(NSIndexPath *)indexPath{
+- (void)p_invoiceTitleType:(NSIndexPath *)indexPath{
     
     NSArray *rowArray = self.dataArray[indexPath.section];
     NSMutableDictionary *dic = rowArray[indexPath.row];
@@ -407,7 +413,7 @@
             for (NSMutableDictionary *dic in self.personalArray) {
                NSString *title  = dic[@"title"];
                 if ([title isEqualToString:SLLocalizedString(@"发票抬头")]) {
-                    self.fillModel.buy_name = dic[@"content"];
+                    self.fillModel.buyName = dic[@"content"];
                     break;
                 }
             }
@@ -420,7 +426,7 @@
             for (NSMutableDictionary *dic in self.unitArray) {
                NSString *title  = dic[@"title"];
                 if ([title isEqualToString:SLLocalizedString(@"单位名称")]) {
-                    self.fillModel.buy_name = dic[@"content"];
+                    self.fillModel.buyName = dic[@"content"];
                     break;
                 }
             }
@@ -446,28 +452,28 @@
 
 #pragma mark - UITableViewDelegate && UITableViewDataSource
 
--(CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     return 10;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     return 0.01;
 }
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return 2;
 }
 
--(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
     return [UIView new];
 }
 
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     return [UIView new];
 }
 
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     
     NSArray *tempArray = [self.dataArray objectAtIndex:section];
     
@@ -475,12 +481,12 @@
     
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     return 51;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     OrderInvoiceTableCell *orderInvoiceCell = [tableView dequeueReusableCellWithIdentifier:@"OrderInvoiceTableCell"];
     
@@ -494,7 +500,7 @@
     
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
     NSArray *rowArray = self.dataArray[indexPath.section];
     NSMutableDictionary *dic = rowArray[indexPath.row];
@@ -516,7 +522,7 @@
 
 #pragma mark - setter / getter
 
--(UITableView *)tableView{
+- (UITableView *)tableView{
     if (_tableView == nil) {
         _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight - NavBar_Height - BottomMargin_X - 50) style:UITableViewStyleGrouped];
         [_tableView setBackgroundColor:KTextGray_FA];
@@ -530,7 +536,7 @@
 }
 
 
--(UIButton *)bottomButton{
+- (UIButton *)bottomButton{
     if (_bottomButton == nil) {
         _bottomButton = [UIButton buttonWithType:UIButtonTypeCustom];
         CGFloat y = CGRectGetMaxY(self.tableView.frame) + 10;
@@ -552,7 +558,7 @@
     return _bottomButton;
 }
 
--(NSMutableArray *)dataArray{
+- (NSMutableArray *)dataArray{
     if (_dataArray == nil) {
         _dataArray = [NSMutableArray array];
     }

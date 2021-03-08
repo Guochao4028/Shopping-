@@ -27,7 +27,7 @@
 {
     NSInteger _levelLabelTag;
 }
--(instancetype)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     
@@ -37,7 +37,7 @@
     }
     return self;
 }
--(void)layoutView
+- (void)layoutView
 {
     [[DataManager shareInstance]getOrderAndCartCount];
     self.personView.userInteractionEnabled = YES;
@@ -51,10 +51,7 @@
     [self addSubview:self.personView];
     [self.personView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(touchView)]];
     
-    
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(balanceRefresh) name:@"GetUserBalance" object:nil];
-    
-    
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(balanceRefresh) name:WENGENMANAGER_GETORDERANDCARTCOUNT object:nil];
     
     [self.headerImage mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -76,44 +73,22 @@
     }];
     
     [self.levelView mas_makeConstraints:^(MASConstraintMaker *make) {
-        //        make.left.mas_equalTo(self.nameLabel.mas_right).mas_offset(SLChange(9));
-        //        make.right.mas_lessThanOrEqualTo(-SLChange(55));
-        //        make.centerY.mas_equalTo(self.nameLabel);
-        //        make.size.mas_equalTo(CGSizeMake(SLChange(44), SLChange(18)));
-        
         make.left.mas_equalTo(self.nameLabel.mas_left);
-        make.size.mas_equalTo(CGSizeMake(48, 21));
+        make.height.mas_equalTo(21);
+        make.width.mas_greaterThanOrEqualTo(48);
+//        make.size.mas_equalTo(CGSizeMake(48, 21));
         make.top.mas_equalTo(self.nameLabel.mas_bottom).offset(11.5);
-        
     }];
     self.levelView.layer.cornerRadius = 10.5;
     
     [self.signatureLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        //        make.left.mas_equalTo(self.headerImage.mas_right).offset(SLChange(9));
-        //         make.right.mas_equalTo(self.mas_right).offset(-SLChange(55));
-        //        make.height.mas_equalTo(SLChange(16));
-        //        make.top.mas_equalTo(self.nameLabel.mas_bottom).offset(SLChange(10));
-        
         make.left.mas_equalTo(self.levelView.mas_right).offset(12);
         make.right.mas_equalTo(-SLChange(15));
-        
         make.height.mas_equalTo(16.5);
-        
-        
-        
         make.centerY.mas_equalTo(self.levelView);
         
     }];
-    
-    
-    
     [self.rightBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        //        make.width.mas_equalTo(SLChange(6));
-        //        make.height.mas_equalTo(SLChange(13));
-        //        make.centerY.mas_equalTo(self.headerImage);
-        //        make.right.mas_equalTo(-SLChange(24.5));
-        
-        
         make.width.mas_equalTo(13);
         make.height.mas_equalTo(14);
         make.centerY.mas_equalTo(self.nameLabel);
@@ -132,20 +107,23 @@
         make.top.mas_equalTo(self.headerImage.mas_bottom).mas_equalTo(29);
         make.size.mas_equalTo(CGSizeMake(kWidth - 30, 80));
     }];
-    
+    [self.signatureLabel setContentHuggingPriority:UILayoutPriorityFittingSizeLevel forAxis:UILayoutConstraintAxisHorizontal];
+    [self.signatureLabel setContentCompressionResistancePriority:UILayoutPriorityFittingSizeLevel forAxis:UILayoutConstraintAxisHorizontal];
 }
 - (void)balanceRefresh {
     [self.collectionView reloadData];
 }
 - (void)setDicData:(NSDictionary *)dicData {
     _dicData = dicData;
-    [_headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",[dicData objectForKey:@"headurl"]]] placeholderImage:[UIImage imageNamed:@"shaolinlogo"]];
+//    [_headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",[dicData objectForKey:@"headUrl"]]] placeholderImage:[UIImage imageNamed:@"shaolinlogo"]];
+    [_headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",[dicData objectForKey:@"headUrl"]]] placeholderImage:[UIImage imageNamed:@"shaolinlogo"] options:SDWebImageRetryFailed completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+        NSLog(@"finish");
+    }];
     
-    if ([[dicData objectForKey:@"nickname"] isEqual:[NSNull null]] || [self.dicData objectForKey:@"nickname"] == nil || [[dicData objectForKey:@"nickname"] isEqual:@"(null)"]) {
+    if ([[dicData objectForKey:@"nickName"] isEqual:[NSNull null]] || [self.dicData objectForKey:@"nickName"] == nil || [[dicData objectForKey:@"nickname"] isEqual:@"(null)"]) {
         self.nameLabel.text = SLLocalizedString(@"暂无昵称");
     }else{
-        self.nameLabel.text = [dicData objectForKey:@"nickname"];
-        
+        self.nameLabel.text = [dicData objectForKey:@"nickName"];
     }
     NSString * autograph = [dicData objectForKey:@"autograph"];
     if (IsNilOrNull(autograph) || autograph.length == 0) {
@@ -163,7 +141,7 @@
     [self reloadLevelView:levelName];
 }
 
--(void)reloadLevelView:(NSString *)levelName{
+- (void)reloadLevelView:(NSString *)levelName{
     UILabel *levelLabel = [self.levelView viewWithTag:_levelLabelTag];
     levelLabel.text = levelName;
     if ([levelName isEqualToString:SLLocalizedString(@"无位阶")]){
@@ -185,14 +163,14 @@
     }
 }
 
--(void)touchView
+- (void)touchView
 {
     if (self.personDataClick) {
         self.personDataClick(self.dicData);
     }
     
 }
--(void)layoutSubviews
+- (void)layoutSubviews
 {
     [super layoutSubviews];
 
@@ -234,7 +212,7 @@
     
     NSArray *arr = @[orderCount,@""/*balance*/,carCount];
     cell.numberLabel.text = arr[indexPath.row];
-    NSArray *arrTitle = @[SLLocalizedString(@"订单管理"),SLLocalizedString(@"消费明细"),SLLocalizedString(@"我的购物车")];
+    NSArray *arrTitle = @[SLLocalizedString(@"订单管理"),SLLocalizedString(@"消费明细"),SLLocalizedString(@"购物车")];
     cell.nameLabel.text = arrTitle[indexPath.row];
     if (indexPath.row == 1){
         cell.imageView.image = [UIImage imageNamed:@"accountBook"];
@@ -249,7 +227,7 @@
     }
     return cell;
 }
--(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     if (self.itemDidClick) {
         self.itemDidClick(indexPath.row);
@@ -268,7 +246,7 @@
     return CGSizeMake(width/count, 80);
 }
 
--(UICollectionView *)collectionView
+- (UICollectionView *)collectionView
 {
     if (!_collectionView) {
 
@@ -287,7 +265,7 @@
     }
     return _collectionView;
 }
--(UICollectionViewFlowLayout *)layout
+- (UICollectionViewFlowLayout *)layout
 {
     if (!_layout) {
         _layout = [UICollectionViewFlowLayout new];
@@ -298,7 +276,7 @@
     return _layout;
     
 }
--(UIImageView *)headerImage
+- (UIImageView *)headerImage
 {
     if (!_headerImage) {
         _headerImage = [[UIImageView alloc]init];
@@ -309,7 +287,7 @@
     }
     return _headerImage;
 }
--(UILabel *)nameLabel
+- (UILabel *)nameLabel
 {
     if (!_nameLabel) {
         _nameLabel = [[UILabel alloc]init];
@@ -320,7 +298,7 @@
     }
     return _nameLabel;
 }
--(UILabel *)signatureLabel
+- (UILabel *)signatureLabel
 {
     if (!_signatureLabel) {
         _signatureLabel = [[UILabel alloc]init];
@@ -332,7 +310,7 @@
     }
     return _signatureLabel;
 }
--(UIButton *)rightBtn
+- (UIButton *)rightBtn
 {
     if (!_rightBtn) {
         _rightBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
@@ -343,7 +321,7 @@
     }
     return _rightBtn;
 }
--(UIView *)personView
+- (UIView *)personView
 {
     if (!_personView) {
         _personView = [[UIView alloc]init];
@@ -352,7 +330,7 @@
     return _personView;
 }
 
--(UIView *)levelView
+- (UIView *)levelView
 {
     if (!_levelView){
         _levelView = [[UIView alloc] init];
@@ -368,9 +346,10 @@
         [levelLabel setTextAlignment:NSTextAlignmentCenter];
         
         [self.levelView addSubview:levelLabel];
-        
         [levelLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.edges.mas_equalTo(0);
+            make.left.mas_equalTo(8);
+            make.right.mas_equalTo(-8);
+            make.centerY.mas_equalTo(self.levelView);
         }];
     }
     return _levelView;
@@ -384,7 +363,7 @@
  */
 
 
--(void)dealloc{
+- (void)dealloc{
     //移除监听
     [[NSNotificationCenter defaultCenter]removeObserver:self];
 }

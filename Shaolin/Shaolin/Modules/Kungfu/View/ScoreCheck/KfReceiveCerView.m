@@ -28,12 +28,12 @@
 
 @implementation KfReceiveCerView
 
--(void)setModel:(CertificateModel *)model {
+- (void)setModel:(CertificateModel *)model {
     _model = model;
     self.nameLabel.text = [NSString stringWithFormat:SLLocalizedString(@"段品制%@证书"),model.levelName];
 }
 
--(void)awakeFromNib {
+- (void)awakeFromNib {
     [super awakeFromNib];
     self.nameTF.delegate = self;
     self.phoneTF.delegate = self;

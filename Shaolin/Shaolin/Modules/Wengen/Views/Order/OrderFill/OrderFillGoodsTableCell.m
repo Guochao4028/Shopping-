@@ -53,18 +53,18 @@
 
 #pragma mark - methods
 
--(void)lodingGoodsPic:(NSString *)picStr{
+- (void)lodingGoodsPic:(NSString *)picStr{
     NSURL *url = [NSURL URLWithString:picStr];
     [self.goodsImageView sd_setImageWithURL:url placeholderImage:[UIImage imageNamed:@"default_small"]];
     
     
 }
 
--(void)lodingGoodsName:(NSString *)name{
+- (void)lodingGoodsName:(NSString *)name{
     [self.goodsNameLabel setText:name];
 }
 
--(void)lodingGoodsPrice:(NSString *)price{
+- (void)lodingGoodsPrice:(NSString *)price{
     
     NSString *priceStr = [NSString stringWithFormat:@"¥%@",price];
 //
@@ -77,7 +77,7 @@
     
 }
 
--(void)lodingArrt:(NSString *)arrt{
+- (void)lodingArrt:(NSString *)arrt{
     arrt = [arrt stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
     
     [self.arrtLabel setText:arrt];
@@ -87,17 +87,24 @@
 
 #pragma mark - setter / getter
 
--(void)setCartGoodsModel:(ShoppingCartGoodsModel *)cartGoodsModel{
+- (void)setCartGoodsModel:(ShoppingCartGoodsModel *)cartGoodsModel{
     
-    [self lodingGoodsPic:cartGoodsModel.img_data[0]];
-    [self lodingGoodsName:cartGoodsModel.name];
-    [self lodingGoodsPrice:cartGoodsModel.current_price];
+    [self lodingGoodsPic:cartGoodsModel.imgDataList[0]];
+    [self lodingGoodsName:cartGoodsModel.goodsName];
+//    BOOL isDiscount = [cartGoodsModel.isDiscount boolValue];
+    float price;
+//    if (isDiscount) {
+        price = [cartGoodsModel.price floatValue];
+//    }else{
+//        price = [cartGoodsModel.oldPrice floatValue];
+//    }
+    [self lodingGoodsPrice:[NSString stringWithFormat:@"%.2f", price]];
     
     
     NSString *arrt;
     
-    if (cartGoodsModel.attr_name.length > 0) {
-        arrt  = cartGoodsModel.attr_name;
+    if (cartGoodsModel.goodsAttrStrName.length > 0) {
+        arrt  = cartGoodsModel.goodsAttrStrName;
     }else if (cartGoodsModel.desc.length > 0){
         arrt  = cartGoodsModel.desc;
     }else{

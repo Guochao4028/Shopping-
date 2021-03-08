@@ -39,6 +39,7 @@
 #import "AVCSelectSharpnessView.h"
 #import <sys/utsname.h>
 #import "SLRouteManager.h"
+#import "ThumbFollowShareManager.h"
 
 static NSString *const classCellId = @"KungfuClassInfoCell";
 static NSString *const classConCellId = @"KfClassContainerCell";
@@ -82,7 +83,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
 @implementation KungfuClassDetailViewController
 
 #pragma mark - life cycle
--(void)dealloc {
+- (void)dealloc {
     AppDelegate * slAppDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     slAppDelegate.allowOrentitaionRotation = YES;
     
@@ -96,11 +97,11 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
 }
 
 
--(void)viewWillAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 }
 
--(void)viewDidAppear:(BOOL)animated {
+- (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 }
 
@@ -109,7 +110,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
     [self.playerView pause];
 }
 
--(void)viewDidLayoutSubviews {
+- (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     
     UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
@@ -179,7 +180,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
     NSDictionary *dict = noti.object;
     NSInteger index = [dict[@"index"] integerValue];
     
-    [self readyWithData:self.model.goods_next[index] selectIndex:index];
+    [self readyWithData:self.model.goodsNext[index] selectIndex:index];
 }
 
 #pragma mark - event
@@ -198,13 +199,13 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
     NSString *timeStr = [NSString stringWithFormat:@"%d",(int)(time*1000)];
     
     NSDictionary *params = @{
-        @"goods_id":goodsId,
-        @"attr_id":attrId,
-        @"look_time":timeStr
+        @"goodsId":goodsId,
+        @"attrId":attrId,
+        @"lookTime":timeStr
     };
     
-    self.model.history.attr_id = data.classGoodsId;
-    self.model.history.look_time = timeStr;
+    self.model.history.attrId = data.classGoodsId;
+    self.model.history.lookTime = timeStr;
     
     [[KungfuManager sharedInstance] setCourseReadHistory:params callback:^(NSDictionary *result) {
         NSLog(@"%@", result);
@@ -215,7 +216,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
 {
     if (![self.model.buy boolValue]){
         /** 未购买的视频，判断课节里的try_watch，0  不能试看  1 可以试看*/
-        if ([goodsModel.try_watch intValue] == 0) {
+        if ([goodsModel.tryLook intValue] == 0) {
             // 不能试看，return
             NSString * buttonTitle = self.tableFooterViewBuyBtn.titleLabel.text;
             
@@ -265,7 +266,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
     self.currentClassIndex = selectIndex;
         
     if ([self.model.buy boolValue]) {
-        if (self.currentClassIndex == self.model.goods_next.count - 1) {
+        if (self.currentClassIndex == self.model.goodsNext.count - 1) {
             // 最后一节，把endView的状态设为最后一节
             self.videoEndView.endViewType = VideoPlayEndLast;
         } else {
@@ -292,7 +293,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
 }
 
 
--(void)foucsAction:(UIButton *)btn
+- (void)foucsAction:(UIButton *)btn
 {
     btn.selected = !btn.selected;
     if (btn.selected) {
@@ -331,17 +332,17 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:@""];
     
     [[KungfuManager sharedInstance] getClassDetailWithDic:@{@"id":self.classId} success:^(NSDictionary * _Nullable resultDic) {
-        
+        resultDic = [ThumbFollowShareManager reloadDictByLocalCache:resultDic modelItemType:ClassItemType modelItemKind:ImageText];
         ClassDetailModel *model = [ClassDetailModel mj_objectWithKeyValues:resultDic];
-        if ([model.old_price floatValue] == 0.00) {
-            // 如果是0元课程，算作是已经购买了 此需求 2020-11-27 增加
+        if ([model.oldPrice floatValue] == 0.00 && ![model isVIPClass]) {
+            // 如果是0元非会员课程，算作是已经购买了 此需求 2020-11-27 增加
             model.buy = @"1";
         }
         self.model = model;
         
         if (NotNilAndNull(self.model.history)) {
-            [self.model.goods_next enumerateObjectsUsingBlock:^(ClassGoodsModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                if ([obj.classGoodsId isEqualToString:self.model.history.attr_id]) {
+            [self.model.goodsNext enumerateObjectsUsingBlock:^(ClassGoodsModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                if ([obj.classGoodsId isEqualToString:self.model.history.attrId]) {
                     self.currentClassIndex = idx;
                     *stop = YES;
                 }
@@ -349,7 +350,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
         } else {
             self.currentClassIndex = 999;
         }
-        
+        [self.classTable reloadData];
         // 更多推荐课程
         [self requestMoreClassList];
         
@@ -365,9 +366,9 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
 
 - (void) requestMoreClassList {
     
-    [[KungfuManager sharedInstance] getClassRecommendWithDic:@{@"id":self.model.classDetailId,@"subject_id":self.model.subject_id,@"level":self.model.level,@"page":@"1"} success:^(NSDictionary * _Nullable resultDic) {
+    [[KungfuManager sharedInstance] getClassRecommendWithDic:@{@"id":self.model.classDetailId,@"subjectId":self.model.subjectId,@"level":self.model.level,@"page":@"1"} success:^(NSDictionary * _Nullable resultDic) {
         
-        NSArray *arr = (NSArray *)resultDic;
+        NSArray *arr = resultDic[DATAS];
         NSArray *dataList = [ClassListModel mj_objectArrayWithKeyValuesArray:arr];
         self.recommendedClassList = dataList;
         
@@ -379,13 +380,13 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
 
 - (void) requestVideoAuthWithClassModel:(ClassGoodsModel *)goodsModel Block:(void(^)(ClassVideoModel * videoModel))videoBlock {
     
-    if (IsNilOrNull(goodsModel.video_id)) {
+    if (IsNilOrNull(goodsModel.attrId)) {
         [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"视频获取失败，请稍后重试")];
         return;
     }
     
     // 从阿里获取播放凭证
-    [[KungfuManager sharedInstance] getVideoAuthWithVideoId:goodsModel.video_id callback:^(NSDictionary *result) {
+    [[KungfuManager sharedInstance] getVideoAuthWithVideoId:goodsModel.attrId callback:^(NSDictionary *result) {
         
         if (!result) {
             [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"视频获取失败，请稍后重试")];
@@ -406,32 +407,64 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
 - (void)collectClass:(UIButton *)btn
 {
     WEAKSELF
-    NSDictionary * dic = @{@"goods_id":self.model.classDetailId,@"type":@"1"};
-    [[KungfuManager sharedInstance] getClassCollectWithDic:dic callback:^(Message *message) {
-        
-        if (message.isSuccess) {
-            [btn setSelected:YES];
-            [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"收藏成功") view:weakSelf.view afterDelay:TipSeconds];
-        } else {
-            [ShaolinProgressHUD singleTextHud:message.reason view:weakSelf.view afterDelay:TipSeconds];
-        }
-    }];
+    NSDictionary * dic = @{@"goodsId":self.model.classDetailId,@"type":@"2"};
+//    [[KungfuManager sharedInstance] getClassCollectWithDic:dic callback:^(Message *message) {
+//
+//        if (message.isSuccess) {
+//            [btn setSelected:YES];
+//            [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"收藏成功") view:weakSelf.view afterDelay:TipSeconds];
+//        } else {
+//            [ShaolinProgressHUD singleTextHud:message.reason view:weakSelf.view afterDelay:TipSeconds];
+//        }
+//    }];
+    
+    
+    // 收藏教程
+        [[DataManager shareInstance]addCollect:dic Callback:^(Message *message) {
+            
+            if (message.isSuccess) {
+                [btn setSelected:YES];
+                [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"收藏成功") view:weakSelf.view afterDelay:TipSeconds];
+            } else {
+                [ShaolinProgressHUD singleTextHud:message.reason view:weakSelf.view afterDelay:TipSeconds];
+            }
+        }];
+    
+    
+    
+    
+    
+    
+    
 }
 
 // 取消收藏
--(void)collectCancle:(UIButton *)btn
+- (void)collectCancle:(UIButton *)btn
 {
     WEAKSELF
-    NSDictionary * dic = @{@"goods_id":self.model.classDetailId,@"type":@"2"};
-    [[KungfuManager sharedInstance] getClassCollectWithDic:dic callback:^(Message *message) {
-        
-        if (message.isSuccess) {
-            [btn setSelected:NO];
-            [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"取消收藏") view:weakSelf.view afterDelay:TipSeconds];
-        } else {
-            [ShaolinProgressHUD singleTextHud:message.reason view:weakSelf.view afterDelay:TipSeconds];
-        }
-    }];
+    NSDictionary * dic = @{@"goodsId":self.model.classDetailId,@"type":@"2"};
+//    [[KungfuManager sharedInstance] getClassCollectWithDic:dic callback:^(Message *message) {
+//
+//        if (message.isSuccess) {
+//            [btn setSelected:NO];
+//            [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"取消收藏") view:weakSelf.view afterDelay:TipSeconds];
+//        } else {
+//            [ShaolinProgressHUD singleTextHud:message.reason view:weakSelf.view afterDelay:TipSeconds];
+//        }
+//    }];
+    
+    // 取消收藏
+        [[DataManager shareInstance]cancelCollect:dic Callback:^(Message *message) {
+            if (message.isSuccess) {
+                [btn setSelected:NO];
+                [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"取消收藏") view:weakSelf.view afterDelay:TipSeconds];
+            } else {
+                [ShaolinProgressHUD singleTextHud:message.reason view:weakSelf.view afterDelay:TipSeconds];
+            }
+        }];
+  
+    
+    
 }
 
 - (void) playClass {
@@ -444,7 +477,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
     }
     
     if ([buttonTitle isEqualToString:SLLocalizedString(@"观看教程")]) {
-        if (IsNilOrNull(self.model.goods_next) || !self.model.goods_next.count) {
+        if (IsNilOrNull(self.model.goodsNext) || !self.model.goodsNext.count) {
             return;
         }
         
@@ -459,7 +492,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
             self.currentClassIndex = 0;
         }
         
-        [self readyWithData:self.model.goods_next[self.currentClassIndex] selectIndex:self.currentClassIndex];
+        [self readyWithData:self.model.goodsNext[self.currentClassIndex] selectIndex:self.currentClassIndex];
     }
     
     if ([buttonTitle isEqualToString:SLLocalizedString(@"免费观看")]) {
@@ -479,19 +512,19 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
             NSMutableArray *modelMutabelArray = [NSMutableArray array];
             NSMutableDictionary *tam = [NSMutableDictionary dictionary];
             
-            ShoppingCartGoodsModel *cartGoodModel = [[ShoppingCartGoodsModel alloc]init];
+            ShoppingCartGoodsModel *cartGoodModel = [[ShoppingCartGoodsModel alloc] init];
             
-            cartGoodModel.name = self.model.classDetailName;
+            cartGoodModel.goodsName = self.model.classDetailName;
             cartGoodModel.desc = self.model.desc;
-            cartGoodModel.img_data = @[self.model.cover];
-            cartGoodModel.price = self.model.old_price;
-            cartGoodModel.current_price = self.model.old_price;
+            cartGoodModel.imgDataList = @[self.model.cover];
+            cartGoodModel.price = self.model.oldPrice;
+            cartGoodModel.oldPrice = self.model.oldPrice;
             cartGoodModel.stock = @"1";
-            cartGoodModel.store_type = @"1";
+            cartGoodModel.storeType = @"1";
             cartGoodModel.num = @"1";
             cartGoodModel.desc = self.model.desc;
-            cartGoodModel.goods_id = self.model.classDetailId;
-            cartGoodModel.app_store_id = self.model.app_store_id;
+            cartGoodModel.goodsId = self.model.classDetailId;
+            cartGoodModel.appStoreId = self.model.appStoreId;
             
             [tam setValue:@[cartGoodModel] forKey:@"goods"];
             
@@ -520,8 +553,8 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
         
         if ([self.model isVIPClass]) {
             // 会员教程  判断等级
-            if ([userModel.level_id intValue] < [self.model.look_level intValue]) {
-                NSString *title = [NSString stringWithFormat:SLLocalizedString(@"最低位阶%@可观看教程"), self.model.look_level_name];
+            if ([userModel.levelId intValue] < [self.model.lookLevel intValue]) {
+                NSString *title = [NSString stringWithFormat:SLLocalizedString(@"最低位阶%@可观看教程"), self.model.lookLevelName];
                 [self.tableFooterViewBuyBtn setTitle:title forState:UIControlStateNormal];
             } else {
                 [self.tableFooterViewBuyBtn setTitle:SLLocalizedString(@"学习教程") forState:UIControlStateNormal];
@@ -547,11 +580,11 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
 - (void)aliyunVodPlayerView:(AliyunVodPlayerView *)playerView happen:(AVPEventType)event{
     
     if (event == AVPEventPrepareDone) {
-        if ([self.currentClassData.classGoodsId isEqualToString:self.model.history.attr_id]) {
+        if ([self.currentClassData.classGoodsId isEqualToString:self.model.history.attrId]) {
 
             // 如果剩余未观看时间小于1秒则重头播放
             int time = playerView.aliPlayer.getMediaInfo.duration;
-            int look_time = [self.model.history.look_time intValue];
+            int look_time = [self.model.history.lookTime intValue];
             if (time - look_time <= 1000) {
                 look_time = 0;
             }
@@ -577,7 +610,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
     NSLog(@"onSeekDone");
 }
 
--(void)onFinishWithAliyunVodPlayerView:(AliyunVodPlayerView *)playerView{
+- (void)onFinishWithAliyunVodPlayerView:(AliyunVodPlayerView *)playerView{
     NSLog(@"onFinish");
     self.videoEndView.hidden = NO;
     
@@ -636,17 +669,17 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
 
 
 #pragma mark - delegate && dataSources
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return 3;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return 1;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     WEAKSELF
     if (indexPath.section == 0) {
@@ -658,7 +691,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
             [weakSelf.infoView setAlpha:0];
             
             weakSelf.infoView.classNameStr = weakSelf.model.classDetailName;
-            weakSelf.infoView.classContentStr = weakSelf.model.intro;
+            weakSelf.infoView.classContentStr = NotNilAndNull(weakSelf.model.intro)?weakSelf.model.intro:@"";
             
             UIWindow *window = [ShaolinProgressHUD frontWindow];
             [window addSubview:weakSelf.infoView];
@@ -686,7 +719,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
         cell.currentClassIndex = self.currentClassIndex;
         
         cell.cellSelectBlock = ^(NSInteger indexRow) {
-            [weakSelf readyWithData:weakSelf.model.goods_next[indexRow] selectIndex:indexRow];
+            [weakSelf readyWithData:weakSelf.model.goodsNext[indexRow] selectIndex:indexRow];
         };
         return cell;
     }
@@ -701,12 +734,12 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 0) {
         return 114 + 36;
@@ -714,10 +747,10 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
     
     if (indexPath.section == 1) {
         if (self.model){
-            if (self.model.goods_next.count > 3){
+            if (self.model.goodsNext.count > 3){
                 return 3.5 * 64;
             }
-            return self.model.goods_next.count*64 ;
+            return self.model.goodsNext.count*64 ;
         }
         return 0;
     }
@@ -731,14 +764,14 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
     return .001;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
     if (section == 1)
         return 10;
     return .001;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     if (section == 1) {
         return .001;
@@ -750,7 +783,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
     return 10;
 }
 
--(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
 
     UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWidth, 10)];
@@ -758,7 +791,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
     return v;
 }
 
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     
     UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWidth, 10)];
@@ -806,7 +839,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
 
 #pragma mark - setter
 
--(void)setCurrentClassIndex:(NSInteger)currentClassIndex {
+- (void)setCurrentClassIndex:(NSInteger)currentClassIndex {
     _currentClassIndex = currentClassIndex;
     
     if (currentClassIndex != 999) {
@@ -838,7 +871,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
 
 #pragma mark - getter
 
--(UITableView *)classTable {
+- (UITableView *)classTable {
     if (!_classTable) {
         _classTable = [[UITableView alloc]initWithFrame:CGRectMake(0, -0, kWidth, kHeight+0 - kNavBarHeight - kBottomSafeHeight - kStatusBarHeight) style:(UITableViewStyleGrouped)];
         _classTable.delegate = self;
@@ -881,7 +914,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
     return _playerView;
 }
 
--(KungfuClassHeaderView *)headerView {
+- (KungfuClassHeaderView *)headerView {
     //    WEAKSELF
     if (!_headerView) {
         _headerView = [[[NSBundle mainBundle] loadNibNamed:(NSStringFromClass([KungfuClassHeaderView class])) owner:self options:nil] objectAtIndex:0];
@@ -893,7 +926,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
 }
 
 
--(UIView *)loadBgView {
+- (UIView *)loadBgView {
     if (!_loadBgView) {
         _loadBgView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kWidth, kHeight)];
         _loadBgView.backgroundColor = UIColor.whiteColor;
@@ -901,7 +934,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
     return _loadBgView;
 }
 
--(UIView *)tableFooterView {
+- (UIView *)tableFooterView {
     if (!_tableFooterView) {
         _tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, kHeight - 72 - kNavBarHeight - kBottomSafeHeight - kStatusBarHeight, kScreenWidth, 72)];
         _tableFooterView.backgroundColor = UIColor.clearColor;
@@ -930,7 +963,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
 }
 
 
--(UIView *)occupationView {
+- (UIView *)occupationView {
     if (!_occupationView) {
         _occupationView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kWidth, 75)];
         _occupationView.backgroundColor = UIColor.whiteColor;
@@ -938,7 +971,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
     return _occupationView;
 }
 
--(KungfuClassVideoChooseView *)videoEndView {
+- (KungfuClassVideoChooseView *)videoEndView {
     WEAKSELF
     if (!_videoEndView) {
         _videoEndView = [KungfuClassVideoChooseView loadXib];
@@ -970,7 +1003,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
             weakSelf.videoEndView.hidden = YES;
             [weakSelf.playerView stop];
             
-            ClassGoodsModel * nextM = weakSelf.model.goods_next[weakSelf.currentClassIndex + 1];
+            ClassGoodsModel * nextM = weakSelf.model.goodsNext[weakSelf.currentClassIndex + 1];
             // 播放下一节
             [weakSelf readyWithData:nextM selectIndex:weakSelf.currentClassIndex + 1];
         };
@@ -992,7 +1025,7 @@ static NSString *const moreCellId = @"KungfuClassMoreCell";
     return UIInterfaceOrientationMaskPortrait|UIInterfaceOrientationMaskLandscapeRight;
 }
 
--(BOOL)prefersStatusBarHidden {
+- (BOOL)prefersStatusBarHidden {
     return self.isStatusHidden;
 }
 

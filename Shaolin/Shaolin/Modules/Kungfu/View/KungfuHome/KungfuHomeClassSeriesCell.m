@@ -24,12 +24,12 @@
 - (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self){
-        [self setUI];
+        [self setupUI];
     }
     return self;
 }
 
-- (void)setUI{
+- (void)setupUI{
 //    [self addSubview:self.shadowView];
     [self addSubview:self.bgView];
     [self.bgView addSubview:self.pictureView];
@@ -80,7 +80,7 @@
     [self.pictureView sd_setImageWithURL:[NSURL URLWithString:cellModel.cover] placeholderImage:[UIImage imageNamed:@"default_big"]];
     self.tagLabel.text = tagString;
     self.titleLabel.text = cellModel.name;
-    self.levelLabel.text = cellModel.level_name;
+    self.levelLabel.text = cellModel.levelName;
     NSString *timeStr = [ModelTool calculatedTimeWith:CalculatedTimeTypeDonotSecond secondStr:cellModel.weight];
     self.timeLabel.text = timeStr;
 }

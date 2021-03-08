@@ -45,23 +45,24 @@
 
 
 
--(void)setModel:(OrderRefundInfoModel *)model{
+- (void)setModel:(OrderRefundInfoModel *)model{
     _model = model;
     
-    NSString *goodsImageUrl = model.goods_image[0];
+//    NSArray *goodsImages = [model.imgData componentsSeparatedByString:@","];
+    NSString *goodsImageUrl = model.goodsImage[0];
     [self.goodsImageView sd_setImageWithURL:[NSURL URLWithString:goodsImageUrl] placeholderImage:[UIImage imageNamed:@"default_small"]];
     
-    [self.goodsNameLabel setText:model.goods_name];
-    if (IsNilOrNull(model.final_price)) {
+    [self.goodsNameLabel setText:model.goodsName];
+    if (IsNilOrNull(model.finalPrice)) {
         [self.priceLabel setText:@""];
     } else {
-        [self.priceLabel setText:[NSString stringWithFormat:@"¥%@",model.final_price]];
+        [self.priceLabel setText:[NSString stringWithFormat:@"¥%@",model.finalPrice]];
     }
     
 //    CGSize size =[self.priceLabel.text sizeWithAttributes:@{NSFontAttributeName:kMediumFont(13)}];
     //       self.goodsPriceLabelW.constant = size.width + 1;
     
-    [self.numberLabel setText:model.goods_num];
+    [self.numberLabel setText:model.goodsNum];
 }
 
 @end

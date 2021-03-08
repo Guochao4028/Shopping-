@@ -13,6 +13,13 @@
 + (NSDictionary *)mj_replacedKeyFromPropertyName{
     return @{
              @"storeId" : @"id",
+             @"name" : @[@"name", @"clubName"],
+             @"countGoods" : @"goodsNum",
+             @"countCollet" : @"clubFollowersNum",
+             @"is_self" : @"isSelf",
+             @"collect" : @"isAttention",
+             @"im" : @[@"im", @"imName"]
+
              };
 }
 

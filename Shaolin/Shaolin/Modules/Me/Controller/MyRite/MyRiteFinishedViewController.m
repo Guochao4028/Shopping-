@@ -74,7 +74,7 @@ static NSString *const riteCellId = @"MyRiteRegisteredCell";
     return !self.riteList.count;
 }
 
--(CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
+- (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
     return -30;
 }
 
@@ -92,15 +92,15 @@ static NSString *const riteCellId = @"MyRiteRegisteredCell";
 }
 
 #pragma mark - delegate && dataSources
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.riteList.count;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     MyRiteRegisteredCell * cell = [tableView dequeueReusableCellWithIdentifier:riteCellId];
     
@@ -110,7 +110,7 @@ static NSString *const riteCellId = @"MyRiteRegisteredCell";
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     MyRiteCellModel * model = self.riteList[indexPath.row];
     
@@ -119,7 +119,7 @@ static NSString *const riteCellId = @"MyRiteRegisteredCell";
     [self.navigationController pushViewController:vc animated:YES];
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     MyRiteCellModel * model = self.riteList[indexPath.row];
     
@@ -162,7 +162,7 @@ static NSString *const riteCellId = @"MyRiteRegisteredCell";
     return _infoTable;
 }
 
--(NSMutableArray *)riteList {
+- (NSMutableArray *)riteList {
     if (!_riteList) {
         _riteList = [NSMutableArray new];
     }

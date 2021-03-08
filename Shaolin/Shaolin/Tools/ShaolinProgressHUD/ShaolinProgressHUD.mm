@@ -149,12 +149,12 @@ static NSString * const gifName = @"default_loding";
 }
 
 + (MBProgressHUD *)loadingWithText:(NSString *)text view:(UIView *)view {
-    return [ShaolinProgressHUD loadingWithText:text view:view afterDelay:-1];
+    return [ShaolinProgressHUD loadingWithText:text view:view afterDelay:-1 isFill:NO];
 }
 
-+ (MBProgressHUD *)loadingWithText:(NSString *)text view:(UIView *)view afterDelay:(NSTimeInterval)delay{
++ (MBProgressHUD *)loadingWithText:(NSString *)text view:(UIView *)view afterDelay:(NSTimeInterval)delay isFill:(BOOL)isFill{
     auto restyleHud = [&](){
-        MBProgressHUD *hud = [ShaolinProgressHUD createHudWithView:view isFillHud:NO];
+        MBProgressHUD *hud = [ShaolinProgressHUD createHudWithView:view isFillHud:isFill];
         // 设置背景颜色
 //        hud.bezelView.color = [UIColor colorWithWhite:0.f alpha:0.6f];
         hud.label.text = text;
@@ -209,12 +209,12 @@ static NSString * const gifName = @"default_loding";
 }
 
 + (MBProgressHUD *)textHud:(NSString *)text view:(UIView *)view {
-    return [ShaolinProgressHUD textHud:text view:view afterDelay:-1];
+    return [ShaolinProgressHUD textHud:text view:view afterDelay:-1 isFill:NO];
 }
 
-+ (MBProgressHUD *)textHud:(NSString *)text view:(UIView *)view afterDelay:(NSTimeInterval)delay {
++ (MBProgressHUD *)textHud:(NSString *)text view:(UIView *)view afterDelay:(NSTimeInterval)delay isFill:(BOOL)isFill {
     auto restyleHud = [&](){
-        MBProgressHUD *hud = [ShaolinProgressHUD loadingWithText:text view:view afterDelay:delay];
+        MBProgressHUD *hud = [ShaolinProgressHUD loadingWithText:text view:view afterDelay:delay isFill:isFill];
         hud.mode = MBProgressHUDModeText;
         hud.square = NO;
         hud.bezelView.color = [UIColor colorWithWhite:0.f alpha:0.6f];
@@ -238,11 +238,11 @@ static NSString * const gifName = @"default_loding";
 }
 
 + (void)singleLoadingWithText:(NSString *)text view:(UIView *)view{
-    [ShaolinProgressHUD loadingWithText:text view:view afterDelay:-1];
+    [ShaolinProgressHUD loadingWithText:text view:view afterDelay:-1 isFill:NO];
 }
 
 + (void)singleLoadingWithText:(NSString *)text view:(UIView *)view afterDelay:(NSTimeInterval)delay{
-    MBProgressHUD *hud = [ShaolinProgressHUD loadingWithText:text view:view afterDelay:delay];
+    MBProgressHUD *hud = [ShaolinProgressHUD loadingWithText:text view:view afterDelay:delay isFill:NO];
     [ShaolinProgressHUD setWeakHud:hud];
 }
 
@@ -268,7 +268,12 @@ static NSString * const gifName = @"default_loding";
 }
 
 + (void)singleTextHud:(NSString *)text view:(UIView *)view afterDelay:(NSTimeInterval)delay {
-    MBProgressHUD *hud = [ShaolinProgressHUD textHud:text view:view afterDelay:delay];
+    MBProgressHUD *hud = [ShaolinProgressHUD textHud:text view:view afterDelay:delay isFill:NO];
+    [ShaolinProgressHUD setWeakHud:hud];
+}
+
++ (void)singleTextHud:(nullable NSString *)text view:(nullable UIView *)view afterDelay:(NSTimeInterval)delay isFill:(BOOL)isFill {
+    MBProgressHUD *hud = [ShaolinProgressHUD textHud:text view:view afterDelay:delay isFill:isFill];
     [ShaolinProgressHUD setWeakHud:hud];
 }
 

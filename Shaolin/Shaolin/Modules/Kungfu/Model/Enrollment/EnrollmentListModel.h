@@ -84,7 +84,7 @@ NS_ASSUME_NONNULL_BEGIN
 // 首页热门活动才有
 @property(nonatomic, copy)NSString * hotCount; // 参加人数
 
-@property(nonatomic, copy)NSString * idcardGender;
+@property(nonatomic, copy)NSString * idCardGender;
 
 
 

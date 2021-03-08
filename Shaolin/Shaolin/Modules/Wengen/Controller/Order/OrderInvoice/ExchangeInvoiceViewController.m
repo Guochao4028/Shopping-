@@ -70,7 +70,7 @@
     
     self.fillModel = [[OrderInvoiceFillModel alloc]init];
     
-    self.fillModel.order_id = self.orderSn;
+    self.fillModel.orderCarId = self.orderId;
     
     NSArray *personalArray = @[
     
@@ -100,27 +100,27 @@
         for (NSMutableDictionary *dic in self.personalArray) {
             NSString *title = dic[@"title"];
             if ([title isEqualToString:SLLocalizedString(@"抬头名称")]) {
-                NSString *buy_name = self.h5InvoiceModel.buy_name;
+                NSString *buy_name = self.h5InvoiceModel.buyName;
                 [dic setValue:buy_name forKey:@"content"];
-                self.fillModel.buy_name = buy_name;
+                self.fillModel.buyName = buy_name;
             }
         }
         
     }else{
         
-        NSString *buy_name = self.h5InvoiceModel.buy_name;
-                NSString *duty_num = self.h5InvoiceModel.duty_num;
+        NSString *buy_name = self.h5InvoiceModel.buyName;
+        NSString *duty_num = self.h5InvoiceModel.dutyNum;
                 NSString *address = self.h5InvoiceModel.address;
                 NSString *phone = self.h5InvoiceModel.phone;
                 NSString *bank = self.h5InvoiceModel.bank;
-                NSString *bank_sn = self.h5InvoiceModel.bank_sn;
+                NSString *bank_sn = self.h5InvoiceModel.bankSn;
                 
-                self.fillModel.buy_name = buy_name;
-                self.fillModel.duty_num = duty_num;
+        self.fillModel.buyName = buy_name;
+        self.fillModel.dutyNum = duty_num;
                 self.fillModel.address = address;
                 self.fillModel.phone = phone;
                 self.fillModel.bank = bank;
-                self.fillModel.bank_sn = bank_sn;
+        self.fillModel.bankSn = bank_sn;
         
         for (NSMutableDictionary *mutableDic in self.unitArray) {
                     NSString *title = mutableDic[@"title"];
@@ -147,20 +147,20 @@
 }
 
 #pragma mark - action
--(void)submit{
+- (void)submit{
     
     [self.view endEditing:YES];
     
     self.fillModel.type = self.isPersonal == YES ? @"1" : @"2";
-    self.fillModel.invoice_type = @"1";
-    self.fillModel.is_paper = @"2";
+    self.fillModel.invoiceType = @"1";
+    self.fillModel.isPaper = @"2";
     
     //记录必填的数组
     NSArray * mandatoryArray;
     if (self.isPersonal) {
-        mandatoryArray = @[@"buy_name"];
+        mandatoryArray = @[@"buyName"];
     }else{
-        mandatoryArray = @[@"buy_name", @"duty_num"];
+        mandatoryArray = @[@"buyName", @"dutyNum"];
     }
     
     __block BOOL modelComplete = YES;
@@ -182,11 +182,11 @@
             if (valueIsNil){
                 modelComplete = NO;
                 tipMsg = SLLocalizedString(@"请填写");
-                if ([property.name isEqualToString:@"buy_name"]) {
+                if ([property.name isEqualToString:@"buyName"]) {
                     tipMsg = SLLocalizedString(@"请填写抬头名称");
                 }
                 
-                if ([property.name isEqualToString:@"duty_num"]) {
+                if ([property.name isEqualToString:@"dutyNum"]) {
                     tipMsg = SLLocalizedString(@"请填写单位税号");
                 }
                 
@@ -220,7 +220,9 @@
         
         NSMutableDictionary *param = [NSMutableDictionary dictionaryWithDictionary:dic];
         
-        
+        if (self.clubId) {
+            [param setValue:self.clubId forKey:@"clubId"];
+        }
         MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
         
         [[DataManager shareInstance]changeInvoice:param Callback:^(Message *message) {
@@ -250,15 +252,15 @@
 
 #pragma mark - UITableViewDelegate && UITableViewDataSource
 
--(CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     return 0.01;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     return 0.01;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     if (self.isPersonal) {
         return [self.personalArray count];
     }else{
@@ -267,12 +269,12 @@
     return 0;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     return 51;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     NSDictionary *dic;
     if (self.isPersonal) {
@@ -291,7 +293,7 @@
 }
 
 #pragma mark - OrderExchangeInvoiceHeardViewDelegate
--(void)orderExchangeInvoiceHeardView:(OrderExchangeInvoiceHeardView *)view tapAction:(BOOL)isPersonal{
+- (void)orderExchangeInvoiceHeardView:(OrderExchangeInvoiceHeardView *)view tapAction:(BOOL)isPersonal{
     self.isPersonal = isPersonal;
     [self.tableView reloadData];
 }
@@ -300,7 +302,7 @@
 
 #pragma mark - setter / getter
 
--(UITableView *)tableView{
+- (UITableView *)tableView{
     if (_tableView == nil) {
         _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight - NavBar_Height - BottomMargin_X - 50)];
         [_tableView setBackgroundColor:KTextGray_FA];
@@ -315,7 +317,7 @@
 }
 
 
--(UIButton *)bottomButton{
+- (UIButton *)bottomButton{
     if (_bottomButton == nil) {
         _bottomButton = [UIButton buttonWithType:UIButtonTypeCustom];
         CGFloat y = CGRectGetMaxY(self.tableView.frame);
@@ -333,7 +335,7 @@
     return _bottomButton;
 }
 
--(OrderExchangeInvoiceHeardView *)heardView{
+- (OrderExchangeInvoiceHeardView *)heardView{
     if (_heardView == nil) {
         _heardView = [[OrderExchangeInvoiceHeardView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, 140)];
         [_heardView setDelegate:self];

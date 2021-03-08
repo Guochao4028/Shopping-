@@ -13,7 +13,7 @@
 #import "ShaoLinTabBarController.h"
 //#import "UIDevice+TFDevice.h"
 
-#import "ShaolinWindiw.h"
+#import "ShaolinWindow.h"
 #import "EMDemoHelper.h"
 #import "EMDemoOptions.h"
 
@@ -32,6 +32,8 @@
 
 #import <Bugly/Bugly.h>
 
+#import "LevelModel.h"
+
 
 
 @interface AppDelegate ()
@@ -45,15 +47,15 @@
 }
 
 #pragma mark ————— 初始化window —————
--(void)initWindow{
+- (void)initWindow{
     
-    self.window = [[ShaolinWindiw alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    self.window = [[ShaolinWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
     
     ShaoLinTabBarController *rootTabbarVC = [[ShaoLinTabBarController alloc]init];
     self.window.rootViewController = rootTabbarVC;
     
-    if (![[SLAppInfoModel sharedInstance] access_token]) {
+    if (![[SLAppInfoModel sharedInstance] accessToken]) {
         [self pushLoginVC];
     }
     
@@ -62,12 +64,12 @@
     //    [[UIButton appearance] setShowsTouchWhenHighlighted:YES];
 }
 
--(void)initNetWork {
+- (void)initNetWork {
     [SLNetworkManager setup];
 }
 
 #pragma mark ————— 初始化监听 —————
--(void)initObserver{
+- (void)initObserver{
     
     //注册登录状态监听
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginStateChange:) name:ACCOUNT_LOGIN_CHANGED object:nil];
@@ -134,25 +136,25 @@
     [[NSUserDefaults standardUserDefaults] setObject:[NSString stringWithFormat:@"%ld", expiresIn] forKey:kTokenExpiresIn];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
-    [SLAppInfoModel sharedInstance].access_token = token;
+    [SLAppInfoModel sharedInstance].accessToken = token;
     [[SLAppInfoModel sharedInstance] saveCurrentUserData];
 }
 
 #pragma mark ————— 初始化启动页、广告图 —————
--(void)initLaunchView {
+- (void)initLaunchView {
     //清除广告缓存数据
 //    [ADManager clearDiskCache];
     [ADManager showAD];
 }
 
 #pragma mark ————— 初始化用户系统 —————
--(void) initUserInfo{
+- (void) initUserInfo{
     // 获取存储的用户信息
     [[SLAppInfoModel sharedInstance] getCurrentUserInfo];
 }
 
 #pragma mark ————— 获取一些信息 —————
--(void) initAddressAndOrderData{
+- (void) initAddressAndOrderData{
     //获取收货地址文件
     [[DataManager shareInstance] getAddressListFile];
     //获取购物车和订单数量
@@ -237,24 +239,24 @@
     [EMDemoHelper shareHelper];
 }
 
-- (void)outAction {
-    [[MeManager sharedInstance] postOutLoginSuccess:^(id  _Nonnull responseObject) {
-        //环信退出登录
-        [[EMClient sharedClient] logout:YES completion:^(EMError *aError) {
-            if (!aError) {
-                NSLog(@"退出环信登录成功");
-            }else{
-                NSLog(@"退出环信登录失败,%u",aError.code);
-            }
-        }];
-        [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"已退出账号")];
-        [[SLAppInfoModel sharedInstance] setNil];
-        
-        [self pushLoginVC];
-    } failure:^(NSString * _Nonnull errorReason) {
-        [ShaolinProgressHUD singleTextAutoHideHud:errorReason];
-    } finish:nil];
-}
+//- (void)outAction {
+//    [[MeManager sharedInstance] postOutLoginSuccess:^(id  _Nonnull responseObject) {
+//        //环信退出登录
+//        [[EMClient sharedClient] logout:YES completion:^(EMError *aError) {
+//            if (!aError) {
+//                NSLog(@"退出环信登录成功");
+//            }else{
+//                NSLog(@"退出环信登录失败,%u",aError.code);
+//            }
+//        }];
+//        [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"已退出账号")];
+//        [[SLAppInfoModel sharedInstance] setNil];
+//        
+//        [self pushLoginVC];
+//    } failure:^(NSString * _Nonnull errorReason) {
+//        [ShaolinProgressHUD singleTextAutoHideHud:errorReason];
+//    } finish:nil];
+//}
 
 // 监听登录状态
 //- (void)loginStateChange:(NSNotification *)aNotif
@@ -266,10 +268,7 @@
 //}
 
 #pragma mark ————— 初始化三方SDK —————
--(void)initThirdSDK {
-    //Bugly
-    [Bugly startWithAppId:@"e1f0dfb786"];
-    
+- (void)extracted {
     [ShareSDK registPlatforms:^(SSDKRegister *platformsRegister) {
         //QQ
         [platformsRegister setupQQWithAppId:@"101874690" appkey:@"aed9b0303e3ed1e27bae87c33761161d"];
@@ -280,6 +279,15 @@
         //新浪
         [platformsRegister setupSinaWeiboWithAppkey:@"837682051" appSecret:@"38a4f8204cc784f81f9f0daaf31e02e3" redirectUrl:@"http://www.sharesdk.cn"];
     }];
+}
+
+- (void)initThirdSDK {
+//    [WSIAPManager cleanAllKeychain];
+//    [WSIAPManager cleanAllUserDetauls];
+    //Bugly
+    [Bugly startWithAppId:@"c0ee4bc081"];
+    
+    [self extracted];
     
     //向第三方注册
     [ThirdpartyAuthorizationManager registerApps];
@@ -441,7 +449,7 @@
 - (void) checkReceipWithIapModel:(WSIAPModel *)iapModel
                           isLast:(BOOL)isLast {
     
-    NSString * orderCode = NotNilAndNull(iapModel.customIdentifier)?iapModel.customIdentifier:@"";
+    NSString * orderCode = [NSString stringWithFormat:@"%@",NotNilAndNull(iapModel.customIdentifier)?iapModel.customIdentifier:@""];
     
     [[MeManager sharedInstance] postIAPCheckWithReceipt:iapModel.receiptString ordercode:orderCode callback:^(NSString * _Nonnull code, BOOL result) {
         
@@ -494,7 +502,7 @@
 }
 
 #pragma mark ————— 获取当前顶层控制器 —————
--(UIViewController *)getCurrentVC{
+- (UIViewController *)getCurrentVC{
     
     UIViewController *result = nil;
     
@@ -523,7 +531,7 @@
     return result;
 }
 
--(UIViewController *)getCurrentUIVC
+- (UIViewController *)getCurrentUIVC
 {
     UIViewController  *superVC = [self getCurrentVC];
     
@@ -560,6 +568,8 @@
         ShaoLinTabBarController *chooseVC = [[ShaoLinTabBarController alloc] init];
         self.window.rootViewController = chooseVC;
         [self.window makeKeyAndVisible];
+        
+        [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"登录成功")];
     });
 }
 

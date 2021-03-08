@@ -24,6 +24,11 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property(nonatomic, copy)NSString *servicType;
 
+/**
+ 聊天对象 名称
+ */
+@property(nonatomic, copy)NSString *chatName;
+
 @end
 
 NS_ASSUME_NONNULL_END

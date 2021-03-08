@@ -87,7 +87,7 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
 @property(nonatomic, strong)NSArray *strictSelectionArray;
 
 //商品全部分类
-@property(nonatomic, strong)NSArray *allGoodsCateList;
+//@property(nonatomic, strong)NSArray *allGoodsCateList;
 
 @property(nonatomic, strong)LGFFreePTStyle *style;
 
@@ -103,7 +103,7 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
     [self initUI];
 }
 
--(void)viewWillAppear:(BOOL)animated{
+- (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     
     [[DataManager shareInstance] getOrderAndCartCount];
@@ -131,13 +131,13 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
     [self.navigationItem.rightBarButtonItem.badge setTextColor:kMainYellow];
 }
 
--(void)viewDidDisappear:(BOOL)animated{
+- (void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:animated];
 }
 
 #pragma mark - methods
 /// 初始化UI
--(void)initUI{
+- (void)initUI{
     
     //    [self.view addSubview:self.searchView];
     
@@ -157,19 +157,21 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
 }
 
 ///初始化数据
--(void)initData{
+- (void)initData{
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
     dispatch_group_t group = dispatch_group_create();
     
     [self requestBannerWithGroup:group];
     
-    [self requestAllClassificationWithGroup:group];
+//    [self requestAllClassificationWithGroup:group];
     
     [self requestClassificationWithGroup:group];
     
-    [self requestRecommendnWithGroup:group];
+//    [self requestCateLevelWithGroup:group];
     
-    [self requestStrictSelectionWithGroup:group];
+//    [self requestRecommendnWithGroup:group];
+//
+//    [self requestStrictSelectionWithGroup:group];
     
     dispatch_group_notify(group, dispatch_get_main_queue(), ^{
         [hud hideAnimated:YES];
@@ -178,10 +180,18 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
         [self.tableView reloadData];
     });
     
+    [self initAddressAndOrderData];
+}
+
+- (void) initAddressAndOrderData{
+    //获取收货地址文件
+    [[DataManager shareInstance] getAddressListFile];
+    //获取购物车和订单数量
+    [[DataManager shareInstance] getOrderAndCartCount];
 }
 
 ///请求banner
--(void)requestBannerWithGroup:(dispatch_group_t)group{
+- (void)requestBannerWithGroup:(dispatch_group_t)group{
     dispatch_group_enter(group);
     //banner
     [[DataManager shareInstance]getBanner:@{@"module":@"3", @"fieldId":@"0"} Callback:^(NSArray *result) {
@@ -190,46 +200,73 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
     }];
 }
 
-///请求分类
--(void)requestClassificationWithGroup:(dispatch_group_t)group{
-    dispatch_group_enter(group);
-    
-    
-    //分类
-    [[DataManager shareInstance]getIndexClassification:^(NSArray *result) {
-        
-        self.categoryArray  = result;
-        self.titles = [NSMutableArray array];
-        
-        [self.titles addObject:SLLocalizedString(@"全部商品")];
-        for (WengenEnterModel *model in self.categoryArray) {
-            [self.titles addObject:model.name];
-        }
-        dispatch_group_leave(group);
-    }];
-}
 
 ///请求全部分类
--(void)requestAllClassificationWithGroup:(dispatch_group_t)group{
+- (void)requestClassificationWithGroup:(dispatch_group_t)group{
+//    dispatch_group_enter(group);
+//
+//
+//    //分类
+//    [[DataManager shareInstance]getIndexClassification:^(NSArray *result) {
+//
+//        self.categoryArray  = result;
+//        self.titles = [NSMutableArray array];
+//
+//        [self.titles addObject:SLLocalizedString(@"全部商品")];
+//        for (WengenEnterModel *model in self.categoryArray) {
+//            [self.titles addObject:model.name];
+//        }
+//        dispatch_group_leave(group);
+//    }];
+//
     dispatch_group_enter(group);
     //获取全部商品分类类型
     [[DataManager shareInstance]getAllGoodsCateList:^(NSArray *result) {
         
-        NSMutableArray *tempMutableArray = [NSMutableArray array];
-        for (WengenEnterModel *model in result) {
-            if ([model.status integerValue] == 1) {
-                [tempMutableArray addObject:model];
-            }
+        self.categoryArray  = result;
+        
+        self.titles = [NSMutableArray array];
+
+        [self.titles addObject:SLLocalizedString(@"全部商品")];
+        for (WengenEnterModel *model in self.categoryArray) {
+            [self.titles addObject:model.name];
         }
-        self.allGoodsCateList = tempMutableArray;
+        
         dispatch_group_leave(group);
-        
-        
+
+
     }];
 }
 
+/////请求分类
+//- (void)requestCateLevelWithGroup:(dispatch_group_t)group{
+//    dispatch_group_enter(group);
+//    //获取全部商品分类类型
+//    [[DataManager shareInstance]getAllGoodsCateList:^(NSArray *result) {
+//
+//        NSMutableArray *tempMutableArray = [NSMutableArray array];
+//        for (WengenEnterModel *model in result) {
+//            if ([model.status integerValue] == 1) {
+//                [tempMutableArray addObject:model];
+//            }
+//        }
+//        self.allGoodsCateList = tempMutableArray;
+//        dispatch_group_leave(group);
+//
+//
+//    }];
+    
+//    WengenEnterModel *enterModel = [self.categoryArray firstObject];
+//
+//    [[DataManager shareInstance]getCateLevelList:@{@"pid" : enterModel.pid} Callback:^(NSArray *result) {
+//        NSLog(@"result : %@", result);
+//        dispatch_group_leave(group);
+//
+//    }];
+//}
+
 ///请求新人推荐商品
--(void)requestRecommendnWithGroup:(dispatch_group_t)group{
+- (void)requestRecommendnWithGroup:(dispatch_group_t)group{
     dispatch_group_enter(group);
     [[DataManager shareInstance]getRecommendGoodsCallback:^(NSArray *result) {
         self.recommendGoodsArray = result;
@@ -238,7 +275,7 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
 }
 
 ///请求严选商品
--(void)requestStrictSelectionWithGroup:(dispatch_group_t)group{
+- (void)requestStrictSelectionWithGroup:(dispatch_group_t)group{
     dispatch_group_enter(group);
     //严选商品
     [[DataManager shareInstance]getStrictSelectionGoodsCallback:^(NSArray *result) {
@@ -249,20 +286,20 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
 }
 
 ///更新数据数据
--(void)updataAndUI{
+- (void)updataAndUI{
     
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
     dispatch_group_t group = dispatch_group_create();
     
     [self requestBannerWithGroup:group];
     
-    [self requestAllClassificationWithGroup:group];
+//    [self requestAllClassificationWithGroup:group];
     
     [self requestClassificationWithGroup:group];
     
-    [self requestRecommendnWithGroup:group];
-    
-    [self requestStrictSelectionWithGroup:group];
+//    [self requestRecommendnWithGroup:group];
+//
+//    [self requestStrictSelectionWithGroup:group];
     
     dispatch_group_notify(group, dispatch_get_main_queue(), ^{
         [hud hideAnimated:YES];
@@ -316,7 +353,7 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
 }
 
 #pragma mark - 计算头部高度
--(void)p_calculateHeight{
+- (void)p_calculateHeight{
     
     //banner
     CGFloat bannerHeight = 154;
@@ -325,13 +362,16 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
     
     NSInteger count = self.categoryArray.count;
     
-    if (count > 4) {
-        categoryHeight = 200;
-    }else if ( count > 0 && count <= 4){
-        categoryHeight = 96;
-    }else{
-        categoryHeight = 0;
-    }
+//    if (count > 4) {
+//        categoryHeight = 200;
+//    }else if (count > 0 && count <= 4){
+//        categoryHeight = 96;
+//    }else{
+//        categoryHeight = 0;
+//    }
+    
+    int row = ceilf((count/4.0));
+    categoryHeight = row * 96;
     
     // 为你推荐
     CGFloat headerHeight = 25;
@@ -356,7 +396,7 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
 /**
  点击购物车
  */
--(void)tapShopping{
+- (void)tapShopping{
     
     ShoppingCartViewController *shoppingCartVC = [[ShoppingCartViewController alloc]init];
     shoppingCartVC.hidesBottomBarWhenPushed = YES;
@@ -366,7 +406,7 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
 /**
  点击搜索
  */
--(void)tapSearch{
+- (void)tapSearch{
     SearchViewController *searchVC = [[SearchViewController alloc]init];
     searchVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:searchVC animated:YES];
@@ -376,7 +416,7 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
 /**
  banner 点击方法
  */
--(void)pushToOtherViewControllerwithHomeItem:(WengenBannerModel *)item{
+- (void)pushToOtherViewControllerwithHomeItem:(WengenBannerModel *)item{
     
     [[SLAppInfoModel sharedInstance] bannerEventResponseWithBannerModel:item];
     
@@ -396,8 +436,8 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
             if ([subM.type intValue] == 1) {
                 NSInteger location = 0;
                 NSMutableArray *titles = [NSMutableArray array];
-                for (int i = 0; i < self.allGoodsCateList.count; i++) {
-                    WengenEnterModel *tem = self.allGoodsCateList[i];
+                for (int i = 0; i < self.categoryArray.count; i++) {
+                    WengenEnterModel *tem = self.categoryArray[i];
                     [titles addObject:tem.name];
                     
                     if ([tem.enterId isEqualToString:subM.fieldId]) {
@@ -406,7 +446,7 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
                 }
                 
                 ClassifyHomeViewController *classifyHomeVC = [[ClassifyHomeViewController alloc]init];
-                classifyHomeVC.allGoodsCateList = self.allGoodsCateList;
+                classifyHomeVC.allGoodsCateList = self.categoryArray;
                 classifyHomeVC.titles = titles;
                 classifyHomeVC.loction = location;
                 classifyHomeVC.hidesBottomBarWhenPushed = YES;
@@ -418,7 +458,7 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
 
 #pragma mark - WengenCategoryTableCellDelegate
 
--(void)cell:(WengenCategoryTableCell *)cell selectItem:(nonnull WengenEnterModel *)model{
+- (void)cell:(WengenCategoryTableCell *)cell selectItem:(nonnull WengenEnterModel *)model{
     //    WengenEnterModel *temp;
     //    for (WengenEnterModel *tem in self.allGoodsCateList) {
     //        if ([tem.enterId isEqualToString:model.enterId] == YES) {
@@ -430,12 +470,15 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
     //    classifyVC.enterModel = temp;
     
     NSMutableArray *titles = [NSMutableArray array];
-    for (WengenEnterModel *tem in self.allGoodsCateList) {
+    for (WengenEnterModel *tem in self.categoryArray) {
+        if ([tem.name isEqualToString:@"全部"]) {
+            continue;
+        }
         [titles addObject:tem.name];
     }
     
     ClassifyHomeViewController *classifyHomeVC = [[ClassifyHomeViewController alloc]init];
-    classifyHomeVC.allGoodsCateList = self.allGoodsCateList;
+    classifyHomeVC.allGoodsCateList = self.categoryArray;
     classifyHomeVC.titles = titles;
     classifyHomeVC.loction = cell.loction;
     
@@ -449,7 +492,7 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
 /**
  点击新人推荐商品 上的 商品
  */
--(void)tapGoodsItem:(WengenGoodsModel *)model{
+- (void)tapGoodsItem:(WengenGoodsModel *)model{
     GoodsDetailsViewController *goodsDetailsVC = [[GoodsDetailsViewController alloc]init];
     goodsDetailsVC.goodsModel = model;
     goodsDetailsVC.hidesBottomBarWhenPushed = YES;
@@ -459,7 +502,7 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
 /**
  点击新人推荐商品 上的 标题
  */
--(void)tapTitleItem{
+- (void)tapTitleItem{
     WengenBannerDetailsViewController *bannerDetailVC = [[WengenBannerDetailsViewController alloc]init];
     bannerDetailVC.type = @"Recommend";
     bannerDetailVC.hidesBottomBarWhenPushed = YES;
@@ -470,7 +513,7 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
 /**
  严选上的banner
  */
--(void)tapBanner:(WengenBannerModel *)bannerModel{
+- (void)tapBanner:(WengenBannerModel *)bannerModel{
     WengenBannerDetailsViewController *bannerDetailVC = [[WengenBannerDetailsViewController alloc]init];
     bannerDetailVC.type = @"StrictSelection";
     bannerDetailVC.hidesBottomBarWhenPushed = YES;
@@ -480,7 +523,7 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
 /**
  点击 严选上的商品
  */
--(void)tapStrictSelectionGoodsItem:(WengenGoodsModel *)goodsModel{
+- (void)tapStrictSelectionGoodsItem:(WengenGoodsModel *)goodsModel{
     
     GoodsDetailsViewController *goodsDetailsVC = [[GoodsDetailsViewController alloc]init];
     goodsDetailsVC.goodsModel = goodsModel;
@@ -488,14 +531,14 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
     [self.navigationController pushViewController:goodsDetailsVC animated:YES];
 }
 
--(void)tapStrictSelectionItem:(BOOL)isSelected{
+- (void)tapStrictSelectionItem:(BOOL)isSelected{
     WengenBannerDetailsViewController *bannerDetailVC = [[WengenBannerDetailsViewController alloc]init];
     bannerDetailVC.type = @"StrictSelection";
     bannerDetailVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:bannerDetailVC animated:YES];
 }
 
--(void)tapRecommendedItem:(BOOL)isSelected{
+- (void)tapRecommendedItem:(BOOL)isSelected{
     WengenBannerDetailsViewController *bannerDetailVC = [[WengenBannerDetailsViewController alloc]init];
     bannerDetailVC.type = @"Recommend";
     bannerDetailVC.hidesBottomBarWhenPushed = YES;
@@ -504,11 +547,11 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
 
 #pragma mark - UITableViewDelegate & UITableViewDataSource
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return 2;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     
     if (section == 0) {
         return .001;
@@ -516,7 +559,7 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
     return .001;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     
     if (section == 1) {
         //        return 40;
@@ -525,7 +568,7 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
     return 0.01;
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     UIView *view = [[UIView alloc] init];
     view.backgroundColor = [UIColor clearColor];
     
@@ -554,13 +597,13 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
     return view;
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
     UIView *view = [[UIView alloc] init];
     view.backgroundColor = UIColor.whiteColor;
     return view;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     if (section == 0) {
         if (self.categoryArray.count > 0) {
             return 2;
@@ -572,7 +615,7 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
     }
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     CGFloat tableViewH = 0;
     if (indexPath.section == 0) {
         switch (indexPath.row) {
@@ -585,15 +628,27 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
             {
                 //分类
                 NSInteger count = self.categoryArray.count;
+//
+//                if (count > 4) {
+//                    tableViewH = 200;
+//                }else if (count > 0 && count <= 4){
+//                    tableViewH = 96;
+//                }else{
+//                    tableViewH = 0;
+//                }
+//
+//                NSInteger count = self.categoryArray.count;
                 
-                if (count > 4) {
-                    tableViewH = 200;
-                }else if ( count > 0 && count <= 4){
-                    tableViewH = 96;
-                }else{
-                    tableViewH = 0;
-                }
+            //    if (count > 4) {
+            //        categoryHeight = 200;
+            //    }else if (count > 0 && count <= 4){
+            //        categoryHeight = 96;
+            //    }else{
+            //        categoryHeight = 0;
+            //    }
                 
+                int row = ceilf((count/4.0));
+                tableViewH = row * 96;
             }
                 break;
         }
@@ -617,7 +672,7 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
     return tableViewH;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell;
     
     switch (indexPath.section) {
@@ -678,7 +733,7 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
 }
 
 
--(void)searchDidSelectHandle {
+- (void)searchDidSelectHandle {
     [self tapSearch];
 }
 
@@ -687,17 +742,18 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
 - (void)lgf_CenterPageChildVCLoadData:(LGFCenterPageChildVC *)VC selectIndex:(NSInteger)selectIndex loadType:(lgf_LoadType)loadType {
     WengenEnterModel *model;
     NSInteger index = selectIndex - 1;
-    if ( index >= 0) {
+    if (index >= 0) {
         model = self.categoryArray[index];
     }
     
     NSMutableDictionary *param = [NSMutableDictionary dictionary];
     if (model != nil) {
-        [param setValue:model.enterId forKey:@"cate_pid_id"];
+        [param setValue:model.enterId forKey:@"catePidId"];
     }
     
-    [param setValue:[NSString stringWithFormat:@"%ld",VC.lgf_Page] forKey:@"page"];
-    
+    [param setValue:[NSString stringWithFormat:@"%ld",VC.lgf_Page] forKey:@"pageNum"];
+    [param setValue:@"10" forKey:@"pageSize"];
+
     //    [self.view lgf_ShowToastActivity:UIEdgeInsetsZero isClearBack:YES cornerRadius:0 style:UIActivityIndicatorViewStyleGray];
     
     [[DataManager shareInstance]getGoodsList:param Callback:^(NSArray *result) {
@@ -730,12 +786,12 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
 }
 
 // cell 数量
--(NSInteger)lgf_NumberOfItems:(LGFCenterPageChildVC *)VC {
+- (NSInteger)lgf_NumberOfItems:(LGFCenterPageChildVC *)VC {
     return VC.lgf_PageChildDataArray.count;
 }
 
 // cell 高度
--(CGSize)lgf_SizeForItemAtIndexPath:(NSIndexPath *)indexPath VC:(LGFCenterPageChildVC *)VC {
+- (CGSize)lgf_SizeForItemAtIndexPath:(NSIndexPath *)indexPath VC:(LGFCenterPageChildVC *)VC {
     NSLog(@"ScreenWidth : %f",ScreenWidth);
     CGSize size = CGSizeMake((ScreenWidth - 24 ) / 2, (264 *WIDTHTPROPROTION));
     
@@ -748,7 +804,7 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
 }
 
 // 传入要注册的自定义 cell class
--(Class)lgf_CenterChildPageCVCellClass:(LGFCenterPageChildVC *)VC {
+- (Class)lgf_CenterChildPageCVCellClass:(LGFCenterPageChildVC *)VC {
     return [WengenGoodsCollectionCell class];
 }
 // 配置 cell 数据
@@ -784,7 +840,7 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
     return _titleArray;
 }
 
-//-(WengenSearchView *)searchView{
+//- (WengenSearchView *)searchView{
 //    if (_searchView == nil) {
 //
 //        //状态栏高度
@@ -804,7 +860,7 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
 //    return _searchView;
 //}
 
--(UIView *)pageView{
+- (UIView *)pageView{
     if (_pageView == nil) {
         //        CGFloat y = CGRectGetMaxY(self.searchView.frame);
         CGFloat y = 0;
@@ -814,7 +870,7 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
     return _pageView;
 }
 
--(LGFFreePTStyle *)style{
+- (LGFFreePTStyle *)style{
     if (_style == nil) {
         _style = [LGFFreePTStyle lgf];
         _style.lgf_PVTitleViewFrame = CGRectMake(16, 0, ScreenWidth-16, 40);
@@ -831,7 +887,7 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
     return _style;
 }
 
--(LGFCenterPageVC *)pageVC{
+- (LGFCenterPageVC *)pageVC{
     if (_pageVC == nil) {
         _pageVC = [LGFCenterPageVC lgf];
         _pageVC.view.backgroundColor = UIColor.whiteColor;//RGBA(243, 243, 243, 1);
@@ -847,7 +903,7 @@ static NSString *const kWengenStrictSelectionTableCellIdentifier = @"WengenStric
     return _pageVC;
 }
 
--(UITableView *)tableView{
+- (UITableView *)tableView{
     if (_tableView == nil) {
         //        _tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, 985) style:UITableViewStyleGrouped];
         

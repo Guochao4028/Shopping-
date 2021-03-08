@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic,strong) UILabel *lookLabel;// 浏览人次
 @property(nonatomic,strong) UILabel *timeLabel;
 @property (nonatomic, strong) NSIndexPath *indexPath;
--(void)setFoundModel:(FoundModel *)f indexpath:(NSIndexPath *)indexPath;
+- (void)setFoundModel:(FoundModel *)f indexpath:(NSIndexPath *)indexPath;
 @end
 
 NS_ASSUME_NONNULL_END

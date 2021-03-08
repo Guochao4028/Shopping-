@@ -40,16 +40,12 @@
     }
 }
 
--(void)setCellModel:(ApplyListModel *)cellModel {
+- (void)setCellModel:(ApplyListModel *)cellModel {
     _cellModel = cellModel;
     
-    NSString * timeStr = NotNilAndNull(cellModel.createTime)?cellModel.createTime:@"";
-    
-    NSString * createTime = [[timeStr componentsSeparatedByString:@" "] firstObject];
-    
     self.nameLabel.text = [NSString stringWithFormat:SLLocalizedString(@"活动名称：%@"),NotNilAndNull(cellModel.activityName)?cellModel.activityName:@""];
-    self.timeLabel.text = [NSString stringWithFormat:SLLocalizedString(@"报名时间：%@"),createTime];
-    self.levelLabel.text = [NSString stringWithFormat:SLLocalizedString(@"所属位阶：%@"),NotNilAndNull(cellModel.levelIds)?cellModel.levelIds:@""];
+    self.timeLabel.text = [NSString stringWithFormat:SLLocalizedString(@"报名时间：%@"), cellModel.applyTime];
+    self.levelLabel.text = [NSString stringWithFormat:SLLocalizedString(@"所属位阶：%@"),NotNilAndNull(cellModel.intervalName)?cellModel.intervalName:@""];
     self.typeLabel.text = [NSString stringWithFormat:SLLocalizedString(@"活动类型：%@"),NotNilAndNull(cellModel.activityType)?cellModel.activityType:@""];   
 }
 

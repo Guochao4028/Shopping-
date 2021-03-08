@@ -64,35 +64,38 @@
 
 
 
--(void)setOrderModel:(OrderListModel *)orderModel {
+- (void)setOrderModel:(OrderListModel *)orderModel {
     _orderModel = orderModel;
     
     self.goodsImageView.image = [UIImage imageNamed:@"default_small"];
-    [self.orderNoLabel setText:[NSString stringWithFormat:SLLocalizedString(@"订单编号：%@"), orderModel.order_sn]];
-    NSArray *orderStoreArray = orderModel.order_goods;
-           
-    OrderStoreModel *storeModel = [orderStoreArray firstObject];
-           
-    NSArray *orderGoodsArray = storeModel.goods;
-           
-    OrderGoodsModel *goodsModel = [orderGoodsArray firstObject];
-           
-   if([goodsModel.goods_image count] > 0){
-       NSString * goodsImageStr = goodsModel.goods_image.firstObject;
-       [self.goodsImageView sd_setImageWithURL:[NSURL URLWithString:goodsImageStr] placeholderImage:[UIImage imageNamed:@"default_small"]];
-   }
+    [self.orderNoLabel setText:[NSString stringWithFormat:SLLocalizedString(@"订单编号：%@"), orderModel.orderCarSn]];
+//    NSArray *orderStoreArray = orderModel.order_goods;
+//
+//    OrderStoreModel *storeModel = [orderStoreArray firstObject];
+//
+//    NSArray *orderGoodsArray = storeModel.goods;
+//
+//    OrderGoodsModel *goodsModel = [orderGoodsArray firstObject];
+//
+//   if([goodsModel.goods_image count] > 0){
+//       NSString * goodsImageStr = goodsModel.goods_image.firstObject;
+//       [self.goodsImageView sd_setImageWithURL:[NSURL URLWithString:goodsImageStr] placeholderImage:[UIImage imageNamed:@"default_small"]];
+//   }
+    
+    NSString * goodsImageStr = orderModel.goodsImages.firstObject;
+    [self.goodsImageView sd_setImageWithURL:[NSURL URLWithString:goodsImageStr] placeholderImage:[UIImage imageNamed:@"default_small"]];
 
-    [self.goodsNameLabel setText:goodsModel.goods_name];
+    [self.goodsNameLabel setText:orderModel.goodsName];
 //    self.goodsNameLabelW.constant = 143 * WIDTHTPROPROTION;
     
     ///1：实物，2：教程，3：报名，5:法事佛事类型-法会，6:法事佛事类型-佛事， 7:法事佛事类型-建寺供僧 8:普通法会 4:交流会
-    if([goodsModel.goods_type isEqualToString:@"2"]){
+    if([orderModel.type isEqualToString:@"2"]){
         [self.videoPlayImageView setHidden:NO];
     }else{
         [self.videoPlayImageView setHidden:YES];
     }
     
-    NSString *pay_money = [NSString stringWithFormat:@"¥%@", orderModel.order_car_money];
+    NSString *pay_money = [NSString stringWithFormat:@"¥%@", orderModel.money];
 
 //       NSRange range = [pay_money rangeOfString:@"."];
 //       if (range.location != NSNotFound) {
@@ -105,14 +108,14 @@
     
     self.priceLabel.attributedText = [pay_money moneyStringWithFormatting:MoneyStringFormattingMoneyAllFormattingType];
 
-           NSString *status = goodsModel.status;
+           NSString *status = orderModel.status;
 
            if ([status isEqualToString:@"1"] == YES) {
                [self obligationLayout];
            }else if ([status isEqualToString:@"6"] == YES|| [status isEqualToString:@"7"] == YES) {
                [self cancelLayout];
            }else if ([status isEqualToString:@"4"] == YES ||[status isEqualToString:@"5"] == YES) {
-               [self completeLayoutWithGoodsModel:goodsModel];
+               [self completeLayoutWithGoodsModel:orderModel];
            } else {
                [self.instructionsLabel setHidden:NO];
                [self.instructionsLabel setText:SLLocalizedString(@"其他")];
@@ -122,14 +125,14 @@
                [self.completeView setHidden:YES];
            }
     
-    BOOL is_invoice = [goodsModel.is_invoice boolValue];
+    BOOL is_invoice = [orderModel.isInvoice boolValue];
        NSString *buttonTitle = SLLocalizedString(@"查看发票");
        if (is_invoice == NO) {
            buttonTitle = SLLocalizedString(@"补开发票");
        }
     
     
-    float goodsMoney = [orderModel.order_car_money floatValue];
+    float goodsMoney = [orderModel.money floatValue];
     
     if (goodsMoney == 0) {
         [self.receivingCheckInvoiceButton setHidden:YES];
@@ -144,7 +147,7 @@
 
 
 ///待付款
--(void)obligationLayout{
+- (void)obligationLayout{
     self.cancelLabel.text = SLLocalizedString(@"已取消");
     [self.instructionsLabel setHidden:NO];
     [self.instructionsLabel setText:SLLocalizedString(@"等待付款")];
@@ -156,7 +159,7 @@
 }
 
 ///已取消
--(void)cancelLayout{
+- (void)cancelLayout{
     self.cancelLabel.text = SLLocalizedString(@"已取消");
     [self.instructionsLabel setHidden:YES];
     [self.deleteButton setHidden:NO];
@@ -167,14 +170,14 @@
 }
 
 ///已完成
--(void)completeLayoutWithGoodsModel:(OrderGoodsModel *)model{
+- (void)completeLayoutWithGoodsModel:(OrderListModel *)model{
     self.cancelLabel.text = SLLocalizedString(@"已完成");
     [self.instructionsLabel setHidden:YES];
     [self.bgPlayBtn setHidden:YES];
     [self.deleteButton setHidden:NO];
     [self.cancelLabel setHidden:NO];
     [self.playVideoBgView setHidden:NO];
-    if ([model.goods_type intValue] == 2) {
+    if ([model.type intValue] == 2) {
         //教程
         [self.obligationView setHidden:YES];
         [self.completeView setHidden:NO];
@@ -182,7 +185,7 @@
         self.obligationViewW.constant = 165;
     }
     
-    if ([model.goods_type intValue] == 3) {
+    if ([model.type intValue] == 3) {
         //报名
         [self.obligationView setHidden:NO];
         [self.completeView setHidden:NO];

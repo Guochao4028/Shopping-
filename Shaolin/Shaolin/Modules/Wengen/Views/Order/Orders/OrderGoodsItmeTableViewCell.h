@@ -10,15 +10,16 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OrderDetailsModel;
+@class OrderDetailsModel, OrderDetailsGoodsModel;
 
 @protocol OrderGoodsItmeTableViewCellDelegate;
 
-typedef void(^OrderGoodsItmeTableViewCellBlock)(OrderDetailsModel *model);
+typedef void(^OrderGoodsItmeTableViewCellBlock)(OrderDetailsGoodsModel *model);
 
 @interface OrderGoodsItmeTableViewCell : UITableViewCell
 
-@property(nonatomic, strong)OrderDetailsModel *model;
+//@property(nonatomic, strong)OrderDetailsModel *model;
+@property(nonatomic, strong)OrderDetailsGoodsModel *model;
 @property(nonatomic, weak)id<OrderGoodsItmeTableViewCellDelegate> delegate;
 @property(nonatomic, copy)OrderGoodsItmeTableViewCellBlock cellBlock;
 
@@ -27,17 +28,17 @@ typedef void(^OrderGoodsItmeTableViewCellBlock)(OrderDetailsModel *model);
 
 @protocol OrderGoodsItmeTableViewCellDelegate <NSObject>
 
--(void)orderGoodsItmeTableViewCell:(OrderGoodsItmeTableViewCell *)cell afterSales:(OrderDetailsModel *)model;
+- (void)orderGoodsItmeTableViewCell:(OrderGoodsItmeTableViewCell *)cell afterSales:(OrderDetailsGoodsModel *)model;
 
--(void)orderGoodsItmeTableViewCell:(OrderGoodsItmeTableViewCell *)cell addCart:(OrderDetailsModel *)model;
+- (void)orderGoodsItmeTableViewCell:(OrderGoodsItmeTableViewCell *)cell addCart:(OrderDetailsGoodsModel *)model;
 
--(void)orderGoodsItmeTableViewCell:(OrderGoodsItmeTableViewCell *)cell jummp:(OrderDetailsModel *)model;
-
-
--(void)orderGoodsItmeTableViewCell:(OrderGoodsItmeTableViewCell *)cell checkLogistics:(OrderDetailsModel *)model;
+- (void)orderGoodsItmeTableViewCell:(OrderGoodsItmeTableViewCell *)cell jummp:(OrderDetailsGoodsModel *)model;
 
 
--(void)orderGoodsItmeTableViewCell:(OrderGoodsItmeTableViewCell *)cell confirmGoods:(OrderDetailsModel *)model;
+- (void)orderGoodsItmeTableViewCell:(OrderGoodsItmeTableViewCell *)cell checkLogistics:(OrderDetailsGoodsModel *)model;
+
+
+- (void)orderGoodsItmeTableViewCell:(OrderGoodsItmeTableViewCell *)cell confirmGoods:(OrderDetailsGoodsModel *)model;
 
 @end
 

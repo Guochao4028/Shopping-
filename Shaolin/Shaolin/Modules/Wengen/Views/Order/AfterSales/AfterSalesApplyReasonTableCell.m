@@ -14,6 +14,8 @@
 
 #import "OrderDetailsModel.h"
 
+#import "OrderDetailsNewModel.h"
+
 @interface AfterSalesApplyReasonTableCell ()<UITextViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, PotoCollectionCellDelegate>
 
 @property (weak, nonatomic) IBOutlet UIView *reasonView;
@@ -72,7 +74,7 @@
 }
 
 #pragma mark - action
--(void)yifahuoAction{
+- (void)yifahuoAction{
     [self.yidaohuoImageView setImage:[UIImage imageNamed:@"xuan"]];
     
     [self.weidaohuoImageView setImage:[UIImage imageNamed:@"weixuan"]];
@@ -80,7 +82,7 @@
     self.goods_status = @"1";
 }
 
--(void)weidaohuoAction{
+- (void)weidaohuoAction{
     [self.yidaohuoImageView setImage:[UIImage imageNamed:@"weixuan"]];
        
     [self.weidaohuoImageView setImage:[UIImage imageNamed:@"xuan"]];
@@ -88,7 +90,7 @@
 }
 
 #pragma mark - UITextViewDelegate
--(void)textViewDidBeginEditing:(UITextView *)textView{
+- (void)textViewDidBeginEditing:(UITextView *)textView{
     if ([textView.text isEqualToString:SLLocalizedString(@"请描述申请售后服务的具体原因……")]){
         textView.text = @"";
         textView.textColor = KTextGray_333;
@@ -101,7 +103,7 @@
     
 }
 
--(void)textViewDidEndEditing:(UITextView *)textView{
+- (void)textViewDidEndEditing:(UITextView *)textView{
     if ([textView.text length] < 1){
         textView.text = SLLocalizedString(@"请描述申请售后服务的具体原因……");
         textView.textColor = KTextGray_96;
@@ -118,7 +120,7 @@
 
 #pragma mark - UICollectionViewDelegate &&  UICollectionViewDataSource
 
--(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
     return self.potoArray.count == 9 ? 9: self.potoArray.count + 1 ;
 }
 
@@ -128,7 +130,7 @@
     return CGSizeMake(width, 83);
 }
 
--(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     
     
     if (self.potoArray.count < 9) {
@@ -166,7 +168,7 @@
     //    return nil;
 }
 
--(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     if (self.potoArray.count < 9) {
         if (indexPath.row >= self.potoArray.count) {
            if([self.delegate respondsToSelector:@selector(applyReasonTableCell:tapSelectPoto:)]){
@@ -177,7 +179,7 @@
 }
 
 #pragma mark - PotoCollectionCellDelegate
--(void)potoCollectionCell:(PotoCollectionCell *)cell tapDeletePoto:(BOOL)istap location:(NSInteger)loction{
+- (void)potoCollectionCell:(PotoCollectionCell *)cell tapDeletePoto:(BOOL)istap location:(NSInteger)loction{
     if ([self.delegate respondsToSelector:@selector(applyReasonTableCell:tapDeleteLocation:)] == YES) {
         [self.delegate applyReasonTableCell:self tapDeleteLocation:loction];
     }
@@ -185,7 +187,7 @@
 
 #pragma mark - setter / getter
 
--(void)setAfterType:(AfterSalesDetailsType)afterType {
+- (void)setAfterType:(AfterSalesDetailsType)afterType {
     _afterType = afterType;
     
     if (afterType == AfterSalesDetailsTuiQianType) {
@@ -205,7 +207,7 @@
     }
 }
 
--(void)setModel:(OrderDetailsModel *)model{
+- (void)setModel:(OrderDetailsGoodsModel *)model{
     NSString *statusStr = model.status;
    if ([statusStr isEqualToString:@"2"] == YES  || [statusStr isEqualToString:@"3"] == YES) {
 //       self.yidaohuoView.userInteractionEnabled = NO;
@@ -216,7 +218,7 @@
     }
 }
 
--(void)setPotoArray:(NSArray *)potoArray{
+- (void)setPotoArray:(NSArray *)potoArray{
     _potoArray = potoArray;
     CGFloat collectionViewH = 0;
 //    if ([self.potoArray count] == 0) {
@@ -243,7 +245,7 @@
     [self.collectionView reloadData];
 }
 
--(NSString *)reason{
+- (NSString *)reason{
     return self.cause;
 }
 

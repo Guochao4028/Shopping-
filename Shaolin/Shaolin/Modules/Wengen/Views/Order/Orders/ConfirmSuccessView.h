@@ -26,10 +26,10 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol ConfirmSuccessViewDelegate <NSObject>
 
 //确认收货
--(void)confirmSuccessView:(ConfirmSuccessView *)view submit:(NSDictionary *)modelDic;
+- (void)confirmSuccessView:(ConfirmSuccessView *)view submit:(NSDictionary *)modelDic;
 
 //跳转店铺
--(void)confirmSuccessView:(ConfirmSuccessView *)view stroe:(BOOL)isTap;
+- (void)confirmSuccessView:(ConfirmSuccessView *)view stroe:(BOOL)isTap;
 
 @end
 

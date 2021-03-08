@@ -84,27 +84,27 @@
 }
 
 - (void)buildData {
-    MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
+//    MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
     //初始化数据，配置默认已订阅和为订阅的标题数组
-    [[ActivityManager sharedInstance] getHomeSegmentFieldldSuccess:nil failure:nil finish:^(id  _Nonnull responseObject, NSString * _Nonnull errorReason) {
-        [hud hideAnimated:YES];
-        if ([ModelTool checkResponseObject:responseObject]){
-            NSDictionary *data = responseObject[DATAS];
-            NSMutableArray *arr = [NSMutableArray arrayWithArray:[data objectForKey:@"data"]];
-            if ([arr isKindOfClass:[NSArray class]] && arr.count){
-                self.dataArr = [FieldModel mj_objectArrayWithKeyValuesArray:arr];
-
-                [self initPageViewController];
-            }
-        } else {
-            [ShaolinProgressHUD singleTextAutoHideHud:errorReason];
-        }
-    }];
+//    [[ActivityManager sharedInstance] getHomeSegmentFieldldSuccess:nil failure:nil finish:^(id  _Nonnull responseObject, NSString * _Nonnull errorReason) {
+//        [hud hideAnimated:YES];
+//        if ([ModelTool checkResponseObject:responseObject]){
+//            NSDictionary *data = responseObject[DATAS];
+//            NSMutableArray *arr = [NSMutableArray arrayWithArray:[data objectForKey:@"data"]];
+//            if ([arr isKindOfClass:[NSArray class]] && arr.count){
+//                self.dataArr = [FieldModel mj_objectArrayWithKeyValuesArray:arr];
+//
+//                [self initPageViewController];
+//            }
+//        } else {
+//            [ShaolinProgressHUD singleTextAutoHideHud:errorReason];
+//        }
+//    }];
 }
 
 #pragma mark - event
 
--(void)searchDidSelectHandle {
+- (void)searchDidSelectHandle {
     NSInteger riteIndex = 999;
     for (int i = 0; i < self.dataArr.count; i++) {
         FieldModel *model = self.dataArr[i];
@@ -172,5 +172,14 @@
 #pragma mark - getter
 - (UIView *)titleCenterView{
     return self.searchView;
+}
+
+#pragma mark - device
+- (BOOL)shouldAutorotate {
+    return NO;
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskPortrait;
 }
 @end

@@ -10,6 +10,8 @@
 
 #import "OrderDetailsModel.h"
 
+#import "OrderDetailsNewModel.h"
+
 @interface OdersDetailsGoodsPanelTableViewCell ()
 @property (weak, nonatomic) IBOutlet UIButton *checkLogisticsButton;
 - (IBAction)checkLogisticsAction:(UIButton *)sender;
@@ -38,7 +40,7 @@
 }
 
 ///装饰button
--(void)modifiedButton:(UIButton *)sender borderColor:(UIColor *)color cornerRadius:(CGFloat)radius{
+- (void)modifiedButton:(UIButton *)sender borderColor:(UIColor *)color cornerRadius:(CGFloat)radius{
     sender.layer.borderWidth = 1;
     sender.layer.borderColor = color.CGColor;
     sender.layer.cornerRadius = SLChange(radius);
@@ -61,7 +63,7 @@
     }
 }
 
--(void)setModel:(OrderDetailsModel *)model{
+- (void)setModel:(OrderDetailsGoodsModel *)model{
     _model = model;
     
      NSString *status = model.status;

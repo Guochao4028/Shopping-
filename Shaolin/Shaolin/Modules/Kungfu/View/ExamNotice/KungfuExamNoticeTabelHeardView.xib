@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17126"/>
-        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -29,8 +28,8 @@
                         <constraint firstAttribute="height" constant="25" id="Wi9-w5-Ity"/>
                     </constraints>
                 </imageView>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="考点公告1" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qJv-H5-RpH">
-                    <rect key="frame" x="48" y="13" width="70.5" height="22.5"/>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="考点公告1" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qJv-H5-RpH">
+                    <rect key="frame" x="48" y="13" width="326" height="22"/>
                     <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="16"/>
                     <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
@@ -60,21 +59,22 @@
                     <nil key="highlightedColor"/>
                 </label>
             </subviews>
-            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <gestureRecognizers/>
             <constraints>
                 <constraint firstItem="lOR-uV-wmp" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="0Ay-T9-WQh"/>
-                <constraint firstItem="qJv-H5-RpH" firstAttribute="centerY" secondItem="qnp-5S-qTT" secondAttribute="centerY" id="9X0-05-kdH"/>
+                <constraint firstItem="qJv-H5-RpH" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="13" id="DGt-QX-Kxv"/>
+                <constraint firstItem="lOR-uV-wmp" firstAttribute="leading" secondItem="qJv-H5-RpH" secondAttribute="trailing" constant="7.5" id="H2u-SA-IcU"/>
                 <constraint firstItem="llM-US-fw9" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="KOH-QV-cyn"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="lOR-uV-wmp" secondAttribute="trailing" constant="17" id="LkJ-BL-m2a"/>
+                <constraint firstAttribute="trailing" secondItem="lOR-uV-wmp" secondAttribute="trailing" constant="17" id="LkJ-BL-m2a"/>
                 <constraint firstItem="Ulx-26-Pb0" firstAttribute="trailing" secondItem="qnp-5S-qTT" secondAttribute="trailing" constant="4" id="UgB-FD-laB"/>
                 <constraint firstAttribute="trailing" secondItem="llM-US-fw9" secondAttribute="trailing" id="ZZ0-2X-Zbd"/>
                 <constraint firstItem="qJv-H5-RpH" firstAttribute="leading" secondItem="qnp-5S-qTT" secondAttribute="trailing" constant="7" id="aB7-EL-YLc"/>
                 <constraint firstItem="Ulx-26-Pb0" firstAttribute="top" secondItem="qnp-5S-qTT" secondAttribute="top" constant="2" id="cro-uR-RQq"/>
                 <constraint firstItem="qnp-5S-qTT" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="kOB-Pe-l2a"/>
-                <constraint firstItem="llM-US-fw9" firstAttribute="bottom" secondItem="vUN-kp-3ea" secondAttribute="bottom" id="xX0-Bz-5ig"/>
-                <constraint firstItem="qnp-5S-qTT" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="16" id="z25-Lg-c6K"/>
+                <constraint firstAttribute="bottom" secondItem="qJv-H5-RpH" secondAttribute="bottom" constant="13" id="pz7-yz-E15"/>
+                <constraint firstItem="llM-US-fw9" firstAttribute="bottom" secondItem="iN0-l3-epB" secondAttribute="bottom" id="xX0-Bz-5ig"/>
+                <constraint firstItem="qnp-5S-qTT" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="16" id="z25-Lg-c6K"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>

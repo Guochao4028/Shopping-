@@ -29,7 +29,7 @@
     
     [self layoutView];
 }
--(void)layoutView{
+- (void)layoutView{
     
 //    [self.view addSubview:self.leftBtn];
 
@@ -162,7 +162,7 @@
     forgetVc.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:forgetVc animated:NO];
 }
--(void)leftAction
+- (void)leftAction
 {
     [self.navigationController popViewControllerAnimated:YES];
 }
@@ -171,13 +171,16 @@
     if ([NSString isContainsEmoji:string]) {
         return NO;
     }
-    if (self.oldTf == textField || self.nowTf == textField || self.nowTfTwo == textField){
-        return [string onlyNumbersAndEnglish];
+    if ([string isEqualToString:@" "]) {
+        return NO;
     }
+//    if (self.oldTf == textField || self.nowTf == textField || self.nowTfTwo == textField){
+//        return [string onlyNumbersAndEnglish];
+//    }
     return YES;
 }
 
-//-(UIButton *)leftBtn
+//- (UIButton *)leftBtn
 //{
 //    if (!_leftBtn) {
 //        _leftBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
@@ -188,7 +191,7 @@
 //    }
 //    return _leftBtn;
 //}
--(UIButton *)finishButton
+- (UIButton *)finishButton
 {
     if (!_finishButton) {
         _finishButton = [UIButton buttonWithType:(UIButtonTypeCustom)];
@@ -202,7 +205,7 @@
     }
     return _finishButton;
 }
--(void)rightAction
+- (void)rightAction
 {
     if (self.oldTf.text.length ==0) {
         [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请填写旧密码") view:self.view afterDelay:TipSeconds];
@@ -224,21 +227,24 @@
     
     
     if (![self.nowTf.text passwordComplexityVerification]) {
-        [ShaolinProgressHUD singleTextHud:@"密码需要包含字母大小写和数字，请重新输入" view:self.view afterDelay:TipSeconds];
+        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"密码需要包含字母和数字，请重新输入") view:self.view afterDelay:TipSeconds];
         return;
     }
     
-    
+    if ([self.oldTf.text isEqualToString:self.nowTf.text]) {
+        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"新旧密码不能一致") view:self.view afterDelay:TipSeconds];
+        return;
+    }
     if (self.nowTfTwo.text.length ==0) {
-        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请再次填写新密码") view:self.view afterDelay:TipSeconds];
+        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请填写确认密码") view:self.view afterDelay:TipSeconds];
         return;
     }
     if (self.nowTfTwo.text.length <8 ||self.nowTfTwo.text.length>16 ) {
-        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"再次确认新密码长度") view:self.view afterDelay:TipSeconds];
+        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"确认新密码长度") view:self.view afterDelay:TipSeconds];
         return;
     }
     if (![self.nowTf.text isEqualToString:self.nowTfTwo.text]) {
-        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请确认新密码") view:self.view afterDelay:TipSeconds];
+        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"两次输入密码不一致") view:self.view afterDelay:TipSeconds];
         return;
     }
     
@@ -254,13 +260,13 @@
         [ShaolinProgressHUD singleTextAutoHideHud:errorReason];
     } finish:nil];
 }
--(UITextField *)oldTf
+- (UITextField *)oldTf
 {
     if (!_oldTf) {
         _oldTf = [[UITextField alloc] init];
                 _oldTf.textColor = KTextGray_333;
                 _oldTf.secureTextEntry = YES;
-                _oldTf.keyboardType = UIKeyboardTypeDefault;
+                _oldTf.keyboardType = UIKeyboardTypeASCIICapable;
                 if (@available(iOS 12.0, *)) {
                         _oldTf.textContentType = UITextContentTypeOneTimeCode;
                 }
@@ -270,7 +276,7 @@
     }
     return _oldTf;
 }
--(UITextField *)nowTf
+- (UITextField *)nowTf
 {
     if (!_nowTf) {
         _nowTf = [[UITextField alloc] init];
@@ -287,7 +293,7 @@
     }
     return _nowTf;
 }
--(UITextField *)nowTfTwo
+- (UITextField *)nowTfTwo
 {
     if (!_nowTfTwo) {
         _nowTfTwo = [[UITextField alloc] init];

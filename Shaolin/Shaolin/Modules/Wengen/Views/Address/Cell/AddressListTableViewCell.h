@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol AddressListTableViewCellDelegate <NSObject>
 
--(void)addressListCell:(AddressListTableViewCell *)cell tap:(AddressListModel *)model;
+- (void)addressListCell:(AddressListTableViewCell *)cell tap:(AddressListModel *)model;
 
 @end
 

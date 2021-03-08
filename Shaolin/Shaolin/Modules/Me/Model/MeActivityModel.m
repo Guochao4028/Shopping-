@@ -41,4 +41,38 @@
     }
     return NO;
 }
+
+- (NSString *)stateName {
+//    if (self.stateType){
+        if ([self.stateType intValue] == 0) {
+            return SLLocalizedString(@"考试失败");
+        }
+        if ([self.stateType intValue] == 1) {
+            return SLLocalizedString(@"已成功");
+        }
+        if ([self.stateType intValue] == 2) {
+            return SLLocalizedString(@"已报名");
+        }
+        if ([self.stateType intValue] == 3) {
+            return SLLocalizedString(@"进行中");
+        }
+        if ([self.stateType intValue] == 4) {
+            return SLLocalizedString(@"已结束");
+        }
+//    }
+    return @"";
+}
+
+- (NSString *)activityTypeName{
+    if ([self.stateType intValue] == 3) {
+        return SLLocalizedString(@"竞赛活动");
+    }
+    if ([self.stateType intValue] == 4) {
+        return SLLocalizedString(@"考试");
+    }
+    if ([self.stateType intValue] == 5) {
+        return SLLocalizedString(@"竞赛活动");
+    }
+    return @"";
+}
 @end

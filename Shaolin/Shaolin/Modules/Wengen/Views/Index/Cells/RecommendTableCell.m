@@ -33,7 +33,7 @@ static NSString *const kRecommendGoodsCollectionViewCellIdentifier = @"Recommend
     // Configure the view for the selected state
 }
 
--(void)initUI{
+- (void)initUI{
    
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     self.collectionView.delegate = self;
@@ -49,7 +49,7 @@ static NSString *const kRecommendGoodsCollectionViewCellIdentifier = @"Recommend
     
 }
 
--(void)tapTitleView{
+- (void)tapTitleView{
     if ([self.delegate respondsToSelector:@selector(tapTitleItem)] == YES) {
         [self.delegate tapTitleItem];
     }
@@ -57,7 +57,7 @@ static NSString *const kRecommendGoodsCollectionViewCellIdentifier = @"Recommend
 
 #pragma mark - UICollectionViewDataSource & UICollectionViewDelegate
 
--(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
     return self.dataArray.count;
 }
 
@@ -67,7 +67,7 @@ static NSString *const kRecommendGoodsCollectionViewCellIdentifier = @"Recommend
     return CGSizeMake(width, 110);
 }
 
--(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     RecommendGoodsCollectionViewCell * cell  = [collectionView dequeueReusableCellWithReuseIdentifier:kRecommendGoodsCollectionViewCellIdentifier forIndexPath:indexPath];
 
     cell.model = self.dataArray[indexPath.row];
@@ -75,13 +75,13 @@ static NSString *const kRecommendGoodsCollectionViewCellIdentifier = @"Recommend
     return cell;
 }
 
--(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     if([self.delegate respondsToSelector:@selector(tapGoodsItem:)]){
         [self.delegate tapGoodsItem:self.dataArray[indexPath.row]];
     }
 }
 
--(void)setDataArray:(NSArray *)dataArray{
+- (void)setDataArray:(NSArray *)dataArray{
     _dataArray = dataArray;
     [self.collectionView reloadData];
 }

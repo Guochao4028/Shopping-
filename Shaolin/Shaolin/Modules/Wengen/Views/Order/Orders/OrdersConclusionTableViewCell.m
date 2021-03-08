@@ -12,6 +12,8 @@
 
 #import "NSString+Tool.h"
 
+#import "OrderDetailsNewModel.h"
+
 @interface OrdersConclusionTableViewCell ()
 @property (weak, nonatomic) IBOutlet UILabel *totalAmountLabel;
 @property (weak, nonatomic) IBOutlet UILabel *freightLabel;
@@ -35,7 +37,7 @@
 }
 
 #pragma mark - setter / getter
--(void)setModel:(OrderDetailsModel *)model{
+- (void)setModel:(OrderDetailsNewModel *)model{
     _model = model;
     
     if (IsNilOrNull(model)) {
@@ -55,8 +57,8 @@
     self.payLabel.attributedText = [money moneyStringWithFormatting:MoneyStringFormattingMoneyCoincidenceType];
     
 //    [self.payLabel setText:money];
-    [self.freightLabel setText:[NSString stringWithFormat:@"+ ¥%@", model.shipping_fee]];
-    [self.totalAmountLabel setText:[NSString stringWithFormat:@"¥%@", model.price]];
+    [self.freightLabel setText:[NSString stringWithFormat:@"+ ¥%@", model.shippingFee]];
+    [self.totalAmountLabel setText:[NSString stringWithFormat:@"¥%@", model.money]];
     
 //    CGSize size =[money sizeWithAttributes:@{NSFontAttributeName:kMediumFont(15)}];
 //
@@ -82,7 +84,7 @@
     
 }
 
--(void)setGoodsTotalAmount:(NSString *)goodsTotalAmount{
+- (void)setGoodsTotalAmount:(NSString *)goodsTotalAmount{
     
     if (IsNilOrNull(goodsTotalAmount)) {
         self.totalAmountLabel.text = @"";
@@ -91,7 +93,7 @@
     }
 }
 
--(void)setShippingFee:(NSString *)shippingFee{
+- (void)setShippingFee:(NSString *)shippingFee{
     if (IsNilOrNull(shippingFee)) {
         self.freightLabel.text = @"";
     } else {
@@ -99,7 +101,7 @@
     }
 }
 
--(void)setGoodsPrice:(NSString *)goodsPrice{
+- (void)setGoodsPrice:(NSString *)goodsPrice{
     if (IsNilOrNull(goodsPrice)) {
         self.payLabel.text = @"";
     } else {

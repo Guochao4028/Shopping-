@@ -23,7 +23,7 @@
 
 @implementation WengenSearchView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [[NSBundle mainBundle] loadNibNamed:@"WengenSearchView" owner:self options:nil];
@@ -34,7 +34,7 @@
 
 #pragma mark - methods
 
--(void)layoutSubviews {
+- (void)layoutSubviews {
     [super layoutSubviews];
     
     NSString *carCountStr = [[ModelTool shareInstance]carCount];
@@ -55,7 +55,7 @@
 }
 
 /// 初始化UI
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.contentView];
     [self.contentView setFrame:self.bounds];
     //加圆角
@@ -79,7 +79,7 @@
 
 
 /// 重写系统方法
--(void)setFrame:(CGRect)frame{
+- (void)setFrame:(CGRect)frame{
     [super setFrame:frame];
     [self.contentView setFrame:self.bounds];
 }
@@ -105,24 +105,24 @@
 }
 
 #pragma mark - setter / getter
--(void)setIsHiddenBack:(BOOL)isHiddenBack{
+- (void)setIsHiddenBack:(BOOL)isHiddenBack{
     [self.backView setHidden:isHiddenBack];
 }
 
--(void)setIsHiddeIcon:(BOOL)isHiddeIcon {
+- (void)setIsHiddeIcon:(BOOL)isHiddeIcon {
     _isHiddeIcon = isHiddeIcon;
     
     [self.leftIconBtn setHidden:isHiddeIcon];
 }
 
--(void)setTitleStr:(NSString *)titleStr{
+- (void)setTitleStr:(NSString *)titleStr{
     _titleStr = titleStr;
     [self.titleLabel setTextColor:KTextGray_333];
     [self.titleLabel setText:titleStr];
 }
 
 
--(void)dealloc{
+- (void)dealloc{
     //移除监听
     [[NSNotificationCenter defaultCenter]removeObserver:self];
 }

@@ -17,9 +17,9 @@ NS_ASSUME_NONNULL_BEGIN
 @interface ActivityManager : NSObject
 + (instancetype)sharedInstance;
 // 活动首页列表
--(void)getHomeListFieldld:(NSString *)field PageNum:(NSString *)page PageSize:(NSString *)pageSize success:(void (^_Nullable)(id responseObject))success failure:(void (^_Nullable)(NSString * errorReason))failure finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish;
+//- (void)getHomeListFieldld:(NSString *)field PageNum:(NSString *)page PageSize:(NSString *)pageSize success:(void (^_Nullable)(id responseObject))success failure:(void (^_Nullable)(NSString * errorReason))failure finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish;
 // 活动的标签栏
--(void)getHomeSegmentFieldldSuccess:(void (^_Nullable)(id responseObject))success failure:(void (^_Nullable)(NSString * errorReason))failure finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish;
+//- (void)getHomeSegmentFieldldSuccess:(void (^_Nullable)(id responseObject))success failure:(void (^_Nullable)(NSString * errorReason))failure finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish;
 
 /// 获取法会列表
 + (void)getRiteListWithParams:(NSDictionary *)params success:(SLSuccessDicBlock)success failure:(SLFailureReasonBlock)failure finish:(SLFinishedResultBlock)finish;
@@ -54,9 +54,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 /*! 获取法会详情*/
-+ (void)getRiteDetails:(NSString *)pujaType pujaCode:(NSString *)pujaCode success:(SLSuccessDicBlock)success failure:(SLFailureReasonBlock)failure finish:(SLFinishedResultBlock)finish;
-/*! 获取法会表单数据结构*/
-+ (void)getRiteFormModel:(NSString *)pujaType success:(SLSuccessDicBlock)success failure:(SLFailureReasonBlock)failure finish:(SLFinishedResultBlock)finish;
+//+ (void)getRiteDetails:(NSString *)pujaType pujaCode:(NSString *)pujaCode success:(SLSuccessDicBlock)success failure:(SLFailureReasonBlock)failure finish:(SLFinishedResultBlock)finish;
 /*! 提交法会表单数据*/
 + (void)postRiteForm:(NSDictionary *)params success:(SLSuccessDicBlock)success failure:(SLFailureReasonBlock)failure finish:(SLFinishedResultBlock)finish;
 /*! 法会订单支付成功后获取祝福语*/
@@ -75,7 +73,7 @@ NS_ASSUME_NONNULL_BEGIN
 /*
 * 法会 报名详情
 */
--(void)postRiteRegistrationDetails:(NSDictionary *)params
+- (void)postRiteRegistrationDetails:(NSDictionary *)params
                            Success:(SLSuccessDicBlock)success
                            failure:(SLFailureReasonBlock)failure
                             finish:(SLFinishedResultBlock)finish;

@@ -37,7 +37,7 @@
 
 @implementation ClassBalanceViewController
 
--(void)dealloc {
+- (void)dealloc {
     NSLog(@"虚拟余额界面释放了");
 }
 
@@ -49,7 +49,7 @@
 //    [WSIAPManager cleanAllKeychain];
     
     [self getIapList];
-    [self getBanlance];
+//    [self getBanlance];
 }
 
 #pragma mark - request
@@ -62,35 +62,35 @@
     }];
 }
 
-- (void)getBanlance {
-    
-    [[DataManager shareInstance]userBalanceCallback:^(Message *message) {
-
-        if ([message.extensionDic.allKeys containsObject:@"iosMoney"])
-        {
-            NSNumber *balance = [message.extensionDic objectForKey:@"iosMoney"];
-            if (!balance) balance = @(0);
-            NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-//            formatter.positiveFormat = @",###.##"; // 正数格式
-            // 整数最少位数
-            formatter.minimumIntegerDigits = 1;
-            // 小数位最多位数
-            formatter.maximumFractionDigits = 2;
-            // 小数位最少位数
-            formatter.minimumFractionDigits = 2;
-            NSString *money = [formatter stringFromNumber:balance];
-            
-            NSString *price = money;
-            NSString *priceStr = [NSString stringWithFormat:@"%@ %@", price, SLLocalizedString(@"元")];
-            
-            NSMutableAttributedString *missionAttributed = [[NSMutableAttributedString alloc]initWithString:priceStr];
-            [missionAttributed addAttribute:NSFontAttributeName value:kBoldFont(45) range:NSMakeRange(0, price.length)];
-            [missionAttributed addAttribute:NSFontAttributeName value:kRegular(25) range:NSMakeRange(price.length, 2)];
-            
-            self.balanceLabel.attributedText = missionAttributed;
-        }
-    }];
-}
+//- (void)getBanlance {
+//
+//    [[DataManager shareInstance]userBalanceCallback:^(Message *message) {
+//
+//        if ([message.extensionDic.allKeys containsObject:@"iosMoney"])
+//        {
+//            NSNumber *balance = [message.extensionDic objectForKey:@"iosMoney"];
+//            if (!balance) balance = @(0);
+//            NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+////            formatter.positiveFormat = @",###.##"; // 正数格式
+//            // 整数最少位数
+//            formatter.minimumIntegerDigits = 1;
+//            // 小数位最多位数
+//            formatter.maximumFractionDigits = 2;
+//            // 小数位最少位数
+//            formatter.minimumFractionDigits = 2;
+//            NSString *money = [formatter stringFromNumber:balance];
+//
+//            NSString *price = money;
+//            NSString *priceStr = [NSString stringWithFormat:@"%@ %@", price, SLLocalizedString(@"元")];
+//
+//            NSMutableAttributedString *missionAttributed = [[NSMutableAttributedString alloc]initWithString:priceStr];
+//            [missionAttributed addAttribute:NSFontAttributeName value:kBoldFont(45) range:NSMakeRange(0, price.length)];
+//            [missionAttributed addAttribute:NSFontAttributeName value:kRegular(25) range:NSMakeRange(price.length, 2)];
+//
+//            self.balanceLabel.attributedText = missionAttributed;
+//        }
+//    }];
+//}
 
 #pragma mark - top up
 - (void) checkProduct {
@@ -186,7 +186,7 @@
     
     [WSIAPManager getAllWaitTransactionAndBlock:^(NSArray * _Nonnull localList) {
         if (!localList.count) {
-            [self getBanlance];
+//            [self getBanlance];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [ShaolinProgressHUD hideSingleProgressHUD];
             });
@@ -261,7 +261,7 @@
 }
 
 
--(NSMutableArray *)buttonList {
+- (NSMutableArray *)buttonList {
     if (!_buttonList) {
         _buttonList = [NSMutableArray new];
     }

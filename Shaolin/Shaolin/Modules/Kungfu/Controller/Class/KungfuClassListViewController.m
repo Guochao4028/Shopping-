@@ -36,7 +36,8 @@ typedef enum : NSUInteger {
     KfClassType_free = 1,
     KfClassType_vip,
     KfClassType_pay,
-    KfClassType_all
+    KfClassType_all,
+    KfClassType_noSelectAll,//原本进来默认选中全部，现在改为不选中全部，但是取全部数据，安卓问的产品
 } KfTypeSort;
 
 #define ButtonTextColor [UIColor colorWithRed:51.0/255.0 green:51.0/255.0 blue:51.0/255.0 alpha:1]
@@ -85,7 +86,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     
     [self.typeSortBtn setTitleColor:kMainYellow forState:UIControlStateNormal];
     [self.typeSortBtn setTitle:@"全部" forState:(UIControlStateNormal)];
-    self.classType = KfClassType_all;
+    self.classType = KfClassType_noSelectAll;
     
     [self initUI];
     [self requestData];
@@ -178,18 +179,18 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
 //    self.tableView.height = kScreenHeight - self.typeSortBtn.height - kBottomSafeHeight - NavBar_Height;
 }
 
--(void)viewWillAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 }
 
--(void)viewDidAppear:(BOOL)animated {
+- (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self.view bringSubviewToFront:self.levelSortBtn];
     [self.view bringSubviewToFront:self.timeSortBtn];
     [self.view bringSubviewToFront:self.typeSortBtn];
 }
 
--(void)viewDidDisappear:(BOOL)animated {
+- (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     
     [self hideTypeTable];
@@ -211,29 +212,34 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     }
     //1 免费 2 会员 3 付费
     if (self.classType == KfClassType_free){
-        mDict[@"pay_type"] = @"1";
+        mDict[@"payType"] = @"1";
     } else if (self.classType == KfClassType_vip){
-        mDict[@"pay_type"] = @"2";
+        mDict[@"payType"] = @"2";
     } else if (self.classType == KfClassType_pay){
-        mDict[@"pay_type"] = @"3";
+        mDict[@"payType"] = @"3";
+    } else if (self.classType == KfClassType_all){
+        mDict[@"payType"] = @"0";
+    } else if (self.classType == KfClassType_noSelectAll){
+        mDict[@"payType"] = @"0";
     }
-    mDict[@"type"] = @"2";
-    mDict[@"page"] = @(self.page);
+    
+    mDict[@"pageNum"] = @(self.page);
+    mDict[@"pageSize"] = @(10);
     if (NotNilAndNull(self.searchText)) {
         mDict[@"name"] = self.searchText;
     }
     
     if (NotNilAndNull(self.filterType)) {
-        if ([self.filterType isEqualToString:@"is_new"]) {
-            mDict[@"is_new"] = @"1";
+        if ([self.filterType isEqualToString:@"isNew"]) {
+            mDict[@"isNew"] = @"1";
         }
-        if ([self.filterType isEqualToString:@"is_delicate"]) {
-            mDict[@"is_delicate"] = @"1";
+        if ([self.filterType isEqualToString:@"isDelicate"]) {
+            mDict[@"isDelicate"] = @"1";
         }
     }
     
     if (NotNilAndNull(self.subjectModel)) {
-        mDict[@"subject_id"] = self.subjectModel.subjectId;
+        mDict[@"subjectId"] = self.subjectModel.subjectId;
     }
     
     return mDict;
@@ -245,7 +251,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     NSDictionary *params = [self getDownloadClassDataParams];
     [[KungfuManager sharedInstance] getClassWithDic:params success:^(NSDictionary * _Nullable resultDic) {
         
-        NSArray *arr = [resultDic objectForKey:LIST];
+        NSArray *arr = [resultDic objectForKey:DATAS];
         NSArray *dataList = [ClassListModel mj_objectArrayWithKeyValuesArray:arr];
         self.classLastArray = [self.classLastArray arrayByAddingObjectsFromArray:dataList];
         
@@ -325,7 +331,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     } else if (self.sortType == KfClassLevel_desc) {
         self.sortType = KfClassLevel_asc;
     } else {
-        self.sortType = KfClassLevel_asc;
+        self.sortType = KfClassLevel_desc;
     }
     
     [self.tableView.mj_header beginRefreshing];
@@ -398,7 +404,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     }];
 }
 
--(void)scrollViewDidScroll:(UIScrollView *)scrollView {
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     
     if (scrollView == self.tableView) {
         [self hideTypeTable];
@@ -415,7 +421,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     return !self.classLastArray.count;
 }
 
--(CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
+- (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
     return -30;
 }
 
@@ -435,7 +441,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
 
 #pragma mark - tableView delegate && dataSource
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     if (tableView == self.typeTable) {
         return 1;
     }
@@ -444,7 +450,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     }
     return [self.classLastArray count];
 }
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (tableView == self.typeTable) {
         return 4;
     }
@@ -454,7 +460,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     }
     return 1;
 }
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     if (tableView == self.tableView) {
         UIView *view = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWidth, 10)];
@@ -464,7 +470,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
         return [UIView new];
     }
 }
--(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     if (tableView == self.tableView) {
         UIView *view = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWidth, 10)];
         view.backgroundColor =  KTextGray_FA;
@@ -472,7 +478,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     }
     return [UIView new];
 }
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (tableView == self.typeTable) {
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:typeCellId];
@@ -485,7 +491,11 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
         [cell.textLabel setTextAlignment:NSTextAlignmentCenter];
         
         if ([cell.textLabel.text isEqualToString:self.typeSortBtn.titleLabel.text]) {
-            cell.textLabel.textColor = kMainYellow;
+            if (self.classType == KfClassType_noSelectAll) {
+                cell.textLabel.textColor = KTextGray_333;
+            } else {
+                cell.textLabel.textColor = kMainYellow;
+            }
         }
         
         return cell;
@@ -520,7 +530,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
     [self hideSearchTypeTable];
@@ -554,21 +564,21 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     }
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (tableView == self.typeTable || tableView == self.searchTypeTable) {
         return 40;
     }
     return 123;
 }
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if (section == 0 && tableView == self.tableView) {
         return 10;
     }else {
         return 0.01;
     }
 }
--(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     if (tableView == self.typeTable || tableView == self.searchTypeTable) {
         return 0;
     }
@@ -577,7 +587,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
 
 
 #pragma mark-手势代理，解决和tableview点击发生的冲突
--(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
    if ([NSStringFromClass([touch.view class]) isEqualToString:@"UITableViewCellContentView"]) {//判断如果点击的是tableView的cell，就把手势给关闭了
       return NO;//关闭手势
    }//否则手势存在
@@ -585,7 +595,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
 }
 
 #pragma mark - setter && getter
--(void)setTypeString:(NSString *)typeString {
+- (void)setTypeString:(NSString *)typeString {
     _typeString = typeString;
     
     self.searchView.searchTF.placeholder = [NSString stringWithFormat:@"%@%@", SLLocalizedString(@"搜索"), typeString];
@@ -617,7 +627,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
 //    [self.tableView ly_showEmptyView];
 //}
 
--(void)setSortType:(KfClassSortType)sortType {
+- (void)setSortType:(KfClassSortType)sortType {
     _sortType = sortType;
     
     [self.typeSortBtn setImage:[UIImage imageNamed:@"kungfu_down_normal"] forState:UIControlStateNormal];
@@ -648,7 +658,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
 }
 
 
--(void)setClassType:(KfTypeSort)classType {
+- (void)setClassType:(KfTypeSort)classType {
     _classType = classType;
     
     [self.typeSortBtn setTitleColor:kMainYellow forState:UIControlStateNormal];
@@ -665,6 +675,11 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     if (_classType == KfClassType_all) {
         [self.typeSortBtn setTitle:SLLocalizedString(@"全部") forState:UIControlStateNormal];
     }
+    if (_classType == KfClassType_noSelectAll) {
+        [self.typeSortBtn setTitle:SLLocalizedString(@"全部") forState:UIControlStateNormal];
+        [self.typeSortBtn setTitleColor:KTextGray_333 forState:UIControlStateNormal];
+    }
+    
     
     [self.typeSortBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, - self.typeSortBtn.imageView.image.size.width - 3, 0, self.typeSortBtn.imageView.image.size.width)];
     [self.typeSortBtn setImageEdgeInsets:UIEdgeInsetsMake(0, self.typeSortBtn.titleLabel.bounds.size.width + 3, 0, -self.typeSortBtn.titleLabel.bounds.size.width)];
@@ -735,7 +750,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
 }
 
 
--(UIButton *)levelSortBtn {
+- (UIButton *)levelSortBtn {
     if (!_levelSortBtn) {
         _levelSortBtn = [[UIButton alloc]initWithFrame:
                          CGRectMake(0, SLChange(5), kWidth/3, SLChange(34))];
@@ -750,7 +765,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     return _levelSortBtn;
 }
 
--(UIButton *)timeSortBtn {
+- (UIButton *)timeSortBtn {
     if (!_timeSortBtn) {
         _timeSortBtn = [[UIButton alloc]initWithFrame:
                         CGRectMake(kWidth/3, SLChange(5), kWidth/3, SLChange(34))];
@@ -765,7 +780,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     return _timeSortBtn;
 }
 
--(UIButton *)typeSortBtn {
+- (UIButton *)typeSortBtn {
     if (!_typeSortBtn) {
         _typeSortBtn = [[UIButton alloc]initWithFrame:
                         CGRectMake(kWidth/3*2, SLChange(5), kWidth/3, SLChange(34))];
@@ -780,7 +795,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     return _typeSortBtn;
 }
 
--(KfNavigationSearchView *)searchView{
+- (KfNavigationSearchView *)searchView{
     WEAKSELF
     if (_searchView == nil) {
         _searchView = [[[NSBundle mainBundle] loadNibNamed:@"KfNavigationSearchView" owner:self options:nil] objectAtIndex:0];
@@ -824,7 +839,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     return _searchView;
 }
 
-//-(UIView *)buttonBottomLine {
+//- (UIView *)buttonBottomLine {
 //    if (!_buttonBottomLine) {
 //        _buttonBottomLine = [[UIView alloc]initWithFrame:CGRectMake(0, SLChange(34), kWidth, 1)];
 //        _buttonBottomLine.backgroundColor = RGBA(239, 239, 239, 1);
@@ -869,7 +884,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     return _searchTypeTableBgView;
 }
 
--(NSMutableArray *)historyArray{
+- (NSMutableArray *)historyArray{
     if (!_historyArray) {
 //        _historyArray = [NSKeyedUnarchiver unarchiveObjectWithFile:KGoodsHistorySearchPath];
         _historyArray = [[[ModelTool shareInstance] select:[SearchHistoryModel class] tableName:@"searchHistory" where:[NSString stringWithFormat:@"type = '%ld' AND userId = '%@' ORDER BY id DESC", SearchHistoryCourseType, [SLAppInfoModel sharedInstance].id]] mutableCopy];

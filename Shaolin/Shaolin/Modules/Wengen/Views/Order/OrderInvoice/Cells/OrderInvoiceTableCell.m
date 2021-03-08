@@ -39,7 +39,7 @@
 
 #pragma mark - GCTextFieldDelegate
 
--(void)textFieldDidEndEditing:(GCTextField *)textField{
+- (void)textFieldDidEndEditing:(GCTextField *)textField{
     NSString *txt = textField.text;
 //    if (txt.length > 0) {
         [self.model  setValue:txt forKey:@"content"];
@@ -47,13 +47,13 @@
         NSString *titleStr = self.titleLabel.text;
         
         if ([titleStr isEqualToString:SLLocalizedString(@"收票人")]) {
-            self.fillModel.revice_name = txt;
+            self.fillModel.reviceName = txt;
         }
         if ([titleStr isEqualToString:SLLocalizedString(@"手机号码")]) {
-            self.fillModel.revice_phone = txt;
+            self.fillModel.revicePhone = txt;
         }
         if ([titleStr isEqualToString:SLLocalizedString(@"详细地址")]) {
-             self.fillModel.revice_address = txt;
+            self.fillModel.reviceAddress = txt;
         }
         
         if ([titleStr isEqualToString:SLLocalizedString(@"注册地址")]) {
@@ -66,17 +66,17 @@
             self.fillModel.bank = txt;
         }
         if ([titleStr isEqualToString:SLLocalizedString(@"银行账户")]) {
-            self.fillModel.bank_sn = txt;
+            self.fillModel.bankSn = txt;
         }
         if ([titleStr isEqualToString:SLLocalizedString(@"单位名称")]) {
-            self.fillModel.buy_name = txt;
+            self.fillModel.buyName = txt;
         }
         if ([titleStr isEqualToString:SLLocalizedString(@"单位税号")]) {
-            self.fillModel.duty_num = txt;
+            self.fillModel.dutyNum = txt;
         }
         
         if ([titleStr isEqualToString:SLLocalizedString(@"个人名称")] || [titleStr isEqualToString:SLLocalizedString(@"抬头名称")]|| [titleStr isEqualToString:SLLocalizedString(@"单位名称")]||[titleStr isEqualToString:SLLocalizedString(@"发票抬头")]) {
-            self.fillModel.buy_name = txt;
+            self.fillModel.buyName = txt;
         }
     
     
@@ -88,7 +88,7 @@
 }
 
 #pragma mark - setter / getter
--(void)setModel:(NSDictionary *)model{
+- (void)setModel:(NSDictionary *)model{
     _model = model;
 //    {@"title" : SLLocalizedString(@"注册地址"), @"content" : @"", @"isMore" : @"0", @"isEditor" : @"1", @"placeholder" : SLLocalizedString(@"请输入注册地址")}
     
@@ -139,7 +139,7 @@
     
 }
 
--(void)setFillModel:(OrderInvoiceFillModel *)fillModel{
+- (void)setFillModel:(OrderInvoiceFillModel *)fillModel{
    
     _fillModel = fillModel;
 }

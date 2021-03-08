@@ -7,7 +7,7 @@
 //
 
 #import "LegalPersonViewController.h"
-#import "UICustomDatePicker.h"
+//#import "UICustomDatePicker.h"
 #import "MeManager.h"
 #import "HomeManager.h"
 #import "BRPickerView.h"
@@ -15,6 +15,7 @@
 #import "UIView+Identifier.h"
 #import "SLDatePickerView.h"
 #import "SLStringPickerView.h"
+#import "StoreInformationModel.h"
 
 @interface LegalPersonViewController ()<TZImagePickerControllerDelegate,UIImagePickerControllerDelegate,GCTextFieldDelegate>
 @property (weak, nonatomic) IBOutlet GCTextField *nameTf;
@@ -39,7 +40,7 @@
 
 @implementation LegalPersonViewController
 
--(void)viewWillAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     //[self setNavigationBarYellowTintColor];   
 }
@@ -59,6 +60,68 @@
     
     self.startBtn.identifier = @"startBtn";
     self.endBtn.identifier = @"endBtn";
+    if (self.model && [self.model.status isEqualToString:@"3"]) {// 店铺审核失败
+        [self reloadView];
+    }
+}
+
+- (void)setModel:(StoreInformationModel *)model {
+    _model = model;
+    [self reloadView];
+//    self.datePickerView.selectValue = self.startTimeStr;
+}
+
+- (void)reloadView {
+    if (self.model.cardType.length){
+        self.cardTypeStr = self.model.cardType;
+        self.stringPickerView.selectIndex = [self.cardTypeStr intValue] - 1;
+        if (self.stringPickerView.selectIndex < 0) {
+            self.cardTypeStr = @"1";
+            self.stringPickerView.selectIndex = 0;
+        }
+        NSString *cardType = self.stringPickerView.dataSourceArr[self.stringPickerView.selectIndex];;
+        self.stringPickerView.selectValue = cardType;
+        [self.cardTypeBtn setTitle:cardType forState:UIControlStateNormal];
+        [self.cardTypeBtn setTitleColor:[UIColor blackColor] forState:(UIControlStateNormal)];
+    }
+    
+    if (self.model.cardImg.length) {
+        self.cardImgStr = self.model.cardImg;
+        self.choosePhotoImage.hidden = YES;
+        [self.idImageView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.cardImgStr]]];
+    } else {
+        self.cardImgStr = @"";
+        self.choosePhotoImage.hidden = NO;
+    }
+    
+    if (self.model.legalPerson.length){
+        self.nameTf.text = self.model.legalPerson;
+    }
+    
+    if (self.model.idcard.length){
+        self.idCardNumTf.text = self.model.idcard;
+    }
+    
+    if (self.model.cardStartTime.length){
+        self.startTimeStr = self.model.cardStartTime;
+        [self.startBtn setTitle:self.model.cardStartTime forState:(UIControlStateNormal)];
+        [self.startBtn setTitleColor:[UIColor blackColor] forState:(UIControlStateNormal)];
+    }
+    
+    if (self.model.cardTimeLong.length){
+        self.selectLongTime = [self.model.cardTimeLong intValue];
+        self.longTimeBtn.selected = self.selectLongTime;
+        self.endBtn.enabled = !self.selectLongTime;
+        if (self.selectLongTime){
+            self.endTimeStr = @"";
+            [self.endBtn setTitle:SLLocalizedString(@"结束日期") forState:(UIControlStateNormal)];
+            [self.endBtn setTitleColor:KTextGray_999 forState:(UIControlStateNormal)];
+        } else if (self.model.cardEndTime.length){
+            self.endTimeStr = self.model.cardEndTime;
+            [self.endBtn setTitle:self.model.cardEndTime forState:(UIControlStateNormal)];
+            [self.endBtn setTitleColor:[UIColor blackColor] forState:(UIControlStateNormal)];
+        }
+    }
 }
 #pragma mark - 选择证件类型
 
@@ -226,6 +289,7 @@
     [[MeManager sharedInstance] postStoreLegalPersonCardType:self.cardTypeStr CardImage:self.cardImgStr IdCardNum:self.idCardNumTf.text CardStartTime:self.startTimeStr CardEndTime:self.endTimeStr CardTimeLong:[NSString stringWithFormat:@"%ld",self.selectLongTime] Name:self.nameTf.text success:nil failure:nil finish:^(id  _Nonnull responseObject, NSString * _Nonnull errorReason) {
         [hud hideAnimated:YES];   
         if ([ModelTool checkResponseObject:responseObject]) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"MeViewControllerDidReloadUserStoreOpenInformationDataNotfication" object:nil];
             [ShaolinProgressHUD singleTextAutoHideHud:[responseObject objectForKey:@"msg"]];
             if (weakSelf.LegaalPersonBlock) {
                 weakSelf.LegaalPersonBlock(@"2", self.idCardNumTf.text);

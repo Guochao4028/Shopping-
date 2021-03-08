@@ -29,6 +29,9 @@
 #import "ZFPlayerControlView.h"
 #import "ZFAVPlayerManager.h"
 #import "UIScrollView+ZFPlayer.h"
+#import "DefinedURLs.h"
+#import "AppDelegate+AppService.h"
+#import "ShaolinWindow.h"
 
 @interface RecommendViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic,strong) UITableView *tableView;
@@ -46,6 +49,13 @@
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self hideNavigationBarShadow];
+    self.player.viewControllerDisappear = NO;
+}
+
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    self.player.viewControllerDisappear = YES;
+    [self stopCurrentVideo];
 }
 
 - (void)viewDidLoad {
@@ -65,12 +75,17 @@
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(getSelectPageData:) name:@"ReloadCurrentPage" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(playerCellAction:) name:@"VideoPlayerAction" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(systemVolumeChanged:) name:@"AVSystemController_SystemVolumeDidChangeNotification" object:nil];
+    
+    WEAKSELF
     self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-        [self update];
+        [weakSelf update];
       }];
-    self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
-        [self loadMoreData];
+    MJRefreshAutoFooter * footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+        [weakSelf loadMoreData];
     }];
+    footer.triggerAutomaticallyRefreshPercent = -20;
+    self.tableView.mj_footer = footer;
+
     self.tableView.mj_footer.hidden = YES;
     
      [self.view addSubview:self.tableView];
@@ -118,7 +133,7 @@
     emptyView.actionBtnBackGroundColor = UIColor.whiteColor;
     self.emptyView = emptyView;
 }
--(void)getSelectPageData:(NSNotification *)user
+- (void)getSelectPageData:(NSNotification *)user
 {
 //     [self.foundArray removeAllObjects];
     NSDictionary *dic = user.userInfo;
@@ -127,16 +142,17 @@
     if (self.identifier != identifier) return;
     [self update];
 }
--(void)playerCellAction:(NSNotification *)user
+- (void)playerCellAction:(NSNotification *)user
 {
     NSDictionary *dic = user.userInfo;
     NSIndexPath *indexpath = [dic objectForKey:@"indexPath"];
-    
+    NSString *identifier = [dic objectForKey:@"identifier"];
+    if (identifier && [identifier intValue] != self.selectPage) return;
     FoundModel *model = self.foundArray[indexpath.row];
     if ([model.type isEqualToString:@"3"]) {
         // 是广告
         if ([model.kind isEqualToString:@"3"]){ //视频广告
-            [self playTheVideoAtIndexPath:indexpath scrollToTop:NO];
+            [self playTheVideoAtIndexPath:indexpath scrollAnimated:NO];
         } else {
             [[SLAppInfoModel sharedInstance] advertEventResponseWithFoundModel:model];
         }
@@ -154,18 +170,22 @@
 }
 
 /// play the video
-- (void)playTheVideoAtIndexPath:(NSIndexPath *)indexPath scrollToTop:(BOOL)scrollToTop {
-    FoundModel *model = _foundArray[indexPath.row];
+- (void)playTheVideoAtIndexPath:(NSIndexPath *)indexPath scrollAnimated:(BOOL)animated {
+    FoundModel *model = self.foundArray[indexPath.row];
     //type 3:广告，kind 3:视频，非视频广告return，其实非视频广告进到这里就已经出错了
     if (!([model.type isEqualToString:@"3"] && [model.kind isEqualToString:@"3"])){
         return;
     }
 //    self.titleL.text = model.title;
     NSString *urlStr;
-    for (NSDictionary *dic in model.coverurlList) {
+    for (NSDictionary *dic in model.coverUrlList) {
         urlStr = [dic objectForKey:@"route"];
     }
-    [self.player playTheIndexPath:indexPath assetURL:[NSURL URLWithString:urlStr] scrollToTop:scrollToTop];
+    if (animated) {
+        [self.player playTheIndexPath:indexPath assetURL:[NSURL URLWithString:urlStr] scrollPosition:ZFPlayerScrollViewScrollPositionTop animated:YES];
+    } else {
+        [self.player playTheIndexPath:indexPath assetURL:[NSURL URLWithString:urlStr]];
+    }
     [self.controlView showTitle:@""
                  coverURLString:[NSString stringWithFormat:@"%@%@",urlStr, Video_First_Photo]
                placeholderImage:[ZFUtilities imageWithColor:[UIColor clearColor] size:CGSizeMake(100, 100)]
@@ -259,18 +279,20 @@
     self.pager = 1;
     [self.foundArray removeAllObjects];
     [self.topArray removeAllObjects];
+    
+    WEAKSELF
     [self requestData:^(NSArray *foundModelArray) {
-        [self.tableView.mj_header endRefreshing];
-        [self.tableView.mj_footer endRefreshing];
+        [weakSelf.tableView.mj_header endRefreshing];
+        [weakSelf.tableView.mj_footer endRefreshing];
 //        CGFloat tableViewHeight = CGRectGetHeight(self.tableView.frame);
 //        CGFloat y = CGRectGetMinY(self.tableView.mj_footer.frame);
 //        if (y < tableViewHeight){
 //            self.tableView.mj_footer.hidden = YES;
 //        } else {
-            self.tableView.mj_footer.hidden = foundModelArray.count == 0;
+            weakSelf.tableView.mj_footer.hidden = foundModelArray.count == 0;
 //        }
     } failure:^(NSError * _Nonnull error) {
-        [self.tableView.mj_header endRefreshing];
+        [weakSelf.tableView.mj_header endRefreshing];
     }];
 }
 
@@ -287,17 +309,18 @@
 }
 
 - (void)refreshAndScrollToTop {
+    WEAKSELF
     @try {
-        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+        [weakSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
     } @catch (NSException *exception) {
         
     } @finally {
-        [self.tableView.mj_header beginRefreshing];
+        [weakSelf.tableView.mj_header beginRefreshing];
     }
     
 }
 
--(void)registerCell
+- (void)registerCell
 {
     //置顶cell
     [_tableView registerClass:[StickCell class]
@@ -378,6 +401,8 @@
     cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     [cell setFoundModel:model indexpath:indexPath];
+    cell.identifier = [NSString stringWithFormat:@"%ld", self.selectPage];
+    
     if (currentArray.count == 1){
         cell.cellPosition = CellPosition_OnlyOne;
     } else if (indexPath.row == 0){
@@ -500,9 +525,8 @@
     }
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self pauseCurrentVideo];
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     FoundModel *model;
     if (indexPath.section == 0 && self.topArray.count > 0){
@@ -537,7 +561,7 @@
        }
     }
 }
-//-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 //{
 //    FoundModel *model;
 //    if (indexPath.section == 0 && self.topArray.count > 0){
@@ -616,32 +640,61 @@
         /// 播放器view露出一半时候开始播放
         _player.playerApperaPercent = 0.1;
         
-        WEAKSELF
+        @weakify(self)
         _player.playerDidToEnd = ^(id  _Nonnull asset) {
-            [weakSelf.player stopCurrentPlayingCell];
+            @strongify(self)
+            BOOL isFullScreen = self.player.isFullScreen;
+            [self.player stopCurrentPlayingCell];
+            // 全屏状态下播放结束后，[self.player stopCurrentPlayingCell] 无法正确的结束播放状态
+            if (isFullScreen){
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.player.orientationObserver.duration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    // 这里手动在结束播放一下
+                    [self.player stop];
+                    // 过短视频(如3秒)全屏播放结束后，应用主window没有被正确的显示在最上层，导致应用出现无法点击的假死状态
+                    for (UIWindow *window in UIApplication.sharedApplication.windows){
+                        if ([window isKindOfClass:[ShaolinWindow class]]) {
+                            [window makeKeyAndVisible];
+                        }
+                    }
+                });
+            }
         };
         
         _player.orientationWillChange = ^(ZFPlayerController * _Nonnull player, BOOL isFullScreen) {
-    //        kAPPDelegate.allowOrentitaionRotation = isFullScreen;
-    //        [weakSelf setNeedsStatusBarAppearanceUpdate];
-            if (!isFullScreen) {
-                /// 解决导航栏上移问题
-    //            self.navigationController.navigationBar.zf_height = KNavBarHeight;
-            }
+            @strongify(self)
+            [AppDelegate shareAppDelegate].allowOrentitaionRotation = isFullScreen;
+            
             //切全屏时播放声音，切回列表时静音
             playerManager.muted = !isFullScreen;
-//            weakSelf.tableView.scrollsToTop = NO;//!isFullScreen;
             NSString *title = @"";
             if (isFullScreen){
-                FoundModel *model = weakSelf.foundArray[weakSelf.player.playingIndexPath.row];
+                FoundModel *model = self.foundArray[self.player.playingIndexPath.row];
                 title = model.title;
             }
-            [weakSelf.controlView.portraitControlView showTitle:title fullScreenMode:ZFFullScreenModeLandscape];
-            [weakSelf.controlView.landScapeControlView showTitle:title fullScreenMode:ZFFullScreenModeLandscape];
+            [self.controlView.portraitControlView showTitle:title fullScreenMode:ZFFullScreenModeLandscape];
+            [self.controlView.landScapeControlView showTitle:title fullScreenMode:ZFFullScreenModeLandscape];
         };
         _player.zf_playerDidAppearInScrollView = ^(NSIndexPath * _Nonnull indexPath) {
-            if (!weakSelf.player.playingIndexPath) {
-                [weakSelf playTheVideoAtIndexPath:indexPath scrollToTop:NO];
+            @strongify(self)
+            if (!self.player.playingIndexPath) {
+                [self playTheVideoAtIndexPath:indexPath scrollAnimated:NO];
+            }
+        };
+        /// 停止的时候找出最合适的播放(只能找到设置了tag值cell)
+        _player.zf_scrollViewDidEndScrollingCallback = ^(NSIndexPath * _Nonnull indexPath) {
+            @zf_strongify(self)
+            if (!self.player.playingIndexPath) {
+                [self playTheVideoAtIndexPath:indexPath scrollAnimated:NO];
+            }
+        };
+
+        /// 滑动中找到适合的就自动播放
+        /// 如果是停止后再寻找播放可以忽略这个回调
+        /// 如果在滑动中就要寻找到播放的indexPath，并且开始播放，那就要这样写
+        _player.zf_playerShouldPlayInScrollView = ^(NSIndexPath * _Nonnull indexPath) {
+            @zf_strongify(self)
+            if ([indexPath compare:self.player.playingIndexPath] != NSOrderedSame) {
+                [self playTheVideoAtIndexPath:indexPath scrollAnimated:NO];
             }
         };
     }

@@ -31,7 +31,7 @@
     // Configure the view for the selected state
 }
 
--(void)layoutSubviews {
+- (void)layoutSubviews {
     if (self.isFirst) {
         self.cellLine.hidden = true;
     } else {
@@ -39,7 +39,7 @@
     }
 }
 
--(void)setCellModel:(RitePastModel *)cellModel {
+- (void)setCellModel:(RitePastModel *)cellModel {
     _cellModel = cellModel;
 
     self.nameLabel.text = cellModel.reviewTitle;

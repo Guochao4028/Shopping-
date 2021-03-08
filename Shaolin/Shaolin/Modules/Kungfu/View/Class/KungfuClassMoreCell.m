@@ -33,7 +33,7 @@ static NSString *const collectionCellId = @"KungfuHomemLatestEventsCollectionCel
     [self.collectionView reloadData];
 }
 
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         [self.contentView addSubview:self.collectionView];
@@ -79,7 +79,7 @@ static NSString *const collectionCellId = @"KungfuHomemLatestEventsCollectionCel
 //
 //}
 
--(UICollectionView *)collectionView
+- (UICollectionView *)collectionView
 {
     if (!_collectionView) {
         

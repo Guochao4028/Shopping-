@@ -22,6 +22,13 @@
 //    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"left"] style:UIBarButtonItemStylePlain target:aTarget action:aAction];
 }
 
+- (void)addPopBackBlackLeftItemWithTarget:(id _Nullable )aTarget
+                              action:(SEL _Nullable )aAction
+{
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"left"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:aTarget action:aAction];
+//    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"left"] style:UIBarButtonItemStylePlain target:aTarget action:aAction];
+}
+
 - (void)addKeyboardNotificationsWithShowSelector:(SEL)aShowSelector
                                     hideSelector:(SEL)aHideSelector
 {

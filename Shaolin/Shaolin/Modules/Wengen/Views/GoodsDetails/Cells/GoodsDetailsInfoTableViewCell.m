@@ -53,7 +53,7 @@
     // Configure the view for the selected state
 }
 
--(void)setInfoModel:(GoodsInfoModel *)infoModel{
+- (void)setInfoModel:(GoodsInfoModel *)infoModel{
     _infoModel = infoModel;
     //商品名称
     [self.goodsNameLabel setText:infoModel.name];
@@ -69,18 +69,32 @@
     [self.goodsDecLabel setText:infoModel.desc];
     
     //商品价格
-    if (infoModel.old_price != nil || infoModel.price != nil) {
+    if (infoModel.oldPrice != nil || infoModel.price != nil) {
         
-        NSString *priceStr ;
+//        NSString *priceStr ;
         
-        if ([infoModel.is_discount boolValue] == YES) {
-            priceStr = [NSString stringWithFormat:@"¥%@",infoModel.old_price];
-            
-            [self.old_price setHidden:NO];
+//        if ([infoModel.isDiscount boolValue] == YES) {
+//            priceStr = [NSString stringWithFormat:@"¥%@",infoModel.price];
+//
+//            [self.old_price setHidden:NO];
+//        }else{
+//            priceStr = [NSString stringWithFormat:@"¥%@",infoModel.oldPrice];
+//            [self.old_price setHidden:YES];
+//        }
+        
+        if (infoModel.oldPrice != nil) {
+            NSInteger oldPriceInteger = [infoModel.oldPrice integerValue];
+            NSInteger priceInteger = [infoModel.price integerValue];
+            if (oldPriceInteger == priceInteger) {
+                [self.old_price setHidden:YES];
+            }else{
+                [self.old_price setHidden:NO];
+            }
         }else{
-            priceStr = [NSString stringWithFormat:@"¥%@",infoModel.price];
             [self.old_price setHidden:YES];
         }
+        
+        NSString *priceStr = [NSString stringWithFormat:@"¥%@",infoModel.price];
         
        
         
@@ -104,13 +118,14 @@
         self.goodsPriceLabelW.constant = size.width+3.5;
         
         //商品旧价
-           NSString *oldPriceStr = [NSString stringWithFormat:@"¥%@",infoModel.price];
-           
+        NSString *oldPriceStr = [infoModel.oldPrice formattingPriceString];
+
            NSMutableAttributedString *odlAttrStr = [[NSMutableAttributedString alloc] initWithString:oldPriceStr];
            
            [odlAttrStr setAttributes:@{NSStrikethroughStyleAttributeName : @(NSUnderlineStyleSingle)}
                             range:NSMakeRange(0, oldPriceStr.length)];
            [self.old_price setAttributedText:odlAttrStr];
+        
         float star = [infoModel.star floatValue];
         if (star == 0.0) {
             star = 5.0;
@@ -127,7 +142,7 @@
     }
     
     
-    BOOL is_self = [infoModel.is_self boolValue];
+    BOOL is_self = [infoModel.isSelf boolValue];
     if (is_self) {
         [self.proprietaryImageView setHidden:NO];
         self.proprietaryImageViewW.constant = 35;
@@ -139,5 +154,7 @@
     }
     
 }
+
+
 
 @end

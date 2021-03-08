@@ -10,11 +10,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OrderDetailsModel,GoodsStoreInfoModel;
+@class OrderDetailsGoodsModel,GoodsStoreInfoModel;
 
 @interface AfterSalesTuiKuanTableViewCell : UITableViewCell
 
-@property(nonatomic, strong)OrderDetailsModel *model;
+@property(nonatomic, strong)OrderDetailsGoodsModel *model;
 
 @property(nonatomic, strong)GoodsStoreInfoModel *storeInfoModel;
 

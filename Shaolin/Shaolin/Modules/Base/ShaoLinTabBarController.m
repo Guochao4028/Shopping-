@@ -187,7 +187,7 @@
  }
  */
 
--(UIInterfaceOrientationMask)supportedInterfaceOrientations{
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations{
     return self.selectedViewController.supportedInterfaceOrientations;
 }
 

@@ -162,7 +162,7 @@ CG_INLINE CGRect CGRectMakes(CGFloat x, CGFloat y, CGFloat width, CGFloat height
     }];
 }
 
--(void)setCountriesArray:(NSMutableArray *)countriesArray{
+- (void)setCountriesArray:(NSMutableArray *)countriesArray{
     _countriesArray = countriesArray;
     
     UITableView *tableView = [_areaScrollView viewWithTag:200];
@@ -217,7 +217,7 @@ CG_INLINE CGRect CGRectMakes(CGFloat x, CGFloat y, CGFloat width, CGFloat height
 
 
 #pragma mark - UITableViewDelegate
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     if (tableView.tag == 200) {
         
         if ([[_countriesArray firstObject] isKindOfClass:[NSDictionary class]] == YES) {
@@ -304,7 +304,7 @@ CG_INLINE CGRect CGRectMakes(CGFloat x, CGFloat y, CGFloat width, CGFloat height
     switch (tableView.tag - 200) {
         case 0:
         {
-            if ( [_countriesArray[indexPath.section] isKindOfClass:[NSDictionary class]] == YES) {
+            if ([_countriesArray[indexPath.section] isKindOfClass:[NSDictionary class]] == YES) {
                 NSDictionary *dic = _countriesArray[indexPath.section];
                 NSArray *array = dic[@"subArray"];
                 AddressInfoModel *addressAreaModel = array[indexPath.row];
@@ -480,7 +480,7 @@ CG_INLINE CGRect CGRectMakes(CGFloat x, CGFloat y, CGFloat width, CGFloat height
     
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     if (tableView.tag - 200 == 0) {
         //        if (section == 0) {
         //            return 0.01;
@@ -498,7 +498,7 @@ CG_INLINE CGRect CGRectMakes(CGFloat x, CGFloat y, CGFloat width, CGFloat height
     }
 }
 
--(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+- (UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     UIView *view = [[UIView alloc] initWithFrame:CGRectZero];
     view.backgroundColor = [UIColor whiteColor];
     UIView * titleView = [[UIView alloc] initWithFrame:CGRectMake(0,0, ScreenWidth, 30)];
@@ -643,7 +643,7 @@ CG_INLINE CGRect CGRectMakes(CGFloat x, CGFloat y, CGFloat width, CGFloat height
     return size.width;
 }
 
--(UIView *)indexesView{
+- (UIView *)indexesView{
     
     if (_indexesView == nil) {
         _indexesView = [[UIView alloc]initWithFrame:CGRectMake((ScreenWidth - 25), 0, 20, 390)];
@@ -656,7 +656,7 @@ CG_INLINE CGRect CGRectMakes(CGFloat x, CGFloat y, CGFloat width, CGFloat height
 
 }
 
--(IndexView *)indexView{
+- (IndexView *)indexView{
     
     if (_indexView == nil) {
         _indexView  = [[IndexView alloc]initWithFrame:CGRectMake(0, 10, 20, 370)];

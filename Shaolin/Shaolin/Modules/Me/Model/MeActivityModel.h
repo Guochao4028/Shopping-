@@ -42,13 +42,13 @@ NS_ASSUME_NONNULL_BEGIN
 /**非考试最低可参加位阶*/
 @property (nonatomic, copy) NSString *levelFloor;
 /**已报名人数*/
-@property (nonatomic, copy) NSString *registeredNumber;
-/**活动状态 (已报名、 已结束)*/
-@property (nonatomic, copy) NSString *stateName;
-/**活动分类 - 考试、交流会、*/
-@property (nonatomic, copy) NSString *activityTypeName;
-/**活动分类 - id     4 为考试    */
-@property (nonatomic, copy) NSString *activityTypeId;
+@property (nonatomic, copy) NSString *applicationNumber;
+/**活动状态 - 2:已报名、1:已成功、3:进行中、0:考试失败、4 已结束*/
+@property (nonatomic) NSNumber *stateType;
+@property (nonatomic, readonly) NSString *stateName;
+/**活动分类 - 3:竞赛活动、4:考试、5:竞赛活动*/
+@property (nonatomic) NSNumber *activityTypeId;
+@property (nonatomic, readonly) NSString *activityTypeName;
 
 ///是否已签到
 - (BOOL)isCheckIn;

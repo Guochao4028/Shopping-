@@ -41,10 +41,10 @@
     }
 }
 
--(void)setRiteModel:(MyRiteCellModel *)riteModel {
+- (void)setRiteModel:(MyRiteCellModel *)riteModel {
     _riteModel = riteModel;
     
-    self.nameLabel.text = riteModel.name;
+    self.nameLabel.text = riteModel.pujaName;
     self.contentLabel.text = riteModel.introduction;
 //    self.priceLabel.text = [NSString stringWithFormat:@"¥ %@",riteModel.actuallyPaidMoney];
     

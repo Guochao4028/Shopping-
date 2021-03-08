@@ -154,7 +154,7 @@
 //                    return NO;
 //                }
             }
-            if ([model.params objectForKey:RiteFormModel_TextMinLength_ParamsKey]){
+            if (forcedInput && [model.params objectForKey:RiteFormModel_TextMinLength_ParamsKey]){
                 NSInteger minLength = [[model.params objectForKey:RiteFormModel_TextMinLength_ParamsKey] integerValue];
                 if (value.length < minLength){
                     NSString *key = [NSString stringWithFormat:@"%@%@", RiteFormModel_Tips_ParamsKey, RiteFormModel_TextMinLength_ParamsKey];
@@ -166,7 +166,7 @@
                 }
             }
             BOOL isNumber = model.checkType == CCCheckMoney || model.checkType == CCCheckFloat || model.checkType == CCCheckeNumber;
-            if (isNumber && [model.params objectForKey:RiteFormModel_MinValue_ParamsKey]){
+            if (forcedInput && isNumber && [model.params objectForKey:RiteFormModel_MinValue_ParamsKey]){
                 double minValue = [[model.params objectForKey:RiteFormModel_MinValue_ParamsKey] doubleValue];
                 if (value.length && [value doubleValue] < minValue){
                     NSString *key = [NSString stringWithFormat:@"%@%@", RiteFormModel_Tips_ParamsKey, RiteFormModel_MinValue_ParamsKey];

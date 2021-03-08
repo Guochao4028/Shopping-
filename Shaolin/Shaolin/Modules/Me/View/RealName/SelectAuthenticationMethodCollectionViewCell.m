@@ -21,12 +21,12 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        [self setUI];
+        [self setupUI];
     }
     return self;
 }
 
-- (void)setUI {
+- (void)setupUI {
 //    self.layer.contentsScale = [UIScreen mainScreen].scale;
     self.layer.backgroundColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:1.0].CGColor;
     self.layer.shadowColor = [UIColor colorWithRed:239/255.0 green:239/255.0 blue:239/255.0 alpha:0.7].CGColor;

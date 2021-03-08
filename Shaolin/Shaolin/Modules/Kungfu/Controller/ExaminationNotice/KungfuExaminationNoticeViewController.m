@@ -32,7 +32,7 @@ static NSString *const KungfuExaminationNoticeViewCellIdentifier = @"KungfuExami
     [super viewDidLoad];
     self.pageSize = 10;
     self.noticeList = [@[] mutableCopy];
-    [self setUI];
+    [self setupUI];
     // Do any additional setup after loading the view.
 }
 
@@ -44,7 +44,7 @@ static NSString *const KungfuExaminationNoticeViewCellIdentifier = @"KungfuExami
 }
 
 #pragma mark - UI
-- (void)setUI{
+- (void)setupUI{
     self.titleLabe.text = SLLocalizedString(@"考试通知");
     [self.view addSubview:self.noticeCollectionView];
 }
@@ -78,32 +78,32 @@ static NSString *const KungfuExaminationNoticeViewCellIdentifier = @"KungfuExami
 
 #pragma mark - requestData
 - (void)requestData:(void (^)(NSArray *array))finish{
-    NSDictionary *params = @{
-        @"pageNum" : [NSString stringWithFormat:@"%ld", self.currentPage],
-        @"pageSize" : [NSString stringWithFormat:@"%ld", self.pageSize],
-    };
-    MBProgressHUD * hud = [ShaolinProgressHUD defaultLoadingWithText:SLLocalizedString(@"加载中")];
-    WEAKSELF
-    [[KungfuManager sharedInstance] getExaminationNoticeListWithDic:params callback:^(NSDictionary *result) {
-        [hud hideAnimated:YES];
-        NSArray *dataList = @[];
-        if ([ModelTool checkResponseObject:result]) {
-            NSDictionary *dict = [result objectForKey:DATAS];
-            NSArray *arr = [dict objectForKey:DATAS];
-            dataList = [ExaminationNoticeModel mj_objectArrayWithKeyValuesArray:arr];
-            weakSelf.total = [[dict objectForKey:@"total"] integerValue];
-            [weakSelf.noticeList addObjectsFromArray:dataList];
-        } else {
-            weakSelf.total = 0;
-        }
-        if (weakSelf.noticeList.count == 0){
-#ifdef KUNGFUEXAMINATIONNOTICE_TEST
-            dataList = [[weakSelf testMeActivityList] mutableCopy];
-            weakSelf.noticeList = dataList;
-#endif
-        }
-        if (finish) finish(dataList);
-    }];
+//    NSDictionary *params = @{
+//        @"pageNum" : [NSString stringWithFormat:@"%ld", self.currentPage],
+//        @"pageSize" : [NSString stringWithFormat:@"%ld", self.pageSize],
+//    };
+//    MBProgressHUD * hud = [ShaolinProgressHUD defaultLoadingWithText:SLLocalizedString(@"加载中")];
+//    WEAKSELF
+//    [[KungfuManager sharedInstance] getExaminationNoticeListWithDic:params callback:^(NSDictionary *result) {
+//        [hud hideAnimated:YES];
+//        NSArray *dataList = @[];
+//        if ([ModelTool checkResponseObject:result]) {
+//            NSDictionary *dict = [result objectForKey:DATAS];
+//            NSArray *arr = [dict objectForKey:DATAS];
+//            dataList = [ExaminationNoticeModel mj_objectArrayWithKeyValuesArray:arr];
+//            weakSelf.total = [[dict objectForKey:@"total"] integerValue];
+//            [weakSelf.noticeList addObjectsFromArray:dataList];
+//        } else {
+//            weakSelf.total = 0;
+//        }
+//        if (weakSelf.noticeList.count == 0){
+//#ifdef KUNGFUEXAMINATIONNOTICE_TEST
+//            dataList = [[weakSelf testMeActivityList] mutableCopy];
+//            weakSelf.noticeList = dataList;
+//#endif
+//        }
+//        if (finish) finish(dataList);
+//    }];
 }
 
 - (void)update{

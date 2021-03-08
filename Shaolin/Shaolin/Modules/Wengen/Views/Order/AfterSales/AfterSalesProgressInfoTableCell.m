@@ -55,21 +55,21 @@
 
 - (IBAction)copyNumberButton:(UIButton *)sender {
     UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-    NSString *order_no = self.model.order_no;
+    NSString *order_no = self.model.orderNo;
     pasteboard.string = order_no;
     [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"复制成功") view:WINDOWSVIEW afterDelay:TipSeconds];
 }
 
 
--(void)setModel:(OrderRefundInfoModel *)model{
+- (void)setModel:(OrderRefundInfoModel *)model{
     
     _model = model;
-    [self.numberLabel setText:model.order_no];
+    [self.numberLabel setText:model.orderNo];
     
     CGSize labelSize = [NSString sizeWithFont:self.numberLabel.font maxSize:CGSizeMake(MAXFLOAT, 21) string:self.numberLabel.text];
     self.numberLabelW.constant = labelSize.width+1;
     
-    [self.applyTimeLabel setText:model.create_time];
+    [self.applyTimeLabel setText:model.createTime];
     NSString *type = model.type;
     
     
@@ -90,18 +90,18 @@
         [self.logisticsCompanyView setHidden:NO];
         [self.logisticsNumberView setHidden:NO];
         [self.sendTimeView setHidden:NO];
-        [self.logisticsCompanyNameLabel setText:model.logistics_name];
-        [self.logisticsNumberLabel setText:model.logistics_no];
-        [self.sendTimeLabel setText:model.send_time];
+        [self.logisticsCompanyNameLabel setText:model.logisticsName];
+        [self.logisticsNumberLabel setText:model.logisticsNo];
+        [self.sendTimeLabel setText:model.sendTime];
         
     }else if([refund_status isEqualToString:@"6"]){
         if ([type isEqualToString:@"2"] == YES){
             [self.logisticsCompanyView setHidden:NO];
             [self.logisticsNumberView setHidden:NO];
             [self.sendTimeView setHidden:NO];
-            [self.logisticsCompanyNameLabel setText:model.logistics_name];
-            [self.logisticsNumberLabel setText:model.logistics_no];
-            [self.sendTimeLabel setText:model.send_time];
+            [self.logisticsCompanyNameLabel setText:model.logisticsName];
+            [self.logisticsNumberLabel setText:model.logisticsNo];
+            [self.sendTimeLabel setText:model.sendTime];
             
 //            [self.sendTimeLabel setText:model.user_send_time];
         }

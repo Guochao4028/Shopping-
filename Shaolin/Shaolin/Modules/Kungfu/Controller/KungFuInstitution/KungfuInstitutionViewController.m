@@ -55,7 +55,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
 
 @implementation KungfuInstitutionViewController
 
--(void)viewWillAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self hideNavigationBarShadow];
     [self.view bringSubviewToFront:self.hotAddressLabel];
@@ -71,7 +71,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     [super viewDidLoad];
     self.view.backgroundColor = UIColor.whiteColor;
     [self.view addSubview:self.tableView];
-    [self setUI];
+    [self setupUI];
     [self getHotCity];
     
     if (NotNilAndNull(self.searchText)) {
@@ -82,7 +82,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
 }
 
 
-- (void)setUI {
+- (void)setupUI {
     self.pageNum = 1;
     self.searchTypeTableList = @[SLLocalizedString(@"教程"),SLLocalizedString(@"活动"),SLLocalizedString(@"机构")];
     
@@ -283,7 +283,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     return !self.dataArray.count;
 }
 
--(CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
+- (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
     return -30;
 }
 
@@ -303,21 +303,21 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
 
 
 #pragma mark - tableView delegate && dataSource
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 //    if (tableView == self.searchTypeTable) {
         return 1;
 //    }
 //    return self.dataArray.count;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (tableView == self.searchTypeTable) {
         return self.searchTypeTableList.count;
     }
     return self.dataArray.count;
 }
 //
-//-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+//- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
 //    if (tableView == self.searchTypeTable) {
 //        return [UIView new];
 //    }
@@ -326,7 +326,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
 //    return view;
 //}
 
-//-(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+//- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
 //    if (tableView == self.searchTypeTable) {
 //        return [UIView new];
 //    }
@@ -335,7 +335,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
 //    return view;
 //}
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (tableView == self.searchTypeTable) {
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:searchTypeCellId];
@@ -373,11 +373,11 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     }
     InstitutionModel * model = self.dataArray[indexPath.row];
     
-    KungfuWebViewController *vc = [[KungfuWebViewController alloc] initWithUrl:URL_H5_MechanismDetail(model.mechanismCode, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_mechanismDetail];
+    KungfuWebViewController *vc = [[KungfuWebViewController alloc] initWithUrl:URL_H5_MechanismDetail(model.mechanismCode, [SLAppInfoModel sharedInstance].accessToken) type:KfWebView_mechanismDetail];
     vc.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:vc animated:YES];
 }
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (tableView == self.searchTypeTable) {
         return 40;
     }
@@ -452,7 +452,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
 
 
 #pragma mark - setter
--(void)setTypeString:(NSString *)typeString {
+- (void)setTypeString:(NSString *)typeString {
     _typeString = typeString;
     
     self.searchView.searchTF.placeholder = [NSString stringWithFormat:@"%@%@", SLLocalizedString(@"搜索"), typeString];
@@ -487,7 +487,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     return _tableView;
 }
 
--(KfNavigationSearchView *)searchView{
+- (KfNavigationSearchView *)searchView{
     WEAKSELF
     if (_searchView == nil) {
         _searchView = [[[NSBundle mainBundle] loadNibNamed:@"KfNavigationSearchView" owner:self options:nil] objectAtIndex:0];
@@ -602,21 +602,21 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     return @"";
 }
 
--(NSArray *)dataArray
+- (NSArray *)dataArray
 {
     if (!_dataArray) {
         _dataArray = @[];
     }
     return _dataArray;
 }
--(NSMutableArray *)hotArray {
+- (NSMutableArray *)hotArray {
     if (!_hotArray) {
         _hotArray = [NSMutableArray array];
     }
     return _hotArray;
 }
 
--(NSMutableArray *)historyArray
+- (NSMutableArray *)historyArray
 {
     if (!_historyArray) {
 //        _historyArray = [NSKeyedUnarchiver unarchiveObjectWithFile:KGoodsHistorySearchPath];

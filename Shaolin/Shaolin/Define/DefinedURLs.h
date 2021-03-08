@@ -14,178 +14,222 @@
 
 /********************************文创商城*******************************/
 //商品全部分类
-#define URL_POST_SHOPAPI_COMMON_GOODS_CATE_GETALLGOODSCATELIST @"/shopapi/common/goods_cate/getAllGoodsCateList"
+//#define URL_POST_SHOPAPI_COMMON_GOODS_CATE_GETALLGOODSCATELIST @"/shopapi/common/goods_cate/getAllGoodsCateList"
+#define URL_POST_SHOPAPI_COMMON_GOODS_CATE_GETALLGOODSCATELIST @"/goods/cateList"
 
 // 首页 banner
-#define URL_POST_BANNERURL @"/bannerurlApp/bannerurlApp/banner"
+#define URL_POST_BANNERURL @"/banner/list"
 
 //商品一/二级分类列表
-#define URL_POST_SHOPAPI_COMMON_GOODS_CATE_GETGOODSCATELIST  @"/shopapi/common/goods_cate/getGoodsCateList"
+//#define URL_POST_SHOPAPI_COMMON_GOODS_CATE_GETGOODSCATELIST  @"/shopapi/common/goods_cate/getGoodsCateList"
+#define URL_POST_SHOPAPI_COMMON_GOODS_CATE_GETGOODSCATELIST  @"/goods/cateList"
+
 
 //新人推荐商品
-#define  URL_POST_SHOPAPI_COMMON_GOODS_GETNEW @"/shopapi/common/goods/getNew"
+//#define  URL_POST_SHOPAPI_COMMON_GOODS_GETNEW @"/shopapi/common/goods/getNew"
+#define  URL_POST_SHOPAPI_COMMON_GOODS_GETNEW @"/goods/newList"
+
 
 //首页 严选商品
-#define URL_POST_SHOPAPI_COMMON_GOODS_GETDELICATE @"/shopapi/common/goods/getDelicate"
+//#define URL_POST_SHOPAPI_COMMON_GOODS_GETDELICATE @"/shopapi/common/goods/getDelicate"
+#define URL_POST_SHOPAPI_COMMON_GOODS_GETDELICATE @"/goods/delicateList"
+
 
 //商品列表
-#define URL_POST_SHOPAPI_COMMON_GOODS_GETGOODSLIST @"/shopapi/common/goods/getGoodsList"
+//#define URL_POST_SHOPAPI_COMMON_GOODS_GETGOODSLIST @"/shopapi/common/goods/getGoodsList"
+#define URL_POST_SHOPAPI_COMMON_GOODS_GETGOODSLIST @"/goods/list"
+
+
 
 //商品详情
-#define URL_POST_SHOPAPI_COMMON_GOODS_GETGOODSINFO @"/shopapi/common/goods/getGoodsInfo"
+//#define URL_POST_SHOPAPI_COMMON_GOODS_GETGOODSINFO @"/shopapi/common/goods/getGoodsInfo"
+#define URL_POST_SHOPAPI_COMMON_GOODS_GETGOODSINFO @"/goods/detail"
+
 
 
 //检查商品库存
-#define URL_POST_SHOPAPI_COMMON_GOODS_CHECKSTOCK @"/shopapi/common/goods/checkStock"
+#define URL_POST_SHOPAPI_COMMON_GOODS_CHECKSTOCK @"/goods/checkStock"
 
 /********************************店铺*******************************/
-//店铺信息
-#define URL_POST_SHOPAPI_COMMON_CLUB_GETCLUBINFO @"/shopapi/common/club/getClubInfo"
-
+//TODO: ---------------以下未改
 //查看店铺证照信息
-#define URL_POST_SHOPAPI_COMMON_CLUB_GETBUSINESS @"/shopapi/common/club/getBusiness"
+//#define URL_POST_SHOPAPI_COMMON_CLUB_GETBUSINESS @"/shopapi/common/club/getBusiness"
+//TODO: ---------------以上未改
+
+//店铺信息
+//#define URL_POST_SHOPAPI_COMMON_CLUB_GETCLUBINFO @"/shopapi/common/club/getClubInfo"
+#define URL_POST_SHOPAPI_COMMON_CLUB_GETCLUBINFO @"/club/detail"
 
 
 //店铺取消收藏
-#define URL_POST_SHOPAPI_COMMON_COLLECT_CANCELCOLLECT @"/shopapi/common/collect/cancelCollect"
+//#define URL_POST_SHOPAPI_COMMON_COLLECT_CANCELCOLLECT @"/shopapi/common/collect/cancelCollect"
+#define URL_POST_SHOPAPI_COMMON_COLLECT_CANCELCOLLECT @"/collect/cancel"
 
 
 //店铺添加收藏
-#define URL_POST_SHOPAPI_COMMON_COLLECT_ADDCOLLECT @"/shopapi/common/collect/addCollect"
+//#define URL_POST_SHOPAPI_COMMON_COLLECT_ADDCOLLECT @"/shopapi/common/collect/addCollect"
+#define URL_POST_SHOPAPI_COMMON_COLLECT_ADDCOLLECT @"/collect/add"
+
 
 //收藏店铺列表
-#define URL_POST_SHOPAPI_COMMON_COLLECT_MYCOLLECT @"/shopapi/common/collect/myCollect"
+//#define URL_POST_SHOPAPI_COMMON_COLLECT_MYCOLLECT @"/shopapi/common/collect/myCollect"
+#define URL_POST_SHOPAPI_COMMON_COLLECT_MYCOLLECT @"/collect/getList"
 
 
 /*********************************收货地址********************************************/
 
 //收货地址列表
-#define URL_POST_SHOPAPI_COMMON_ADDRESS_ADDRESSLIST @"/shopapi/common/address/addressList"
+//#define URL_POST_SHOPAPI_COMMON_ADDRESS_ADDRESSLIST @"/shopapi/common/address/addressList"
+#define URL_POST_SHOPAPI_COMMON_ADDRESS_ADDRESSLIST @"/address/list"
 
 //收货地址文件
-#define URL_GET_AREA_LIST_TXT @"/area_list.txt"
+#define URL_GET_AREA_LIST_TXT @"/data/area_list.txt"
 
 //添加收货地址
-#define URL_POST_SHOPAPI_COMMON_ADDRESS_ADDADDRESS @"/shopapi/common/address/addAddress"
+//#define URL_POST_SHOPAPI_COMMON_ADDRESS_ADDADDRESS @"/shopapi/common/address/addAddress"
+#define URL_POST_SHOPAPI_COMMON_ADDRESS_ADDADDRESS @"/address/add"
 
 //计算商品运费
-#define URL_POST_SHOPAPI_COMMON_ORDER_COMPUTEGOODSFEE @"/shopapi/common/order/computeGoodsFee"
+//#define URL_POST_SHOPAPI_COMMON_ORDER_COMPUTEGOODSFEE @"/shopapi/common/order/computeGoodsFee"
 
 //计算商品运费
-#define URL_POST_SHOPAPI_COMMON_ORDER_COMPUTEGOODSFEE @"/shopapi/common/order/computeGoodsFee"
+#define URL_POST_SHOPAPI_COMMON_ORDER_COMPUTEGOODSFEE @"/shipping/getShippingFee"
 
 //修改收货地址
-#define URL_POST_SHOPAPI_COMMON_ADDRESS_EDITADDRESS @"/shopapi/common/address/editAddress"
+//#define URL_POST_SHOPAPI_COMMON_ADDRESS_EDITADDRESS @"/shopapi/common/address/editAddress"
+#define URL_POST_SHOPAPI_COMMON_ADDRESS_EDITADDRESS  @"/address/edit"
 
 //删除收货地址
-#define URL_POST_SHOPAPI_COMMON_ADDRESS_DELADDRESS @"/shopapi/common/address/delAddress"
+//#define URL_POST_SHOPAPI_COMMON_ADDRESS_DELADDRESS @"/shopapi/common/address/delAddress"
+#define URL_POST_SHOPAPI_COMMON_ADDRESS_DELADDRESS @"/address/delete"
+
+
 
 //收货地址详情
-#define URL_POST_SHOPAPI_COMMON_ADDRESS_GETADDRESSINFO @"/shopapi/common/address/getAddressInfo"
+//#define URL_POST_SHOPAPI_COMMON_ADDRESS_GETADDRESSINFO @"/shopapi/common/address/getAddressInfo"
+#define URL_POST_SHOPAPI_COMMON_ADDRESS_GETADDRESSINFO @"/address/info"
+
 
 //添加购物车
-#define URL_POST_SHOPAPI_COMMON_GOODS_CAR_ADDCAR @"/shopapi/common/goods_car/addCar"
+#define URL_POST_SHOPAPI_COMMON_GOODS_CAR_ADDCAR @"/cart/save"
 
 /*********************************购物车********************************************/
 
 //购物车列表
-#define URL_POST_SHOPAPI_COMMON_GOODS_CAR_CARLIST @"/shopapi/common/goods_car/CarList"
+//#define URL_POST_SHOPAPI_COMMON_GOODS_CAR_CARLIST @"/shopapi/common/goods_car/CarList"
+#define URL_POST_SHOPAPI_COMMON_GOODS_CAR_CARLIST @"/cart/list"
 
 //删除购物车
-#define URL_POST_SHOPAPI_COMMON_GOODS_CAR_DELCAR @"/shopapi/common/goods_car/delCar"
+#define URL_POST_SHOPAPI_COMMON_GOODS_CAR_DELCAR @"/cart/delete"
 
-//购物车添加商品数量
-#define URL_POST_SHOPAPI_COMMON_GOODS_CAR_INCRCARNUM @"/shopapi/common/goods_car/incrCarNum"
+////购物车添加商品数量
+//#define URL_POST_SHOPAPI_COMMON_GOODS_CAR_INCRCARNUM @"/shopapi/common/goods_car/incrCarNum"
+//
+////购物车减少商品数量
+//#define URL_POST_SHOPAPI_COMMON_GOODS_CAR_DECRCARNUM @"/shopapi/common/goods_car/decrCarNum"
 
-//购物车减少商品数量
-#define URL_POST_SHOPAPI_COMMON_GOODS_CAR_DECRCARNUM @"/shopapi/common/goods_car/decrCarNum"
+//购物车修改商品数量
+#define URL_POST_SHOPAPI_COMMON_GOODS_CAR_UPDATENUM @"/cart/updateNum"
 
 //购物车修改规格
-#define URL_POST_SHOPAPI_COMMON_GOODS_CAR_CHANGEGOODSATTR @"/shopapi/common/goods_car/changeGoodsAttr"
+#define URL_POST_SHOPAPI_COMMON_GOODS_CAR_CHANGEGOODSATTR @"/cart/updateAttr"
 
 /********************************订单****************************************/
-
+//TODO: ---------------以下未改
 //生成订单
-#define URL_POST_SHOPAPI_COMMON_ORDER_CREATODER @"/shopapi/common/order/CreatOrder"
-
-//我的订单
-#define URL_POST_SHOPAPI_COMMON_ORDER_USERORDERLIST @"/shopapi/common/order/UserOrderList"
-
-#define URL_POST_SHOPAPI_COMMON_ORDER_USERORDERLIST_NEW @"/shopapi/common/order/UserOrderListNew"
+#define URL_POST_SHOPAPI_COMMON_ORDER_CREATODER @"/order/add"
+//申请开发票
+#define URL_POST_INVOICE_ADD     @"/invoice/add"
 
 //订单统计
-#define URL_POST_SHOPAPI_COMMON_ORDER_GETCOUNT @"/shopapi/common/order/getCount"
+#define URL_POST_SHOPAPI_COMMON_ORDER_GETCOUNT @"/order/getCount"
 
 //删除订单
-#define URL_POST_SHOPAPI_COMMON_ORDER_DELORDER @"/shopapi/common/order/delOrder"
+#define URL_POST_SHOPAPI_COMMON_ORDER_DELORDER @"/order/delete"
 
-//订单详情
-#define URL_POST_SHOPAPI_COMMON_ORDER_ORDERINFO @"/shopapi/common/order/OrderInfo"
-
-
-#define URL_POST_SHOPAPI_COMMON_ORDER_ORDERINFONEW @"/shopapi/common/order/OrderInfoNew"
-
+//#define URL_POST_SHOPAPI_COMMON_ORDER_ORDERINFONEW @"/shopapi/common/order/OrderInfoNew"
 
 //确认订单
-#define URL_POST_SHOPAPI_COMMON_ORDER_CONFIRMRECEIPT @"/shopapi/common/order/confirmReceipt"
+#define URL_POST_SHOPAPI_COMMON_ORDER_CONFIRMRECEIPT @"/order/receipt"
 
 //评论订单
-#define URL_POST_SHOPAPI_COMMON_EVALUATE_ADDEVALUATE @"/shopapi/common/evaluate/addEvaluate"
+#define URL_POST_SHOPAPI_COMMON_EVALUATE_ADDEVALUATE @"/evaluate/add"
 
 //取消订单
-#define URL_POST_SHOPAPI_COMMON_ORDER_CANCELORDER @"/shopapi/common/order/CancelOrder"
+#define URL_POST_SHOPAPI_COMMON_ORDER_CANCELORDER @"/order/cancel"
 
 //订单申请售后
-#define URL_POST_SHOPAPI_COMMON_REFUND_ADDREFUND @"/shopapi/common/refund/addRefund"
+#define URL_POST_SHOPAPI_COMMON_REFUND_ADDREFUND @"/refund/add"
 
 
 //订单取消售后
-#define URL_POST_SHOPAPI_COMMON_REFUND_CANNELREFUND @"/shopapi/common/refund/cannelRefund"
+#define URL_POST_SHOPAPI_COMMON_REFUND_CANNELREFUND @"/refund/cancel"
 
 //售后申请详情
-#define URL_POST_SHOPAPI_COMMON_REFUND_GETREFUNINFO @"/shopapi/common/refund/getRefundInfo"
+#define URL_POST_SHOPAPI_COMMON_REFUND_GETREFUNINFO @"/refund/info"
+
 //申请售后发货
-#define URL_POST_SHOPAPI_COMMON_REFUND_SENDREFUNDGOODS @"/shopapi/common/refund/sendRefundGoods"
+#define URL_POST_SHOPAPI_COMMON_REFUND_SENDREFUNDGOODS @"/refund/sendGoods"
 
 //删除售后
-#define  URL_POST_SHOPAPI_COMMON_ORDER_DELREFUNDORDER @"/shopapi/common/order/delRefundOrder"
+#define  URL_POST_SHOPAPI_COMMON_ORDER_DELREFUNDORDER @"/refund/delete"
 
 //用户资质信息
-#define URL_POST_SHOPAPI_COMMON_INVOICE_USERQUALIFICATIONS @"/shopapi/common/invoice/userQualifications"
+#define URL_POST_SHOPAPI_COMMON_INVOICE_USERQUALIFICATIONS @"/qualification/info"
 
 
 //添加用户资质信息
-#define URL_POST_SHOPAPI_COMMON_INVOICE_ADDQUALIFICATIONS @"/shopapi/common/invoice/addQualifications"
+#define URL_POST_SHOPAPI_COMMON_INVOICE_ADDQUALIFICATIONS @"/qualification/add"
+//TODO: ---------------以上未改
 
+//#define URL_GET_SHOPAPI_COMMON_GOODS_GETGOODSINVOICE @"/shopapi/common/goods/getGoodsInvoice"
 //申请开发票
-#define URL_POST_SHOPAPI_COMMON_INVOICE_INVOICING @"/shopapi/common/Invoice/Invoicing"
+#define URL_POST_SHOPAPI_COMMON_INVOICE_INVOICING @"/invoice/add"
+//换开发票
+#define URL_POST_SHOPAPI_COMMON_INVOICE_CHANGEINVOICE  @"/invoice/change"
+//修改发票信息
+#define URL_POST_SHOPAPI_COMMON_INVOICE_EDITINVOICE  @"/invoice/edit"
 
-#define URL_GET_SHOPAPI_COMMON_GOODS_GETGOODSINVOICE @"/shopapi/common/goods/getGoodsInvoice"
+//我的订单
+//#define URL_POST_SHOPAPI_COMMON_ORDER_USERORDERLIST @"/shopapi/common/order/UserOrderList"
+//
+//#define URL_POST_SHOPAPI_COMMON_ORDER_USERORDERLIST_NEW @"/shopapi/common/order/UserOrderListNew"
+#define URL_POST_SHOPAPI_COMMON_ORDER_USERORDERLIST @"/order/list"
+
+
+#define URL_POST_SHOPAPI_COMMON_REFUND_LIST @"/refund/list"
+
+//订单详情
+#define URL_POST_SHOPAPI_COMMON_ORDER_ORDERINFO @"/order/info"
+////ahq 列表
+//#define URL_POST_SHOPAPI_COMMON_AHP_GETAHQLIST @"/shopapi/common/ahq/getAhqList"
+////猜你想问
+//#define URL_POST_SHOPAPI_COMMON_AHP_GUESSLIST @"/shopapi/common/ahq/guessList"
 
 //ahq 列表
-#define URL_POST_SHOPAPI_COMMON_AHP_GETAHQLIST @"/shopapi/common/ahq/getAhqList"
+#define URL_POST_SHOPAPI_COMMON_AHP_GETAHQLIST @"/faq/getList"
 //猜你想问
-#define URL_POST_SHOPAPI_COMMON_AHP_GUESSLIST @"/shopapi/common/ahq/guessList"
-
-//换开发票
-#define URL_POST_SHOPAPI_COMMON_INVOICE_CHANGEINVOICE  @"/shopapi/common/invoice/changeInvoice"
+#define URL_POST_SHOPAPI_COMMON_AHP_GUESSLIST @"/faq/getList"
 
 //发送邮件
 #define URL_POST_SHOPAPI_COMMON_SENDMAIL  @"/common/sendMail"
 
 
+//订单详情
+#define URL_GET_SHOPAPI_COMMON_INVOICE_LIST @"/invoice/list"
 
-//修改发票信息
-#define URL_POST_SHOPAPI_COMMON_INVOICE_EDITINVOICE  @"/shopapi/common/Invoice/editInvoice"
 
+//发票详情
+#define URL_POST_SHOPAPI_COMMON_INVOICE_INFO @"/invoice/info"
 
+#pragma mark - 以上都是商城相关接口
 
 
 /*********************************支付********************************************/
 //支付密码校验
 #define  URL_POST_USER_PAYPASSWORDCHECK @"/user/payPasswordCheck"
 //获取余额
-#define  URL_POST_USER_BALANCE @"/user/balance"
+//#define  URL_POST_USER_BALANCE @"/user/balance"
 //设置支付密码
 #define  URL_POST_USER_PAYPASSWORDSETTING @"/user/payPasswordSetting"
 //修改支付密码
@@ -207,7 +251,7 @@
 /*********************************登录模块********************************************/
 #define URL_GET_REFRESHTOKEN @"/login/refreshToken" //刷新用户token
 #define URL_POST_USER_LOGIN @"/login/passwordLogin" //登录
-#define URL_POST_USER_CODELOGIN @"/login/CodeLogin" //验证码登录
+#define URL_POST_USER_CODELOGIN @"/login/codeLogin" //验证码登录
 
 #define URL_POST_USER_LOGIN_OTHER @"/login/other" // 第三方授权登录
 #define URL_POST_USER_LOGIN_OTHERBINDLIST @"/login/otherBindList" //第三方授权列表
@@ -218,226 +262,237 @@
 #define URL_POST_USER_PhoneCheck @"/login/phoneCheck" //验证手机号是否被注册
 /*********************************所有验证码********************************************/
 #define URL_POST_ALL_CODE @"/common/phoneVerifyCode" //获取验证码
-#define URL_POST_CHECK_CODE @"/common/AppCodeCheck" //校验验证码是否正确
+#define URL_POST_CHECK_CODE @"/common/codeCheck" //校验验证码是否正确
 
-#define URL_GET_AD @"/openScreenApp/get" //开屏广告
+#define URL_GET_AD @"/openScreen/list" //开屏广告
 /*********************************发现模块********************************************/
-#define URL_GET_HomeSegment @"/findApp/fieldApp/field" //分段标签
-#define URL_GET_HomeList @"/findApp/newsinformationApp/newsinformation" //发现列表接口
-#define Video_First_Photo  @"?x-oss-process=video/snapshot,t_3000,m_fast" //视频首帧
-#define Found_Video_List @"/findApp/newsinformationApp/newsinformation/video" //发现的视频列表
+#define URL_GET_HomeSegment @"/find/field/list" //分段标签
+#define URL_GET_HomeList @"/find/list" //发现列表接口
+#define Video_First_Photo @"?x-oss-process=video/snapshot,t_3000,m_fast,ar_auto" //视频首帧
+#define Found_Video_List @"/find/video" //发现的视频列表
 #define Found_POST_Photo @"/common/uploadImage"//上传图片
-#define Found_POST_WebNewsInforMation @"/findApp/newsinformationApp/newsinformation"//发布文章
+#define Found_POST_WebNewsInforMation @"/find/save" //发布文章
 
-#define Found_POST_TextContentCheck @"/shareApp/shareApp/share/textcontentcheck" //敏感词判断
-#define Foune_POST_DetailsCollection @"/collectionApp/collectionApp/collection" //收藏
-#define Foune_POST_DetailsPraise @"/praiseApp/praiseApp/praise" //点赞
-#define Foune_POST_CanclePraise @"/praiseApp/praiseApp/praise/delete" //取消点赞
-#define Foune_POST_CancleCollection @"/collectionApp/collectionApp/collection/delete" //取消收藏
-#define Foune_Get_Topic @"/topicApp/topicApp/topic"//热搜
-#define Foune_Get_SearchAndDetails @"/findApp/newsinformationApp/newsinformation/search"    //发现-搜索（// 或 文章详情
-#define Foune_Get_ArticleDetails @"/findApp/newsinformationApp/newsinformation/details"     //发现-文章详情
+#define Foune_POST_ADDVIDEOREADHISTORY @"/readHistory/save" //发现-添加视频阅读记录
+#define Foune_POST_DetailsCollection @"/collection/save" //收藏
+#define Foune_POST_DetailsPraise @"/praise/save" //点赞
+#define Foune_POST_CanclePraise @"/praise/delete" //取消点赞
+#define Foune_POST_CancleCollection @"/collection/delete" //取消收藏
+#define Foune_Get_Topic @"/topic/find"//热搜
+#define Foune_Get_SearchAndDetails @"/find/search"    //发现-搜索（// 或 文章详情
+#define Foune_Get_ArticleDetails @"/find/detail"     //发现-文章详情
 
 /*********************************活动模块********************************************/
-#define Activity_GET_Segment @"/activityApp/HdFieldApp/hdField"// 活动标签
-#define Activity_GET_List @"/activityApp/HdNewsinformationAPP/hdNewsinformation" //活动列表
-#define Activity_GET_Search @"/activityApp/HdNewsinformationAPP/hdNewsinformation/search" //活动搜索
-#define Activity_Video_List @"/activityApp/HdNewsinformationAPP/hdNewsinformation/video"//活动视频列表
-#define Activity_Get_Topic @"/topicApp/topicApp/topic/activity"//热搜
+//#pragma mark - *****以下接口*****
+//#define Activity_GET_Segment @"/activityApp/HdFieldApp/hdField"// 活动标签
+//#define Activity_GET_List @"/activityApp/HdNewsinformationAPP/hdNewsinformation" //活动列表
+//#define Activity_GET_Search @"/activityApp/HdNewsinformationAPP/hdNewsinformation/search" //活动搜索
+//#define Activity_Video_List @"/activityApp/HdNewsinformationAPP/hdNewsinformation/video"//活动视频列表
+//#define Activity_Get_Topic @"/topicApp/topicApp/topic/activity"//热搜
+////检查筛查所适用报名的位阶
+//#define ACTIVITY_LEVEL_ACTIVITYCHECKEDLEVEL @"/activity/activityCheckedLevel"
 
-#define Activity_Classification @"/activity/activityClassification"//活动分类
+//#pragma mark - *****以上接口不用了*****
 
-#define Activity_ActivityList @"/activity/activityList"//分类查询适配活动 || 段 品阶 品查询适配活动
-#define Activity_GET_ArticleDetails @"/activityApp/HdNewsinformationAPP/hdNewsinformation/details" // 活动-文章详情
-
-//段 、品、品阶
-#define Activity_LEVEL_LEVELLIST  @"/level/levelList"
-
-//检查筛查所适用报名的位阶
-#define ACTIVITY_LEVEL_ACTIVITYCHECKEDLEVEL @"/activity/activityCheckedLevel"
-
-//段品制活动详情
-#define ACTIVITY_ACTIVITYDETAILS @"/activity/activityDetails"
-
-//段品制 - 报名页面回显信息(新)
-#define KungFu_applicationsEcho @"/activity/applicationsEcho"
-
+#define Activity_GET_ArticleDetails @"/puja/detail" // 活动-文章详情
 //法会列表
-#define Activity_RiteList @"/pujaController/pujaList"
-
+#define Activity_RiteList @"/puja/list"
 /*!法会二级、三级类别列表*/
-#define Activity_RiteSecondList @"/pujaController/pujaClassification"
+#define Activity_RiteSecondList @"/puja/pujaClassification"
 /*!法会四级类别列表*/
-#define Activity_RiteFourList @"/pujaController/matterInfoList"
+#define Activity_RiteFourList @"/puja/matterInfoList"
+//#define Activity_RiteFourList @"/puja/matterInfoList"
 
 /*! 法会时间*/
-#define Activity_RiteDate @"/pujaController/rulesCorrespondTime"
+#define Activity_RiteDate @"/puja/rulesCorrespondTime"
 
 /*! 法会详情*/
-#define Activity_RiteDetails @"/pujaController/pujaDetails"
+//#define Activity_RiteDetails @"/puja/details"
+
 /*! 法会表单结构*/
-#define Activity_RiteFormModel @"/pujaController/pujaType"
+#define Activity_RiteFormModel @"/puja/pujaType"
 /*! 提交表单*/
-#define Activity_RiteFormSignUp @"/pujaController/pujaSignUp"
+#define Activity_RiteFormSignUp @"/puja/signUp"
 /*! 法会订单支付成功获取祝福语*/
-#define Activity_RiteBlessing @"/pujaController/blessing"
+#define Activity_RiteBlessing @"/puja/blessing"
 /*! 是否去内坛*/
-#define Activity_RitePujaSignUpUpdate @"/pujaController/pujaSignUpUpdate"
+#define Activity_RitePujaSignUpUpdate @"/puja/signUpUpdate"
 
 //法会最早最晚时间，筛选用
-#define Activity_RiteTimeRange @"/pujaController/timeInterval"
+#define Activity_RiteTimeRange @"/puja/timeInterval"
 
 //法会 报名详情
-#define Activity_RitePujaSignUpOrderCodeInfo @"/pujaController/pujaSignUpOrderCodeInfo"
+#define Activity_RitePujaSignUpOrderCodeInfo @"/puja/signUpOrderCodeInfo"
 
 //往期法会时间
-#define Activity_RitePastReviewTime @"/pujaController/pastReviewTime"
+#define Activity_RitePastReviewTime @"/puja/pastReviewTime"
 
 //检查四级法会事项时间
-#define Activity_RiteCheckedTime @"/pujaController/checkedTime"
+#define Activity_RiteCheckedTime @"/puja/checkTime"
 
 
 /*! 获取法会列表公告数据*/
-#define Activity_RiteMarqueeList @"/pujaController/notice"
+#define Activity_RiteMarqueeList @"/puja/notice"
 
 //搜索法会
-#define Activity_SearchRite @"/pujaController/search"
+#define Activity_SearchRite @"/puja/search"
 //往期法会
-#define Activity_PastRiteList @"/pujaController/pastReviewList"
-//我的法会
-#define Activity_MyRite @"/pujaController/pujaSignUpByMemberId"
+#define Activity_PastRiteList @"/puja/pastReviewList"
 
-/*********************************我的模块********************************************/
-#define Me_GetUserBalance @"/user/balance" //获取用户余额信息
-#define Me_QueryPayPassword @"/user/payPasswordStatus"//查询支付密码设置状态
-#define Me_ConsumerDetails @"/common/consumerDetails"//交易明细
-#define Me_UserData @"/user" //个人信息
-#define Me_UserChangePhoneNumber @"/login/replacePhoneNumber" //修改手机号
-#define Me_UserChangeDate @"/memberApp/memberApp/member/update" //修改个人资料
-#define Me_RealNameIdCard @"/shareApp/shareApp/share/idcardverify" //实名认证
-#define Me_IdcardReason @"/shareApp/shareApp/share/idcardReason"    //实名认证拒绝原因
-#define Me_PersonAuthenticationToken @"/common/RPManualToken"    //获取实人认证token及BizId
-#define Me_PersonAuthenticationResult @"/common/RPManualVerifyResult"   //获取实人认证结果
 
-#define Me_ChangePassword @"/memberApp/memberApp/member/updatepas"//修改密码
-#define Me_BackPassword @"/memberApp/memberApp/member/updateseek" //找回密码
-#define Me_Readhistory @"/readhistoryApp/readhistoryApp/readhistory"//阅读历史
-#define Me_OutLogin @"/login/quit" //退出登录
-#define Me_Get_ActivityList @"/activity/activityMyself"//我的活动
-#define Me_POST_CourseReadHistory @"/gradeapi/common/Course/getCourseReadHistory"//教程观看历史
-#define Me_POST_CourseBuyHistory @"/gradeapi/common/Course/getCourseBuyHistory"//教程购买历史
-#define Me_POST_ExamProof @"/pay/examProofList" //考试凭证列表
-
-#define Me_Get_WebNewsList @"/findApp/newsinformationApp/newsinformation/search" // 发文管理 和 草稿箱
-#define Me_Get_DraftboxList @"/findApp/newsinformationApp/newsinformation/draft"    //草稿箱
-#define Me_Get_DispatchList @"/findApp/newsinformationApp/newsinformation/dispatch" //发文管理
-#define Me_POST_DeleteText @"/findApp/newsinformationApp/newsinformation/delete" //删除文章 和 草稿箱
-#define Me_User_ChangeText @"/findApp/newsinformationApp/newsinformation/update" //修改文章
-#define Me_LookTextRefused @"/findApp/newsinformationApp/newsinformation/approval" //查看被拒原因
-#define Me_ReadHistory @"/readhistoryApp/readhistoryApp/readhistory"// 阅读历史
-#define Me_Collection @"/collectionApp/collectionApp/collection" //我的收藏
-#define Me_Collection_Rite @"pujaController/collection"//我的收藏 - 法会
-
-#define Me_DeleteHistory @"/readhistoryApp/readhistoryApp/readhistory/delete"//删除阅读历史
-/*********************************我的模块----> 商家入驻********************************************/
-#define Me_StoreInfo_OpenInformation @"/shopapi/common/club/getClubInfoStep" //获取用户填写资料详情
-#define Me_StoreInfo_LegalPerson @"/shopapi/common/club/applicationClub" //法人信息
-
-//物流列表
-#define Me_LogisticsList @"/common/logisticsList"
-
-//检查版本
-#define Me_CheckAppVersion @"/common/sendingData"
-/*********************************段品制********************************************/
-#define KungFu_HotCity @"/mechanism/popularCities" //机构热门城市
-#define KungFu_HotClass @"/shopapi/common/goods/getHotWord" //热门教程
-#define KungFu_HotActivity @"/activity/applicationsHot" //热门活动
-#define KungFu_Achievements @"/level/achievements" //我的成就
-// 查看证书列表
-#define KungFu_Certificate @"/certificateApp/certificate/get"
-// 查看成绩列表
-#define KungFu_ScoreList @"/achievementsApp/achievements/get"
-// 查看教程列表
-#define KungFu_ClassList @"/gradeapi/common/Course/getCourseList"
-// 机构列表
-#define KungFu_InstitutionList @"/mechanism/mechanismList"
+#pragma mark - 段品制
+// 分类查询适配活动 || 段 品阶 品查询适配活动
+#define Activity_ActivityList @"/activity/list"
+// 段品制活动分类
+#define Activity_Classification @"/activity/classification"//活动分类
+// 机构热门城市
+#define KungFu_HotCity @"/mechanism/popularCity"
+// 热门活动
+#define KungFu_HotActivity @"/activity/hot"
+// 我的成就
+#define KungFu_Achievements @"/level/achievements"
 // 提交报名信息
-#define KungFu_ApplicationsSave @"/activity/applicationsSave"
-// 我的报名信息
-#define KungFu_MyApplications @"/applicationsApp/applications/myApplications"
-// 查询报名信息
-#define KungFu_applicationsSearch @"/applicationsApp/applications/get"
-// 报名信息详情
-#define KungFu_applicationsDetail @"/applicationsApp/applications/details"
-
-// 考试通知
-#define KungFu_examinationNotice @"/applicationsApp/applications/notice"
-// 开始理论考试
-#define KungFu_Examination @"/examinationApp/examination/get"
-// 提交考卷
-#define KungFu_ExaminationSubmit @"/examinationApp/examination/achievements"
-// 保存答题信息
-#define KungFu_ExaminationSave @"/examinationApp/examination/save"
-
-// 科目列表
-#define Kungfu_SubjectList @"/gradeapi/common/subject/getList"
-
-#define KungFu_Certificate @"/certificateApp/certificate/get" // 查看证书列表
-/**领取实物证书*/
-#define KungFu_ApplicationCertificate @"/certificateApp/certificate/application"
-
-#define KungFu_ScoreList @"/achievementsApp/achievements/get" // 查看成绩列表
-#define KungFu_ScoreDetail @"/achievementsApp/achievements/detail" // 查看成绩详情
-
-#define KungFu_ClassList @"/gradeapi/common/Course/getCourseList" // 查看教程列表
-
-#define KungFu_InstitutionList @"/mechanism/mechanismList"  // 机构列表
-#define KungFu_ApplicationsSave @"/activity/applicationsSave"  // 提交报名信息
-
-
-#define KungFu_MyApplications @"/applicationsApp/applications/myApplications"  // 我的报名信息
-// 根据活动编号查询电话和姓名
-#define KungFu_OrderDetailUserInfo @"/activity/userInfoByOrderCode"
-// 课程详情下方更多推荐
-#define KungFu_ClasDetail_Recomment @"/gradeapi/common/course/getRecommend"
-
-
-
-// 查询教程详情
-#define KungFu_ClassDetail @"/gradeapi/common/Course/getCourseInfo"
-#define KungFu_SetCourseReadHistory @"/gradeapi/common/Course/setCourseReadHistory" //添加教程观看历史
-
-// 收藏教程
-#define KungFu_ClassCollect @"/gradeapi/common/Course/setList"
-
+#define KungFu_ApplicationsSave @"/application/save"
+// 机构报名
+#define KungFu_MECHANISM_MECHANISMSIGNUP @"/mechanism/signUp"
+//// 查询报名信息（目前未使用）
+//#define KungFu_applicationsSearch @"/applicationsApp/applications/get"
+//// 报名信息详情（目前未使用）
+//#define KungFu_applicationsDetail @"/applicationsApp/applications/details"
+//// 保存答题信息（目前未使用）
+//#define KungFu_ExaminationSave @"/examinationApp/examination/save"
+//// 考试通知（目前未使用）
+//#define KungFu_examinationNotice @"/applicationsApp/applications/notice"
+//// 开始理论考试（目前未使用）
+//#define KungFu_Examination @"/examinationApp/examination/get"
+//// 提交考卷（目前未使用）
+//#define KungFu_ExaminationSubmit @"/examinationApp/examination/achievements"
+//// 领取实物证书（目前未使用）
+//#define KungFu_ApplicationCertificate @"/certificateApp/certificate/application"
+// 查看证书列表
+#define KungFu_Certificate @"/user/myCertificate"
+// 查看成绩详情
+#define KungFu_ScoreDetail @"/achievement/detail"
+// 机构列表
+#define KungFu_InstitutionList @"/mechanism/list"
+// 查看成绩列表
+#define KungFu_ScoreList @"/achievement/list"
 // 苹果内购验证
 #define Me_ApplePayCheck @"/pay/setApplePayCertificate"
-
-// 苹果余额充值商品
-#define Me_ApplePayProductList @"/common/appleVirtualCurrencyList"
-
-// 实名认证回显
-#define Me_ShareAppDetail @"/shareApp/shareApp/share/details"
-
-
-#define KungFu_MECHANISM_MECHANISMSIGNUP @"/mechanism/mechanismSignUp" //机构报名
-
-#define KungFu_VideoAuth @"/vodApp/getAuth" //从阿里获取播放凭证
-
+//// 苹果余额充值商品（暂时不用）
+//#define Me_ApplePayProductList @"/common/appleVirtualCurrencyList"
+// 从阿里获取播放凭证
+#define KungFu_VideoAuth @"/video/getAuth"
 // 活动报名 表单 学历
 #define COMMON_EDUCATIONDATA @"/common/educationData"
-
 // 活动报名 表单 民族
 #define COMMON_NATIONDATA @"/common/nationData"
+// 活动公告 公告列表
+#define ACTIVITY_ANNOINCEMENT   @"/announcement/list"
+// 活动公告 公告未读数量
+#define ACTIVITY_ANNOINCEMENTUNREADNUMBER   @"/announcement/unreadNumber"
+// 活动公告 标记已读
+#define ACTIVITY_ANNOINCEMENTMARKREAD   @"/announcement/read"
+// 段 、品、品阶
+#define Activity_LEVEL_LEVELLIST  @"/level/list"
+// 段品制 - 报名页面回显信息(新)
+#define KungFu_applicationsEcho @"/application/info"
 
-//活动公告 公告列表
-#define ACTIVITY_ANNOINCEMENT   @"/activity/announcement"
+#pragma mark - 我的
+//#define Me_GetUserBalance @"/user/balance" //获取用户余额信息
+//#define Me_QueryPayPassword @"/user/payPasswordStatus"//查询支付密码设置状态
+// 交易明细
+#define Me_ConsumerDetails @"/common/consumerDetail"
+// 个人信息
+#define Me_UserData @"/user"
+// 修改手机号
+#define Me_UserChangePhoneNumber @"/user/changePhoneNumber"
+// 修改个人资料
+#define Me_UserChangeDate @"/user/update"
+//// 退出登录（未使用）
+//#define Me_OutLogin @"/login/quit"
 
-//活动公告 公告未读数量
-#define ACTIVITY_ANNOINCEMENTUNREADNUMBER   @"/activity/announcementUnReadNumber"
+// 新增实名认证
+#define Me_RealNameIdCard @"/idCardCheck/save"
+// 实名认证拒绝原因
+#define Me_IdcardReason @"/idCardCheck/reason"
+// 获取实人认证token及BizId
+#define Me_PersonAuthenticationToken @"/idCardCheck/RPManualToken"
+// 获取实人认证结果
+#define Me_PersonAuthenticationResult @"/idCardCheck/RPManualVerifyResult"
+// 实名认证回显
+#define Me_ShareAppDetail @"/idCardCheck/detail"
 
-//活动公告 标记已读
-#define ACTIVITY_ANNOINCEMENTMARKREAD   @"/activity/announcementMarkRead"
+// 阅读历史
+#define Me_Readhistory @"/readHistory/list"
+// 删除阅读历史
+#define Me_DeleteHistory @"/readHistory/delete"
+// 我的活动
+#define Me_Get_ActivityList @"/application/myself"
+//// 考试凭证列表（接口废弃）
+//#define Me_POST_ExamProof @"/pay/examProofList"
+// 草稿箱
+#define Me_Get_DraftboxList @"/find/draft"
+// 发文管理
+#define Me_Get_DispatchList @"/find/dispatch"
+// 删除文章 和 草稿箱
+#define Me_POST_DeleteText @"/find/delete"
+// 修改文章
+#define Me_User_ChangeText @"/find/update"
+// 查看审批批语
+#define Me_LookTextRefused @"/find/approval"
+// 我的收藏 - 法会
+#define Me_Collection_Rite @"/puja/collection"
+// 检查版本
+#define Me_CheckAppVersion @"/common/latestVersion"
+// 我的报名信息
+#define KungFu_MyApplications @"/application/myApplication"
+
+/// 店铺入驻
+// 获取用户填写资料详情
+#define Me_StoreInfo_OpenInformation @"/applyClub/info"
+// 店铺入驻
+#define Me_StoreInfo_LegalPerson @"/applyClub/add"
+
+
+
+// 我的收藏
+//#define Me_Collection @"/shopapi/common/collect/myCollect"
+#define Me_Collection @"/collect/getList"
+
+// 我的收藏 文章 & 视频
+#define Me_Collection_List  @"/collection/list"
+
+//我的法会
+#define Activity_MyRite @"/puja/signUpList"
+
+// 修改密码
+#define Me_ChangePassword @"/user/updatePassword"
+//找回密码
+#define Me_BackPassword @"/login/forgetPassword"
+
+// 查看教程列表
+#define KungFu_ClassList @"/course/list"
+// 热门教程
+#define KungFu_HotClass @"/course/hotList"
+// 科目列表
+#define Kungfu_SubjectList @"/subject/getList"
+// 查询教程详情
+#define KungFu_ClassDetail @"/course/info"
+// 教程观看历史
+#define Me_POST_CourseReadHistory @"/course/historyList"
+// 教程购买历史
+#define Me_POST_CourseBuyHistory @"/course/buyList"
+// 添加教程观看历史
+#define KungFu_SetCourseReadHistory @"/courseHistory/add"
+// 根据活动编号查询电话和姓名
+#define KungFu_OrderDetailUserInfo @"/activity/memberByOrderCode"
+// 物流列表
+#define Me_LogisticsList @"/common/logisticsList"
+// 课程详情下方更多推荐
+#define KungFu_ClasDetail_Recomment @"/course/recommendList"
+//// 收藏教程（未使用）
+//#define KungFu_ClassCollect @"/gradeapi/common/Course/setList"
 
 
 

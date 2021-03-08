@@ -31,9 +31,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol GoodsDetailsSelectedTableCellDelegate <NSObject>
 
--(void)goodsSelectedCell:(GoodsDetailsSelectedTableCell *)cell tapSpecification:(BOOL)istap;
+- (void)goodsSelectedCell:(GoodsDetailsSelectedTableCell *)cell tapSpecification:(BOOL)istap;
 
--(void)goodsSelectedCell:(GoodsDetailsSelectedTableCell *)cell tapAddress:(BOOL)istap;
+- (void)goodsSelectedCell:(GoodsDetailsSelectedTableCell *)cell tapAddress:(BOOL)istap;
 
 
 @end

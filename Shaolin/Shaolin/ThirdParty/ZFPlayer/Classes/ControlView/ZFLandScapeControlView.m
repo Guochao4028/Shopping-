@@ -26,9 +26,9 @@
 #import "UIView+ZFFrame.h"
 #import "ZFUtilities.h"
 #if __has_include(<ZFPlayer/ZFPlayer.h>)
-#import <ZFPlayer/ZFPlayer.h>
+#import <ZFPlayer/ZFPlayerConst.h>
 #else
-#import "ZFPlayer.h"
+#import "ZFPlayerConst.h"
 #endif
 
 @interface ZFLandScapeControlView () <ZFSliderViewDelegate>
@@ -100,16 +100,12 @@
     min_w = min_view_w;
     min_h = iPhoneX ? 110 : 80;
     self.topToolView.frame = CGRectMake(min_x, min_y, min_w, min_h);
-    BOOL isLandscape = NO;
-    if (self.player.orientationObserver.fullScreenMode == ZFFullScreenModeLandscape && self.player.isFullScreen) {
-        isLandscape = YES;
-    }
-    
-    min_x = (iPhoneX && isLandscape) ? 44: 15;
+
+    min_x = (iPhoneX && UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation)) ? 44: 15;
     if (@available(iOS 13.0, *)) {
-        min_y = isLandscape ? 10 : 40;
+        min_y = UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation) ? 10 : (iPhoneX ? 40 : 20);
     } else {
-        min_y = (iPhoneX && isLandscape) ? 10: (iPhoneX ? 40 : 20);
+        min_y = (iPhoneX && UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation)) ? 10: (iPhoneX ? 40 : 20);
     }
     min_w = 40;
     min_h = 40;
@@ -128,7 +124,7 @@
     min_w = min_view_w;
     self.bottomToolView.frame = CGRectMake(min_x, min_y, min_w, min_h);
     
-    min_x = (iPhoneX && isLandscape) ? 44: 15;
+    min_x = (iPhoneX && UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation)) ? 44: 15;
     min_y = 32;
     min_w = 30;
     min_h = 30;
@@ -142,7 +138,7 @@
     self.currentTimeLabel.zf_centerY = self.playOrPauseBtn.zf_centerY;
     
     min_w = 62;
-    min_x = self.bottomToolView.zf_width - min_w - ((iPhoneX && isLandscape) ? 44: min_margin);
+    min_x = self.bottomToolView.zf_width - min_w - ((iPhoneX && UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation)) ? 44: min_margin);
     min_y = 0;
     min_h = 30;
     self.totalTimeLabel.frame = CGRectMake(min_x, min_y, min_w, min_h);
@@ -155,7 +151,7 @@
     self.slider.frame = CGRectMake(min_x, min_y, min_w, min_h);
     self.slider.zf_centerY = self.playOrPauseBtn.zf_centerY;
     
-    min_x = (iPhoneX && isLandscape) ? 50: 18;
+    min_x = (iPhoneX && UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation)) ? 50: 18;
     min_y = 0;
     min_w = 40;
     min_h = 40;
@@ -165,7 +161,9 @@
     if (!self.isShow) {
         self.topToolView.zf_y = -self.topToolView.zf_height;
         self.bottomToolView.zf_y = self.zf_height;
+        self.lockBtn.zf_left = iPhoneX ? -82: -47;
     } else {
+        self.lockBtn.zf_left = iPhoneX ? 50: 18;
         if (self.player.isLockedScreen) {
             self.topToolView.zf_y = -self.topToolView.zf_height;
             self.bottomToolView.zf_y = self.zf_height;
@@ -230,9 +228,9 @@
     if (self.player.totalTime > 0) {
         self.slider.isdragging = YES;
         if (self.sliderValueChanging) self.sliderValueChanging(value, self.slider.isForward);
-        @weakify(self)
+        @zf_weakify(self)
         [self.player seekToTime:self.player.totalTime*value completionHandler:^(BOOL finished) {
-            @strongify(self)
+            @zf_strongify(self)
             if (finished) {
                 self.slider.isdragging = NO;
                 if (self.sliderValueChanged) self.sliderValueChanged(value);
@@ -334,7 +332,6 @@
         NSString *totalTimeString = [ZFUtilities convertTimeSecond:totalTime];
         self.totalTimeLabel.text = totalTimeString;
         self.slider.value = videoPlayer.progress;
-//        NSLog(@"=======%f",self.slider.value);
     }
 }
 
@@ -364,6 +361,14 @@
     [UIView animateWithDuration:0.3 animations:^{
         self.slider.sliderBtn.transform = CGAffineTransformIdentity;
     }];
+}
+
+#pragma mark - setter
+
+- (void)setFullScreenMode:(ZFFullScreenMode)fullScreenMode {
+    _fullScreenMode = fullScreenMode;
+    self.player.orientationObserver.fullScreenMode = fullScreenMode;
+    self.lockBtn.hidden = fullScreenMode == ZFFullScreenModePortrait;
 }
 
 #pragma mark - getter

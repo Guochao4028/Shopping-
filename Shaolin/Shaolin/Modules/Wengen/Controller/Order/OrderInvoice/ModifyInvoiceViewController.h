@@ -14,7 +14,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ModifyInvoiceViewController : RootViewController
 
+/// 需要补开发票的订单id
+@property(nonatomic, copy)NSString *orderId;
 @property(nonatomic, copy)NSString *orderSn;
+
+@property(nonatomic, copy)NSString *clubId;
 
 @property(nonatomic, strong)OrderH5InvoiceModel *h5InvoiceModel;
 

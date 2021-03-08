@@ -21,7 +21,7 @@
 
 @implementation PayPasswordVc
 
--(void)viewWillAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
 
@@ -43,7 +43,7 @@
 
 #pragma mark - 编辑
 
--(void)layoutView
+- (void)layoutView
 {
    
     self.tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, kWidth, kHeight) style:(UITableViewStyleGrouped)];
@@ -58,16 +58,16 @@
 
 #pragma mark - delegate && dataSources
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return 3;
 }
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return 1;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
      static NSString *cellIdentifier = @"cellID";
      UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
@@ -88,19 +88,19 @@
      
     return cell;
 }
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
     if (indexPath.section == 0) {
-        [[MeManager sharedInstance] queryPayPassWordStatusSuccess:^(id _Nonnull responseObject) {
-            NSNumber *number = responseObject;
-            if ([number isKindOfClass:[NSNumber class]] && [number boolValue] == NO){
-                PayPasswordSetupVc * v = [PayPasswordSetupVc new];
-                [self.navigationController pushViewController:v animated:YES];
-            } else {
-                [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"您已设置支付密码") view:self.view afterDelay:TipSeconds];
-            }
-        } failure:nil finish:nil];
+//        [[MeManager sharedInstance] queryPayPassWordStatusSuccess:^(id _Nonnull responseObject) {
+//            NSNumber *number = responseObject;
+//            if ([number isKindOfClass:[NSNumber class]] && [number boolValue] == NO){
+//                PayPasswordSetupVc * v = [PayPasswordSetupVc new];
+//                [self.navigationController pushViewController:v animated:YES];
+//            } else {
+//                [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"您已设置支付密码") view:self.view afterDelay:TipSeconds];
+//            }
+//        } failure:nil finish:nil];
     }
     
     if (indexPath.section == 1) {
@@ -116,25 +116,25 @@
     
 
 }
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 50;
 }
--(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
     return 0.001;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     return 1;
 }
--(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
     UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 0, 0)];
     return v;
 }
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWidth, 10)];
     return v;

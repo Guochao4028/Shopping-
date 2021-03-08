@@ -22,7 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 /*!名字*/
 @property (nonatomic, copy) NSString *name;
 /*!法号*/
-@property (nonatomic, copy) NSString *nickname;
+@property (nonatomic, copy) NSString *nickName;
 /*!标题(分享用)*/
 @property (nonatomic, copy) NSString *title;
 

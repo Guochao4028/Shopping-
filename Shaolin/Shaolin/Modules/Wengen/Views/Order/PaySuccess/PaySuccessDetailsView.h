@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface PaySuccessDetailsView : UIView
 
--(void)queryTarget:(nullable id)target action:(SEL)action;
+- (void)queryTarget:(nullable id)target action:(SEL)action;
 
 @end
 

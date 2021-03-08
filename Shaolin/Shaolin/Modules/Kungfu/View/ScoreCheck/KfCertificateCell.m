@@ -56,7 +56,7 @@
     }
 }
 
--(void)setCellModel:(CertificateModel *)cellModel {
+- (void)setCellModel:(CertificateModel *)cellModel {
     _cellModel = cellModel;
     
 //    self.cerGetBtn.userInteractionEnabled = YES;

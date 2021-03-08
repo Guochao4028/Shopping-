@@ -25,7 +25,7 @@
 
 @implementation OrderFillInvoiceRiseView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [[NSBundle mainBundle] loadNibNamed:@"OrderFillInvoiceRiseView" owner:self options:nil];
@@ -36,7 +36,7 @@
 
 
 /// 初始化UI
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.contentView];
     [self.contentView setFrame:self.bounds];
     [self setupButtonSelected:self.personalButton];
@@ -47,7 +47,7 @@
 
 
 //设置选中按钮 样式
--(void)setupButtonSelected:(UIButton *)button{
+- (void)setupButtonSelected:(UIButton *)button{
     [button setBackgroundColor:[UIColor colorForHex:@"FFFAF2"]];
     [button setTitleColor:kMainYellow forState:UIControlStateNormal];
     button.layer.borderWidth = 1;
@@ -56,7 +56,7 @@
 }
 
 //设置未选中按钮 样式
--(void)setupButtonNormal:(UIButton *)button{
+- (void)setupButtonNormal:(UIButton *)button{
     [button setBackgroundColor:KTextGray_F3];
     [button setTitleColor:KTextGray_333 forState:UIControlStateNormal];
     button.layer.cornerRadius = SLChange(16.5);
@@ -91,7 +91,7 @@
 }
 
 
--(void)setIsPersonal:(BOOL)isPersonal{
+- (void)setIsPersonal:(BOOL)isPersonal{
     
     if(isPersonal == YES){
         [self setupButtonSelected:self.personalButton];

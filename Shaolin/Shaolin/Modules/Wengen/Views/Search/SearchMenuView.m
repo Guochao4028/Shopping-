@@ -28,7 +28,7 @@
 
 @implementation SearchMenuView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [[NSBundle mainBundle] loadNibNamed:@"SearchMenuView" owner:self options:nil];
@@ -40,12 +40,12 @@
 #pragma mark - methods
 
 /// 初始化UI
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.contentView];
     [self.contentView setFrame:self.bounds];
 }
 
--(void)setFrame:(CGRect)frame{
+- (void)setFrame:(CGRect)frame{
     [super setFrame:frame];
     [self.contentView setFrame:self.bounds];
 }
@@ -70,7 +70,7 @@
        }
 }
 
--(void)setType:(ListType)type{
+- (void)setType:(ListType)type{
     _type = type;
     switch (type) {
         case ListXiaoLiangDescType:{

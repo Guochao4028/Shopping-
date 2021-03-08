@@ -9,10 +9,10 @@
 #import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
-@class OrderDetailsModel;
+@class OrderDetailsNewModel;
 @interface KungfuOrderDetailFooterView : UIView
 
-@property(nonatomic, strong) OrderDetailsModel *detailsModel;
+@property(nonatomic, strong) OrderDetailsNewModel *detailsModel;
 
 +(instancetype)loadXib;
 

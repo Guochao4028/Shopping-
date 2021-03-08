@@ -39,7 +39,7 @@
     return (KfExamJudgeQuestionCell *)[[[NSBundle mainBundle] loadNibNamed:@"KfExamJudgeQuestionCell" owner:nil options:nil] lastObject];
 }
 
--(void)updateWithQuestion:(QuestionModel *)question
+- (void)updateWithQuestion:(QuestionModel *)question
                 answerDic:(NSMutableDictionary *)answerDic
                 examModel:(ExamDetailModel *)examModel
                   cellTag:(NSInteger)cellTag
@@ -111,7 +111,7 @@
         @"chooseAnswer":SLLocalizedString(@"正确")
     };
     
-    [[KungfuManager sharedInstance] getSaveExaminationWithDic:dic callback:^(Message *message) {}];
+//    [[KungfuManager sharedInstance] getSaveExaminationWithDic:dic callback:^(Message *message) {}];
     
 }
 
@@ -135,7 +135,7 @@
         @"chooseAnswer":SLLocalizedString(@"错误")
     };
     
-    [[KungfuManager sharedInstance] getSaveExaminationWithDic:dic callback:^(Message *message) {}];
+//    [[KungfuManager sharedInstance] getSaveExaminationWithDic:dic callback:^(Message *message) {}];
 }
 
 

@@ -38,7 +38,7 @@
 
 @implementation SLSearchResultViewController
 
--(void)viewWillAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
 }
@@ -199,7 +199,7 @@
 
 - (void)searchRite {
     
-    NSDictionary * parames = @{@"search":self.searchStr};
+    NSDictionary * parames = @{@"name":self.searchStr};
     [ActivityManager getSearchRiteListWithParams:parames success:^(NSDictionary * _Nullable resultDic) {
         
         NSArray * data = resultDic[@"data"];
@@ -325,7 +325,7 @@
     return !self.foundArray.count;
 }
 
--(CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
+- (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
     return -30;
 }
 
@@ -358,13 +358,13 @@
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     FoundModel *model = self.foundArray[indexPath.row];
 
     if (model.isRite) {
-        KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteDetail(model.code, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_rite];
+        KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteDetail(model.code, [SLAppInfoModel sharedInstance].accessToken) type:KfWebView_rite];
         webVC.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:webVC animated:YES];
         webVC.fillToView = YES;
@@ -374,9 +374,9 @@
             // 是广告
             [[SLAppInfoModel sharedInstance] advertEventResponseWithFoundModel:model];
         }else{
-           NSInteger clicksCount = [model.clicks integerValue];
+            NSInteger clicksCount = [model.click integerValue];
             clicksCount += 1;
-            model.clicks = [NSString stringWithFormat:@"%ld",clicksCount];
+            model.click = [NSString stringWithFormat:@"%ld",clicksCount];
             [self.foundArray setObject:model atIndexedSubscript:indexPath.row];
             [_tableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section], nil] withRowAnimation:UITableViewRowAnimationNone];
             
@@ -402,7 +402,7 @@
     }
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     FoundModel *model = self.foundArray[indexPath.row];
     return model.cellHeight;
@@ -441,7 +441,7 @@
     return _tableView;
 }
 
--(UITextField *)textField
+- (UITextField *)textField
 {
     if (!_textField) {
         _textField = [[UITextField alloc] init];
@@ -460,7 +460,7 @@
     return _textField;
 }
 
--(NSMutableArray *)foundArray {
+- (NSMutableArray *)foundArray {
     if (!_foundArray) {
         _foundArray = [NSMutableArray new];
     }

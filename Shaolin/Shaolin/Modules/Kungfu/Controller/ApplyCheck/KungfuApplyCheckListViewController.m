@@ -29,7 +29,7 @@ static NSString *const checkCellId = @"ApplyCheckListCell";
 
 @implementation KungfuApplyCheckListViewController
 
--(void)viewWillAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     if (self.isNavBarRed == YES) {
         self.titleLabe.text = SLLocalizedString(@"报名信息");
@@ -45,33 +45,33 @@ static NSString *const checkCellId = @"ApplyCheckListCell";
     [self initUI];
     
 
-    if (IsNilOrNull(self.searchText) || self.searchText.length == 0) {
+//    if (IsNilOrNull(self.searchText) || self.searchText.length == 0) {
         // 我的报名信息
         [self requestMyapplications];
-    } else {
-        // 按准考证号搜索报名信息
-        [self requestSearchApplications];
-    }
+//    } else {
+//        // 按准考证号搜索报名信息
+//        [self requestSearchApplications];
+//    }
 }
 
 
--(void) initUI
+- (void) initUI
 {
     self.view.backgroundColor = KTextGray_FA;
     [self.view addSubview:self.tableView];
 }
 
-- (void) requestSearchApplications{
-    
-    MBProgressHUD * hud = [ShaolinProgressHUD defaultLoadingWithText:SLLocalizedString(@"加载中")];
-    
-    [[KungfuManager sharedInstance] getSearchApplicationsListWithDic:@{@"search":self.searchText} callback:^(NSArray *result) {
-        
-        [hud hideAnimated:YES];
-        self.apppicationList = [NSMutableArray arrayWithArray:result];
-        [self.tableView reloadData];
-    }];
-}
+//- (void) requestSearchApplications{
+//    
+//    MBProgressHUD * hud = [ShaolinProgressHUD defaultLoadingWithText:SLLocalizedString(@"加载中")];
+//    
+//    [[KungfuManager sharedInstance] getSearchApplicationsListWithDic:@{@"search":self.searchText} callback:^(NSArray *result) {
+//        
+//        [hud hideAnimated:YES];
+//        self.apppicationList = [NSMutableArray arrayWithArray:result];
+//        [self.tableView reloadData];
+//    }];
+//}
 
 - (void) requestMyapplications{
 
@@ -123,7 +123,7 @@ static NSString *const checkCellId = @"ApplyCheckListCell";
     return !self.apppicationList.count;
 }
 
--(CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
+- (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
     return -30;
 }
 
@@ -143,16 +143,16 @@ static NSString *const checkCellId = @"ApplyCheckListCell";
 
 #pragma mark - delegate && dataSources
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return self.apppicationList.count;
 }
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return 1;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     WEAKSELF
     ApplyCheckListCell * cell = [tableView dequeueReusableCellWithIdentifier:checkCellId];
@@ -170,7 +170,7 @@ static NSString *const checkCellId = @"ApplyCheckListCell";
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
     ApplyListModel * model = self.apppicationList[indexPath.section];
@@ -181,13 +181,13 @@ static NSString *const checkCellId = @"ApplyCheckListCell";
     [self.navigationController pushViewController:vc animated:YES];
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return tableView.rowHeight;
 }
 
 #pragma mark - setter && getter
--(UITableView *)tableView
+- (UITableView *)tableView
 {
     if (!_tableView) {
         _tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 5, kWidth, kHeight-kNavBarHeight-kStatusBarHeight - kBottomSafeHeight-5) style:(UITableViewStylePlain)];
@@ -202,17 +202,19 @@ static NSString *const checkCellId = @"ApplyCheckListCell";
         
         //self.tableView.backgroundColor = [UIColor whiteColor];
         _tableView.separatorStyle = UITableViewCellSelectionStyleNone;
+        
+        WEAKSELF
         MJRefreshNormalHeader *headerView = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-            [self requestMyapplications];
+            [weakSelf requestMyapplications];
         }];
         
         _tableView.mj_header = headerView;
         
         
         _tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
-            self.pageNum++;
-            NSLog(@"self.pageNum : %ld", self.pageNum);
-            [self loadingRequestMyapplications];
+            weakSelf.pageNum++;
+            NSLog(@"self.pageNum : %ld", weakSelf.pageNum);
+            [weakSelf loadingRequestMyapplications];
         }];
         
     }
@@ -220,7 +222,7 @@ static NSString *const checkCellId = @"ApplyCheckListCell";
 }
 
 
--(NSMutableArray *)apppicationList{
+- (NSMutableArray *)apppicationList{
     if (_apppicationList == nil) {
         _apppicationList = [NSMutableArray array];
     }

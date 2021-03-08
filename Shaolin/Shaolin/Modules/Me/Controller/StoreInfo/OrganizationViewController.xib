@@ -14,6 +14,7 @@
                 <outlet property="codeTf" destination="PK0-fm-4om" id="cLp-k6-0vL"/>
                 <outlet property="endBtn" destination="ivx-Rn-POU" id="2zi-Iu-kus"/>
                 <outlet property="imageCamera" destination="xdd-ty-q9P" id="3Iv-Sk-tdV"/>
+                <outlet property="longtimeBtn" destination="jKq-nj-Rtg" id="TZ1-Zz-WgD"/>
                 <outlet property="photoView" destination="yFD-qJ-age" id="Ozi-ve-sJF"/>
                 <outlet property="startBtn" destination="BeA-NC-WGg" id="UB1-9O-HwX"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -112,7 +113,7 @@
                         <constraint firstAttribute="height" constant="120" id="qSS-PA-VFf"/>
                     </constraints>
                 </imageView>
-                <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IRg-wj-Xeu">
+                <button opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IRg-wj-Xeu">
                     <rect key="frame" x="127" y="199" width="120" height="120"/>
                     <connections>
                         <action selector="choosePhotoAction:" destination="-1" eventType="touchUpInside" id="btt-l0-lSo"/>

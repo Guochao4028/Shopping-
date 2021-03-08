@@ -38,7 +38,7 @@
     // Configure the view for the selected state
 }
 
--(void)setListModel:(EnrollmentListModel *)listModel{
+- (void)setListModel:(EnrollmentListModel *)listModel{
     _listModel = listModel;
     [self.activityImage sd_setImageWithURL:[NSURL URLWithString:listModel.institutionalThumbnail] placeholderImage:[UIImage imageNamed:@"default_small"]];
     

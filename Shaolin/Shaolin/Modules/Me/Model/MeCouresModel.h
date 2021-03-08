@@ -13,14 +13,20 @@ NS_ASSUME_NONNULL_BEGIN
 @interface MeCouresModel : NSObject
 @property (nonatomic, copy) NSString *star;
 @property (nonatomic, copy) NSString *weight;
-@property (nonatomic, copy) NSString *old_price;
+@property (nonatomic, copy) NSString *oldPrice;
 /**简介*/
 @property (nonatomic, copy) NSString *intro;
-@property (nonatomic, copy) NSString *goods_value;
+@property (nonatomic, copy) NSString *goodsValue;
 /**图片*/
 @property (nonatomic, copy) NSString *cover;
+
+@property (nonatomic, strong) NSArray * imgDataList;
+
+
 /**教程名称*/
-@property (nonatomic, copy) NSString *name;
+@property (nonatomic, copy) NSString *goodsName;
+
+@property(nonatomic, copy) NSString *goodsId;
 /**教程ID*/
 @property (nonatomic, copy) NSString *couresId;
 @end

@@ -23,13 +23,13 @@
 @end
 
 @implementation MyRiteViewController
--(void)viewWillAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
     //[self setNavigationBarYellowTintColor];
 }
 
--(void)viewWillDisappear:(BOOL)animated {
+- (void)viewWillDisappear:(BOOL)animated {
      [super viewWillDisappear:animated];
 }
 
@@ -37,10 +37,10 @@
     [super viewDidLoad];
     
     [self buildData];
-    [self setUI];
+    [self setupUI];
 }
 
--(void)setUI{
+- (void)setupUI{
     
    self.titleLabe.text = SLLocalizedString(@"功德资糧");
    self.titleLabe.textColor = [UIColor whiteColor];

@@ -16,6 +16,8 @@
 
 #import "NSString+Tool.h"
 
+#import "OrderAfterSalesModel.h"
+
 @interface OrderAfterSalesItmeTableViewCell ()
 @property (weak, nonatomic) IBOutlet UILabel *orderNoLabel;
 @property (weak, nonatomic) IBOutlet UILabel *typeLabel;
@@ -67,41 +69,32 @@
 
 #pragma mark - methods
 ///装饰button
--(void)modifiedButton:(UIButton *)sender borderColor:(UIColor *)color cornerRadius:(CGFloat)radius{
+- (void)modifiedButton:(UIButton *)sender borderColor:(UIColor *)color cornerRadius:(CGFloat)radius{
     sender.layer.borderWidth = 1;
     sender.layer.borderColor = color.CGColor;
-    sender.layer.cornerRadius = SLChange(radius);
+    sender.layer.cornerRadius = radius;//SLChange(radius);
     [sender.layer setMasksToBounds:YES];
     
 }
 
 #pragma mark - setter / getter
 
--(void)setListModel:(OrderListModel *)listModel{
+- (void)setListModel:(OrderAfterSalesModel *)listModel{
     _listModel = listModel;
     
-    NSArray *orderStoreArray = listModel.order_goods;
-    
-    OrderStoreModel *storeModel = [orderStoreArray firstObject];
-    
-    NSArray *orderGoodsArray = storeModel.goods;
-    
-    OrderGoodsModel *goodsModel = [orderGoodsArray firstObject];
-    
-    [self.storeNameLabel setText:goodsModel.club_name];
-    NSString * goodsImageStr = goodsModel.goods_image[0];
+    [self.storeNameLabel setText:listModel.clubName];
+    NSString * goodsImageStr = listModel.goodsImages[0];
     
     [self.goodsImageView sd_setImageWithURL:[NSURL URLWithString:goodsImageStr] placeholderImage:[UIImage imageNamed:@"default_small"]];
     
-    [self.goodsNameLabel setText:goodsModel.goods_name];
+    [self.goodsNameLabel setText:listModel.goodsName];
     
-    [self.numberLabel setText:goodsModel.num];
+    [self.numberLabel setText:listModel.goodsNum];
     
-    [self.storeNameLabel setText:goodsModel.club_name];
     
-    [self.orderNoLabel setText:[NSString stringWithFormat:SLLocalizedString(@"服务单号：%@"), goodsModel.order_no]];
+    [self.orderNoLabel setText:[NSString stringWithFormat:SLLocalizedString(@"服务单号：%@"), listModel.orderSn]];
     
-    NSString *refund_status = goodsModel.refund_status;
+    NSString *refund_status = listModel.status;
     
     if ([refund_status isEqualToString:@"1"]) {
         [self.jumpButton setTitle:SLLocalizedString(@"售后审核中") forState:UIControlStateNormal];
@@ -109,9 +102,9 @@
         [self.jumpButton setTitleColor:kMainYellow forState:UIControlStateNormal];
         
         [self.instructionsTitleLabel setText:SLLocalizedString(@"审核中")];
-        if ([goodsModel.type isEqualToString:@"2"] == YES) {
+        if ([listModel.type isEqualToString:@"2"] == YES) {
             [self.instructionsLabel setText:SLLocalizedString(@"已收到您的退货申请，卖家审核中，谢谢您的支持")];
-        }else if ([goodsModel.type isEqualToString:@"1"] == YES){
+        }else if ([listModel.type isEqualToString:@"1"] == YES){
             [self.instructionsLabel setText:SLLocalizedString(@"已收到您的退款申请，卖家审核中，谢谢您的支持")];
         }else{
             [self.instructionsLabel setText:SLLocalizedString(@"已收到您的退货申请，卖家审核中，谢谢您的支持")];
@@ -126,7 +119,7 @@
         
     }else if ([refund_status isEqualToString:@"2"]) {
         
-        if ([goodsModel.type isEqualToString:@"2"] == YES) {
+        if ([listModel.type isEqualToString:@"2"] == YES) {
             //退货退款
             [self.jumpButton setTitle:SLLocalizedString(@"填写退货信息") forState:UIControlStateNormal];
             [self.jumpButton setTitleColor:kMainYellow forState:UIControlStateNormal];
@@ -135,7 +128,7 @@
             [self modifiedButton:self.jumpButton borderColor:kMainYellow cornerRadius:15];
             self.jumpButtonW.constant = 110;
             [self.cancelButton setHidden:NO];
-        }else if ([goodsModel.type isEqualToString:@"1"] == YES) {
+        }else if ([listModel.type isEqualToString:@"1"] == YES) {
             //仅退款
             [self.jumpButton setTitle:SLLocalizedString(@"退款中") forState:UIControlStateNormal];
             
@@ -144,7 +137,7 @@
             [self.instructionsLabel setText:SLLocalizedString(@"商家审核成功，正在为您退款")];
             [self modifiedButton:self.jumpButton borderColor:kMainYellow cornerRadius:15];
             self.jumpButtonW.constant = 90;
-            [self.cancelButton setHidden:YES];
+            [self.cancelButton setHidden:NO];
             
         }else{
             [self.jumpButton setTitle:SLLocalizedString(@"填写退货信息") forState:UIControlStateNormal];
@@ -163,13 +156,13 @@
         
         [self.jumpButton setTitleColor:KTextGray_333 forState:UIControlStateNormal];
         
-        [self.instructionsLabel setText:goodsModel.remark];
+        [self.instructionsLabel setText:listModel.remark];
         [self modifiedButton:self.jumpButton borderColor:KTextGray_999 cornerRadius:15];
         self.jumpButtonW.constant = 90;
         
         [self.cancelButton setHidden:YES];
         
-    }else if ([refund_status isEqualToString:@"6"]){
+    }else if ([refund_status isEqualToString:@"6"] || [refund_status isEqualToString:@"8"]){
         
         [self.instructionsTitleLabel setText:SLLocalizedString(@"完成")];
         
@@ -201,7 +194,7 @@
         [self.instructionsLabel setText:SLLocalizedString(@"您已寄出物品，等待商家验收")];
         [self modifiedButton:self.jumpButton borderColor:kMainYellow cornerRadius:15];
         self.jumpButtonW.constant = 90;
-        [self.cancelButton setHidden:YES];
+        [self.cancelButton setHidden:NO];
     }else if ([refund_status isEqualToString:@"7"]){
         
         //仅退款
@@ -212,7 +205,7 @@
         [self.instructionsLabel setText:SLLocalizedString(@"商家已收到您寄出的物品，等待商家退款")];
         [self modifiedButton:self.jumpButton borderColor:kMainYellow cornerRadius:15];
         self.jumpButtonW.constant = 90;
-        [self.cancelButton setHidden:YES];
+        [self.cancelButton setHidden:NO];
     }
     
     [self.deleteButton setHidden:!self.cancelButton.hidden];
@@ -236,20 +229,17 @@
 }
 
 - (IBAction)jumpAction:(UIButton *)sender {
-    NSArray *orderStoreArray = self.listModel.order_goods;
-    OrderStoreModel *storeModel = [orderStoreArray firstObject];
-    NSArray *orderGoodsArray = storeModel.goods;
-    OrderGoodsModel *goodsModel = [orderGoodsArray firstObject];
+
     
-    NSString *refund_status = goodsModel.refund_status;
+    NSString *refund_status = self.listModel.status;
     if ([refund_status isEqualToString:@"2"]){
         
-        if ([goodsModel.type isEqualToString:@"2"] == YES) {
+        if ([self.listModel.type isEqualToString:@"2"] == YES) {
             //退货退款
             if ([self.delegate respondsToSelector:@selector(orderAfterSalesItmeTableViewCell:fillReturnInformation:)] == YES) {
                 [self.delegate orderAfterSalesItmeTableViewCell:self fillReturnInformation:self.listModel];
             }
-        }else if ([goodsModel.type isEqualToString:@"1"] == YES) {
+        }else if ([self.listModel.type isEqualToString:@"1"] == YES) {
             //仅退款
             if ([self.delegate respondsToSelector:@selector(orderAfterSalesItmeTableViewCell:checkSchedule:)] == YES) {
                 [self.delegate orderAfterSalesItmeTableViewCell:self checkSchedule:self.listModel];
@@ -259,9 +249,6 @@
                 [self.delegate orderAfterSalesItmeTableViewCell:self checkSchedule:self.listModel];
             }
         }
-        
-        
-        
         
     }else{
         if ([self.delegate respondsToSelector:@selector(orderAfterSalesItmeTableViewCell:checkSchedule:)] == YES) {

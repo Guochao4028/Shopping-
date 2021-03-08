@@ -80,9 +80,6 @@
 /// 视频之外区域是否高斯模糊显示，默认YES.
 @property (nonatomic, assign) BOOL effectViewShow;
 
-/// 直接进入全屏模式，只支持全屏模式
-@property (nonatomic, assign) BOOL fullScreenOnly;
-
 /// 如果是暂停状态，seek完是否播放，默认YES
 @property (nonatomic, assign) BOOL seekToPlay;
 
@@ -101,8 +98,6 @@
 /// 控制层显示、隐藏动画的时长，默认0.25秒
 @property (nonatomic, assign) NSTimeInterval autoFadeTimeInterval;
 
-/// 始终展示控制层 (开始播放后autoHiddenTimeInterval秒自动隐藏)
-@property (nonatomic, assign) BOOL alwaysControlViewAppeared;
 /// 横向滑动控制播放进度时是否显示控制层,默认 YES.
 @property (nonatomic, assign) BOOL horizontalPanShowControlView;
 
@@ -114,6 +109,9 @@
 
 /// 是否自定义禁止pan手势，默认 NO.
 @property (nonatomic, assign) BOOL customDisablePanMovingDirection;
+
+/// 全屏模式
+@property (nonatomic, assign) ZFFullScreenMode fullScreenMode;
 
 /**
  设置标题、封面、全屏模式
@@ -143,16 +141,11 @@
  */
 - (void)showTitle:(NSString *)title coverImage:(UIImage *)image fullScreenMode:(ZFFullScreenMode)fullScreenMode;
 
+//- (void)showFullScreen
+
 /**
  重置控制层
  */
 - (void)resetControlView;
-/**
- 显示控制层
- */
-- (void)showControlViewWithAnimated:(BOOL)animated;
-/**
- 隐藏控制层
-*/
-- (void)hideControlViewWithAnimated:(BOOL)animated;
+
 @end

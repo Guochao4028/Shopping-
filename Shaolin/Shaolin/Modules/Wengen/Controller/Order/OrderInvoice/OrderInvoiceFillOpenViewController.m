@@ -58,7 +58,7 @@
  "is_electronic" 0 不可选电子发票 1 可选
  "is_paper" 所有店铺默认都可选纸质发票 可以不做判断
  */
-@property(nonatomic, strong)NSDictionary *invoiceConfigurationDic;
+//@property(nonatomic, strong)NSDictionary *invoiceConfigurationDic;
 
 ///到付数组
 @property(nonatomic, strong)NSArray *fillCostArray;
@@ -80,20 +80,20 @@
 [self initData];
 }
 
--(void)initData{
+- (void)initData{
     
-    if (self.isCheckInvoice) {
-        MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
-        
-        [[DataManager shareInstance]getGoodsInvoice:@{@"id":self.allStroeIdStr} Callback:^(NSDictionary *result) {
-            [hud hideAnimated:YES];
-            self.invoiceConfigurationDic = result;
-        }];
-    }
+//    if (self.isCheckInvoice) {
+//        MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
+//
+//        [[DataManager shareInstance]getGoodsInvoice:@{@"id":self.allStroeIdStr} Callback:^(NSDictionary *result) {
+//            [hud hideAnimated:YES];
+//            self.invoiceConfigurationDic = result;
+//        }];
+//    }
     
     self.fillModel = [[OrderInvoiceFillModel alloc]init];
     
-    self.fillModel.order_id = self.orderTotalSn;
+    self.fillModel.orderCarId = self.orderId;
     
     self.isPersonal = YES;
     self.isCompany = NO;
@@ -117,7 +117,7 @@
                     }else if ([title isEqualToString:SLLocalizedString(@"开户银行")]) {
                         contentStr = self.qualificationsModel.bank;
                     }else if ([title isEqualToString:SLLocalizedString(@"银行账户")]) {
-                        contentStr = self.qualificationsModel.bank_sn;
+                        contentStr = self.qualificationsModel.bankSn;
                     }else{
                         contentStr = @"";
                     }
@@ -210,7 +210,7 @@
     
 }
 
--(void)initUI{
+- (void)initUI{
     
     [self.titleLabe setText:SLLocalizedString(@"补开发票")];
     
@@ -220,7 +220,7 @@
 }
 
 #pragma mark - action
--(void)commitAction{
+- (void)commitAction{
     
     [self.view endEditing:YES];
     
@@ -264,19 +264,19 @@
     }
     
     if (self.isElectronic) {
-        self.fillModel.is_paper = @"2";
+        self.fillModel.isPaper = @"2";
     }
     
     if (self.isPaper) {
-        self.fillModel.is_paper = @"1";
+        self.fillModel.isPaper = @"1";
     }
     
     if (self.isOrdinary) {
-        self.fillModel.invoice_type = @"1";
+        self.fillModel.invoiceType = @"1";
     }
     
     if (self.isSpecialInvoice) {
-        self.fillModel.invoice_type = @"2";
+        self.fillModel.invoiceType = @"2";
     }
     
     
@@ -302,7 +302,7 @@
 
 #pragma mark - UITableViewDataSource && UITableViewDelegate
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return self.dataArray.count;
 }
 
@@ -314,25 +314,25 @@
     
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     return 0.01;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     return 10;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return 51;
 }
 
--(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
     UIView *view = [[UIView alloc]init];
     [view setBackgroundColor:KTextGray_FA];
     return view;
 }
 
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     return [UIView new];
 }
 
@@ -354,7 +354,7 @@
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [self.view endEditing:YES];
     
     NSArray *rowArray = self.dataArray[indexPath.section];
@@ -387,7 +387,7 @@
 #pragma mark - 私有方法
 
 #pragma mark - 发票形式
--(void)p_invoiceProforma:(NSIndexPath *)indexPath{
+- (void)p_invoiceProforma:(NSIndexPath *)indexPath{
     NSArray *rowArray = self.dataArray[indexPath.section];
     NSMutableDictionary *dic = rowArray[indexPath.row];
     NSString *contentStr = dic[@"content"];
@@ -560,7 +560,7 @@
 }
 
 #pragma mark - 发票类型
--(void)p_invoiceType:(NSIndexPath *)indexPath{
+- (void)p_invoiceType:(NSIndexPath *)indexPath{
     NSArray *rowArray = self.dataArray[indexPath.section];
     
     NSMutableDictionary *dic = rowArray[indexPath.row];
@@ -699,7 +699,7 @@
 }
 
 #pragma mark - 抬头类型
--(void)p_invoiceTitleType:(NSIndexPath *)indexPath{
+- (void)p_invoiceTitleType:(NSIndexPath *)indexPath{
     
     NSArray *rowArray = self.dataArray[indexPath.section];
     NSMutableDictionary *dic = rowArray[indexPath.row];
@@ -804,7 +804,7 @@
 
 
 #pragma mark - setter / getter
--(UITableView *)tableView{
+- (UITableView *)tableView{
     if (_tableView == nil) {
         
         
@@ -825,7 +825,7 @@
     return _tableView;
 }
 
--(UIView *)bottomView{
+- (UIView *)bottomView{
     
     if (_bottomView == nil) {
         CGFloat h = 49 + kBottomSafeHeight;

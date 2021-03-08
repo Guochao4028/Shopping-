@@ -41,6 +41,8 @@
 #import "CustomerServicViewController.h"
 #import "DataManager.h"
 
+#import "SaveBuyCarModel.h"
+
 @interface GoodsDetailsViewController ()<GoodsDetailBottomViewDelegate, GoodsSpecificationViewDelegate, GoodsAddressListViewDelegate, UINavigationControllerDelegate, CreateAddressViewControllerDelegate, AddressViewControllerDelegate>
 
 @property(nonatomic, strong)GoodsDetailsView *goodsDetailsView;
@@ -53,9 +55,11 @@
 
 @property(nonatomic, copy)NSString *goodsNumber;
 
-@property(nonatomic, copy)NSString *attr_id;
+@property(nonatomic, copy)NSString *attrId;
 
-@property(nonatomic, copy)NSString *attr_name;
+@property(nonatomic, copy)NSString *attrGoodsImageStr;
+
+@property(nonatomic, copy)NSString *attrName;
 
 @property(nonatomic, strong)GoodsStoreInfoModel *storeInfoModel;
 
@@ -80,27 +84,32 @@
     [self.navigationController setDelegate:self];
 }
 
--(void)viewWillAppear:(BOOL)animated{
+- (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
   
 }
 
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    [[NSNotificationCenter defaultCenter] postNotificationName:KVideoPlayStatusStop object:@(YES)];
+}
+
 #pragma mark - methods
 
--(void)initUI{
+- (void)initUI{
     self.automaticallyAdjustsScrollViewInsets = NO;
     [self.view setBackgroundColor:BackgroundColor_White];
     [self.view addSubview:self.goodsDetailsView];
     
     __weak typeof(self)weakSelf = self;
-    
+    //商品规格
     self.goodsDetailsView.goodsSpecificationBlock = ^(BOOL istap) {
         
         GoodsSpecificationView *specificationView = [[GoodsSpecificationView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
         
         [specificationView setGoodsNumber:weakSelf.goodsNumber];
         
-        [specificationView setGoods_attr_id:weakSelf.attr_id];
+        [specificationView setGoodsAttrId:weakSelf.attrId];
         
         [specificationView setDelegate:weakSelf];
         
@@ -108,25 +117,28 @@
         specificationView.model = weakSelf.infoModel;
         [window addSubview:specificationView];
     };
-    
+    // 跳转店铺
     self.goodsDetailsView.goodsStoreInfoCellBlock = ^(BOOL istap) {
         StoreViewController *storeVC = [[StoreViewController alloc]init];
-        storeVC.storeId = weakSelf.infoModel.club_id;
+        storeVC.storeId = weakSelf.infoModel.clubId;
         [weakSelf.navigationController pushViewController:storeVC animated:YES];
     };
     
-    
+    //在线客服
     self.goodsDetailsView.goodsStoreInfoCellOnlineCustomerServiceBlock  = ^(BOOL istap) {
 //        EMChatViewController *chatVC = [[EMChatViewController alloc] initWithConversationId:@"2" type:EMConversationTypeChat createIfNotExist:YES];
 //        [weakSelf.navigationController pushViewController:chatVC animated:YES];
 //
         CustomerServicViewController *customerServicVC = [[CustomerServicViewController alloc]init];
         customerServicVC.imID = weakSelf.storeInfoModel.im;
+        customerServicVC.servicType = @"1";
+        customerServicVC.chatName = weakSelf.storeInfoModel.name;
+
         [weakSelf.navigationController pushViewController:customerServicVC animated:YES];
         
         
     };
-    
+    // 地址
     self.goodsDetailsView.goodsAddressBlock = ^(BOOL istap) {
         
         if (self.addressArray.count == 0) {
@@ -150,11 +162,11 @@
     [self.view addSubview:self.bottomView];
 }
 
--(void)closeAddressListView{
+- (void)closeAddressListView{
     [self.listView removeFromSuperview];
 }
 
--(void)createAddress{
+- (void)createAddress{
     CreateAddressViewController *createAddressVC = [[CreateAddressViewController alloc]init];
     createAddressVC.type = AddressCreateType;
     [createAddressVC setDelegate:self];
@@ -162,7 +174,7 @@
     //    [self.listView removeFromSuperview];
 }
 
--(void)initData{
+- (void)initData{
     
     [[DataManager shareInstance] getOrderAndCartCount];
     
@@ -186,7 +198,7 @@
             [self.goodsDetailsView setInfoModel:model];
             
             NSMutableDictionary *storeParam = [NSMutableDictionary dictionary];
-            [storeParam setValue:model.club_id forKey:@"id"];
+            [storeParam setValue:model.clubId forKey:@"clubId"];
             //店铺信息
             [[DataManager shareInstance]getStoreInfo:storeParam Callback:^(NSObject *object) {
                 if ([object isKindOfClass:[GoodsStoreInfoModel class]] == YES) {
@@ -210,18 +222,25 @@
                 
                 NSMutableDictionary *dic = [NSMutableDictionary dictionary];
                 
-                NSString *goods = [NSString stringWithFormat:@"id=%@,num=1",model.goodsid];
+//                NSString *goods = [NSString stringWithFormat:@"id=%@,num=1",model.goodsid];
+                
+                
+                NSArray *goods = @[@{@"id" : model.goodsid,
+                                     @"num" : @"1"
+                                     
+                }];
                 
                 [dic setValue:goods forKey:@"goods"];
                 
                 
-                [dic setValue:adressListModel.addressId forKey:@"address_id"];
+                [dic setValue:adressListModel.addressId forKey:@"addressId"];
+//                [dic setValue:model.templateId forKey:@"templateId"];
                 
                 [[DataManager shareInstance]computeGoodsFee:dic Callback:^(NSDictionary *object) {
                     
-                    NSArray *array = [object objectForKey:@"list"];
+                    NSArray *array = [object objectForKey:DATAS];
                     NSDictionary *dic = array[0];
-                    NSString *fee = [NSString stringWithFormat:@"%@", dic[@"fee"]];
+                    NSString *fee = [NSString stringWithFormat:@"%@", dic[@"goodsFee"]];
                     [self.goodsDetailsView setFeeStr:fee];
                 }];
             }];
@@ -231,36 +250,40 @@
 }
 
 //跳转到立即购买
--(void)jumpBuyNow{
+- (void)jumpBuyNow{
     NSMutableArray *modelMutabelArray = [NSMutableArray array];
     NSMutableDictionary *tam = [NSMutableDictionary dictionary];
     [tam setValue:self.storeInfoModel forKey:@"stroeInfo"];
     
     ShoppingCartGoodsModel *cartGoodModel = [[ShoppingCartGoodsModel alloc]init];
     
-    cartGoodModel.name = self.infoModel.name;
     cartGoodModel.desc = self.infoModel.desc;
-    cartGoodModel.img_data = self.infoModel.img_data;
+    
+    //商品图片,当规格有图片就用规格图片，规格图片没有就用商品封面图
+    if (NotNilAndNull(self.attrGoodsImageStr)) {
+        cartGoodModel.imgDataList = @[self.attrGoodsImageStr];
+    } else {
+        cartGoodModel.imgDataList = self.infoModel.imgDataList;
+    }
+//    cartGoodModel.imgDataList = @[NotNilAndNull(self.attrGoodsImageStr)?self.attrGoodsImageStr:@""];
+//    cartGoodModel.imgDataList = self.infoModel.imgDataList;
+    
     cartGoodModel.price = self.infoModel.price;
     cartGoodModel.stock = self.infoModel.stock;
-    cartGoodModel.store_type = @"1";
-    cartGoodModel.user_num = self.infoModel.user_num;
-    cartGoodModel.goods_id = self.infoModel.goodsid;
-    
-    if ([self.infoModel.is_discount boolValue] == YES) {
-        cartGoodModel.current_price = self.infoModel.old_price;
-    }else{
-        cartGoodModel.current_price = self.infoModel.price;
-    }
+    cartGoodModel.storeType = @"1";
+    cartGoodModel.user_num = self.infoModel.userNum;
+    cartGoodModel.goodsId = self.infoModel.goodsid;
     
     
-    cartGoodModel.goods_attr_id = self.attr_id;
+    cartGoodModel.price = self.infoModel.price;
+  
+    
+    cartGoodModel.goodsAttrId = self.attrId;
     cartGoodModel.num = self.goodsNumber == nil?@"1":self.goodsNumber;
-    cartGoodModel.name = self.infoModel.name;
-    cartGoodModel.name = self.infoModel.name;
-    if (self.attr_id != nil) {
-        cartGoodModel.goods_attr_id = self.attr_id;
-        cartGoodModel.attr_name = self.attr_name;
+    cartGoodModel.goodsName = self.infoModel.name;
+    if (self.attrId != nil) {
+        cartGoodModel.goodsAttrId = self.attrId;
+        cartGoodModel.goodsAttrStrName = self.attrName;
     }
     [tam setValue:@[cartGoodModel] forKey:@"goods"];
     
@@ -273,26 +296,28 @@
 
 #pragma mark - GoodsDetailBottomViewDelegate
 //加入购物车
--(void)bottomView:(GoodsDetailBottomView *)view tapAddCart:(BOOL)isTap{
+- (void)bottomView:(GoodsDetailBottomView *)view tapAddCart:(BOOL)isTap{
     
     if ([self.infoModel.attr count] > 0){
         //取出所有的规格
-        NSArray *attr = [self.infoModel.attr firstObject];
-        
+//        NSArray *attr = [self.infoModel.attr firstObject];
+        NSArray *attr = self.infoModel.attr;
+
         
         if (attr.count > 0) {
             for (int i = 0 ; i < attr.count; i++) {
+
                 NSDictionary *dataDic = attr[i];
-                id dataModel =  dataDic[@"attr"][@"name"];
+                id dataModel =  dataDic[@"name"];
                 if([dataModel isKindOfClass:[NSNull class]] != YES){
-                    if (self.attr_id == nil ||self.attr_id.length == 0) {
+                    if (self.attrId == nil ||self.attrId.length == 0) {
 //                        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请选择商品规格") view:self.view afterDelay:TipSeconds];
                         
                         GoodsSpecificationView *specificationView = [[GoodsSpecificationView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
                         
                         [specificationView setGoodsNumber:self.goodsNumber];
                         
-                        [specificationView setGoods_attr_id:self.attr_id];
+                        [specificationView setGoodsAttrId:self.attrId];
                         
                         [specificationView setDelegate:self];
                         
@@ -308,7 +333,7 @@
     }
     
     NSMutableDictionary *param = [NSMutableDictionary dictionary];
-    [param setValue:self.infoModel.goodsid forKey:@"goods_id"];
+    [param setValue:self.infoModel.goodsid forKey:@"goodsId"];
     
     if (self.goodsNumber == nil) {
         [param setValue:@"1" forKey:@"num"];
@@ -316,35 +341,46 @@
         [param setValue:self.goodsNumber forKey:@"num"];
     }
     
-    [param setValue:self.attr_id forKey:@"goods_attr_id"];
+    [param setValue:self.attrId forKey:@"attrId"];
     
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
     [[DataManager shareInstance]addCar:param Callback:^(Message *message) {
         [hud hideAnimated:YES];
+        [[DataManager shareInstance] getOrderAndCartCount];
+        
+        SaveBuyCarModel *model = [[SaveBuyCarModel alloc]init];
+        model.goodsId = self.infoModel.goodsid;
+        model.goodsAttrId = self.attrId;
+        
+        [[ModelTool shareInstance] deleteTableEnum:TableNameSaveBuyCar where:[NSString stringWithFormat:@"goodsId = '%@' and goodsAttrId = '%@' and userId = '%@'",  model.goodsId, model.goodsAttrId, model.userID]];
+        
+        [[ModelTool shareInstance] insert:model tableEnum:TableNameSaveBuyCar];
+        
         [ShaolinProgressHUD singleTextHud:message.reason view:self.view afterDelay:TipSeconds];
         
     }];
 }
 
 //立即购买
--(void)bottomView:(GoodsDetailBottomView *)view tapNowBuy:(BOOL)isTap{
+- (void)bottomView:(GoodsDetailBottomView *)view tapNowBuy:(BOOL)isTap{
     
     if ([self.infoModel.attr count] > 0){
         //取出所有的规格
-        NSArray *attr = [self.infoModel.attr firstObject];
+//        NSArray *attr = [self.infoModel.attr firstObject];
+        NSArray *attr = self.infoModel.attr;
         if (attr.count > 0) {
             for (int i = 0 ; i < attr.count; i++) {
                 NSDictionary *dataDic = attr[i];
-                id dataModel =  dataDic[@"attr"][@"name"];
+                id dataModel =  dataDic[@"name"];
                 if([dataModel isKindOfClass:[NSNull class]] != YES){
-                    if (self.attr_id == nil ||self.attr_id.length == 0) {
+                    if (self.attrId == nil ||self.attrId.length == 0) {
 //                        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请选择商品规格") view:self.view afterDelay:TipSeconds];
                         
                         GoodsSpecificationView *specificationView = [[GoodsSpecificationView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
                         
                         [specificationView setGoodsNumber:self.goodsNumber];
                         
-                        [specificationView setGoods_attr_id:self.attr_id];
+                        [specificationView setGoodsAttrId:self.attrId];
                         
                         [specificationView setDelegate:self];
                         
@@ -365,8 +401,8 @@
     
     NSMutableDictionary *param = [NSMutableDictionary dictionary];
     
-    if(self.attr_id != nil && self.attr_id.length > 0){
-        [param setValue:self.attr_id forKey:@"goods_attr_id"];
+    if(self.attrId != nil && self.attrId.length > 0){
+        [param setValue:self.attrId forKey:@"goodsAttrId"];
     }
     
     if (self.goodsNumber != nil) {
@@ -375,7 +411,9 @@
         [param setValue:@"1" forKey:@"num"];
     }
     
-    [param setValue:self.infoModel.goodsid forKey:@"goods_id"];
+    
+    
+    [param setValue:self.infoModel.goodsid forKey:@"goodsId"];
     
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:@""];
     
@@ -390,7 +428,7 @@
 }
 
 //购物车
--(void)bottomView:(GoodsDetailBottomView *)view tapCart:(BOOL)isTap{
+- (void)bottomView:(GoodsDetailBottomView *)view tapCart:(BOOL)isTap{
     
     ShoppingCartViewController *shoppingCartVC = [[ShoppingCartViewController alloc]init];
     
@@ -399,104 +437,121 @@
 }
 
 //店铺
--(void)bottomView:(GoodsDetailBottomView *)view tapStore:(BOOL)isTap{
+- (void)bottomView:(GoodsDetailBottomView *)view tapStore:(BOOL)isTap{
     StoreViewController *storeVC = [[StoreViewController alloc]init];
-    storeVC.storeId = self.infoModel.club_id;
+    storeVC.storeId = self.infoModel.clubId;
     [self.navigationController pushViewController:storeVC animated:YES];
 }
 
 //在线客服   发送给指定对象
--(void)bottomView:(GoodsDetailBottomView *)view tapService:(BOOL)isTap{
+- (void)bottomView:(GoodsDetailBottomView *)view tapService:(BOOL)isTap{
     //    EMChatViewController *chatVC = [[EMChatViewController alloc] initWithConversationId:@"2" type:EMConversationTypeChat createIfNotExist:YES];
     //    [self.navigationController pushViewController:chatVC animated:YES];
     
     
     CustomerServicViewController *customerServicVC = [[CustomerServicViewController alloc]init];
+    
     customerServicVC.imID = self.storeInfoModel.im;
+    customerServicVC.servicType = @"1";
+    customerServicVC.chatName = self.storeInfoModel.name;
     [self.navigationController pushViewController:customerServicVC animated:YES];
 }
 
--(void)leftAction{
+- (void)leftAction{
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - GoodsSpecificationViewDelegate
 
--(void)getSpecification:(NSDictionary *)dic{
-    [self.goodsDetailsView setSpecificaationStr:dic[@"attr_s"]];
+- (void)getSpecification:(NSDictionary *)dic{
+    [self.goodsDetailsView setSpecificaationStr:dic[@"attrS"]];
     self.goodsNumber = dic[@"num"];
     
-    if (dic[@"attr_id"] != nil) {
-        self.attr_id = dic[@"attr_id"];
+    if (dic[@"attrId"] != nil) {
+        self.attrId = dic[@"attrId"];
     }
     
-    if (dic[@"attr_name"] != nil) {
-        self.attr_name =dic[@"attr_name"];
+    if (dic[@"attrName"] != nil) {
+        self.attrName =dic[@"attrName"];
     }
     
+    
+    self.attrGoodsImageStr = dic[@"attrGoodsImage"];
     
     NSString *currentPrice = dic[@"currentPrice"];
     if (currentPrice != nil) {
-        if ([self.infoModel.is_discount boolValue] == YES) {
-            self.infoModel.old_price = currentPrice;
-            self.infoModel.price = dic[@"oldPrice"];
-           
-        }else{
+//        if ([self.infoModel.isDiscount boolValue] == YES) {
+            self.infoModel.oldPrice = dic[@"oldPrice"];
             self.infoModel.price = currentPrice;
-        }
+           
+//        }else{
+//            self.infoModel.oldPrice = currentPrice;
+//        }
 //        self.infoModel.old_price = currentPrice;
 //        self.infoModel.price = currentPrice;
         [self.goodsDetailsView setInfoModel:self.infoModel];
     }
     
     NSMutableDictionary *param = [NSMutableDictionary dictionary];
-      [param setValue:self.infoModel.goodsid forKey:@"goods_id"];
+//      [param setValue:self.infoModel.goodsid forKey:@"goods_id"];
       
+    NSString *number;
       if (self.goodsNumber == nil) {
-          [param setValue:@"1" forKey:@"num"];
+//          [param setValue:@"1" forKey:@"num"];
+          number = @"1";
       }else{
-          [param setValue:self.goodsNumber forKey:@"num"];
+//          [param setValue:self.goodsNumber forKey:@"num"];
+          number = self.goodsNumber;
       }
-      
-      [param setValue:self.attr_id forKey:@"goods_attr_id"];
     
-    NSString *goods = [NSString stringWithFormat:@"id=%@,num=%@",self.infoModel.goodsid, param[@"num"]];
+    NSArray *goods = @[@{@"id" : self.infoModel.goodsid,
+                         @"num" : number,
+                         @"attrId" : self.attrId
+    }];
+    
+      
+//    [param setValue:self.attr_id forKey:@"goods_attr_id"];
+    
+//    NSString *goods = [NSString stringWithFormat:@"id=%@,num=%@",self.infoModel.goodsid, param[@"num"]];
     
     [param setValue:goods forKey:@"goods"];
     
     
-    [param setValue:self.currentAddressModel.addressId forKey:@"address_id"];
+    [param setValue:self.currentAddressModel.addressId forKey:@"addressId"];
     
     [[DataManager shareInstance]computeGoodsFee:param Callback:^(NSDictionary *object) {
         
-        NSArray *array = [object objectForKey:@"list"];
+        NSArray *array = [object objectForKey:DATAS];
         NSDictionary *dic = array[0];
-        NSString *fee = [NSString stringWithFormat:@"%@", dic[@"fee"]];
+        NSString *fee = [NSString stringWithFormat:@"%@", dic[@"goodsFee"]];
         [self.goodsDetailsView setFeeStr:fee];
     }];
     
 }
 
 //选择规格 加入购物车
--(void)tapAddCart:(NSDictionary *)dic{
+- (void)tapAddCart:(NSDictionary *)dic{
     
-    [self.goodsDetailsView setSpecificaationStr:dic[@"attr_s"]];
+    [self.goodsDetailsView setSpecificaationStr:dic[@"attrS"]];
     
     NSMutableDictionary *param = [NSMutableDictionary dictionary];
     
-    if (dic[@"attr_id"] != nil) {
+    if (dic[@"attrId"] != nil) {
         
-        [param setValue:dic[@"attr_id"] forKey:@"goods_attr_id"];
+        [param setValue:dic[@"attrId"] forKey:@"attrId"];
     }
     
     self.goodsNumber = dic[@"num"];
     
     [param setValue:dic[@"num"] forKey:@"num"];
-    [param setValue:self.infoModel.goodsid forKey:@"goods_id"];
+    [param setValue:self.infoModel.goodsid forKey:@"goodsId"];
     
     NSString *currentPrice = dic[@"currentPrice"];
     if (currentPrice != nil) {
-        self.infoModel.old_price = currentPrice;
+//        self.infoModel.oldPrice = currentPrice;
+//        [self.goodsDetailsView setInfoModel:self.infoModel];
+        self.infoModel.oldPrice = dic[@"oldPrice"];
+        self.infoModel.price = currentPrice;
         [self.goodsDetailsView setInfoModel:self.infoModel];
     }
     
@@ -504,13 +559,27 @@
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
     [[DataManager shareInstance]addCar:param Callback:^(Message *message) {
         [hud hideAnimated:YES];
+        
+        
+        [[DataManager shareInstance] getOrderAndCartCount];
+        
+        
+        SaveBuyCarModel *model = [[SaveBuyCarModel alloc]init];
+        model.goodsId = self.infoModel.goodsid;
+        model.goodsAttrId = dic[@"attrId"];
+        
+        [[ModelTool shareInstance] deleteTableEnum:TableNameSaveBuyCar where:[NSString stringWithFormat:@"goodsId = '%@' and goodsAttrId = '%@' and userId = '%@'",  model.goodsId, model.goodsAttrId, model.userID]];
+        
+        [[ModelTool shareInstance] insert:model tableEnum:TableNameSaveBuyCar];
+        
+        
         [ShaolinProgressHUD singleTextHud:message.reason view:WINDOWSVIEW afterDelay:TipSeconds];
         
     }];
 }
 
 //选择规格 立即购买
--(void)tapBuy:(NSDictionary *)dic{
+- (void)tapBuy:(NSDictionary *)dic{
     
     //    if ([self.addressArray count] == 0) {
     //        [SLProgressHUDManagar showTipMessageInHUDView:self.view withMessage:SLLocalizedString(@"请选择收货地址") afterDelay:TipSeconds];
@@ -519,30 +588,35 @@
     
     self.goodsNumber = dic[@"num"];
     
-    if (dic[@"attr_id"] != nil) {
-        self.attr_id = dic[@"attr_id"];
+    if (dic[@"attrId"] != nil) {
+        self.attrId = dic[@"attrId"];
     }
     
-    if (dic[@"attr_name"] != nil) {
-        self.attr_name =dic[@"attr_name"];
+    if (dic[@"attrName"] != nil) {
+        self.attrName =dic[@"attrName"];
     }
+    
+    self.attrGoodsImageStr = dic[@"attrGoodsImage"];
     
     NSString *currentPrice = dic[@"currentPrice"];
     if (currentPrice != nil) {
-        self.infoModel.old_price = currentPrice;
+//        self.infoModel.oldPrice = currentPrice;
+//        [self.goodsDetailsView setInfoModel:self.infoModel];
+        self.infoModel.oldPrice = dic[@"oldPrice"];
+        self.infoModel.price = currentPrice;
         [self.goodsDetailsView setInfoModel:self.infoModel];
     }
     
     
     NSMutableDictionary *param = [NSMutableDictionary dictionary];
     
-    if(self.attr_id != nil && self.attr_id.length > 0){
-        [param setValue:self.attr_id forKey:@"goods_attr_id"];
+    if(self.attrId != nil && self.attrId.length > 0){
+        [param setValue:self.attrId forKey:@"goodsAttrId"];
     }
     
     [param setValue:self.goodsNumber forKey:@"num"];
     
-    [param setValue:self.infoModel.goodsid forKey:@"goods_id"];
+    [param setValue:self.infoModel.goodsid forKey:@"goodsId"];
     
     [ModelTool calculateCountingChamber:[self.goodsNumber integerValue] numericalValidationType:NumericalValidationAddType param:param check:CheckInventoryGoodsType callBack:^(NSInteger currentCountNumber, BOOL isSuccess, Message *message) {
         
@@ -555,7 +629,7 @@
 }
 
 #pragma mark - GoodsAddressListViewDelegate
--(void)tapAddress:(NSInteger)row{
+- (void)tapAddress:(NSInteger)row{
     self.currentAddressModel = self.addressArray[row];
     [self.goodsDetailsView setAddressModel:self.currentAddressModel];
     
@@ -564,7 +638,7 @@
 }
 
 #pragma mark - CreateAddressViewControllerDelegate
--(void)isHasNewAddress{
+- (void)isHasNewAddress{
     //地址列表
     [[DataManager shareInstance]getAddressListCallback:^(NSArray *result) {
         self.addressArray = result;
@@ -576,7 +650,7 @@
 }
 
 #pragma mark -  AddressViewControllerDelegate
--(void)addressViewController:(AddressViewController *)vc tapList:(AddressListModel *)model{
+- (void)addressViewController:(AddressViewController *)vc tapList:(AddressListModel *)model{
     NSMutableArray *array = [NSMutableArray arrayWithArray:self.addressArray];
     [array addObject:model];
     
@@ -585,7 +659,7 @@
     [self.goodsDetailsView setAddressModel:model];
 }
 
--(void)addressViewController:(AddressViewController *)vc tapBack:(AddressListModel *)model{
+- (void)addressViewController:(AddressViewController *)vc tapBack:(AddressListModel *)model{
     NSMutableArray *array = [NSMutableArray arrayWithArray:self.addressArray];
     [array addObject:model];
     
@@ -595,7 +669,7 @@
     [self.goodsDetailsView setAddressModel:model];
 }
 
--(GoodsDetailsView *)goodsDetailsView{
+- (GoodsDetailsView *)goodsDetailsView{
     if (_goodsDetailsView == nil) {
         _goodsDetailsView = [[GoodsDetailsView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight - NavBar_Height - Height_TabBar)];
     }
@@ -603,7 +677,7 @@
     return _goodsDetailsView;
 }
 
--(GoodsDetailBottomView *)bottomView{
+- (GoodsDetailBottomView *)bottomView{
     if (_bottomView == nil) {
         _bottomView = [[GoodsDetailBottomView alloc]initWithFrame:CGRectMake(0, ScreenHeight - NavBar_Height - Height_TabBar, self.view.width, Height_TabBar)];
         
@@ -612,7 +686,7 @@
     return _bottomView;
 }
 
--(GoodsAddressListView *)listView{
+- (GoodsAddressListView *)listView{
     
     if (_listView == nil) {
         _listView = [[GoodsAddressListView alloc]initWithFrame:self.view.bounds];
@@ -621,43 +695,67 @@
     return _listView;
 }
 
--(void)setCurrentAddressModel:(AddressListModel *)currentAddressModel{
+- (void)setCurrentAddressModel:(AddressListModel *)currentAddressModel{
     _currentAddressModel = currentAddressModel;
     
-    
-    
     NSMutableDictionary *param = [NSMutableDictionary dictionary];
-      [param setValue:self.infoModel.goodsid forKey:@"goods_id"];
+//      [param setValue:self.infoModel.goodsid forKey:@"goods_id"];
       
+    NSString *number;
       if (self.goodsNumber == nil) {
-          [param setValue:@"1" forKey:@"num"];
+//          [param setValue:@"1" forKey:@"num"];
+          number = @"1";
       }else{
-          [param setValue:self.goodsNumber forKey:@"num"];
+//          [param setValue:self.goodsNumber forKey:@"num"];
+          number = self.goodsNumber;
       }
       
-      [param setValue:self.attr_id forKey:@"goods_attr_id"];
+//      [param setValue:self.attr_id forKey:@"goods_attr_id"];
     
-    NSString *goods = [NSString stringWithFormat:@"id=%@,num=%@",self.infoModel.goodsid, param[@"num"]];
+//    NSString *goods = [NSString stringWithFormat:@"id=%@,num=%@",self.infoModel.goodsid, param[@"num"]];
+    NSArray *goods;
+    if (self.attrId) {
+        goods = @[@{@"id" : self.infoModel.goodsid,
+                             @"num" : number,
+                             @"attrId" : self.attrId
+        }];
+    }else{
+        goods = @[@{@"id" : self.infoModel.goodsid,
+                             @"num" : number,
+        }];
+    }
+    
+    
     
     [param setValue:goods forKey:@"goods"];
     
     
-    [param setValue:currentAddressModel.addressId forKey:@"address_id"];
+    [param setValue:currentAddressModel.addressId forKey:@"addressId"];
     
     [[DataManager shareInstance]computeGoodsFee:param Callback:^(NSDictionary *object) {
         
-        NSArray *array = [object objectForKey:@"list"];
+        NSArray *array = [object objectForKey:@"data"];
         NSDictionary *dic = array[0];
-        NSString *fee = [NSString stringWithFormat:@"%@", dic[@"fee"]];
+        NSString *fee = [NSString stringWithFormat:@"%@", dic[@"goodsFee"]];
         [self.goodsDetailsView setFeeStr:fee];
     }];
+    
+
     
 }
 
 
--(void)dealloc{
+- (void)dealloc{
+   
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+#pragma mark - device
+- (BOOL)shouldAutorotate {
+    return NO;
+}
 
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskPortrait;
+}
 @end

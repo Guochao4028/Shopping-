@@ -19,7 +19,7 @@
     self.titleLabe.text = self.titleStr;
      [self setupWebView];
 }
--(void)setupWebView
+- (void)setupWebView
 {
     
     WKWebViewConfiguration *webConfiguration = [WKWebViewConfiguration new];

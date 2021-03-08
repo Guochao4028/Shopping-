@@ -27,7 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol GoodsDetailsSpecificationTableCellDelegate <NSObject>
 
--(void)goodsDetailsSpecificationTableCell:(GoodsDetailsSpecificationTableCell *)cell tapAction:(GoodsInfoModel *)model loction:(NSIndexPath *)indexPath;
+- (void)goodsDetailsSpecificationTableCell:(GoodsDetailsSpecificationTableCell *)cell tapAction:(GoodsInfoModel *)model loction:(NSIndexPath *)indexPath;
 
 @end
 

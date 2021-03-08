@@ -40,9 +40,9 @@
     // Configure the view for the selected state
 }
 
--(void)setModel:(InvoiceQualificationsModel *)model{
+- (void)setModel:(InvoiceQualificationsModel *)model{
     //公司名称
-    [self.companyNameLabel setText:model.company_name];
+    [self.companyNameLabel setText:model.companyName];
     //纳税人示别码
     [self.numberLabel setText:model.number];
     //注册地址
@@ -52,7 +52,7 @@
     //开户行
     [self.bankLabel setText:model.bank];
     //银行账户
-    [self.bankSnLabel setText:model.bank_sn];
+    [self.bankSnLabel setText:model.bankSn];
     
 }
 

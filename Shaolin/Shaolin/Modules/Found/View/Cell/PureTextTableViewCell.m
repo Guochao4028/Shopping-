@@ -10,7 +10,7 @@
 
 @implementation PureTextTableViewCell
 
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
@@ -19,7 +19,7 @@
     return self;
 }
 
--(void)setupView {
+- (void)setupView {
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     [self.contentView addSubview:self.titleL];
     [self.contentView addSubview:self.nameLabel];
@@ -36,14 +36,14 @@
     }];
 }
 
--(void)setFoundModel:(FoundModel *)f indexpath:(NSIndexPath *)indexPath {
+- (void)setFoundModel:(FoundModel *)f indexpath:(NSIndexPath *)indexPath {
     
     self.titleL.text = [NSString stringWithFormat:@"%@",f.title];
     
     NSDate * date= [self nsstringConversionNSDate:f.returnTime];
     NSString * timeStr = @"";//[NSString stringWithFormat:@"%@",[self compaareCurrentTime:date]];
     
-    NSString *strCount = f.clicks;
+    NSString *strCount = f.click;
     if (strCount.integerValue <= 0) {
         strCount = [NSString stringWithFormat:@"0"];
     }else if(strCount.integerValue < 10000){

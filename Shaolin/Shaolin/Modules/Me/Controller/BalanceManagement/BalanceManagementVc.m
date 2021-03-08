@@ -33,37 +33,37 @@
 
     self.priceTf.delegate = self;
     self.priceTf.layer.borderColor = kMainYellow.CGColor;
-    [self getUserBalance];
+//    [self getUserBalance];
 //    [self.view addSubview:self.payButton];
 }
 #pragma mark - 查询余额
-- (void)getUserBalance {
-    [[MeManager sharedInstance] getUserBalanceSuccess:^(id  _Nonnull responseObject) {
-        NSDictionary *dict = responseObject;
-        NSNumber *balance = [dict objectForKey:@"balance"];
-        if (!balance) balance = @(0);
-        NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-//        formatter.positiveFormat = @",###.##"; // 正数格式
-        // 整数最少位数
-        formatter.minimumIntegerDigits = 1;
-        // 小数位最多位数
-        formatter.maximumFractionDigits = 2;
-        // 小数位最少位数
-        formatter.minimumFractionDigits = 2;
-        NSString *money = [formatter stringFromNumber:balance];
-        
-        NSString *price = money;
-        NSString *priceStr = [NSString stringWithFormat:@"%@ %@", price, SLLocalizedString(@"元")];
-                              
-        NSMutableAttributedString *missionAttributed = [[NSMutableAttributedString alloc]initWithString:priceStr];
-        
-        [missionAttributed addAttribute:NSFontAttributeName value:kBoldFont(45) range:NSMakeRange(0, price.length)];
-        [missionAttributed addAttribute:NSFontAttributeName value:kRegular(25) range:NSMakeRange(price.length, 2)];
-        self.priceLabel.attributedText = missionAttributed;
-    } failure:^(NSString * _Nonnull errorReason) {
-        NSLog(@"getUserBalance-errorReason:%@",errorReason);
-    } finish:nil];
-}
+//- (void)getUserBalance {
+//    [[MeManager sharedInstance] getUserBalanceSuccess:^(id  _Nonnull responseObject) {
+//        NSDictionary *dict = responseObject;
+//        NSNumber *balance = [dict objectForKey:@"balance"];
+//        if (!balance) balance = @(0);
+//        NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+////        formatter.positiveFormat = @",###.##"; // 正数格式
+//        // 整数最少位数
+//        formatter.minimumIntegerDigits = 1;
+//        // 小数位最多位数
+//        formatter.maximumFractionDigits = 2;
+//        // 小数位最少位数
+//        formatter.minimumFractionDigits = 2;
+//        NSString *money = [formatter stringFromNumber:balance];
+//
+//        NSString *price = money;
+//        NSString *priceStr = [NSString stringWithFormat:@"%@ %@", price, SLLocalizedString(@"元")];
+//
+//        NSMutableAttributedString *missionAttributed = [[NSMutableAttributedString alloc]initWithString:priceStr];
+//
+//        [missionAttributed addAttribute:NSFontAttributeName value:kBoldFont(45) range:NSMakeRange(0, price.length)];
+//        [missionAttributed addAttribute:NSFontAttributeName value:kRegular(25) range:NSMakeRange(price.length, 2)];
+//        self.priceLabel.attributedText = missionAttributed;
+//    } failure:^(NSString * _Nonnull errorReason) {
+//        NSLog(@"getUserBalance-errorReason:%@",errorReason);
+//    } finish:nil];
+//}
 #pragma mark - 切换金额
 - (IBAction)chooseAction:(UIButton *)sender {
     [self.priceTf resignFirstResponder];
@@ -108,16 +108,16 @@
     }else {
         priceStr = [NSString stringWithFormat:@"%@",self.priceStr];
     }
-    [[MeManager sharedInstance] queryPayPassWordStatusSuccess:^(id  _Nonnull responseObject) {
-        NSNumber *number = responseObject;
-        if (![number isKindOfClass:[NSNumber class]]) return;
-        if ([number boolValue] == NO) {
-            
-            [self setPayPassword];
-        }else {
-            [self payType:priceStr];
-        }
-    } failure:nil finish:nil];
+//    [[MeManager sharedInstance] queryPayPassWordStatusSuccess:^(id  _Nonnull responseObject) {
+//        NSNumber *number = responseObject;
+//        if (![number isKindOfClass:[NSNumber class]]) return;
+//        if ([number boolValue] == NO) {
+//            
+//            [self setPayPassword];
+//        }else {
+//            [self payType:priceStr];
+//        }
+//    } failure:nil finish:nil];
 }
 #pragma mark - 充值方式
 - (void)payType:(NSString *)str {
@@ -149,7 +149,7 @@
     
     return YES;
 }
--(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     [self.priceTf resignFirstResponder];
 }
 
@@ -158,7 +158,7 @@
     [self payAction];
 }
 
--(UIButton *)payButton {
+- (UIButton *)payButton {
     if (!_payButton) {
         _payButton = [[UIButton alloc]initWithFrame:CGRectMake(-1, kHeight-SLChange(50)-NavBar_Height-BottomMargin_X, kWidth+1, SLChange(50)+BottomMargin_X)];
         [_payButton setBackgroundImage:[UIImage imageNamed:@"balancePush"] forState:(UIControlStateNormal)];

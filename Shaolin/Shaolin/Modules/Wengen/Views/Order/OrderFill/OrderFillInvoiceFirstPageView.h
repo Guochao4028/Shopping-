@@ -24,17 +24,17 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol OrderFillInvoiceFirstPageViewDelegate <NSObject>
 
 //点击关闭
--(void)orderFillInvoiceFirstPageView:(OrderFillInvoiceFirstPageView *_Nonnull)view clooseView:(BOOL)isCloose;
+- (void)orderFillInvoiceFirstPageView:(OrderFillInvoiceFirstPageView *_Nonnull)view clooseView:(BOOL)isCloose;
 
 
 //点击确定
--(void)orderFillInvoiceFirstPageView:(OrderFillInvoiceFirstPageView *)view determine:(BOOL)isDetermine;
+- (void)orderFillInvoiceFirstPageView:(OrderFillInvoiceFirstPageView *)view determine:(BOOL)isDetermine;
 
 //不开发票
--(void)orderFillInvoiceFirstPageView:(OrderFillInvoiceFirstPageView *)view noDraw:(BOOL)isDetermine;
+- (void)orderFillInvoiceFirstPageView:(OrderFillInvoiceFirstPageView *)view noDraw:(BOOL)isDetermine;
 
 //开发票
--(void)orderFillInvoiceFirstPageView:(OrderFillInvoiceFirstPageView *)view draw:(BOOL)isDetermine;
+- (void)orderFillInvoiceFirstPageView:(OrderFillInvoiceFirstPageView *)view draw:(BOOL)isDetermine;
 
 @end
 

@@ -10,10 +10,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OrderDetailsModel;
+@class OrderDetailsNewModel;
 @interface KungfuOrderDetailHeaderView : UIView
 
-@property(nonatomic, strong)OrderDetailsModel *detailsModel;
+@property(nonatomic, strong)OrderDetailsNewModel *detailsModel;
 
 @property (nonatomic , copy) void (^ timeOutHandle)(void);
 @property (nonatomic , copy) void (^ payHandle)(void);

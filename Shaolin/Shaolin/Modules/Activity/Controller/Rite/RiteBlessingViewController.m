@@ -20,7 +20,8 @@
 #import "ZFAVPlayerManager.h"
 #import "DefinedHost.h"
 #import "SLShareView.h"
-
+#import "AppDelegate+AppService.h"
+#import "DefinedURLs.h"
 #import "WJMTagViewConfig.h"
 
 static int const blessingWordsBackViewTag = 1001;
@@ -50,11 +51,13 @@ static int const HeadImageViewTag = 2000;
 @implementation RiteBlessingViewController
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    self.player.viewControllerDisappear = NO;
     [self setNavigationBarClearTintColorWhiteStyle];
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
+    self.player.viewControllerDisappear = YES;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -75,13 +78,13 @@ static int const HeadImageViewTag = 2000;
     self.titleLabe.textColor = [UIColor whiteColor];
     [self.leftBtn setImage:[UIImage imageNamed:@"video_left"] forState:(UIControlStateNormal)];
     self.view.backgroundColor = kMainYellow;
-    [self setUI];
+    [self setupUI];
     [self requestData:nil];
 }
 
 #pragma mark - UI
 
-- (void)setUI{
+- (void)setupUI{
     [self.view addSubview:self.inkStyleEavesImageView];
     [self.view addSubview:self.inkStyleShipImageView];
     [self.view addSubview:self.scrollView];
@@ -112,7 +115,9 @@ static int const HeadImageViewTag = 2000;
     headImageView.clipsToBounds = YES;
     
     UILabel *nameLabel = [[UILabel alloc] init];
-    nameLabel.text = self.riteBlessingModel.nickname;//@"释永信师父";
+    nameLabel.text = [NSString stringWithFormat:@"%@\n%@", self.riteBlessingModel.nickName, self.riteBlessingModel.name];//@"释永信师父";
+    nameLabel.numberOfLines = 0;
+    nameLabel.textAlignment = NSTextAlignmentCenter;
     nameLabel.font = kRegular(16);
     nameLabel.textColor = KTextGray_333;
     
@@ -158,7 +163,7 @@ static int const HeadImageViewTag = 2000;
     [nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.mas_equalTo(headImageView);
         make.top.mas_equalTo(headImageView.mas_bottom).mas_offset(10);
-        make.height.mas_equalTo(22.5);
+        make.height.mas_greaterThanOrEqualTo(22.5);
     }];
     [triangleImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(nameLabel.mas_bottom).mas_offset(10);
@@ -189,8 +194,10 @@ static int const HeadImageViewTag = 2000;
     headImageView.contentMode = UIViewContentModeScaleAspectFill;
     
     UILabel *nameLabel = [[UILabel alloc] init];
-    nameLabel.text = self.riteBlessingModel.nickname;//@"释永信师父";
+    nameLabel.text = [NSString stringWithFormat:@"%@\n%@", self.riteBlessingModel.nickName, self.riteBlessingModel.name];//@"释永信师父";
     nameLabel.font = kRegular(16);
+    nameLabel.textAlignment = NSTextAlignmentCenter;
+    nameLabel.numberOfLines = 0;
     nameLabel.textColor = KTextGray_333;
     
     UIImageView *triangleImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"upTriangleWhite"]];
@@ -223,6 +230,7 @@ static int const HeadImageViewTag = 2000;
     if (self.riteBlessingModel.video.length){
         [blessingWordsBackView addSubview:self.containerView];
         self.player.assetURL = [NSURL URLWithString:self.riteBlessingModel.video];
+        [self.controlView showTitle:@"" coverImage:nil fullScreenMode:ZFFullScreenModePortrait];
         [self.containerView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.mas_equalTo(30);
             make.right.mas_equalTo(-30);
@@ -261,7 +269,7 @@ static int const HeadImageViewTag = 2000;
     [nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.mas_equalTo(headImageView);
         make.top.mas_equalTo(headImageView.mas_bottom).mas_offset(10);
-        make.height.mas_equalTo(22.5);
+        make.height.mas_greaterThanOrEqualTo(22.5);
     }];
     [triangleImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(nameLabel.mas_bottom).mas_offset(10);
@@ -561,8 +569,6 @@ static int const HeadImageViewTag = 2000;
         height = self.neitanViewFornt.maxY + 15;
     }
     [self.scrollView setContentSize:CGSizeMake(self.view.width, height)];
-    
-    [self.controlView showTitle:@"" coverImage:nil fullScreenMode:ZFFullScreenModePortrait];
 }
 #pragma mark requestData
 - (void)requestData:(void (^)(void))finish{
@@ -611,7 +617,7 @@ static int const HeadImageViewTag = 2000;
 - (void)sharedButtonClick:(UIButton *)button{
     if (!self.riteBlessingModel) return;
     SharedModel *model = [[SharedModel alloc] init];
-    model.type = SharedModelType_URL;
+    model.type = SharedModelURLType;
     model.titleStr = self.riteBlessingModel.title;
     model.descriptionStr = self.riteBlessingModel.blessing;
     model.webpageURL = URL_H5_SharedRiteBlessing(self.riteBlessingModel.blessingId);
@@ -844,25 +850,32 @@ static int const HeadImageViewTag = 2000;
     if (!_player){
         /// playerManager
         ZFAVPlayerManager *playerManager = [[ZFAVPlayerManager alloc] init];
-        playerManager.muted = YES;
         playerManager.view.backgroundColor = [UIColor clearColor];
+//        playerManager.muted = YES;
         
         _player = [ZFPlayerController playerWithPlayerManager:playerManager containerView:self.containerView];
         //移动网络自动播放视频
         _player.WWANAutoPlay = YES;
         _player.controlView = self.controlView;
 
-        WEAKSELF
-        self.player.playerPlayStateChanged = ^(id<ZFPlayerMediaPlayback>  _Nonnull asset, ZFPlayerPlaybackState playState) {
-            if (playState != ZFPlayerPlayStatePlayStopped) weakSelf.controlView.alwaysControlViewAppeared = NO;
-            if (playState == ZFPlayerPlayStatePlaying) [weakSelf.controlView hideControlViewWithAnimated:YES];
+        @zf_weakify(self)
+        self.player.orientationWillChange = ^(ZFPlayerController * _Nonnull player, BOOL isFullScreen) {
+            [AppDelegate shareAppDelegate].allowOrentitaionRotation = isFullScreen;
+//            playerManager.muted = !isFullScreen;
         };
         //播放结束
         self.player.playerDidToEnd = ^(id  _Nonnull asset) {
-            [playerManager.player seekToTime:CMTimeMake(0, 1) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero completionHandler:nil];
-            [weakSelf.player.currentPlayerManager pause];
-            weakSelf.controlView.alwaysControlViewAppeared = YES;
-            [weakSelf.controlView showControlViewWithAnimated:YES];
+            @zf_strongify(self)
+//            [playerManager.player seekToTime:CMTimeMake(0, 1) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero completionHandler:^(BOOL finished) {
+//
+//            }];
+//            [self.player.currentPlayerManager pause];
+//            if (self.player.isFullScreen) {
+//                [self.controlView.landScapeControlView showControlView];
+//            } else {
+//                [self.controlView.portraitControlView showControlView];
+//            }
+            [self.player.currentPlayerManager replay];
         };
     }
     return _player;
@@ -872,9 +885,11 @@ static int const HeadImageViewTag = 2000;
     if (!_controlView) {
         _controlView = [ZFPlayerControlView new];
         _controlView.fastViewAnimated = YES;
-//        _controlView.horizontalPanShowControlView = NO;
+        _controlView.autoHiddenTimeInterval = 5;
+        _controlView.autoFadeTimeInterval = 0.5;
         // 显示loading
         _controlView.prepareShowLoading = YES;
+        _controlView.prepareShowControlView = NO;
         //TODO: 去掉高斯模糊背景
         [_controlView setEffectViewShow:NO];
     }

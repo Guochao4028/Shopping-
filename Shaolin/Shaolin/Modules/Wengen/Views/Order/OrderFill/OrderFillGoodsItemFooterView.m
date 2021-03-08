@@ -15,7 +15,7 @@
 @end
 
 @implementation OrderFillGoodsItemFooterView
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [[NSBundle mainBundle] loadNibNamed:@"OrderFillGoodsItemFooterView" owner:self options:nil];
@@ -25,7 +25,7 @@
 }
 
 /// 初始化UI
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.contentView];
     [self.contentView setFrame:self.bounds];
     
@@ -34,7 +34,7 @@
 
 #pragma mark - setter / getter
 
--(void)setGoodsDic:(NSDictionary *)goodsDic{
+- (void)setGoodsDic:(NSDictionary *)goodsDic{
     _goodsDic = goodsDic;
     
     

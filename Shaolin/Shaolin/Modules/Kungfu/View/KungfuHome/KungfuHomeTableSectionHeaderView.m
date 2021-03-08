@@ -26,13 +26,13 @@
     }
 }
 
--(void)setTitleString:(NSString *)titleString {
+- (void)setTitleString:(NSString *)titleString {
     _titleString = titleString;
     
     self.titleLabel.text = titleString;
 }
 
--(void)setArrowHidden:(BOOL)arrowHidden {
+- (void)setArrowHidden:(BOOL)arrowHidden {
     _arrowHidden = arrowHidden;
     
     self.arrowIcon.hidden = arrowHidden;

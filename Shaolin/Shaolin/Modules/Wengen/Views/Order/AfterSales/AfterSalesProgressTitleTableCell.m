@@ -38,7 +38,7 @@
     // Configure the view for the selected state
 }
 
--(void)setModel:(OrderRefundInfoModel *)model{
+- (void)setModel:(OrderRefundInfoModel *)model{
     
     NSString *refund_status = model.status;
     

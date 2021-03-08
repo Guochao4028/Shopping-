@@ -19,9 +19,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) UIButton *saveButton;
 @property (nonatomic, strong) UIButton *cancelButton;
 
-// 底部saveButton 点击事件默认为将图片保存到本地，设置了bottomButtonClickBlock，则调用bottomButtonClickBlock
+// 底部saveButton 点击事件默认为将图片保存到本地，如果设置了bottomButtonClickBlock，则调用bottomButtonClickBlock
 @property (nonatomic, copy) void (^saveButtonClickBlock)(void);
-// 底部calcelButton 点击事件为空，设置了cancelButtonClickBlock，则调用cancelButtonClickBlock
+// 底部cancelButton 点击事件为空，如果设置了cancelButtonClickBlock，则调用cancelButtonClickBlock
 @property (nonatomic, copy) void (^cancelButtonClickBlock)(void);
 /**
  隐藏底部按钮

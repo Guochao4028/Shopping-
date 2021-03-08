@@ -33,22 +33,22 @@
         [duanRow addObject:dropMenuModel];
     }
     
-//    for (NSInteger index = 0 ; index < duanArray.count; index++) {
-//        GHDropMenuModel *dropMenuModel = [[GHDropMenuModel alloc]init];
-//
-//        NSDictionary *dic = [duanArray objectAtIndex:index];
-//
-//        LevelModel *model = [LevelModel mj_objectWithKeyValues:dic];
-//
-//        model.levelId = dic[@"levelId"];
-//
-//        dropMenuModel.tagName = model.name;
-//        dropMenuModel.model = model;
-//        dropMenuModel.isMultiple = YES;
-//        dropMenuModel.levelType = @"1";
-//        dropMenuModel.optionSeletedColor = [UIColor colorForHex:@"BE0000"];
-//        [duanRow addObject:dropMenuModel];
-//    }
+    //    for (NSInteger index = 0 ; index < duanArray.count; index++) {
+    //        GHDropMenuModel *dropMenuModel = [[GHDropMenuModel alloc]init];
+    //
+    //        NSDictionary *dic = [duanArray objectAtIndex:index];
+    //
+    //        LevelModel *model = [LevelModel mj_objectWithKeyValues:dic];
+    //
+    //        model.levelId = dic[@"levelId"];
+    //
+    //        dropMenuModel.tagName = model.name;
+    //        dropMenuModel.model = model;
+    //        dropMenuModel.isMultiple = YES;
+    //        dropMenuModel.levelType = @"1";
+    //        dropMenuModel.optionSeletedColor = [UIColor colorForHex:@"BE0000"];
+    //        [duanRow addObject:dropMenuModel];
+    //    }
     
     
     
@@ -66,21 +66,21 @@
     }
     
     
-//    for (NSInteger index = 0 ; index < pinArray.count; index++) {
-//        GHDropMenuModel *dropMenuModel = [[GHDropMenuModel alloc]init];
-//
-//        NSDictionary *dic = [pinArray objectAtIndex:index];
-//
-//        LevelModel *model = [LevelModel mj_objectWithKeyValues:dic];
-//        model.levelId = dic[@"levelId"];
-//
-//        dropMenuModel.tagName = model.name;
-//        dropMenuModel.model = model;
-//        dropMenuModel.isMultiple = YES;
-//        dropMenuModel.levelType = @"3";
-//        dropMenuModel.optionSeletedColor = [UIColor colorForHex:@"BE0000"];
-//        [pinRow addObject:dropMenuModel];
-//    }
+    //    for (NSInteger index = 0 ; index < pinArray.count; index++) {
+    //        GHDropMenuModel *dropMenuModel = [[GHDropMenuModel alloc]init];
+    //
+    //        NSDictionary *dic = [pinArray objectAtIndex:index];
+    //
+    //        LevelModel *model = [LevelModel mj_objectWithKeyValues:dic];
+    //        model.levelId = dic[@"levelId"];
+    //
+    //        dropMenuModel.tagName = model.name;
+    //        dropMenuModel.model = model;
+    //        dropMenuModel.isMultiple = YES;
+    //        dropMenuModel.levelType = @"3";
+    //        dropMenuModel.optionSeletedColor = [UIColor colorForHex:@"BE0000"];
+    //        [pinRow addObject:dropMenuModel];
+    //    }
     
     NSArray *pinjieArray = [[ModelTool shareInstance] select:[LevelModel class] tableName:@"level" where:@"levelType = 2"];
     NSMutableArray *pinjieRow = [NSMutableArray array];
@@ -91,7 +91,7 @@
         dropMenuModel.isMultiple = YES;
         dropMenuModel.tagName = model.name;
         dropMenuModel.model = model;
-         dropMenuModel.levelType = @"2";
+        dropMenuModel.levelType = @"2";
         dropMenuModel.optionSeletedColor = [UIColor colorForHex:@"BE0000"];
         //               dropMenuModel.tagName = [qwe by_ObjectAtIndex:index];
         
@@ -99,21 +99,21 @@
     }
     
     
-//    for (NSInteger index = 0 ; index < pinjieArray.count; index++) {
-//        GHDropMenuModel *dropMenuModel = [[GHDropMenuModel alloc]init];
-//        NSDictionary *dic = [pinjieArray objectAtIndex:index];
-//        
-//        LevelModel *model = [LevelModel mj_objectWithKeyValues:dic];
-//        model.levelId = dic[@"levelId"];
-//        dropMenuModel.isMultiple = YES;
-//        dropMenuModel.tagName = model.name;
-//        dropMenuModel.model = model;
-//         dropMenuModel.levelType = @"2";
-//        dropMenuModel.optionSeletedColor = [UIColor colorForHex:@"BE0000"];
-//        //               dropMenuModel.tagName = [qwe by_ObjectAtIndex:index];
-//        
-//        [pinjieRow addObject:dropMenuModel];
-//    }
+    //    for (NSInteger index = 0 ; index < pinjieArray.count; index++) {
+    //        GHDropMenuModel *dropMenuModel = [[GHDropMenuModel alloc]init];
+    //        NSDictionary *dic = [pinjieArray objectAtIndex:index];
+    //
+    //        LevelModel *model = [LevelModel mj_objectWithKeyValues:dic];
+    //        model.levelId = dic[@"levelId"];
+    //        dropMenuModel.isMultiple = YES;
+    //        dropMenuModel.tagName = model.name;
+    //        dropMenuModel.model = model;
+    //         dropMenuModel.levelType = @"2";
+    //        dropMenuModel.optionSeletedColor = [UIColor colorForHex:@"BE0000"];
+    //        //               dropMenuModel.tagName = [qwe by_ObjectAtIndex:index];
+    //
+    //        [pinjieRow addObject:dropMenuModel];
+    //    }
     
     NSArray *statusArray = @[SLLocalizedString(@"未开始"), SLLocalizedString(@"进行中"), SLLocalizedString(@"已结束")];
     NSMutableArray *statusRow = [NSMutableArray array];
@@ -141,25 +141,28 @@
         
         if (index == 0) {
             dropMenuModel.sectionSeleted = YES;
-             dropMenuModel.isMultiple = YES;
+            dropMenuModel.isMultiple = YES;
             dropMenuModel.dataArray = duanRow;
         }
         
         if (index == 1) {
             dropMenuModel.sectionSeleted = YES;
-             dropMenuModel.isMultiple = YES;
+            dropMenuModel.isMultiple = YES;
             dropMenuModel.dataArray = pinRow;
         }
         
         if (index == 2) {
             dropMenuModel.sectionSeleted = NO;
-             dropMenuModel.isMultiple = YES;
+            
+            [[ModelTool shareInstance] setIsScreeningSpread:dropMenuModel.sectionSeleted];
+            
+            dropMenuModel.isMultiple = YES;
             dropMenuModel.dataArray = pinjieRow;
         }
         
         if (index == 3) {
             dropMenuModel.sectionSeleted = YES;
-             dropMenuModel.isMultiple = YES;
+            dropMenuModel.isMultiple = YES;
             dropMenuModel.isSectionSeletedHidden = YES;
             dropMenuModel.dataArray = statusRow;
             
@@ -187,8 +190,6 @@
     NSString *temp = NSTemporaryDirectory();
     NSString *filePath = [temp stringByAppendingPathComponent:@"temp.temp"];
     
- 
-        
     [NSKeyedArchiver archiveRootObject:titlesArray  toFile:filePath];
     
     

@@ -37,7 +37,7 @@
     [self layoutView];
 }
 
--(void)layoutView
+- (void)layoutView
 {
     
     [self.view addSubview:self.setupView];
@@ -108,7 +108,7 @@
 
 #pragma mark - event
 
--(void)submitHandle {
+- (void)submitHandle {
     
     [self.view endEditing:YES];
     
@@ -170,11 +170,11 @@
     }
 }
 
--(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     [self.view endEditing:YES];
 }
 
--(void)timerFire {
+- (void)timerFire {
     
     //设置倒计时时间
     __block int timeout = 61;
@@ -207,7 +207,7 @@
 
 #pragma mark - getter /setter
 
--(PayPasswordSetupView *)setupView {
+- (PayPasswordSetupView *)setupView {
     WEAKSELF
     if (!_setupView) {
         _setupView = [[[NSBundle mainBundle] loadNibNamed:@"PayPasswordSetupView" owner:self options:nil] objectAtIndex:0];
@@ -218,7 +218,7 @@
     return _setupView;
 }
 
--(UIButton *)submitBtn {
+- (UIButton *)submitBtn {
     if (!_submitBtn) {
         _submitBtn = [UIButton new];
         _submitBtn.backgroundColor = kMainYellow;

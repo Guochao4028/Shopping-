@@ -39,7 +39,7 @@ static NSString *const moreCellId = @"tableCell";
     // Configure the view for the selected state
 }
 
-//-(void)updateCellUI {
+//- (void)updateCellUI {
 //    
 //    
 //}
@@ -59,7 +59,7 @@ static NSString *const moreCellId = @"tableCell";
 
 #pragma mark - delegate && dataSources
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (self.classList.count > 3) {
         return 4;
@@ -67,7 +67,7 @@ static NSString *const moreCellId = @"tableCell";
     return self.classList.count;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
     if (indexPath.row < 3) {
@@ -96,7 +96,7 @@ static NSString *const moreCellId = @"tableCell";
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.row > 2) {
         if (self.moreHandle) {
@@ -116,7 +116,7 @@ static NSString *const moreCellId = @"tableCell";
     }
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.row > 2) {
         return 45;
@@ -126,7 +126,7 @@ static NSString *const moreCellId = @"tableCell";
 }
 
 
--(UITableView *)classTableView {
+- (UITableView *)classTableView {
     if (!_classTableView) {
         _classTableView = [[UITableView alloc]initWithFrame:CGRectZero style:(UITableViewStylePlain)];
         _classTableView.delegate = self;
@@ -143,7 +143,7 @@ static NSString *const moreCellId = @"tableCell";
 }
 
 
--(void)setClassList:(NSArray *)classList {
+- (void)setClassList:(NSArray *)classList {
     _classList = classList;
     
     if (self.tag == 0) {

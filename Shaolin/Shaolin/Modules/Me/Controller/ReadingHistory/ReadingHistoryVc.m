@@ -19,12 +19,12 @@
 @end
 
 @implementation ReadingHistoryVc
--(void)viewWillAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     //[self setNavigationBarYellowTintColor];
 }
--(void)viewWillDisappear:(BOOL)animated
+- (void)viewWillDisappear:(BOOL)animated
 {
      [super viewWillDisappear:animated];
 //     self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
@@ -32,13 +32,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
      [self buildData];
-    [self setUI];
+    [self setupUI];
      [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(buttonNormal) name:@"NormalButton" object:nil];
 }
 - (void)buttonNormal {
     [self.rightBtn setSelected:NO];
 }
--(void)setUI{
+- (void)setupUI{
        self.titleLabe.text = SLLocalizedString(@"阅读历史");
        self.titleLabe.textColor = [UIColor whiteColor];
        [self.leftBtn setImage:[UIImage imageNamed:@"real_left"] forState:(UIControlStateNormal)];
@@ -79,12 +79,14 @@
 - (void)rightAction:(UIButton *)button {
     
     button.selected = !button.selected;
+    
+    
     if (button.selected) {
         self.recordIndex = self.selectEdit;
         if (self.selectEdit == 0) {
-            [[NSNotificationCenter defaultCenter]postNotificationName:@"selectEditTextSelect" object:nil];
+            [[NSNotificationCenter defaultCenter]postNotificationName:@"selectEditTextSelect" object:button];
         }else {
-             [[NSNotificationCenter defaultCenter]postNotificationName:@"selectEditVideoSelect" object:nil];
+             [[NSNotificationCenter defaultCenter]postNotificationName:@"selectEditVideoSelect" object:button];
         }
     }else {
         if (self.selectEdit == 0) {
@@ -129,5 +131,9 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+-(void)dealloc{
+    NSLog(@"%s",__func__);
+}
 
 @end

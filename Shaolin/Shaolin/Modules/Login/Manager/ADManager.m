@@ -34,6 +34,10 @@ static NSArray *testImageArray = nil;
     [XHLaunchAd clearDiskCache];
 }
 
++ (float)getDiskCacheSize{
+    return [XHLaunchAd diskCacheSize];
+}
+
 + (void)showAD {
 //    1.因为数据请求是异步的,请在数据请求前,调用下面方法配置数据等待时间.
 //    2.设为3即表示:启动页将停留3s等待服务器返回广告数据,3s内等到广告数据,将正常显示广告,否则将不显示
@@ -80,7 +84,7 @@ static NSArray *testImageArray = nil;
                 BOOL checkCache = [XHLaunchAd checkImageInCacheWithURL:[NSURL URLWithString:model.imgUrl]];
                 NSLog(@"ADManager 本地是否已经缓存该图片:%d, 只有缓存了图片才会显示广告页", checkCache);
                 NSLog(@"ADManager 图片URL:%@", model.imgUrl);
-                BOOL isLogin = [[SLAppInfoModel sharedInstance] access_token].length;
+                BOOL isLogin = [[SLAppInfoModel sharedInstance] accessToken].length;
                 NSLog(@"ADManager 用户登录状态:%d, 只有登录了才会显示广告页", isLogin);
                 if (!checkCache){
                     [[XHLaunchAdDownloader sharedDownloader] downLoadImageAndCacheWithURLArray:@[

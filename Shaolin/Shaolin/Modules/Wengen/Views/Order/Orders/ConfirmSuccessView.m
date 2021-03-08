@@ -30,7 +30,7 @@
 
 @implementation ConfirmSuccessView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [[NSBundle mainBundle] loadNibNamed:@"ConfirmSuccessView" owner:self options:nil];
@@ -40,7 +40,7 @@
 }
 
 
--(void)initUI{
+- (void)initUI{
     
     [self addSubview:self.contentView];
     [self.contentView setFrame:self.bounds];
@@ -57,7 +57,7 @@
 }
 
 #pragma mark - StarRatingViewDelegate
--(void)starRatingView:(TQStarRatingView *)view score:(float)score{
+- (void)starRatingView:(TQStarRatingView *)view score:(float)score{
     if (view == self.storeStarView) {
         self.club_star = [NSString stringWithFormat:@"%f",score*5];
     }
@@ -89,7 +89,7 @@
 }
 
 #pragma mark - setter / getter
--(void)setListModel:(OrderListModel *)listModel{
+- (void)setListModel:(OrderListModel *)listModel{
     _listModel = listModel;
 //    [self.storeNameLabel setText:listModel.club_name];
 //    [self.goodsNameLabel setText:listModel.goods_name];

@@ -11,6 +11,8 @@
 #import "OrderDetailsModel.h"
 #import "OrdeItemImageCollectionViewCell.h"
 
+#import "OrderDetailsNewModel.h"
+
 @interface OrderLogisticsTableViewCell ()<UICollectionViewDataSource, UICollectionViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *stateLabel;
@@ -48,7 +50,7 @@
 
 
 ///装饰button
--(void)modifiedButton:(UIButton *)sender borderColor:(UIColor *)color cornerRadius:(CGFloat)radius{
+- (void)modifiedButton:(UIButton *)sender borderColor:(UIColor *)color cornerRadius:(CGFloat)radius{
     sender.layer.borderWidth = 1;
     sender.layer.borderColor = color.CGColor;
     sender.layer.cornerRadius = SLChange(radius);
@@ -65,7 +67,7 @@
 
 #pragma mark - UICollectionViewDataSource & UICollectionViewDelegate
 
--(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
     return self.goodsImagesArray.count;
 }
 
@@ -73,7 +75,7 @@
     return CGSizeMake(110, 110);
 }
 
--(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     OrdeItemImageCollectionViewCell * cell  = [collectionView dequeueReusableCellWithReuseIdentifier:@"OrdeItemImageCollectionViewCell" forIndexPath:indexPath];
     
     cell.imageStr = self.goodsImagesArray[indexPath.row];
@@ -83,7 +85,7 @@
 
 #pragma mark - setter / getter
 
--(void)setGoodsModel:(OrderDetailsModel *)goodsModel{
+- (void)setGoodsModel:(OrderDetailsNewModel *)goodsModel{
     _goodsModel = goodsModel;
     
     NSString *statusStr = goodsModel.status;
@@ -97,13 +99,13 @@
     }
     
     
-    [self.logisticsLabel setText:[NSString stringWithFormat:@"%@:%@", goodsModel.logistics_name, goodsModel.logistics_no]];
+    [self.logisticsLabel setText:[NSString stringWithFormat:@"%@:%@", goodsModel.logisticsName, goodsModel.logisticsNo]];
     
-    [self.orderNumberLabel setText:[NSString stringWithFormat:SLLocalizedString(@"订单编号：%@"), goodsModel.order_sn]];
+    [self.orderNumberLabel setText:[NSString stringWithFormat:SLLocalizedString(@"订单编号：%@"), goodsModel.orderSn]];
     
-    [self.goodsNumberLabel setText:[NSString stringWithFormat:SLLocalizedString(@"共%ld件商品"), goodsModel.goods_image.count]];
+    [self.goodsNumberLabel setText:[NSString stringWithFormat:SLLocalizedString(@"共%ld件商品"), goodsModel.goodsImages.count]];
     
-    self.goodsImagesArray = goodsModel.goods_image;
+    self.goodsImagesArray = goodsModel.goodsImages;
     [self.collectionView reloadData];
 }
 

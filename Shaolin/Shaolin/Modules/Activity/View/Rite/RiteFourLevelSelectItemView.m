@@ -36,14 +36,14 @@ static NSString *AnimationTranslationHide = @"KCBasicAnimation_Translation_Hide"
     self = [super init];
     if (self){
         [[ShaolinProgressHUD frontWindow] addSubview:self];
-        [self setUI];
+        [self setupUI];
         self.confirmButton.enabled = NO;
         self.hidden = YES;
     }
     return self;
 }
 
-- (void)setUI{
+- (void)setupUI{
     [self addSubview:self.maskView];
     [self addSubview:self.selectItemView];
     [self.selectItemView addSubview:self.closeButton];

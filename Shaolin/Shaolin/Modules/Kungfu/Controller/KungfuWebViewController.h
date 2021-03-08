@@ -29,7 +29,7 @@ typedef enum : NSUInteger {
 /*!返回值为返回按钮的逻辑是否已由调用类处理*/
 @property (nonatomic, copy) BOOL (^leftActionBlock)(void);
 
--(instancetype)initWithUrl:(NSString*)url type:(KfWebViewType)type;
+- (instancetype)initWithUrl:(NSString*)url type:(KfWebViewType)type;
 - (void)hideWebViewScrollIndicator;
 @end
 

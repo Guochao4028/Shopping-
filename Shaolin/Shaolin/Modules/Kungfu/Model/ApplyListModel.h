@@ -19,12 +19,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString * activityId;
 ///活动名称
 @property (nonatomic, copy) NSString * activityName;
-///活动类型
-@property (nonatomic, copy) NSString * activityType;
+///活动类型 3:竞赛活动 4:考试 5:竞赛活动
+@property (nonatomic) NSInteger activityTypeId;
+@property (nonatomic, readonly) NSString * activityType;
 ///曾用名
 @property (nonatomic, copy) NSString * beforeName;
 ///时间
-@property (nonatomic, copy) NSString * bormtime;
+@property (nonatomic, copy) NSString * bormTime;
 ///院士
 @property (nonatomic, copy) NSString * education;
 //申报位阶
@@ -55,19 +56,45 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString * resultsApplication;
 @property (nonatomic, copy) NSString * search;
 
+@property (nonatomic, copy) NSString * createTime;
+
+/// 活动时间
+@property (nonatomic, copy) NSString * activityStartTime;
+@property (nonatomic, copy) NSString * activityEndTime;
+
+/// 报名时间
+//报名列表用的报名时间，用createTime转格式后使用
+@property(nonatomic, readonly) NSString * applyTime;
+//报名详情用的报名时间，显示applyStartTime-applyEndTime，需求
+@property(nonatomic, readonly) NSString * applyDetailTime;
+@property (nonatomic, copy) NSString * applyStartTime;
+@property (nonatomic, copy) NSString * applyEndTime;
+
+/// 培训时间
+@property (nonatomic, copy) NSString * trainingStartTime;
+@property (nonatomic, copy) NSString * trainingEndTime;
+
+/// 活动时间
+@property(nonatomic, readonly) NSString * activityTime;
+
+
+/// 培训时间
+@property(nonatomic, readonly) NSString * trainingTime;
+/// 技能考试时间
+@property(nonatomic, readonly) NSString * skillExamTime;
+
+/// 技能考试时间
 @property (nonatomic, copy) NSString * skillExamStartTime;
 @property (nonatomic, copy) NSString * skillExamEndTime;
+
 @property (nonatomic, copy) NSString * sysUserId;
 @property (nonatomic, copy) NSString * telephone;
 @property (nonatomic, copy) NSString * title;
 @property (nonatomic, copy) NSString * wechat;
-@property (nonatomic, copy) NSString * writeExamStartTime;
-@property (nonatomic, copy) NSString * writeExamEndTime;
+
 @property (nonatomic, copy) NSString * useraccount;
 @property (nonatomic, copy) NSString * valid;
 
-///报名日期
-@property (nonatomic, copy) NSString * createTime;
 ///位阶
 @property (nonatomic, copy) NSString * levelName;
 
@@ -89,20 +116,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, copy)NSString * valueType;
 
-//活动类型id 用于判断 考试 or 活动
-//4 考试
-@property(nonatomic, copy)NSString * activityTypeId;
-//培训时间
-@property(nonatomic, copy)NSString * trainingTime;
-//技能考试时间
-@property(nonatomic, copy)NSString * skillExamTime;
-//活动开始时间
-@property(nonatomic, copy)NSString * activityStartTime;
-
 @property(nonatomic, copy)NSString * activityCode;
-//申报位阶
-
-
 //现位阶
 @property(nonatomic, copy)NSString * memberLevel;
 

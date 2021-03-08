@@ -22,8 +22,8 @@
     config.titleWidth = [XLPagePictureAndTextTitleCell cellSize].width;
     config.titleViewHeight = [XLPagePictureAndTextTitleCell cellSize].height + config.titleViewInset.top + config.titleViewInset.bottom;
 //    config.titleSpace = 20;
-    config.titleNormalFont = kRegular(15);
-    config.titleSelectedFont = kRegular(15);
+    config.titleNormalFont = kMediumFont(15);
+    config.titleSelectedFont = kMediumFont(15);
     config.shadowLineHeight = 0;
     config.titleSelectedColor = kMainYellow;
     config.titleNormalColor = kMainLightYellow;

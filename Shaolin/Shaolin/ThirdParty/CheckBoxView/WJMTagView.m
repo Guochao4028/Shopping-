@@ -19,12 +19,12 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        [self setUI];
+        [self setupUI];
     }
     return self;
 }
 
-- (void)setUI{
+- (void)setupUI{
     self.userInteractionEnabled = NO;
     [self addSubview:self.imageView];
     [self addSubview:self.titleLabel];

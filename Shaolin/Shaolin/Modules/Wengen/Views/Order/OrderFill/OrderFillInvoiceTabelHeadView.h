@@ -43,10 +43,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol OrderFillInvoiceTabelHeadViewDelegate <NSObject>
 
--(void)orderFillInvoiceTabelHeadView:(OrderFillInvoiceTabelHeadView *)view tapView:(BOOL)istap;
+- (void)orderFillInvoiceTabelHeadView:(OrderFillInvoiceTabelHeadView *)view tapView:(BOOL)istap;
 
 
--(void)orderFillInvoiceTabelHeadView:(OrderFillInvoiceTabelHeadView *)view tapViewChangeProformaInvoice:(NSString *)invoiceShape;
+- (void)orderFillInvoiceTabelHeadView:(OrderFillInvoiceTabelHeadView *)view tapViewChangeProformaInvoice:(NSString *)invoiceShape;
 
 @end
 

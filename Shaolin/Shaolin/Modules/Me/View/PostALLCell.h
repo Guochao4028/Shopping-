@@ -13,9 +13,9 @@
 @property(nonatomic,copy) void (^changeTextAction)(NSIndexPath *indexPath);
 @property(nonatomic,copy) void (^lookRefusedTextAction)(NSIndexPath *indexPath);
 @property(nonatomic,copy) NSString *typeStr;
--(void)setMePostManagerModel:(MePostManagerModel *)f indexpath:(NSIndexPath *)indexPath;
--(NSString *)compaareCurrentTime:(NSDate *)compareDate;
--(NSDate *)nsstringConversionNSDate:(NSString *)dateStr;
+- (void)setMePostManagerModel:(MePostManagerModel *)f indexpath:(NSIndexPath *)indexPath;
+- (NSString *)compaareCurrentTime:(NSDate *)compareDate;
+- (NSDate *)nsstringConversionNSDate:(NSString *)dateStr;
 @end
 
 

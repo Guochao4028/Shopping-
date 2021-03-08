@@ -17,12 +17,12 @@
 - (void)setTitle:(NSString *)title;
 @end
 
-@interface LogisticsViewController () <UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate>
+@interface LogisticsViewController () <UITableViewDelegate, UITableViewDataSource,UITextFieldDelegate >
 @property (nonatomic, strong) UIView *whiteBackView;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) UITableView *logisticsTableView;
-@property (nonatomic, strong) UISearchBar *searchBar;
+@property (nonatomic, strong) UIView *searchBackView;
 
 @property (nonatomic) BOOL isSearch;
 @property (nonatomic, strong) NSMutableArray *dataArray;
@@ -38,7 +38,7 @@
     self.indexArray = [@[] mutableCopy];
     self.dataArray = [@[] mutableCopy];
     
-    [self setUI];
+    [self setupUI];
     self.titleLabel.text = SLLocalizedString(@"选择物流");
 
 #ifdef LogisticsViewController_TestData
@@ -48,13 +48,14 @@
 #endif
 }
 
-- (void)setUI{
+- (void)setupUI{
     self.view.backgroundColor = [UIColor colorWithWhite:0 alpha:0.4];
     
     [self.view addSubview:self.whiteBackView];
     
     [self.whiteBackView addSubview:self.closeButton];
     [self.whiteBackView addSubview:self.titleLabel];
+    [self.whiteBackView addSubview:self.searchBackView];
     [self.whiteBackView addSubview:self.logisticsTableView];
     
     [self.whiteBackView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -72,8 +73,14 @@
         make.size.mas_equalTo(CGSizeMake(SLChange(200), SLChange(24)));
     }];
     
+    [self.searchBackView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(SLChange(12));
+        make.top.mas_equalTo(self.titleLabel.mas_bottom).mas_offset(SLChange(15));
+        make.right.mas_equalTo(SLChange(-12));
+        make.height.mas_equalTo(SLChange(30));
+    }];
     [self.logisticsTableView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.titleLabel.mas_bottom).mas_equalTo(15);
+        make.top.mas_equalTo(self.searchBackView.mas_bottom).mas_equalTo(SLChange(15));
         make.left.right.bottom.mas_equalTo(0);
     }];
 }
@@ -102,6 +109,7 @@
             NSArray *dataList = [data objectForKey:DATAS];
             for (NSDictionary *dict in dataList){
                 NSString *courierName = [dict objectForKey:@"courierName"];
+                NSLog(@"courierName : %@", courierName);
                 if (courierName){
                     [array addObject:courierName];
                 }
@@ -131,13 +139,13 @@
     if (self.isSearch){
         return self.indexArray.count;
     }
-    if(section == 0) {
-        return 1;
-    } else {
+//    if(section == 0) {
+//        return 1;
+//    } else {
         NSDictionary *dict = self.dataArray[section];
         NSMutableArray *array = dict[@"content"];
         return [array count];
-    }
+//    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -160,8 +168,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    [self.searchBar setShowsCancelButton:NO animated:YES];
-    [self.searchBar resignFirstResponder];
+    [self.view endEditing:YES];
     if (self.selectedLogisticsName){
         NSString *title = @"";
         if (self.isSearch){
@@ -234,6 +241,7 @@
 
 //点击索引栏标题时执行
 - (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index {
+    [self.view endEditing:YES];
     //这里是为了指定索引index对应的是哪个section的，默认的话直接返回index就好。其他需要定制的就针对性处理
     if ([title isEqualToString:UITableViewIndexSearch]) {
         [tableView setContentOffset:CGPointZero animated:NO];//tabview移至顶部
@@ -242,43 +250,22 @@
         return [[UILocalizedIndexedCollation currentCollation] sectionForSectionIndexTitleAtIndex:index] - 1; // -1 添加了搜索标识
     }
 }
-#pragma mark - UISearchBarDelegate
-// UISearchBar得到焦点并开始编辑时，执行该方法
-- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
-    [searchBar setShowsCancelButton:YES animated:YES];
-    NSLog(@"searchBarTextDidBeginEditing:");
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    [self.view endEditing:YES];
 }
 
-// 取消按钮被按下时，执行的方法
-- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
-    self.isSearch = NO;
-    searchBar.text = nil;
-    [searchBar setShowsCancelButton:NO animated:YES];
-    [searchBar resignFirstResponder];
-    NSLog(@"searchBarCancelButtonClicked:");
+#pragma mark - UITextFieldDelegate
+- (void)textDidChanged:(UITextField *)textfield{
+    UITextRange *selectedRange = [textfield markedTextRange];
+    //获取高亮部分
+    UITextPosition *position = [textfield positionFromPosition:selectedRange.start offset:0];
+    // 有高亮选择的字，不搜索
+    if (position) return;
     
     [self.indexArray removeAllObjects];
-    [self.logisticsTableView reloadData];
-}
-
-// 键盘中，搜索按钮被按下，执行的方法
-- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-   NSLog(@"searchBarSearchButtonClicked:");
-}
-
-// 当搜索内容变化时，执行该方法。很有用，可以实现时实搜索
-- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-        NSLog(@"searchBar:textDidChange:");
-    UITextField *searchField = [searchBar valueForKey:@"searchField"];
-    if(searchField) {
-        UITextRange *selectedRange = [searchField markedTextRange];
-        //获取高亮部分
-        UITextPosition *position = [searchField positionFromPosition:selectedRange.start offset:0];
-        // 有高亮选择的字，不搜索
-        if (position) return;
-    }
     
-    [self.indexArray removeAllObjects];
+    NSString *searchText = textfield.text;
     if (searchText.length == 0) {
         self.isSearch = NO;
     } else {
@@ -300,7 +287,7 @@
                 NSArray* spallArry = [contentArray filteredArrayUsingPredicate:predict];
                 resultArry = [NSMutableArray arrayWithArray:spallArry];
             }else{//输入的是数字或者汉字 则匹配名字中包含输入字符
-                NSPredicate *predict = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %NSLocalizedString(@",searchText];
+                NSPredicate *predict = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@",searchText];
                 //或者使用 @", nil)name LIKE[cd] '*%@*'"    //*代表通配符
                 resultArry = [contentArray filteredArrayUsingPredicate:predict].mutableCopy;
             }
@@ -311,6 +298,11 @@
         }
     }
     [self.logisticsTableView reloadData];
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField{
+    [textField resignFirstResponder];
+    return YES;
 }
 #pragma mark - buttonClick
 - (void)closeLogisticsVC{
@@ -348,9 +340,44 @@
     return _closeButton;
 }
 
+- (UIView *)searchBackView {
+    if (!_searchBackView){
+        _searchBackView = [[UIView alloc] init];
+        _searchBackView.backgroundColor = KTextGray_FA;
+        _searchBackView.clipsToBounds = YES;
+        _searchBackView.layer.cornerRadius = SLChange(15);//设置圆角具体根据实际情况来设置
+        
+        UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"new_search"]];
+        UITextField *searchTF = [[UITextField alloc] init];
+        searchTF.textColor = KTextGray_333;
+        searchTF.font = kRegular(13);
+        searchTF.delegate = self;
+        searchTF.returnKeyType = UIReturnKeyDone;
+        searchTF.placeholder = SLLocalizedString(@"搜索词");
+        searchTF.backgroundColor = [UIColor clearColor];
+        [searchTF addTarget:self action:@selector(textDidChanged:) forControlEvents:UIControlEventEditingChanged];
+        
+        [_searchBackView addSubview:imageView];
+        [_searchBackView addSubview:searchTF];
+        [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(SLChange(12.5));
+            make.centerY.mas_equalTo(imageView.superview);
+            make.size.mas_equalTo(CGSizeMake(15, 15));
+        }];
+        [searchTF mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(imageView.mas_right).mas_offset(SLChange(5));
+            make.centerY.mas_equalTo(imageView);
+            make.right.mas_equalTo(-SLChange(12.5));
+            make.height.mas_equalTo(SLChange(18));
+        }];
+    }
+    return _searchBackView;
+}
+
 - (UITableView *)logisticsTableView {
     if (!_logisticsTableView){
-        _logisticsTableView = [[UITableView  alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+//        _logisticsTableView = [[UITableView  alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+        _logisticsTableView = [[UITableView  alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame), 0) style:UITableViewStylePlain];
         _logisticsTableView.delegate = self;
         _logisticsTableView.dataSource = self;
         
@@ -364,39 +391,10 @@
         _logisticsTableView.sectionIndexBackgroundColor = [UIColor clearColor];
         [_logisticsTableView registerClass:[LogisticsCell class] forCellReuseIdentifier:@"cellID"];
         
-        self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame), 0)];
-        self.searchBar.delegate = self;
-        self.searchBar.placeholder = SLLocalizedString(@"搜索词");
-        [self.searchBar setAutocapitalizationType:UITextAutocapitalizationTypeNone];
-        [self.searchBar sizeToFit];
-        [self.searchBar setPositionAdjustment:UIOffsetMake(SLChange(12.5), 0) forSearchBarIcon:UISearchBarIconSearch];
-        self.searchBar.backgroundImage = [self imageWithColor:[UIColor whiteColor] size:self.searchBar.bounds.size];
-        [UIBarButtonItem appearanceWhenContainedInInstancesOfClasses:@[[UISearchBar class]]].title = SLLocalizedString(@"取消");
-        UITextField *searchField = [self.searchBar valueForKey:@"searchField"];
-        if(searchField) {
-            [searchField setBackgroundColor:KTextGray_FA];
-            searchField.layer.cornerRadius = SLChange(15);//设置圆角具体根据实际情况来设置
-            searchField.layer.masksToBounds = YES;
-        }
-        _logisticsTableView.tableHeaderView = self.searchBar;
     }
     return _logisticsTableView;
 }
 
-/** 取消searchBar背景色 */
-- (UIImage *)imageWithColor:(UIColor *)color size:(CGSize)size {
-    CGRect rect = CGRectMake(0, 0, size.width, size.height);
-    UIGraphicsBeginImageContext(rect.size);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-
-    CGContextSetFillColorWithColor(context, [color CGColor]);
-    CGContextFillRect(context, rect);
-
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-
-    return image;
-}
 /*
 #pragma mark - Navigation
 
@@ -416,7 +414,7 @@
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        [self setUI];
+        [self setupUI];
     }
     return self;
 }
@@ -425,12 +423,12 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        [self setUI];
+        [self setupUI];
     }
     return self;
 }
 
-- (void)setUI{
+- (void)setupUI{
     [self.contentView addSubview:self.titleLabel];
     
     [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {

@@ -37,6 +37,10 @@
 #import "DataManager.h"
 #import "OrderFillCourseViewController.h"
 
+#import "OrderDetailsNewModel.h"
+
+#import "CustomerServicViewController.h"
+
 @interface KungfuOrderDetailViewController ()<UITableViewDelegate, UITableViewDataSource>
 
 @property(nonatomic, strong) UIView *navgationView;
@@ -49,7 +53,7 @@
 @property(nonatomic, strong) KungfuOrderDetailHeaderView *headerView;
 @property(nonatomic, strong) KungfuOrderDetailFooterView *footerView;
 
-@property(nonatomic, strong) OrderDetailsModel *detailsModel;
+@property(nonatomic, strong) OrderDetailsNewModel *detailsModel;
 @property(nonatomic, strong) NSArray *dataArray;
 
 @property (nonatomic, strong) NSMutableArray * orderInfoList;
@@ -59,17 +63,17 @@
 
 @implementation KungfuOrderDetailViewController
 
--(void)viewWillAppear:(BOOL)animated{
+- (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     //[self setNavigationBarYellowTintColor];
     [self initData];
 }
 
--(void)viewDidAppear:(BOOL)animated {
+- (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 }
 
--(void)viewWillDisappear:(BOOL)animated{
+- (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
 //    [self.headerView deleteTimer];
 }
@@ -83,7 +87,7 @@
 }
 
 
--(void)initUI{
+- (void)initUI{
     
     [self.view addSubview:self.redView];
     [self.view addSubview:self.navgationView];
@@ -94,7 +98,7 @@
 #pragma mark - request
 
 - (void)freeOrderPay {
-    [[DataManager shareInstance] orderPay:@{@"ordercode" :self.detailsModel.order_sn, @"orderMoney": self.orderPrice, @"payType":@"6"} Callback:^(Message *message) {
+    [[DataManager shareInstance] orderPay:@{@"orderCarId" :self.detailsModel.orderId, @"orderMoney": self.orderPrice, @"payType":@"6"} Callback:^(Message *message) {
         if (message.isSuccess) {
             // 支付成功
             PaySuccessViewController *paySuccessVC = [[PaySuccessViewController alloc] init];
@@ -105,7 +109,7 @@
     }];
 }
 
-- (void)initOrderInfoListWithOrderModel:(OrderDetailsModel *)orderModel
+- (void)initOrderInfoListWithOrderModel:(OrderDetailsNewModel *)orderModel
 {
     [self.orderInfoList removeAllObjects];
     [self.ordersubInfoList removeAllObjects];
@@ -115,32 +119,24 @@
     [self.orderInfoList addObject:SLLocalizedString(@"支付方式：")];
     
     //订单编号
-    [self.ordersubInfoList addObject:NotNilAndNull(orderModel.order_sn)?self.detailsModel.order_sn:@""];
+    [self.ordersubInfoList addObject:NotNilAndNull(orderModel.orderSn)?self.detailsModel.orderSn:@""];
     //下单时间
-    [self.ordersubInfoList addObject:NotNilAndNull(orderModel.create_time)?self.detailsModel.create_time:@""];
+    [self.ordersubInfoList addObject:NotNilAndNull(orderModel.createTime)?self.detailsModel.createTime:@""];
 
-    if ([orderModel.pay_type isEqualToString:@"0"]) {
+    if ([orderModel.payType isEqualToString:@"0"]) {
         [self.ordersubInfoList addObject:SLLocalizedString(@"在线支付")];
-    }
-    
-    if ([orderModel.pay_type isEqualToString:@"1"]) {
+    }else if ([orderModel.payType isEqualToString:@"1"]) {
         [self.ordersubInfoList addObject:SLLocalizedString(@"微信支付")];
-    }
-    
-    if ([orderModel.pay_type isEqualToString:@"2"]) {
+    }else if ([orderModel.payType isEqualToString:@"2"]) {
         [self.ordersubInfoList addObject:SLLocalizedString(@"支付宝支付")];
-    }
-    
-    if ([orderModel.pay_type isEqualToString:@"3"]) {
+    }else if ([orderModel.payType isEqualToString:@"3"]) {
         [self.ordersubInfoList addObject:SLLocalizedString(@"余额支付")];
-    }
-    
-    if ([orderModel.pay_type isEqualToString:@"4"]) {
+    }else if ([orderModel.payType isEqualToString:@"4"]) {
         [self.ordersubInfoList addObject:SLLocalizedString(@"虚拟币支付")];
-    }
-    
-    if ([orderModel.pay_type isEqualToString:@"5"]) {
+    }else if ([orderModel.payType isEqualToString:@"5"]) {
         [self.ordersubInfoList addObject:SLLocalizedString(@"凭证支付")];
+    }else{
+        [self.ordersubInfoList addObject:SLLocalizedString(@"无")];
     }
     
     
@@ -158,73 +154,75 @@
         [self.orderInfoList addObject:SLLocalizedString(@"发票类型：")];
         
         //支付时间
-        [self.ordersubInfoList addObject:NotNilAndNull(self.detailsModel.pay_time)?self.detailsModel.pay_time:@""];
-        //发票类型
-        [self.ordersubInfoList addObject:self.detailsModel.invoiceTypeString];
+        [self.ordersubInfoList addObject:NotNilAndNull(self.detailsModel.payTime)?self.detailsModel.payTime:@""];
+        if ([orderModel.isInvoice boolValue]) {
+            //发票类型
+            if ([orderModel.isOrdinary boolValue] == NO) {
+                [self.ordersubInfoList addObject:@"普通发票"];
+            }else{
+                [self.ordersubInfoList addObject:@"增值税发票"];
+                
+            }
+        }else{
+            [self.ordersubInfoList addObject:@"不开发票"];
+        }
+        
     }
 }
 
 - (void)initData{
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
-    [[DataManager shareInstance] getOrderInfo:@{@"order_id":self.orderId} Callback:^(NSObject *object) {
+    [[DataManager shareInstance] getOrderInfo:@{@"id":self.orderId} Callback:^(NSObject *object) {
         [hud hideAnimated:YES];
         
-        if([object isKindOfClass:[NSArray class]] == YES){
-            NSArray *tmpArray = (NSArray *)object;
-            if (tmpArray.count == 0){
+        if([object isKindOfClass:[OrderDetailsNewModel class]] == YES){
+            OrderDetailsNewModel *derailsNewModel = (OrderDetailsNewModel *)object;
+            
+            if (derailsNewModel.goods.count == 0){
                 [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"订单获取异常")];
             }
             
-            NSArray *temp = [tmpArray copy];
-            NSString *status = @"9";
             
-            for (OrderDetailsModel *model in tmpArray) {
-                int statusInt = [model.status intValue];
-                int temStatusInt = [status intValue];
-                if(temStatusInt > statusInt){
-                    status = model.status;
-                }
-            }
+            self.detailsModel = derailsNewModel;
             
-            self.dataArray = [ModelTool assembleData:tmpArray];
-            
-            self.detailsModel = temp[0];
-            self.detailsModel.status = status;
-            self.detailsModel.orderPrice = self.orderPrice;
-            
+            self.dataArray = [ModelTool assembleOrderDetailsData:derailsNewModel];
             
             [self.footerView setDetailsModel:self.detailsModel];
-
+            
             // 改变header大小，初始化显示出来的订单信息
             [self initOrderInfoListWithOrderModel:self.detailsModel];
             
-            if ([self.detailsModel.type intValue] == 3) {
-                //活动
-                [[KungfuManager sharedInstance] getUserInfoWithOrderCode:self.orderId callback:^(NSDictionary *result) {
-                    if (IsNilOrNull(result)) {
-                        [self.headerView setDetailsModel:self.detailsModel];
-                        return;
-                    }
-                    
-                    NSString * realName;
-                    
-                    if (result[@"realname"] == nil) {
-                        realName = result[@"realName"];
-                    }else{
-                        realName = result[@"realname"];
-                    }
-                     
-                    NSString * telephone = result[@"telephone"];
-                    
-                    self.detailsModel.order_user_realName = realName;
-                    self.detailsModel.order_user_telephone = telephone;
-                    [self.headerView setDetailsModel:self.detailsModel];
-                }];
-  
-            } else {
-                [self.headerView setDetailsModel:self.detailsModel];
-            }
-      
+//            OrderDetailsGoodsModel *goodsModel = [self.detailsModel.goods firstObject];
+            
+//            if ([goodsModel.type intValue] == 3) {
+//                //活动
+//                [[KungfuManager sharedInstance] getUserInfoWithOrderCode:self.orderId callback:^(NSDictionary *result) {
+//                    if (IsNilOrNull(result)) {
+//                        [self.headerView setDetailsModel:self.detailsModel];
+//                        return;
+//                    }
+//
+//                    NSString * realName;
+//
+//                    if (result[@"realname"] == nil) {
+//                        realName = result[@"realName"];
+//                    }else{
+//                        realName = result[@"realname"];
+//                    }
+//
+//                    NSString * telephone = result[@"telephone"];
+//
+//                    self.detailsModel.order_user_realName = realName;
+//                    self.detailsModel.order_user_telephone = telephone;
+//                    [self.headerView setDetailsModel:self.detailsModel];
+//                }];
+//
+//            } else {
+//                [self.headerView setDetailsModel:self.detailsModel];
+//            }
+            
+            [self.headerView setDetailsModel:self.detailsModel];
+            
             [self.tableView reloadData];
         } else if ([object isKindOfClass:[NSString class]]){
             [ShaolinProgressHUD singleTextAutoHideHud:(NSString *)object];
@@ -234,12 +232,12 @@
 
 
 #pragma mark - event
--(void)back{
+- (void)back{
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 // 去支付
--(void)payOrder{
+- (void)payOrder{
     
     [[ModelTool shareInstance]setIsOrderListNeedRefreshed:YES];
     
@@ -249,14 +247,19 @@
         return;
     }
     
-    NSInteger type = [self.detailsModel.type intValue];
+    
+    OrderDetailsGoodsModel *goodsModel = [self.detailsModel.goods firstObject];
+    
+    NSInteger type = [goodsModel.type intValue];
    
     BOOL isCourse = YES;
     
     CheckstandViewController *checkstandVC = [[CheckstandViewController alloc]init];
     checkstandVC.goodsAmountTotal = [NSString stringWithFormat:@"¥%@", self.orderPrice];
-    checkstandVC.order_no = self.detailsModel.order_sn;
-    checkstandVC.productId = self.detailsModel.app_store_id;
+
+    checkstandVC.order_no = self.detailsModel.orderSn;
+    checkstandVC.productId = goodsModel.appStoreId;
+
     
     if (type == OrderDetailsTutorialType) {
         isCourse = YES;
@@ -266,7 +269,11 @@
     
     checkstandVC.isCourse = isCourse;
     checkstandVC.isOrderState = YES;
-    checkstandVC.productId = self.detailsModel.app_store_id;
+    checkstandVC.productId = goodsModel.appStoreId;
+    
+    
+    
+    
     [self.navigationController pushViewController:checkstandVC animated:YES];
 }
 
@@ -274,8 +281,15 @@
 // 联系客服
 - (void)contactCustomerService:(UIButton *)btn{
 //    NSInteger indexTag =  btn.tag - 100;
-    EMChatViewController *chatVC = [[EMChatViewController alloc] initWithConversationId:@"2" type:EMConversationTypeChat createIfNotExist:YES];
-    [self.navigationController pushViewController:chatVC animated:YES];
+//    EMChatViewController *chatVC = [[EMChatViewController alloc] initWithConversationId:@"2" type:EMConversationTypeChat createIfNotExist:YES];
+//    [self.navigationController pushViewController:chatVC animated:YES];
+    OrderClubsInfoModel *clubsInfo = [self.detailsModel.clubs lastObject];
+    
+       CustomerServicViewController *servicVC = [[CustomerServicViewController alloc]init];
+       servicVC.servicType = @"1";
+       servicVC.imID = clubsInfo.im;
+       servicVC.chatName = clubsInfo.name;
+       [self.navigationController pushViewController:servicVC animated:YES];
 }
 
 // 删除订单
@@ -297,10 +311,10 @@
         [[ModelTool shareInstance]setIsOrderListNeedRefreshed:YES];
         
         MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
-        [[DataManager shareInstance]delOrder:@{@"id":self.detailsModel.order_sn} Callback:^(Message *message) {
+        [[DataManager shareInstance]delOrder:@{@"orderCarId":self.detailsModel.orderId} Callback:^(Message *message) {
             [hud hideAnimated:YES];
             if (message.isSuccess) {
-                [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"删除成功") view:self.view afterDelay:TipSeconds];
+                [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"订单删除成功") view:WINDOWSVIEW afterDelay:TipSeconds];
                 [self.navigationController popViewControllerAnimated:YES];
 
             }else{
@@ -322,13 +336,25 @@
     
     [cancelOrdersView setSelectedBlock:^(NSString * _Nonnull cause) {
 
-        [[DataManager shareInstance]cancelOrder:@{@"order_id":self.detailsModel.order_sn, @"cancel":cause} Callback:^(Message *message) {
+        WEAKSELF
+        [[DataManager shareInstance]cancelOrder:@{@"orderCarId":self.detailsModel.orderId, @"cancel":cause} Callback:^(Message *message) {
             if (message.isSuccess) {
                 
                 [[ModelTool shareInstance]setIsOrderListNeedRefreshed:YES];
                 
                 [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"提交成功，正在为您取消订单") view:self.view afterDelay:TipSeconds];
-                [self.navigationController popViewControllerAnimated:YES];
+//                [self.navigationController popViewControllerAnimated:YES];
+                
+                weakSelf.detailsModel.status = @"7";
+                
+                [weakSelf.headerView setDetailsModel:weakSelf.detailsModel];
+                [weakSelf.footerView setDetailsModel:weakSelf.detailsModel];
+
+                // 改变header大小，初始化显示出来的订单信息
+                [weakSelf initOrderInfoListWithOrderModel:weakSelf.detailsModel];
+                
+                [weakSelf.tableView reloadData];
+                [cancelOrdersView disappear];
             }else{
                 [ShaolinProgressHUD singleTextHud:message.reason view:self.view afterDelay:TipSeconds];
             }
@@ -340,11 +366,20 @@
 // 查看发票
 - (void)checkInvoice {
     
+//    SLAppInfoModel *appInfoModel = [[SLAppInfoModel sharedInstance] getCurrentUserInfo];
+//    
+//    NSString *urlStr = URL_H5_InvoiceDetail(self.detailsModel.orderSn, self.detailsModel.orderId, appInfoModel.accessToken);
+//    
+//    WengenWebViewController *webVC = [[WengenWebViewController alloc] initWithUrl:urlStr title:SLLocalizedString(@"发票详情")];
+//    [self.navigationController pushViewController:webVC animated:YES];
+    
     SLAppInfoModel *appInfoModel = [[SLAppInfoModel sharedInstance] getCurrentUserInfo];
     
-    NSString *urlStr = URL_H5_InvoiceDetail(self.detailsModel.order_sn, appInfoModel.access_token);
+    OrderClubsInfoModel *clubsInfo = [self.detailsModel.clubs lastObject];
     
-    WengenWebViewController *webVC = [[WengenWebViewController alloc] initWithUrl:urlStr title:SLLocalizedString(@"发票详情")];
+    NSString *urlStr = URL_H5_InvoiceDetailAndClubId(self.detailsModel.orderSn, self.detailsModel.orderId, appInfoModel.accessToken, clubsInfo.orderClubsInfoModelId);
+    
+    WengenWebViewController *webVC = [[WengenWebViewController alloc]initWithUrl:urlStr title:SLLocalizedString(@"发票详情")];
     [self.navigationController pushViewController:webVC animated:YES];
 }
 
@@ -377,10 +412,10 @@
         [self.navigationController pushViewController:vc animated:YES];
     } else {
         
-        OrderDetailsModel *goodsModel = model.goods.firstObject;
+        OrderDetailsGoodsModel *goodsModel = model.goods.firstObject;
         
         KungfuClassDetailViewController * vc = [KungfuClassDetailViewController new];
-        vc.classId = goodsModel.goods_id;
+        vc.classId = goodsModel.goodsId;
         [self.navigationController pushViewController:vc animated:YES];
     }
 }
@@ -389,31 +424,31 @@
 - (void)repairInvoice{
     [[ModelTool shareInstance]setIsOrderListNeedRefreshed:YES];
     OrderInvoiceFillOpenViewController * fillOpenVC= [[OrderInvoiceFillOpenViewController alloc]init];
-       fillOpenVC.orderSn = self.detailsModel.order_sn;
-       fillOpenVC.orderTotalSn = self.orderId;
-       [self.navigationController pushViewController:fillOpenVC animated:YES];
+    fillOpenVC.orderId = self.orderId;
+    fillOpenVC.orderSn = self.detailsModel.orderSn;
+    [self.navigationController pushViewController:fillOpenVC animated:YES];
 }
 
 
 #pragma mark - UITableViewDelegate && UITableViewDataSource
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return  2;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     
 //    if (section == 0) {
 //        return 58;
 //    }
-//
-    if (section == 0) {
-        return 0.01;
-    }
+
+//    if (section == 0) {
+//        return 0.01;
+//    }
     return 0.01;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     
     if (section == 0 || section == 1) {
         return 10;
@@ -422,23 +457,23 @@
 }
 
 
--(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
     
      return [UIView new];
 //    if (section == 0) {
-//        
+//
 //        OrderGoodsItmeFooterTabelVeiw *footer = [[OrderGoodsItmeFooterTabelVeiw alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, 58)];
 //        footer.tag = section + 100;
 //        footer.bgView.backgroundColor = UIColor.clearColor;
 //        [footer.btnService addTarget:self action:@selector(contactCustomerService:) forControlEvents:UIControlEventTouchUpInside];
 //        return footer;
 //    }
-//    
+//
 //    return [UIView new];
 }
 
 
--(UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     
     
     UIView *view = [[UIView alloc] init];
@@ -446,7 +481,7 @@
     return view;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     
     if (section == 0) {
         OrderStoreModel *model = self.dataArray[section];
@@ -459,7 +494,7 @@
     return 1;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     if (indexPath.section == 0) {
         if ([self.detailsModel.status isEqualToString:@"6"] || [self.detailsModel.status isEqualToString:@"7"]) {
@@ -481,7 +516,7 @@
 
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
    
     if (indexPath.section == 0) {
         KungfuOrderGoodsCell * goodsItemCell = [tableView dequeueReusableCellWithIdentifier:@"KungfuOrderGoodsCell"];
@@ -490,6 +525,7 @@
         OrderDetailsModel *goodsModel = model.goods[indexPath.row];
         
         goodsItemCell.model = goodsModel;
+        goodsItemCell.model.isSelf = model.is_self;
         return goodsItemCell;
     } else
     {
@@ -512,23 +548,26 @@
     
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section > [self.dataArray count]-1) {
         return;
     }
     
     OrderStoreModel *model = self.dataArray[indexPath.section];
-    OrderDetailsModel *goodsModel = model.goods[indexPath.row];
-    if ([self.detailsModel.type intValue] == 2) {
+    OrderDetailsGoodsModel *goodsModel = model.goods[indexPath.row];
+    
+    
+    
+    if ([goodsModel.type intValue] == 2) {
         KungfuClassDetailViewController * vc = [KungfuClassDetailViewController new];
-        vc.classId = goodsModel.goods_id;
+        vc.classId = goodsModel.goodsId;
         [self.navigationController pushViewController:vc animated:YES];
     }
     
-    if ([self.detailsModel.type intValue] == 3) {
+    if ([goodsModel.type intValue] == 3) {
         SLAppInfoModel *appInfoModel = [[SLAppInfoModel sharedInstance] getCurrentUserInfo];
-        NSString *urlStr = URL_H5_EventRegistration(goodsModel.cate_id,appInfoModel.access_token);
+        NSString *urlStr = URL_H5_EventRegistration(self.detailsModel.cateId,appInfoModel.accessToken);
         KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:urlStr type:KfWebView_activityDetail];
         webVC.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:webVC animated:YES];
@@ -553,7 +592,7 @@
 }
 
 
-//-(void)orderGoodsItmeTableViewCell:(OrderGoodsItmeTableViewCell *)cell addCart:(OrderDetailsModel *)model{
+//- (void)orderGoodsItmeTableViewCell:(OrderGoodsItmeTableViewCell *)cell addCart:(OrderDetailsModel *)model{
 //
 //    NSMutableDictionary *param = [NSMutableDictionary dictionary];
 //    [param setValue:model.num forKey:@"num"];
@@ -570,7 +609,7 @@
 
 #pragma mark - getter / setter
 
--(UIView *)navgationView{
+- (UIView *)navgationView{
     if (_navgationView == nil) {
         //状态栏高度
         CGFloat barHeight ;
@@ -593,7 +632,7 @@
     return _navgationView;
 }
 
--(UIButton *)backButton{
+- (UIButton *)backButton{
     if (_backButton == nil) {
         _backButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [_backButton setFrame:CGRectMake(16, 0, 30, 40)];
@@ -602,7 +641,7 @@
     return _backButton;
 }
 
--(UILabel *)titleLabel{
+- (UILabel *)titleLabel{
     if (_titleLabel == nil) {
         CGFloat x = (ScreenWidth - 100)/2;
         _titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(x, 0, 100, 40)];
@@ -616,7 +655,7 @@
 }
 
 
--(UITableView *)tableView{
+- (UITableView *)tableView{
     
     if (_tableView == nil) {
         CGFloat y = CGRectGetMaxY(self.navgationView.frame);
@@ -649,7 +688,7 @@
     
 }
 
--(KungfuOrderDetailHeaderView *)headerView{
+- (KungfuOrderDetailHeaderView *)headerView{
     WEAKSELF
     if (_headerView == nil) {
         _headerView = [KungfuOrderDetailHeaderView loadXib];
@@ -672,7 +711,7 @@
     return _headerView;
 }
 
--(KungfuOrderDetailFooterView *)footerView{
+- (KungfuOrderDetailFooterView *)footerView{
     WEAKSELF
     if (_footerView == nil) {
         _footerView = [KungfuOrderDetailFooterView loadXib];
@@ -703,21 +742,21 @@
     return _footerView;
 }
 
--(NSMutableArray *)orderInfoList {
+- (NSMutableArray *)orderInfoList {
     if (!_orderInfoList) {
         _orderInfoList = [NSMutableArray new];
     }
     return _orderInfoList;
 }
 
--(NSMutableArray *)ordersubInfoList {
+- (NSMutableArray *)ordersubInfoList {
     if (!_ordersubInfoList) {
         _ordersubInfoList = [NSMutableArray new];
     }
     return _ordersubInfoList;
 }
 
--(UIView *)redView {
+- (UIView *)redView {
     if (!_redView) {
         _redView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kWidth, kHeight/2)];
         _redView.backgroundColor = kMainYellow;

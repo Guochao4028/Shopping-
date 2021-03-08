@@ -23,7 +23,7 @@
 
 @implementation OrderFillInvoiceFirstPageView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [[NSBundle mainBundle] loadNibNamed:@"OrderFillInvoiceFirstPageView" owner:self options:nil];
@@ -33,7 +33,7 @@
 }
 
 // 初始化UI
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.contentView];
     [self.contentView setFrame:self.bounds];
     [self.determineButton.layer setCornerRadius:SLChange(20)];
@@ -43,7 +43,7 @@
 }
 
 /// 重写系统方法
--(void)setFrame:(CGRect)frame{
+- (void)setFrame:(CGRect)frame{
     [super setFrame:frame];
     [self.contentView setFrame:self.bounds];
 }
@@ -96,7 +96,7 @@
 }
 
 #pragma mark - setter/ getter
--(void)setIsDaw:(BOOL)isDaw{
+- (void)setIsDaw:(BOOL)isDaw{
     _isDaw = isDaw;
     
     if (isDaw == NO) {

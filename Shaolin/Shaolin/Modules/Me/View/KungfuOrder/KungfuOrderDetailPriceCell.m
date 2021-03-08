@@ -9,6 +9,7 @@
 #import "KungfuOrderDetailPriceCell.h"
 #import "OrderDetailsModel.h"
 #import "NSString+Tool.h"
+#import "OrderDetailsNewModel.h"
 
 @interface KungfuOrderDetailPriceCell ()
 
@@ -30,17 +31,17 @@
 }
 
 
--(void)setModel:(OrderDetailsModel *)model{
+- (void)setModel:(OrderDetailsNewModel *)model{
     _model = model;
     
     NSString *money = [NSString stringWithFormat:@"¥%@", NotNilAndNull(model.money)?model.money:@""];
     
-    self.allGoodsPriceLabel.text = money;
+    self.allGoodsPriceLabel.attributedText = [money moneyStringWithFormatting:MoneyStringFormattingMoneyCoincidenceType];
 //    self.needPriceLabel.text = [NSString stringWithFormat:@"￥%@", NotNilAndNull(model.price)?model.price:@""];
     
     
-    NSString *price = [NSString stringWithFormat:@"¥%@", model.price];
-        
+    NSString *price = [NSString stringWithFormat:@"¥%@", model.money];
+
 //           NSMutableAttributedString *attrStr = [[NSMutableAttributedString alloc] initWithString:price];
 //
 //           [attrStr addAttribute:NSFontAttributeName value:[UIFont fontWithName:MediumFont size:12] range:NSMakeRange(0, 1)];

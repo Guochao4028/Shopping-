@@ -10,6 +10,6 @@
 
 
 @interface FoundAddView : UIView
--(void)showView;
+- (void)showView;
 @property (nonatomic,copy) void (^ChooseBlock)(NSInteger i);
 @end

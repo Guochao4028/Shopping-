@@ -10,14 +10,14 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OrderDetailsModel;
+@class OrderDetailsGoodsModel;
 
 
 @protocol AfterSalesTypeViewDelegate;
 
 @interface AfterSalesTypeView : UIView
 
-@property(nonatomic, strong)OrderDetailsModel *model;
+@property(nonatomic, strong)OrderDetailsGoodsModel *model;
 
 @property(nonatomic, weak)id<AfterSalesTypeViewDelegate> delegate;
 
@@ -26,7 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol AfterSalesTypeViewDelegate <NSObject>
 
--(void)afterSalesTypeView:(AfterSalesTypeView *)view jumpAfterSalesDetailsModel:(OrderDetailsModel *)model afterSalesType:(AfterSalesDetailsType)type;
+- (void)afterSalesTypeView:(AfterSalesTypeView *)view jumpAfterSalesDetailsModel:(OrderDetailsGoodsModel *)model afterSalesType:(AfterSalesDetailsType)type;
 
 @end
 

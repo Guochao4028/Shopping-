@@ -146,7 +146,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) XLPageTitleViewStyle titleViewStyle;
 
 /**
- titleView是否随着底部列表一起向上滚动，默认NO
+ titleView是否随着底部列表一起向上滚动，默认NO（titleViewStyle = XLPageTitleViewStylePictureAndText时生效）
  */
 @property (nonatomic, assign) BOOL scrollTitleView;
 

@@ -40,6 +40,10 @@
         make.top.mas_equalTo(self.alertLabel.mas_bottom).offset(SLChange(15));
         make.size.mas_equalTo(SLChange(120));
     }];
+    
+    
+    
+    
     [self.photoBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(SLChange(16));
         make.top.mas_equalTo(self.alertLabel.mas_bottom).offset(SLChange(15));
@@ -50,6 +54,7 @@
         make.width.mas_equalTo(SLChange(27));
         make.height.mas_equalTo(SLChange(22));
     }];
+    
     [self.vieW mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.mas_equalTo(0);
         make.height.mas_equalTo(SLChange(48));
@@ -78,6 +83,7 @@
         _photoView.image = [UIImage imageNamed:@"photo_square"];
         _photoView.userInteractionEnabled = YES;
         _photoView.contentMode = UIViewContentModeScaleAspectFill;
+        _photoView.clipsToBounds = YES;
     }
     return _photoView;
 }
@@ -109,7 +115,8 @@
     }
     return _vieW;
 }
--(UILabel *)viewLabel
+
+- (UILabel *)viewLabel
 {
     if (!_viewLabel) {
         _viewLabel = [[UILabel alloc]init];

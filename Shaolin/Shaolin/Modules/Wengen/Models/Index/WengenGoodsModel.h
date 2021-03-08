@@ -16,18 +16,20 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, copy)NSString *name;
 @property(nonatomic, copy)NSString *desc;
 @property(nonatomic, copy)NSString *price;
-@property(nonatomic, copy)NSString *old_price;
+@property(nonatomic, copy)NSString *oldPrice;
 @property(nonatomic, copy)NSString *star;
-@property(nonatomic, copy)NSString *user_num;
-@property(nonatomic, copy)NSString *is_shipping;
-@property(nonatomic, copy)NSString *shipping_fee;
-@property(nonatomic, strong)NSArray *img_data;
-@property(nonatomic, copy)NSString *club_id;
-@property(nonatomic, copy)NSString *img_url;
-@property(nonatomic, copy)NSString *is_discount;
+@property(nonatomic, copy)NSString *userNum;
+@property(nonatomic, strong)NSArray *imgDataList;
+@property(nonatomic, copy)NSString *isDiscount;
+
+//@property(nonatomic, copy)NSString *is_shipping;
+//@property(nonatomic, copy)NSString *shipping_fee;
+//@property(nonatomic, copy)NSString *club_id;
+//@property(nonatomic, copy)NSString *img_url;
+
 
 ///是否自营 1，自营 0非自营
-@property(nonatomic, copy)NSString *is_self;
+@property(nonatomic, copy)NSString *isSelf;
 
 /*
 "club_id" = 3;

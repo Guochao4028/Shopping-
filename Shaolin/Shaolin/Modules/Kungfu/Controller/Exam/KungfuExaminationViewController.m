@@ -41,7 +41,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self setUI];
+    [self setupUI];
     [self.view addSubview:self.tableView];
     [self requestData];
     [self requestBanner];
@@ -52,7 +52,7 @@
     [[SLAppInfoModel sharedInstance] postPageChangeNotification:KNotificationKungfuPageChange index:@"5"];
 }
 
-- (void)setUI {
+- (void)setupUI {
     UIView *scrollBgView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWidth, SLChange(164))];
     scrollBgView.backgroundColor = UIColor.whiteColor;
     scrollBgView.userInteractionEnabled = YES;
@@ -254,49 +254,49 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (collectionView == self.collectionView) {
-        if (indexPath.row == 0) {
-            [[SLAppInfoModel sharedInstance] postPageChangeNotification:KNotificationKungfuPageChange index:@"2" params:@{@"params":SLLocalizedString(@"考试")}];
-        }else if (indexPath.row == 1) {
-            
-            [[KungfuManager sharedInstance] getStartExaminationAndCallback:^(NSDictionary *result) {
-              
-                if ([ModelTool checkResponseObject:result]){
-
-                    ExamDetailModel * model = [ExamDetailModel mj_objectWithKeyValues:result[@"data"]];
-                    KfExamViewController * vc  = [[KfExamViewController alloc]init];
-                    vc.detailModel = model;
-                    vc.hidesBottomBarWhenPushed = YES;
-                    [self.navigationController pushViewController:vc animated:NO];
-                }else{
-                    NSString * msg = result[@"msg"];
-                    [self showAlertWithInfoString:NotNilAndNull(msg)?msg:@""];
-                }
-            }];
-            
-        }else if (indexPath.row == 2) {
-            KungfuExaminationNoticeViewController *vc = [KungfuExaminationNoticeViewController new];
-            vc.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:vc animated:NO];
-        }else if (indexPath.row == 3) {
-            [[SLAppInfoModel sharedInstance] postPageChangeNotification:KNotificationKungfuPageChange index:@"4"];
-        }else if (indexPath.row == 4) {
-            KungfuAllScoreViewController * vc = [KungfuAllScoreViewController new];
-            vc.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:vc animated:YES];
-        }else if (indexPath.row == 5) {
-            KfCertificateCheckViewController * vc = [KfCertificateCheckViewController new];
-            vc.navigationBarWhiteTintColor = @(YES);
-            vc.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:vc animated:YES];
-        }
-    } else {
-        InstitutionModel * model = self.institutionListArray[indexPath.section];
-
-        KungfuWebViewController *vc = [[KungfuWebViewController alloc] initWithUrl:URL_H5_MechanismDetail(model.mechanismCode, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_mechanismDetail];
-        vc.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:vc animated:YES];
-    }
+//    if (collectionView == self.collectionView) {
+//        if (indexPath.row == 0) {
+//            [[SLAppInfoModel sharedInstance] postPageChangeNotification:KNotificationKungfuPageChange index:@"2" params:@{@"params":SLLocalizedString(@"考试")}];
+//        }else if (indexPath.row == 1) {
+//            
+//            [[KungfuManager sharedInstance] getStartExaminationAndCallback:^(NSDictionary *result) {
+//              
+//                if ([ModelTool checkResponseObject:result]){
+//
+//                    ExamDetailModel * model = [ExamDetailModel mj_objectWithKeyValues:result[@"data"]];
+//                    KfExamViewController * vc  = [[KfExamViewController alloc]init];
+//                    vc.detailModel = model;
+//                    vc.hidesBottomBarWhenPushed = YES;
+//                    [self.navigationController pushViewController:vc animated:NO];
+//                }else{
+//                    NSString * msg = result[@"msg"];
+//                    [self showAlertWithInfoString:NotNilAndNull(msg)?msg:@""];
+//                }
+//            }];
+//            
+//        }else if (indexPath.row == 2) {
+//            KungfuExaminationNoticeViewController *vc = [KungfuExaminationNoticeViewController new];
+//            vc.hidesBottomBarWhenPushed = YES;
+//            [self.navigationController pushViewController:vc animated:NO];
+//        }else if (indexPath.row == 3) {
+//            [[SLAppInfoModel sharedInstance] postPageChangeNotification:KNotificationKungfuPageChange index:@"4"];
+//        }else if (indexPath.row == 4) {
+//            KungfuAllScoreViewController * vc = [KungfuAllScoreViewController new];
+//            vc.hidesBottomBarWhenPushed = YES;
+//            [self.navigationController pushViewController:vc animated:YES];
+//        }else if (indexPath.row == 5) {
+//            KfCertificateCheckViewController * vc = [KfCertificateCheckViewController new];
+//            vc.navigationBarWhiteTintColor = @(YES);
+//            vc.hidesBottomBarWhenPushed = YES;
+//            [self.navigationController pushViewController:vc animated:YES];
+//        }
+//    } else {
+//        InstitutionModel * model = self.institutionListArray[indexPath.section];
+//
+//        KungfuWebViewController *vc = [[KungfuWebViewController alloc] initWithUrl:URL_H5_MechanismDetail(model.mechanismCode, [SLAppInfoModel sharedInstance].accessToken) type:KfWebView_mechanismDetail];
+//        vc.hidesBottomBarWhenPushed = YES;
+//        [self.navigationController pushViewController:vc animated:YES];
+//    }
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
@@ -325,7 +325,7 @@
     return UIEdgeInsetsMake(0, 0, 0, 0);
     
 }
--(UICollectionView *)collectionView
+- (UICollectionView *)collectionView
 {
     if (!_collectionView) {
         
@@ -338,7 +338,7 @@
     }
     return _collectionView;
 }
--(UICollectionViewFlowLayout *)layout
+- (UICollectionViewFlowLayout *)layout
 {
     if (!_layout) {
         _layout = [UICollectionViewFlowLayout new];
@@ -350,7 +350,7 @@
     return _layout;
    
 }
--(UICollectionView *)collectionViewTwo
+- (UICollectionView *)collectionViewTwo
 {
     if (!_collectionViewTwo) {
         _collectionViewTwo = [[UICollectionView alloc] initWithFrame:CGRectMake(0, SLChange(56), kWidth, SLChange(207)) collectionViewLayout:self.layoutTwo];
@@ -365,7 +365,7 @@
     }
     return _collectionViewTwo;
 }
--(UICollectionViewFlowLayout *)layoutTwo
+- (UICollectionViewFlowLayout *)layoutTwo
 {
     if (!_layoutTwo) {
         _layoutTwo = [UICollectionViewFlowLayout new];

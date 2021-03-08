@@ -19,7 +19,7 @@
 
 @implementation StoreNavgationView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [[NSBundle mainBundle] loadNibNamed:@"StoreNavgationView" owner:self options:nil];
@@ -28,27 +28,27 @@
     return self;
 }
 
--(void)initUI{
+- (void)initUI{
     [self setBackgroundColor:[UIColor  clearColor]];
     [self addSubview:self.contentView];
     [self.contentView setFrame:self.bounds];
     
-    self.inputView.layer.cornerRadius = SLChange(16);
+    self.inputView.layer.cornerRadius = 15;//SLChange(16);
 }
 
 /// 重写系统方法
--(void)setFrame:(CGRect)frame{
+- (void)setFrame:(CGRect)frame{
     [super setFrame:frame];
     [self.contentView setFrame:self.bounds];
 }
 
--(void)backTarget:(nullable id)target action:(SEL)action{
+- (void)backTarget:(nullable id)target action:(SEL)action{
     [self.returnButton addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
 }
 
 #pragma mark - setter / getter
 
--(void)setIsWhite:(BOOL)isWhite{
+- (void)setIsWhite:(BOOL)isWhite{
     
     UIImage *image = isWhite == YES ? [UIImage imageNamed:@"baiL"] : [UIImage imageNamed:@"left"];
     

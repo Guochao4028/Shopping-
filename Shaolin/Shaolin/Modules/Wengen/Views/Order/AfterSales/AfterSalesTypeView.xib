@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -28,14 +28,14 @@
                     <rect key="frame" x="0.0" y="0.0" width="414" height="128"/>
                     <subviews>
                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ah5-4j-Ke5">
-                            <rect key="frame" x="16" y="16.5" width="110" height="95"/>
+                            <rect key="frame" x="16" y="9" width="110" height="110"/>
                             <constraints>
-                                <constraint firstAttribute="height" constant="95" id="NXu-4j-8eY"/>
+                                <constraint firstAttribute="height" constant="110" id="NXu-4j-8eY"/>
                                 <constraint firstAttribute="width" constant="110" id="otK-AI-Bby"/>
                             </constraints>
                         </imageView>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="单价:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UAg-Hw-QMs">
-                            <rect key="frame" x="139" y="82.5" width="32.5" height="18.5"/>
+                            <rect key="frame" x="139" y="75" width="32.5" height="18.5"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="32.5" id="GzZ-be-cYq"/>
                             </constraints>
@@ -43,8 +43,8 @@
                             <color key="textColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="¥169.00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KGS-5P-htE">
-                            <rect key="frame" x="172.5" y="82.5" width="65.5" height="18.5"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KGS-5P-htE">
+                            <rect key="frame" x="172.5" y="75" width="65.5" height="18.5"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="65.5" id="OSv-1b-2IC"/>
                             </constraints>
@@ -53,7 +53,7 @@
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="购买数量:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="R8s-YX-pzG">
-                            <rect key="frame" x="248" y="82.5" width="57.5" height="18.5"/>
+                            <rect key="frame" x="248" y="75" width="57.5" height="18.5"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="57.5" id="XrD-jd-Kjh"/>
                             </constraints>
@@ -61,8 +61,8 @@
                             <color key="textColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="少林寺 功夫专属茶宠 小和尚功夫茶宠…" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CTd-Va-Heg">
-                            <rect key="frame" x="139" y="24.5" width="254" height="42"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CTd-Va-Heg">
+                            <rect key="frame" x="139" y="17" width="254" height="42"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="42" id="d2h-DW-C9T"/>
                             </constraints>
@@ -70,8 +70,8 @@
                             <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wvv-YN-kMa">
-                            <rect key="frame" x="306.5" y="82.5" width="65.5" height="18.5"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wvv-YN-kMa">
+                            <rect key="frame" x="306.5" y="75" width="65.5" height="18.5"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="65.5" id="Nhr-zf-DIy"/>
                             </constraints>
@@ -251,7 +251,7 @@
                 <constraint firstItem="kpg-rQ-Sfh" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="uZG-T1-M0V"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="314.49275362318843" y="43.526785714285715"/>
+            <point key="canvasLocation" x="361" y="-5"/>
         </view>
         <tapGestureRecognizer id="xGT-Gg-adU">
             <connections>

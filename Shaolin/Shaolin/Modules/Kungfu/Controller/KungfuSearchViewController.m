@@ -51,7 +51,7 @@ static NSString *const typeCellId = @"typeTableCell";
     [self initUI];
 }
 
--(void)viewWillAppear:(BOOL)animated{
+- (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     self.historyArray = [[[ModelTool shareInstance] select:[SearchHistoryModel class] tableName:@"searchHistory" where:[NSString stringWithFormat:@"type = '%ld' AND userId = '%@' ORDER BY id DESC", SearchHistoryCourseType, [SLAppInfoModel sharedInstance].id]] mutableCopy];
     [self.searchHistoryView removeFromSuperview];
@@ -64,12 +64,12 @@ static NSString *const typeCellId = @"typeTableCell";
     [self.navgationView.searchTF becomeFirstResponder];
 }
 
--(void)viewDidAppear:(BOOL)animated{
+- (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     [self.navgationView becomeFirstResponder];
 }
 
--(void)initUI{
+- (void)initUI{
     [self.view setBackgroundColor:[UIColor whiteColor]];
     [self.view addSubview:self.navgationView];
     [self.view addSubview:self.typeTableBackView];
@@ -86,13 +86,13 @@ static NSString *const typeCellId = @"typeTableCell";
 #pragma mark - tableviewDelegate && dataSource
 
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
     return self.typeTableList.count;
 }
 
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:typeCellId];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -115,7 +115,7 @@ static NSString *const typeCellId = @"typeTableCell";
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 //    if (indexPath.row == 0) {
 //        self.classType = KfClassType_free;
@@ -130,7 +130,7 @@ static NSString *const typeCellId = @"typeTableCell";
     [self hideTypeTable];
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 40;
 }
@@ -276,7 +276,7 @@ static NSString *const typeCellId = @"typeTableCell";
     [NSKeyedArchiver archiveRootObject:testArr toFile:KGoodsHistorySearchPath];
 }
 
-//-(NSString*)subTextString:(NSString*)str len:(NSInteger)len{
+//- (NSString*)subTextString:(NSString*)str len:(NSInteger)len{
 //    if(str.length<=len)return str;
 //    int count=0;
 //    NSMutableString *sb = [NSMutableString string];
@@ -293,7 +293,7 @@ static NSString *const typeCellId = @"typeTableCell";
 //    return str;
 //}
 
--(NSString*)subModelTextString:(SearchHistoryModel*)model len:(NSInteger)len{
+- (NSString*)subModelTextString:(SearchHistoryModel*)model len:(NSInteger)len{
     NSString *searchContent = model.searchContent;
     if (searchContent.length<=len) return searchContent;
     int count=0;
@@ -366,7 +366,7 @@ static NSString *const typeCellId = @"typeTableCell";
 
 }
 
--(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     
     [self.view endEditing:YES];
     [self hideTypeTable];
@@ -395,13 +395,13 @@ static NSString *const typeCellId = @"typeTableCell";
 }
 
 #pragma mark - getter / setter
--(void)setTypeString:(NSString *)typeString {
+- (void)setTypeString:(NSString *)typeString {
     _typeString = typeString;
     self.navgationView.searchTF.placeholder = [NSString stringWithFormat:@"%@%@", SLLocalizedString(@"搜索"), typeString];
     self.navgationView.typeLabel.text = _typeString;
 }
 
--(KfSearchBarView *)navgationView{
+- (KfSearchBarView *)navgationView{
     WEAKSELF
     if (_navgationView == nil) {
         //状态栏高度
@@ -451,7 +451,7 @@ static NSString *const typeCellId = @"typeTableCell";
     return _searchHistoryView;
 }
 
--(NSMutableArray *)historyArray{
+- (NSMutableArray *)historyArray{
     if (!_historyArray) {
 //           _historyArray = [NSKeyedUnarchiver unarchiveObjectWithFile:KGoodsHistorySearchPath];
         

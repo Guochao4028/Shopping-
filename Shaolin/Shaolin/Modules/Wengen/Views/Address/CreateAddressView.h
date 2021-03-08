@@ -29,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 
  @protocol CreateAddressViewDelegate <NSObject>
 
--(void)createAddressView:(CreateAddressView *)view tapSave:(NSDictionary *)model;
+- (void)createAddressView:(CreateAddressView *)view tapSave:(NSDictionary *)model;
 
 @end
 

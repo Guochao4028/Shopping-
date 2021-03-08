@@ -137,14 +137,14 @@
 
 #pragma mark - getter / setter
 
--(NSMutableArray *)btnArray{
+- (NSMutableArray *)btnArray{
     if (_btnArray == nil) {
         _btnArray = [NSMutableArray array];
     }
     return _btnArray;
 }
 
--(void)setIsViewRed:(BOOL)isViewRed{
+- (void)setIsViewRed:(BOOL)isViewRed{
     if (isViewRed == YES) {
         [self.screeningLabel setTextColor:kMainYellow];
         [self.shaixuanImageView setImage:[UIImage imageNamed:@"kungfu_shaixuan_yellow"]];

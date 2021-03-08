@@ -22,6 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *showDate;
 @property (nonatomic, copy) NSString *showType;
 @property (nonatomic, copy) NSString *uniqueness;
+@property (nonatomic, strong) NSNumber *needReturnReceipt;// 1 需要回执， 0，不需要。不需要回执直接跳转支付
 /*!标识报名人数是否已满, true可报名*/
 @property (nonatomic) BOOL flag;
 + (instancetype)testModel;

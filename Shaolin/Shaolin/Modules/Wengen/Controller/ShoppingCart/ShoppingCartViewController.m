@@ -44,6 +44,7 @@
 
 #import "SLRouteManager.h"
 #import "DataManager.h"
+#import "SaveBuyCarModel.h"
 
 static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCell";
 
@@ -57,6 +58,10 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
 
 @property(nonatomic, strong)NSMutableArray *dataArray;
 
+///是否开始编辑
+@property(nonatomic, assign)BOOL isBeginEditing;
+
+
 @end
 
 @implementation ShoppingCartViewController
@@ -69,16 +74,15 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
     [self initData];
 }
 
--(void)viewWillAppear:(BOOL)animated{
+- (void)viewWillAppear:(BOOL)animated{
    [super viewWillAppear:animated];
 }
 
-
--(void)viewDidAppear:(BOOL)animated {
+- (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 }
 
--(void)viewDidDisappear:(BOOL)animated{
+- (void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:animated];
     
     NSFileManager*fileManager = [NSFileManager defaultManager];
@@ -88,20 +92,16 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
 
 
 #pragma mark - methods
--(void)initUI{
+- (void)initUI{
     [self.view setBackgroundColor:[UIColor whiteColor]];
     [self.view addSubview:self.tableView];
     [self.view addSubview:self.footView];
     [self.view addSubview:self.noGoodsView];
 }
 
--(void)initData{
+- (void)initData{
     
     [ModelTool getUserData:nil];
-    
-    if (self.idArray) {
-        self.idArray = [NSArray arrayWithContentsOfFile:KAgainBuyCarPath];
-    }
  
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
     [self.dataArray removeAllObjects];
@@ -113,46 +113,69 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
         [self.tableView.mj_header endRefreshing];
         if (!result || result.count == 0) {
             [self.noGoodsView setHidden:NO];
+            /// 删除保存选中信息文件
+            [[ModelTool shareInstance] deleteTableEnum:TableNameSaveBuyCar where:@""];
+
         }else{
             [self.dataArray addObjectsFromArray:result];
             
             
-            for (ShoppingCartListModel *listModel in self.dataArray) {
+            if (self.isBeginEditing == NO) {
                 
-                for (NSDictionary *goodsItem in self.idArray) {
+                for (ShoppingCartListModel *listModel in self.dataArray) {
                     
-                    for (int i = 0;  i < listModel.goods.count; i++) {
-                        ShoppingCartGoodsModel *goodsModel = listModel.goods[i];
-                        NSString * goods_id = goodsItem[@"goods_id"];
-                        NSString * goods_attr_id = goodsItem[@"goods_attr_id"];
+                    for (SaveBuyCarModel *carModel in self.idArray) {
                         
-                        if([goodsModel.goods_attr_id isEqualToString:goods_attr_id] == YES &&  [goodsModel.goods_id isEqualToString:goods_id] == YES){
+                        for (int i = 0;  i < listModel.goods.count; i++) {
+                            ShoppingCartGoodsModel *goodsModel = listModel.goods[i];
+                            NSString * goodsId = carModel.goodsId;
+                            NSString * goodsAttrId = carModel.goodsAttrId;
                             
-                            goodsModel.isSelected =  YES;
+                            NSInteger stock = [goodsModel.stock integerValue], num = [goodsModel.num integerValue];
+                            
+                            if(stock - num > 0){
+                                if (goodsAttrId.length != 0  && IsNilOrNull(goodsAttrId) == NO && [goodsAttrId isEqualToString:@"(null)"] == NO) {
+                                    
+                                    
+                                    
+                                    if([goodsModel.goodsAttrId isEqualToString:goodsAttrId] == YES &&  [goodsModel.goodsId isEqualToString:goodsId] == YES){
+                                        
+                                        goodsModel.isSelected = YES;
+                                    }
+                                }else{
+                                    if([goodsModel.goodsId isEqualToString:goodsId] == YES){
+                                        
+                                        goodsModel.isSelected =  YES;
+                                    }
+                                }
+                            }
+                            
                         }
                     }
                 }
+                
+                for (ShoppingCartListModel *listModel in self.dataArray) {
+                    BOOL flag = NO;
+                    NSInteger numberTure = 0;
+                    
+                    for (ShoppingCartGoodsModel *itmeGoodsModel in listModel.goods) {
+                        if (itmeGoodsModel.isSelected == YES) {
+                            numberTure ++;
+                            
+                        }else{
+                            numberTure -- ;
+                        }
+                    }
+                    
+                    if (numberTure == listModel.goods.count) {
+                        flag = YES;
+                    }
+                    listModel.isSelected = flag;
+                    
+                }
             }
             
-            for (ShoppingCartListModel *listModel in self.dataArray) {
-                BOOL flag = NO;
-                NSInteger numberTure = 0;
-                
-                for (ShoppingCartGoodsModel *itmeGoodsModel in listModel.goods) {
-                    if (itmeGoodsModel.isSelected == YES) {
-                        numberTure ++;
-                        
-                    }else{
-                        numberTure -- ;
-                    }
-                }
-                
-                if (numberTure == listModel.goods.count) {
-                    flag = YES;
-                }
-                listModel.isSelected = flag;
-                
-            }
+            
             
             [self calculateTotalPrice];
             [self calculateQuantityGoods];
@@ -162,8 +185,37 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
     }];
 }
 
+//删除数据库数据
+-(void)deleteBuyCarData:(NSArray *)dataArray{
+    for (SaveBuyCarModel *model in dataArray) {
+        
+        NSString *goodsId = model.goodsId;
+        
+        NSString *goodsAttrId = model.goodsAttrId;
+        
+        NSString *userID = [SLAppInfoModel sharedInstance].id;
+        
+        [[ModelTool shareInstance] deleteTableEnum:TableNameSaveBuyCar where:[NSString stringWithFormat:@"goodsId = '%@' and goodsAttrId = '%@' and userId = '%@'", goodsId, goodsAttrId, userID]];
+    }
+}
+
+
+//插入数据库数据
+- (void)insertBuyCarData:(NSArray *)dataArray{
+    
+    for (SaveBuyCarModel *model in dataArray) {
+        
+        NSString *goodsId = model.goodsId;
+        
+        NSString *goodsAttrId = model.goodsAttrId;
+        
+        [[ModelTool shareInstance] deleteTableEnum:TableNameSaveBuyCar where:[NSString stringWithFormat:@"goodsId = '%@' and goodsAttrId = '%@' and userId = '%@'", goodsId, goodsAttrId, model.userID]];
+        [[ModelTool shareInstance] insert:model tableEnum:TableNameSaveBuyCar];
+    }
+}
+
 //计算结算商品数量
--(void)calculateQuantityGoods{
+- (void)calculateQuantityGoods{
     NSInteger goodsNumber = 0;
     for (ShoppingCartListModel *model in self.dataArray) {
         
@@ -178,7 +230,7 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
 }
 
 //判断是否全选
--(BOOL)decideWhetherChooseAll{
+- (BOOL)decideWhetherChooseAll{
     BOOL flag = NO;
     NSInteger numberTure = 0;
     
@@ -198,44 +250,68 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
 }
 
 //计算合计价格
--(void)calculateTotalPrice{
+- (void)calculateTotalPrice{
     float totaPrice = [ModelTool calculateTotalPrice:self.dataArray calculateType:CalculateShoppingCartListModelType];
     [self.footView setTotalPrice:totaPrice];
 }
 
 //刷新
--(void)refresh{
+- (void)refresh{
     [self initData];
 }
 
 //返回按钮
--(void)leftAction{
+- (void)leftAction{
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 //编辑
--(void)rightAction{
-   NSMutableArray *tempArray = [NSMutableArray array];
+- (void)rightAction{
+    //   NSMutableArray *tempArray = [NSMutableArray array];
     
-    for (ShoppingCartListModel *listModel in self.dataArray) {
-        listModel.isSelected = NO;
-        for (ShoppingCartGoodsModel *item in listModel.goods) {
-            if (item.isEditor == NO) {
-                NSMutableDictionary *goodsItemDic = [NSMutableDictionary dictionary];
-                [goodsItemDic setValue:item.goods_id forKey:@"goods_id"];
-                if (item.goods_attr_id != nil) {
-                    [goodsItemDic setValue:item.goods_attr_id forKey:@"goods_attr_id"];
-                }
-                [tempArray addObject:goodsItemDic];
-            }
-
-        }
-    }
-
-    [tempArray writeToFile:KTemporaryFilePath atomically:YES];
+    //    for (ShoppingCartListModel *listModel in self.dataArray) {
+    //        listModel.isSelected = NO;
+    //        for (ShoppingCartGoodsModel *item in listModel.goods) {
+    //            if (item.isEditor == NO) {
+    //                NSMutableDictionary *goodsItemDic = [NSMutableDictionary dictionary];
+    //                [goodsItemDic setValue:item.goodsId forKey:@"goods_id"];
+    //                if (item.goodsAttrId != nil) {
+    //                    [goodsItemDic setValue:item.goodsAttrId forKey:@"goodsAttrId"];
+    //                }
+    //                [tempArray addObject:goodsItemDic];
+    //            }
+    //
+    //        }
+    //    }
+    //
+    //    [tempArray writeToFile:KTemporaryFilePath atomically:YES];
+    
     
     
     if (self.rightBtn.isSelected == NO) {
+        self.isBeginEditing = YES;
+        
+        NSMutableArray *tempArray = [NSMutableArray array];
+        
+        for (ShoppingCartListModel *listModel in self.dataArray) {
+            listModel.isSelected = NO;
+            for (ShoppingCartGoodsModel *item in listModel.goods) {
+                if (item.isEditor == NO) {
+                    NSMutableDictionary *goodsItemDic = [NSMutableDictionary dictionary];
+                    [goodsItemDic setValue:item.goodsId forKey:@"goods_id"];
+                    if (item.goodsAttrId != nil) {
+                        [goodsItemDic setValue:item.goodsAttrId forKey:@"goodsAttrId"];
+                    }
+                    [goodsItemDic setValue:@(item.isSelected) forKey:@"isSelected"];
+                    
+                    [tempArray addObject:goodsItemDic];
+                }
+                
+            }
+        }
+        
+        [tempArray writeToFile:KTemporaryFilePath atomically:YES];
+        
         for (ShoppingCartListModel *listModel in self.dataArray) {
             for (ShoppingCartGoodsModel *item in listModel.goods) {
                 item.isEditor = YES;
@@ -246,6 +322,28 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
         [self.footView setIsDelete:YES];
         [self.tableView.mj_header setHidden:YES];
     }else{
+        self.isBeginEditing = NO;
+        
+        NSArray *tempArray = [NSArray arrayWithContentsOfFile:KTemporaryFilePath];
+        for (NSMutableDictionary *goodsItemDic in tempArray) {
+            NSString *goodsId = [goodsItemDic objectForKey:@"goods_id"];
+            NSString *goodsAttrId  = [goodsItemDic objectForKey:@"goodsAttrId"];
+            
+            BOOL isSelected = [[goodsItemDic objectForKey:@"isSelected"] boolValue];
+            
+            for (ShoppingCartListModel *listModel in self.dataArray) {
+                
+                for (ShoppingCartGoodsModel *item in listModel.goods) {
+                    
+                    if([item.goodsAttrId isEqualToString:goodsAttrId] == YES &&  [item.goodsId isEqualToString:goodsId] == YES){
+                        
+                        item.isSelected =  isSelected;
+                    }
+                }
+            }
+            
+            
+        }
         
         for (ShoppingCartListModel *listModel in self.dataArray) {
             for (ShoppingCartGoodsModel *item in listModel.goods) {
@@ -257,50 +355,51 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
                 }
             }
         }
-        NSMutableArray *tempArray = [NSMutableArray arrayWithContentsOfFile:KAgainBuyCarPath];
+        //        NSMutableArray *tempArray = [NSMutableArray arrayWithContentsOfFile:KTemporaryFilePath];
+        
+        //        for (ShoppingCartListModel *listModel in self.dataArray) {
+        
+        //            for (NSDictionary *goodsItem in tempArray) {
+        //
+        ////                           for (int i = 0;  i < listModel.goods.count; i++) {
+        ////                               ShoppingCartGoodsModel *goodsModel = listModel.goods[i];
+        ////                               NSString * goods_id = goodsItem[@"goods_id"];
+        ////                               NSString * goodsAttrId = goodsItem[@"goodsAttrId"];
+        ////
+        ////                               if([goodsModel.goodsAttrId isEqualToString:goodsAttrId] == YES &&  [goodsModel.goodsId isEqualToString:goods_id] == YES){
+        ////
+        ////                                   goodsModel.isSelected =  YES;
+        ////                               }
+        ////                           }
+        //                       }
+        //                   }
         
         for (ShoppingCartListModel *listModel in self.dataArray) {
-                       
-            for (NSDictionary *goodsItem in tempArray) {
-                           
-                           for (int i = 0;  i < listModel.goods.count; i++) {
-                               ShoppingCartGoodsModel *goodsModel = listModel.goods[i];
-                               NSString * goods_id = goodsItem[@"goods_id"];
-                               NSString * goods_attr_id = goodsItem[@"goods_attr_id"];
-                               
-                               if([goodsModel.goods_attr_id isEqualToString:goods_attr_id] == YES &&  [goodsModel.goods_id isEqualToString:goods_id] == YES){
-                                   
-                                   goodsModel.isSelected =  YES;
-                               }
-                           }
-                       }
-                   }
-                   
-                   for (ShoppingCartListModel *listModel in self.dataArray) {
-                       BOOL flag = NO;
-                       NSInteger numberTure = 0;
-                       
-                       for (ShoppingCartGoodsModel *itmeGoodsModel in listModel.goods) {
-                           if (itmeGoodsModel.isSelected == YES) {
-                               numberTure ++;
-                               
-                           }else{
-                               numberTure -- ;
-                           }
-                       }
-                       
-                       if (numberTure == listModel.goods.count) {
-                           flag = YES;
-                       }
-                       listModel.isSelected = flag;
-                       
-                   }
+            BOOL flag = NO;
+            NSInteger numberTure = 0;
+            
+            for (ShoppingCartGoodsModel *itmeGoodsModel in listModel.goods) {
+                if (itmeGoodsModel.isSelected == YES) {
+                    numberTure ++;
+                    
+                }else{
+                    numberTure -- ;
+                }
+            }
+            
+            if (numberTure == listModel.goods.count) {
+                flag = YES;
+            }
+            listModel.isSelected = flag;
+            
+        }
         
         [self.rightBtn setTitle:SLLocalizedString(@"编辑") forState:UIControlStateNormal];
         [self.footView setIsDelete:NO];
         
         [self.tableView.mj_header setHidden:NO];
     }
+    
     self.rightBtn.selected = !self.rightBtn.selected;
     [self calculateTotalPrice];
     [self calculateQuantityGoods];
@@ -310,7 +409,7 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
 
 #pragma mark - ShoppingCartNoGoodsViewAction
 //去逛逛
--(void)goBuyAction{
+- (void)goBuyAction{
     
     self.navigationController.tabBarController.selectedIndex = 3;
     [self.navigationController popToRootViewControllerAnimated:YES];
@@ -318,21 +417,22 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
 
 #pragma mark - ShoppingCratFootViewAction
 //全选
--(void)footerSelectAll:(UIButton *)sender{
+- (void)footerSelectAll:(UIButton *)sender{
     sender.selected = !sender.selected;
     
     [self.footView setIsAll:sender.selected];
    
     
     NSMutableArray *goodsIdArray = [NSMutableArray array];
-    
-    
+
+
     if (sender.selected == NO) {
             [goodsIdArray writeToFile:KAgainBuyCarPath atomically:YES];
        }
-    
+//
     
     NSInteger goodsNumber = 0;
+    
     for (ShoppingCartListModel *model in self.dataArray) {
         model.isSelected = sender.selected;
         for (ShoppingCartGoodsModel *goodsModel in model.goods) {
@@ -341,6 +441,7 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
             NSString *num = goodsModel.num;
             NSString *stock = goodsModel.stock;
             if (goodsModel.isEditor == NO && [goodsModel.type isEqualToString:@"2"] == NO) {
+                
                 if ([stock integerValue] < [num integerValue]) {
                     goodsModel.isSelected = NO;
                 }
@@ -348,30 +449,38 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
                     
                     goodsNumber ++;
                     
-                    NSMutableDictionary *goodsItemDic = [NSMutableDictionary dictionary];
-                    
-                    [goodsItemDic setValue:goodsModel.goods_id forKey:@"goods_id"];
-                    if (goodsModel.goods_attr_id != nil) {
-                        [goodsItemDic setValue:goodsModel.goods_attr_id forKey:@"goods_attr_id"];
-                    }
-                    
-                    [goodsIdArray addObject:goodsItemDic];
+//                    NSMutableDictionary *goodsItemDic = [NSMutableDictionary dictionary];
+//
+//                    [goodsItemDic setValue:goodsModel.goodsId forKey:@"goods_id"];
+//                    if (goodsModel.goodsAttrId != nil) {
+//                        [goodsItemDic setValue:goodsModel.goodsAttrId forKey:@"goodsAttrId"];
+//                    }
+//
+                    SaveBuyCarModel *carModel = [[SaveBuyCarModel alloc]init];
+                    carModel.goodsId = goodsModel.goodsId;
+                    carModel.goodsAttrId = goodsModel.goodsAttrId;
+
+                    [goodsIdArray addObject:carModel];
                     
                 }
             }else{
                 if (goodsModel.isSelected) {
                     
                     goodsNumber ++;
-                    
-                    NSMutableDictionary *goodsItemDic = [NSMutableDictionary dictionary];
-                    
-                    [goodsItemDic setValue:goodsModel.goods_id forKey:@"goods_id"];
-                    if (goodsModel.goods_attr_id != nil) {
-                        [goodsItemDic setValue:goodsModel.goods_attr_id forKey:@"goods_attr_id"];
-                    }
-                    
-                    [goodsIdArray addObject:goodsItemDic];
-                    
+//
+//                    NSMutableDictionary *goodsItemDic = [NSMutableDictionary dictionary];
+//
+//                    [goodsItemDic setValue:goodsModel.goodsId forKey:@"goods_id"];
+//                    if (goodsModel.goodsAttrId != nil) {
+//                        [goodsItemDic setValue:goodsModel.goodsAttrId forKey:@"goodsAttrId"];
+//                    }
+//
+//                    [goodsIdArray addObject:goodsItemDic];
+                    SaveBuyCarModel *carModel = [[SaveBuyCarModel alloc]init];
+                    carModel.goodsId = goodsModel.goodsId;
+                    carModel.goodsAttrId = goodsModel.goodsAttrId;
+
+                    [goodsIdArray addObject:carModel];
                 }
             }
         }
@@ -380,13 +489,30 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
     [self.footView setGoodsNumber:goodsNumber];
     [self calculateTotalPrice];
     
-    if ([goodsIdArray count] > 0) {
-        [goodsIdArray writeToFile:KAgainBuyCarPath atomically:YES];
+    if (sender.selected) {
+        [self insertBuyCarData:goodsIdArray];
+    }else{
+        
+        for (ShoppingCartListModel *model in self.dataArray) {
+            for (ShoppingCartGoodsModel *goodsModel in model.goods) {
+                SaveBuyCarModel *carModel = [[SaveBuyCarModel alloc]init];
+                carModel.goodsId = goodsModel.goodsId;
+                carModel.goodsAttrId = goodsModel.goodsAttrId;
+                [goodsIdArray addObject:carModel];
+            }
+        }
+        [self deleteBuyCarData:goodsIdArray];
     }
+    
+    
+//    if ([goodsIdArray count] > 0) {
+//        [goodsIdArray writeToFile:KAgainBuyCarPath atomically:YES];
+//    }
 }
 
 //删除
--(void)footerDelete:(UIButton *)sender{
+- (void)footerDelete:(UIButton *)sender{
+    
     NSMutableArray *indexPathArray = [NSMutableArray array];
     for (int i = 0; i < self.dataArray.count; i++) {
         ShoppingCartListModel *mdoel = self.dataArray[i];
@@ -402,8 +528,10 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
         
     }
     
+    NSMutableArray *saveBuyCarArray = [NSMutableArray array];
     //id装载集合
-    NSMutableString *idStr = [NSMutableString string];
+//    NSMutableString *idStr = [NSMutableString string];
+    NSMutableArray *goodsIdArray = [NSMutableArray array];
     
     for (int i = 0; i < indexPathArray.count; i++) {
         NSIndexPath *indexPath = indexPathArray[i];
@@ -412,18 +540,27 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
         ShoppingCartGoodsModel *goodsModel = mdoel.goods[indexPath.row];
         
         //开始往id集合中加入购物车id
-        if (idStr.length == 0) {
-            [idStr appendString:goodsModel.cartid];
-        }else{
-            [idStr appendString:@","];
-            [idStr appendString:goodsModel.cartid];
-        }
+//        if (idStr.length == 0) {
+//            [idStr appendString:goodsModel.cartid];
+//        }else{
+//            [idStr appendString:@","];
+//            [idStr appendString:goodsModel.cartid];
+//        }
+        
+        SaveBuyCarModel *carModel = [[SaveBuyCarModel alloc]init];
+        carModel.goodsId = goodsModel.goodsId;
+        carModel.goodsAttrId = goodsModel.goodsAttrId;
+        [saveBuyCarArray addObject:carModel];
+        
+        [goodsIdArray addObject:goodsModel.cartid];
     }
     
     NSMutableDictionary *dic = [NSMutableDictionary dictionary];
-    [dic setValue:idStr forKey:@"id"];
+//    [dic setValue:idStr forKey:@"id"];
+    [dic setValue:goodsIdArray forKey:@"goodsId"];
     
-    if ([idStr length] > 0) {
+//    if ([idStr length] > 0) {
+    if ([goodsIdArray count] > 0) {
         [SMAlert setConfirmBtBackgroundColor:kMainYellow];
         [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
         [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
@@ -441,6 +578,7 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
                 BOOL isSuccess = message.isSuccess;
                 if (isSuccess == YES) {
                     [self initData];
+                    [self deleteBuyCarData:saveBuyCarArray];
                 }
                 
                 [self.footView setGoodsNumber:0];
@@ -454,7 +592,7 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
 }
 
 //结算
--(void)settlement{
+- (void)settlement{
     NSInteger goodsNumber = self.footView.goodsNumber;
     if (goodsNumber > 0) {
         
@@ -476,28 +614,30 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
             
             if (goodsArray.count > 0) {
                 [dic setValue:goodsArray forKey:@"goods"];
-                GoodsStoreInfoModel *storeInfoModel = [model.club firstObject];
+                GoodsStoreInfoModel *storeInfoModel = [[GoodsStoreInfoModel alloc]init];
+                storeInfoModel.storeId = model.clubId;
+                storeInfoModel.name = model.clubName;
                 [dic setValue:storeInfoModel forKey:@"stroeInfo"];
                 [modelMutabelArray addObject:dic];
             }
             
         }
         
-        BOOL goodsTypeSelect = NO;
-        
-        for (ShoppingCartGoodsModel *goodsModel in allSelectedGoodsArray) {
-            ShoppingCartGoodsModel *temGoodsModel = allSelectedGoodsArray[0];
-            if ([temGoodsModel.type isEqualToString:goodsModel.type]) {
-                goodsTypeSelect = YES;
-            }else{
-                 goodsTypeSelect = NO;
-            }
-        }
-        
-        if (goodsTypeSelect == NO) {
-            [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"教程和实物不能同时下单") view:self.view afterDelay:TipSeconds];
-            return;
-        }
+//        BOOL goodsTypeSelect = NO;
+//        
+//        for (ShoppingCartGoodsModel *goodsModel in allSelectedGoodsArray) {
+//            ShoppingCartGoodsModel *temGoodsModel = allSelectedGoodsArray[0];
+//            if ([temGoodsModel.type isEqualToString:goodsModel.type]) {
+//                goodsTypeSelect = YES;
+//            }else{
+//                 goodsTypeSelect = NO;
+//            }
+//        }
+//        
+//        if (goodsTypeSelect == NO) {
+//            [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"教程和实物不能同时下单") view:self.view afterDelay:TipSeconds];
+//            return;
+//        }
         
         
         ShoppingCartGoodsModel *goodsModel  = [allSelectedGoodsArray firstObject];
@@ -526,20 +666,20 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
 }
 
 #pragma mark - UITableViewDelegate & UITableViewDataSource
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return self.dataArray.count;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     return 10;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     
     return [ShoppingCratHeadView getCartHeaderHeight];
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     static NSString *hIdentifier = @"hIdentifier";
     
     CGFloat height = [ShoppingCratHeadView getCartHeaderHeight];
@@ -554,11 +694,13 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
     
     ShoppingCratHeadView *headView;
     
-    if ( [goodsModel.type isEqualToString:@"1"] == YES) {
+    if ([goodsModel.type isEqualToString:@"1"] == YES) {
         type = ShoppingCartHeadViewStoreType;
     }else{
         type = ShoppingCartHeadViewTitleType;
     }
+    
+    type = ShoppingCartHeadViewStoreType;
     
     if(view==nil){
         view = [[UITableViewHeaderFooterView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, height)];
@@ -572,29 +714,29 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
     
     [headView setIsSelected:mdoel.isSelected];
     
-    [headView setModel:mdoel.club[0]];
+    [headView setModel:mdoel];
     
     return view;
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
     
     UIView *view = [[UIView alloc] init];
     view.backgroundColor = KTextGray_FA;
     return view;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     ShoppingCartListModel *mdoel = self.dataArray[section];
     return mdoel.goods.count;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     return 140;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     ShoppingCratTableCell *shoppingCartCell = [tableView dequeueReusableCellWithIdentifier:kShoppingCratTableCellIdentifier];
     
     ShoppingCartListModel *mdoel = self.dataArray[indexPath.section];
@@ -608,32 +750,32 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
     return shoppingCartCell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
     ShoppingCartListModel *mdoel = self.dataArray[indexPath.section];
     ShoppingCartGoodsModel *goodsModel = mdoel.goods[indexPath.row];
-    NSString *goodsType = goodsModel.type;
+//    NSString *goodsType = goodsModel.type;
     
-    if([goodsType isEqualToString:@"1"]){
+//    if([goodsType isEqualToString:@"1"]){
         //跳转到商品详情
         WengenGoodsModel * goodsItmeModel = [[WengenGoodsModel alloc]init];
         
-        goodsItmeModel.goodsId = goodsModel.goods_id;
+        goodsItmeModel.goodsId = goodsModel.goodsId;
         
         GoodsDetailsViewController *goodsDetailsVC = [[GoodsDetailsViewController alloc]init];
         goodsDetailsVC.goodsModel = goodsItmeModel;
         [self.navigationController pushViewController:goodsDetailsVC animated:YES];
-    }else{
-        //跳转到教程详情
-        KungfuClassDetailViewController * vc = [[KungfuClassDetailViewController alloc]init];
-        vc.classId = goodsModel.goods_id;
-        [self.navigationController pushViewController:vc animated:YES];
-    }
+//    }else{
+//        //跳转到教程详情
+//        KungfuClassDetailViewController * vc = [[KungfuClassDetailViewController alloc]init];
+//        vc.classId = goodsModel.goodsId;
+//        [self.navigationController pushViewController:vc animated:YES];
+//    }
 }
 
 #pragma mark - ShoppingCratTableCellDelegate
 //选中商品
--(void)shoppingCratTableCell:(ShoppingCratTableCell *)cellView
+- (void)shoppingCratTableCell:(ShoppingCratTableCell *)cellView
                      lcotion:(NSIndexPath *)indexPath
                        model:(ShoppingCartGoodsModel *)model {
     
@@ -676,46 +818,63 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
     
     if (goodsModel.isEditor == NO) {
         if (goodsModel.isSelected == YES) {
-            NSMutableArray *goodsIdArray = [NSMutableArray array];
+//            NSMutableArray *goodsIdArray = [NSMutableArray array];
+//
+//            NSMutableDictionary *goodsItemDic = [NSMutableDictionary dictionary];
+//
+//            [goodsItemDic setValue:goodsModel.goodsId forKey:@"goods_id"];
+//            if (goodsModel.goodsAttrId != nil) {
+//                [goodsItemDic setValue:goodsModel.goodsAttrId forKey:@"goodsAttrId"];
+//            }
+//
+//            [goodsIdArray addObject:goodsItemDic];
+//
+//            NSArray *tempArray = [NSArray arrayWithContentsOfFile:KAgainBuyCarPath];
+//
+//            [goodsIdArray addObjectsFromArray:tempArray];
+//
+//            [goodsIdArray writeToFile:KAgainBuyCarPath atomically:YES];
             
-            NSMutableDictionary *goodsItemDic = [NSMutableDictionary dictionary];
+            SaveBuyCarModel *carModel = [[SaveBuyCarModel alloc]init];
+            carModel.goodsId = goodsModel.goodsId;
+            carModel.goodsAttrId = goodsModel.goodsAttrId;
             
-            [goodsItemDic setValue:goodsModel.goods_id forKey:@"goods_id"];
-            if (goodsModel.goods_attr_id != nil) {
-                [goodsItemDic setValue:goodsModel.goods_attr_id forKey:@"goods_attr_id"];
-            }
+            [self insertBuyCarData:@[carModel]];
             
-            [goodsIdArray addObject:goodsItemDic];
             
-            NSArray *tempArray = [NSArray arrayWithContentsOfFile:KAgainBuyCarPath];
-            
-            [goodsIdArray addObjectsFromArray:tempArray];
-            
-            [goodsIdArray writeToFile:KAgainBuyCarPath atomically:YES];
         }else{
-            NSMutableArray *tempArray = [NSMutableArray arrayWithContentsOfFile:KAgainBuyCarPath];
-            for (int i = 0; i < tempArray.count; i++) {
-                NSDictionary *tem = tempArray[i];
-                if ([goodsModel.goods_id isEqualToString:tem[@"goods_id"]] == YES) {
-                    [tempArray removeObject:tem];
-                }
-            }
+//            NSMutableArray *tempArray = [NSMutableArray arrayWithContentsOfFile:KAgainBuyCarPath];
+//            for (int i = 0; i < tempArray.count; i++) {
+//                NSDictionary *tem = tempArray[i];
+//                if ([goodsModel.goodsId isEqualToString:tem[@"goods_id"]] == YES) {
+//                    [tempArray removeObject:tem];
+//                }
+//            }
+//
+//            [tempArray writeToFile:KAgainBuyCarPath atomically:YES];
             
-            [tempArray writeToFile:KAgainBuyCarPath atomically:YES];
+            SaveBuyCarModel *carModel = [[SaveBuyCarModel alloc]init];
+            carModel.goodsId = goodsModel.goodsId;
+            carModel.goodsAttrId = goodsModel.goodsAttrId;
+            
+            
+            [self deleteBuyCarData:@[carModel]];
+            
+            
         }
     }
 }
 
 //商品数量
--(void)shoppingCratTableCell:(ShoppingCratTableCell *)cellView calculateCount:(NSInteger)count model:(nonnull ShoppingCartGoodsModel *)model{
+- (void)shoppingCratTableCell:(ShoppingCratTableCell *)cellView calculateCount:(NSInteger)count model:(nonnull ShoppingCartGoodsModel *)model{
     [self calculateTotalPrice];
 }
 
 //选择规格
--(void)shoppingCratTableCell:(ShoppingCratTableCell *)cellView jumpSpecificationsViewWithLcotion:(NSIndexPath *)indexPath model:(ShoppingCartGoodsModel *)model{
+- (void)shoppingCratTableCell:(ShoppingCratTableCell *)cellView jumpSpecificationsViewWithLcotion:(NSIndexPath *)indexPath model:(ShoppingCartGoodsModel *)model{
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
     
-    [[DataManager shareInstance]getGoodsInfo:@{@"id" : model.goods_id} Callback:^(NSObject *object) {
+    [[DataManager shareInstance]getGoodsInfo:@{@"id" : model.goodsId} Callback:^(NSObject *object) {
         
         [hud hideAnimated:YES];
         if ([object isKindOfClass:[GoodsInfoModel class]] == YES) {
@@ -725,7 +884,7 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
             
             UIWindow *window =[[UIApplication sharedApplication]keyWindow];
             specificationView.isCart = YES;
-            specificationView.goods_attr_id = model.goods_attr_id;
+            specificationView.goodsAttrId = model.goodsAttrId;
             //购物车模型， 主要是购物车id
             specificationView.carGoodsModel = model;
             
@@ -736,11 +895,12 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
             
             [specificationView setSaveBlock:^(NSDictionary * _Nonnull dic) {
                 
-                model.attr_name = dic[@"attr_name"];
+                model.goodsAttrStrName = dic[@"attrName"];
                 model.num = dic[@"num"];
-                model.goods_attr_id = dic[@"goods_attr_id"];
-                model.current_price = dic[@"currentPrice"];
-                
+                model.goodsAttrId = dic[@"attrId"];
+                model.price = dic[@"currentPrice"];
+                model.oldPrice = dic[@"currentPrice"];
+
                 if(dic[@"stock"]){
                     model.stock = dic[@"stock"];
                 }
@@ -757,7 +917,7 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
 #pragma mark - ShoppingCratHeadViewDelegate
 
 //选中店铺
--(void)shoppingCratHeadView:(ShoppingCratHeadView *)headView lcotion:(NSInteger)section model:(GoodsStoreInfoModel *)storeInfoModel{
+- (void)shoppingCratHeadView:(ShoppingCratHeadView *)headView lcotion:(NSInteger)section model:(ShoppingCartListModel *)storeInfoModel{
     
     ShoppingCartListModel *mdoel = self.dataArray[section];
     
@@ -807,34 +967,45 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
         for (int i = 0;  i < mdoel.goods.count; i++) {
             ShoppingCartGoodsModel *goodsModel = mdoel.goods[i];
             if (goodsModel.isEditor == NO) {
-                NSMutableDictionary *goodsItemDic = [NSMutableDictionary dictionary];
-                [goodsItemDic setValue:goodsModel.goods_id forKey:@"goods_id"];
-                if (goodsModel.goods_attr_id != nil) {
-                    [goodsItemDic setValue:goodsModel.goods_attr_id forKey:@"goods_attr_id"];
-                }
-                [goodsIdArray addObject:goodsItemDic];
+//                NSMutableDictionary *goodsItemDic = [NSMutableDictionary dictionary];
+//                [goodsItemDic setValue:goodsModel.goodsId forKey:@"goods_id"];
+//                if (goodsModel.goodsAttrId != nil) {
+//                    [goodsItemDic setValue:goodsModel.goodsAttrId forKey:@"goodsAttrId"];
+//                }
+                SaveBuyCarModel *carModel = [[SaveBuyCarModel alloc]init];
+                carModel.goodsId = goodsModel.goodsId;
+                carModel.goodsAttrId = goodsModel.goodsAttrId;
+                [goodsIdArray addObject:carModel];
             }
         }
-        NSArray *tempArray = [NSArray arrayWithContentsOfFile:KAgainBuyCarPath];
+//        NSArray *tempArray = [NSArray arrayWithContentsOfFile:KAgainBuyCarPath];
         
-        [goodsIdArray addObjectsFromArray:tempArray];
+//        [goodsIdArray addObjectsFromArray:tempArray];
         
-        [goodsIdArray writeToFile:KAgainBuyCarPath atomically:YES];
+//        [goodsIdArray writeToFile:KAgainBuyCarPath atomically:YES];
+        [self insertBuyCarData:goodsIdArray];
     }else{
-        NSMutableArray *tempArray = [NSMutableArray arrayWithContentsOfFile:KAgainBuyCarPath];
-        
+//        NSMutableArray *tempArray = [NSMutableArray arrayWithContentsOfFile:KAgainBuyCarPath];
+        NSMutableArray *tempArray = [NSMutableArray array];
+
         for (int i = 0;  i < mdoel.goods.count; i++) {
             ShoppingCartGoodsModel *goodsModel = mdoel.goods[i];
             if (goodsModel.isEditor == NO) {
-                for (int i = 0;  i < tempArray.count; i++) {
-                    NSDictionary *tem = tempArray[i];
-                    if ([goodsModel.goods_id isEqualToString:tem[@"goods_id"]] == YES) {
-                        [tempArray removeObject:tem];
-                    }
-                }
+//                for (int i = 0;  i < tempArray.count; i++) {
+//                    NSDictionary *tem = tempArray[i];
+//                    if ([goodsModel.goodsId isEqualToString:tem[@"goods_id"]] == YES) {
+//                        [tempArray removeObject:tem];
+//                    }
+//                }
+                
+                SaveBuyCarModel *carModel = [[SaveBuyCarModel alloc]init];
+                carModel.goodsId = goodsModel.goodsId;
+                carModel.goodsAttrId = goodsModel.goodsAttrId;
+                [tempArray addObject:carModel];
             }
         }
-        [tempArray writeToFile:KAgainBuyCarPath atomically:YES];
+//        [tempArray writeToFile:KAgainBuyCarPath atomically:YES];
+        [self deleteBuyCarData:tempArray];
         
         
     }
@@ -842,14 +1013,15 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
 }
 
 //跳转店铺
--(void)shoppingCratHeadView:(ShoppingCratHeadView *)headView jumpStoreModel:(GoodsStoreInfoModel *)storeInfoModel{
+- (void)shoppingCratHeadView:(ShoppingCratHeadView *)headView jumpStoreModel:(ShoppingCartListModel *)storeInfoModel{
     StoreViewController *storeVC = [[StoreViewController alloc]init];
-    storeVC.storeId = storeInfoModel.storeId;
+//    storeVC.storeId = storeInfoModel.storeId;
+    storeVC.storeId = storeInfoModel.clubId;
     [self.navigationController pushViewController:storeVC animated:YES];
 }
 
 #pragma mark - getter / setter
--(UITableView *)tableView{
+- (UITableView *)tableView{
     
     if (_tableView == nil) {
         
@@ -881,7 +1053,7 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
     
 }
 
--(ShoppingCratFootView *)footView{
+- (ShoppingCratFootView *)footView{
     
     if (_footView == nil) {
         
@@ -897,7 +1069,7 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
     
 }
 
--(ShoppingCartNoGoodsView *)noGoodsView{
+- (ShoppingCartNoGoodsView *)noGoodsView{
     
     if (_noGoodsView == nil) {
         
@@ -913,18 +1085,20 @@ static NSString *const kShoppingCratTableCellIdentifier = @"ShoppingCratTableCel
     
 }
 
--(NSMutableArray *)dataArray{
+- (NSMutableArray *)dataArray{
     if (_dataArray == nil) {
         _dataArray = [NSMutableArray array];
     }
     return _dataArray;
 }
 
--(NSArray *)idArray{
+- (NSArray *)idArray{
     if (_idArray == nil) {
         NSLog(@"%@", KAgainBuyCarPath);
-        _idArray = [NSArray arrayWithContentsOfFile:KAgainBuyCarPath];
-        
+//        _idArray = [NSArray arrayWithContentsOfFile:KAgainBuyCarPath];
+        NSString *userId = [SLAppInfoModel sharedInstance].id;
+        _idArray = [[ModelTool shareInstance]select:[SaveBuyCarModel class] tableEnum:TableNameSaveBuyCar where:[NSString stringWithFormat:@"userId = '%@'", userId]];
+
     }
     return _idArray;
 }

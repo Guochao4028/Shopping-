@@ -47,7 +47,7 @@
 
 
 
--(instancetype)initWithUrl:(NSString*)url title:(NSString*)title{
+- (instancetype)initWithUrl:(NSString*)url title:(NSString*)title{
     self = [super init];
     if (self) {
         self.urlStr = url;
@@ -65,14 +65,20 @@
     [self initData];
 }
 
--(void)viewWillAppear:(BOOL)animated{
+- (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
 
     [self showNavigationBarShadow];
 }
 
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    if (!self.navigationController || self.navigationController.viewControllers.count == 1) {
+        [self.webView.configuration.userContentController removeScriptMessageHandlerForName:@"H5inFormLocal"];
+    }
+}
 #pragma mark - methods
--(void)initUI{
+- (void)initUI{
 //    [self.view addSubview:self.navgationView];
     
     [self.titleLabe setText:self.titleStr];
@@ -84,7 +90,7 @@
 //    [self.view addSubview:self.progressView];
 }
 
--(void)initData{
+- (void)initData{
     
     NSMutableURLRequest *request =[NSMutableURLRequest requestWithURL:[NSURL URLWithString:self.urlStr]];
     [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
@@ -94,12 +100,12 @@
 }
 
 #pragma mark - WengenNavgationViewDelegate
--(void)tapBack{
+- (void)tapBack{
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 //kvo 监听进度 必须实现此方法
--(void)observeValueForKeyPath:(NSString *)keyPath
+- (void)observeValueForKeyPath:(NSString *)keyPath
                      ofObject:(id)object
                        change:(NSDictionary<NSKeyValueChangeKey,id> *)change
                       context:(void *)context{
@@ -144,7 +150,7 @@
     NSLog(@"1");
 }
 
--(void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation{
+- (void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation{
     self.hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
 }
 
@@ -201,6 +207,7 @@
         
         //修改发票
         ModifyInvoiceViewController *modifyInvoiecVC = [[ModifyInvoiceViewController alloc]init];
+        modifyInvoiecVC.orderId = h5InvoiceModel.orderCarId;
         modifyInvoiecVC.orderSn = h5InvoiceModel.order_id;
         modifyInvoiecVC.h5InvoiceModel = h5InvoiceModel;
         [self.navigationController pushViewController:modifyInvoiecVC animated:YES];
@@ -212,6 +219,7 @@
         OrderH5InvoiceModel *h5InvoiceModel = [OrderH5InvoiceModel mj_objectWithKeyValues:subJsonDic];
         //申请换开
         ExchangeInvoiceViewController *exchangeInvoiceVC = [[ExchangeInvoiceViewController alloc]init];
+        exchangeInvoiceVC.orderId = h5InvoiceModel.orderCarId;
         exchangeInvoiceVC.orderSn = h5InvoiceModel.order_id;
         exchangeInvoiceVC.h5InvoiceModel = h5InvoiceModel;
         [self.navigationController pushViewController:exchangeInvoiceVC animated:YES];
@@ -220,6 +228,7 @@
         OrderH5InvoiceModel *h5InvoiceModel = [OrderH5InvoiceModel mj_objectWithKeyValues:subJsonDic];
         //重新开具发票
         ModifyInvoiceViewController *modifyInvoiecVC = [[ModifyInvoiceViewController alloc]init];
+        modifyInvoiecVC.orderId = h5InvoiceModel.orderCarId;
         modifyInvoiecVC.orderSn = h5InvoiceModel.order_id;
         modifyInvoiecVC.h5InvoiceModel = h5InvoiceModel;
         modifyInvoiecVC.isAgain = YES;
@@ -305,9 +314,9 @@
         }] cancleButton:[SMButton initWithTitle:SLLocalizedString(@"取消") clickAction:nil]];
     }
     else if([flagStr isEqualToString:@"downinvoice"]){
-        NSString *imageUrl = subJsonDic[@"img_url"];
+        NSString *imageUrl = subJsonDic[@"imgUrl"];
         NSLog(@"imageUrl : %@", imageUrl);
-        if (imageUrl) {
+        if (imageUrl && imageUrl.length) {
             
             
             
@@ -343,7 +352,7 @@
 }
 
 #pragma mark - UITextFieldDelegate
--(void)textFieldDidEndEditing:(UITextField *)textField{
+- (void)textFieldDidEndEditing:(UITextField *)textField{
     if (textField == self.emailTextField) {
         
     }
@@ -351,7 +360,7 @@
 
 #pragma mark - getter / setter
 
-//-(WengenNavgationView *)navgationView{
+//- (WengenNavgationView *)navgationView{
 //    if (_navgationView == nil) {
 //        //状态栏高度
 //        CGFloat barHeight ;
@@ -369,7 +378,7 @@
 //    return _navgationView;
 //}
 
--(WKWebView *)webView{
+- (WKWebView *)webView{
     
     if (_webView == nil) {
         CGFloat y = 0;//CGRectGetMaxY(self.navgationView.frame);
@@ -414,7 +423,6 @@
     [self.webView removeObserver:self forKeyPath:@"estimatedProgress"];
     [self.webView setNavigationDelegate:nil];
     [self.webView setUIDelegate:nil];
-    [self.webView.configuration.userContentController removeScriptMessageHandlerForName:@"H5inFormLocal"];
 }
 
 @end

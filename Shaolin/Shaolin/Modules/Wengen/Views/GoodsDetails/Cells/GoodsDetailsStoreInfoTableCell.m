@@ -52,7 +52,7 @@
     // Configure the view for the selected state
 }
 
--(void)setModel:(GoodsStoreInfoModel *)model{
+- (void)setModel:(GoodsStoreInfoModel *)model{
     _model = model;
     
     [self.storeNameLabel setText:model.name];
@@ -69,7 +69,7 @@
 }
 
 #pragma mark - action
--(void)tapStroeNameView{
+- (void)tapStroeNameView{
     if ([self.delegate respondsToSelector:@selector(goodsStoreInfoCell:tapStroeNameView:)] == YES) {
         [self.delegate goodsStoreInfoCell:self tapStroeNameView:YES];
     }

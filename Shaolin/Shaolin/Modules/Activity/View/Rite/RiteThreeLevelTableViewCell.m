@@ -108,6 +108,8 @@
         _imageV = [[UIImageView alloc] init];
         _imageV.contentMode = UIViewContentModeScaleAspectFill;
         _imageV.clipsToBounds = YES;
+        _imageV.layer.cornerRadius = 4;
+        _imageV.clipsToBounds = YES;
     }
     return _imageV;
 }

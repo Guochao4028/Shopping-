@@ -22,7 +22,7 @@
 
 @implementation GoodsSpecificationBuyCountView
 
--(instancetype)initWithFrame:(CGRect)frame {
+- (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         [self initUI];
@@ -31,7 +31,7 @@
 }
 
 #pragma mark - methods
--(void)initUI{
+- (void)initUI{
     [self setBackgroundColor:[UIColor whiteColor]];
     [self addSubview:self.titleLabel];
     [self addSubview:self.countView];
@@ -46,7 +46,7 @@
 
 #pragma mark - settet / getter
 
--(UILabel *)titleLabel{
+- (UILabel *)titleLabel{
     if (_titleLabel == nil) {
         _titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(16, 10, 30, 20)];
         _titleLabel.text = SLLocalizedString(@"数量");
@@ -57,7 +57,7 @@
     return _titleLabel;
 }
 
--(ShoppingCartNumberCountView *)countView{
+- (ShoppingCartNumberCountView *)countView{
     
     if (_countView == nil) {
         CGFloat x =  CGRectGetWidth(self.frame) - 16 - 127;
@@ -68,11 +68,11 @@
     
 }
 
--(void)setModel:(GoodsInfoModel *)model{
+- (void)setModel:(GoodsInfoModel *)model{
     _model = model;
     ShoppingCartGoodsModel *cartGoodModel = [[ShoppingCartGoodsModel alloc]init];
     
-    cartGoodModel.goods_id = model.goodsid;
+    cartGoodModel.goodsId = model.goodsid;
     cartGoodModel.num = self.goodsNumber == nil?@"1":self.goodsNumber ;
     cartGoodModel.stock = model.stock;
     
@@ -109,18 +109,18 @@
 //        cartGoodModel.attr_value = nextItem.value;
 //    }
     
-    cartGoodModel.goods_attr_id = model.goodsSpecificationId;
+    cartGoodModel.goodsAttrId = model.goodsSpecificationId;
     [self.countView setCheckType:CheckInventoryGoodsType];
     [self.countView setGoodsModel:cartGoodModel];
 }
 
--(void)setCarGoodsModel:(ShoppingCartGoodsModel *)carGoodsModel{
+- (void)setCarGoodsModel:(ShoppingCartGoodsModel *)carGoodsModel{
     _carGoodsModel = carGoodsModel;
     [self.countView setCheckType:CheckInventoryCartType];
     [self.countView setGoodsModel:carGoodsModel];
 }
 
--(void)refreshUI{
+- (void)refreshUI{
     [self.countView refreshUI];
 }
 

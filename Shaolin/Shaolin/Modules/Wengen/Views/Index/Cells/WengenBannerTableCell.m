@@ -37,7 +37,7 @@
 
 #pragma mark - methods
 
--(void)initUI{
+- (void)initUI{
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     [self.contentView addSubview:self.bannerView];
     self.bannerView.imageURLStringsGroup = self.imgArray;
@@ -47,7 +47,7 @@
 
 }
 
--(void)initData{
+- (void)initData{
     NSMutableArray *temList = [NSMutableArray array];
     for (WengenBannerModel *banner in self.dataSource) {
         [temList addObject:banner.imgUrl];
@@ -66,7 +66,7 @@
 
 #pragma mark - getter / setter
 
--(void)setDataSource:(NSArray<WengenBannerModel *> *)dataSource{
+- (void)setDataSource:(NSArray<WengenBannerModel *> *)dataSource{
     _dataSource = dataSource;
     [self.contentView setBackgroundColor:[UIColor clearColor]];
     [self setBackgroundColor:[UIColor clearColor]];
@@ -74,7 +74,7 @@
     [self initUI];
 }
 
--(SDCycleScrollView *)bannerView{
+- (SDCycleScrollView *)bannerView{
     if (_bannerView == nil) {
         _bannerView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(16, 12, kBannerWidth, kBannerHeight) delegate:self placeholderImage:[UIImage imageNamed:@"default_banner"]];
         _bannerView.layer.masksToBounds = YES;

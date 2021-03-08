@@ -23,6 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) BOOL flag;
 /*!其他诵经礼忏*/
 @property (nonatomic, copy) NSString *otherMatterName;
+@property (nonatomic, strong) NSNumber *needReturnReceipt;// 1 需要回执， 0，不需要。不需要回执直接跳转支付
 @end
 
 NS_ASSUME_NONNULL_END

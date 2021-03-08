@@ -62,7 +62,7 @@ static NSString *const kGoodsDetailsSpecificationTableCellIdentifier = @"GoodsDe
 @implementation GoodsDetailsView
 
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         self.isLoadingWebView = YES;
@@ -73,7 +73,7 @@ static NSString *const kGoodsDetailsSpecificationTableCellIdentifier = @"GoodsDe
 
 #pragma mark - methods
 
--(void)initUI{
+- (void)initUI{
     [self setBackgroundColor:[UIColor clearColor]];
     
     [self addSubview:self.tableView];
@@ -92,8 +92,8 @@ static NSString *const kGoodsDetailsSpecificationTableCellIdentifier = @"GoodsDe
 
 
 #pragma mark - UITableViewDelegate & UITableViewDataSource
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-    NSArray *goods_value = self.infoModel.goods_value;
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+    NSArray *goods_value = self.infoModel.goodsValueList;
     if (goods_value.count > 0) {
         return 5;
     }else{
@@ -102,7 +102,7 @@ static NSString *const kGoodsDetailsSpecificationTableCellIdentifier = @"GoodsDe
    
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     
     if (section == 2) {
         return 34;
@@ -110,17 +110,17 @@ static NSString *const kGoodsDetailsSpecificationTableCellIdentifier = @"GoodsDe
     return 10;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     return 0.01;
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     UIView *view = [[UIView alloc] init];
     view.backgroundColor = [UIColor clearColor];
     return view;
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
     
     if (section == 2) {
         UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, 34)];
@@ -164,16 +164,16 @@ static NSString *const kGoodsDetailsSpecificationTableCellIdentifier = @"GoodsDe
     return nil;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     if (section == 0) {
         return 2;
     }
     return 1;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     CGFloat tableViewH = 0;
-    NSArray *goods_value = self.infoModel.goods_value;
+    NSArray *goods_value = self.infoModel.goodsValueList;
     if ([goods_value count] > 0) {
         switch (indexPath.section) {
                case 0:{
@@ -271,10 +271,10 @@ static NSString *const kGoodsDetailsSpecificationTableCellIdentifier = @"GoodsDe
     return tableViewH;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell;
     
-    NSArray *goods_value = self.infoModel.goods_value;
+    NSArray *goods_value = self.infoModel.goodsValueList;
     if ([goods_value count] > 0) {
         switch (indexPath.section) {
                 case 0:{
@@ -501,13 +501,13 @@ static NSString *const kGoodsDetailsSpecificationTableCellIdentifier = @"GoodsDe
 }
 
 #pragma mark - GoodsDetailsSelectedTableCellDelegate
--(void)goodsSelectedCell:(GoodsDetailsSelectedTableCell *)cell tapSpecification:(BOOL)istap{
+- (void)goodsSelectedCell:(GoodsDetailsSelectedTableCell *)cell tapSpecification:(BOOL)istap{
     if (self.goodsSpecificationBlock != nil) {
         self.goodsSpecificationBlock(istap);
     }
 }
 
--(void)goodsSelectedCell:(GoodsDetailsSelectedTableCell *)cell tapAddress:(BOOL)istap{
+- (void)goodsSelectedCell:(GoodsDetailsSelectedTableCell *)cell tapAddress:(BOOL)istap{
     if (self.goodsAddressBlock != nil) {
         self.goodsAddressBlock(istap);
     }
@@ -515,7 +515,7 @@ static NSString *const kGoodsDetailsSpecificationTableCellIdentifier = @"GoodsDe
 
 #pragma mark -  GoodsDetailsStoreInfoTableCellDelegate
 
--(void)goodsStoreInfoCell:(GoodsDetailsStoreInfoTableCell *)cell tapStroeNameView:(BOOL)istap{
+- (void)goodsStoreInfoCell:(GoodsDetailsStoreInfoTableCell *)cell tapStroeNameView:(BOOL)istap{
     if (self.goodsStoreInfoCellBlock != nil) {
         self.goodsStoreInfoCellBlock(istap);
     }
@@ -523,7 +523,7 @@ static NSString *const kGoodsDetailsSpecificationTableCellIdentifier = @"GoodsDe
 
 
 
--(void)goodsStoreInfoCell:(GoodsDetailsStoreInfoTableCell *)cell tapOnlineView:(BOOL)istap{
+- (void)goodsStoreInfoCell:(GoodsDetailsStoreInfoTableCell *)cell tapOnlineView:(BOOL)istap{
     if (self.goodsStoreInfoCellOnlineCustomerServiceBlock != nil) {
         self.goodsStoreInfoCellOnlineCustomerServiceBlock(istap);
     }
@@ -545,7 +545,7 @@ static NSString *const kGoodsDetailsSpecificationTableCellIdentifier = @"GoodsDe
 }
 
 #pragma mark - GoodsDetailsSpecificationTableCellDelegate
--(void)goodsDetailsSpecificationTableCell:(GoodsDetailsSpecificationTableCell *)cell tapAction:(GoodsInfoModel *)model loction:(NSIndexPath *)indexPath{
+- (void)goodsDetailsSpecificationTableCell:(GoodsDetailsSpecificationTableCell *)cell tapAction:(GoodsInfoModel *)model loction:(NSIndexPath *)indexPath{
     
     
     
@@ -558,7 +558,7 @@ static NSString *const kGoodsDetailsSpecificationTableCellIdentifier = @"GoodsDe
 
 #pragma mark - setter / getter
 
--(UITableView *)tableView{
+- (UITableView *)tableView{
     if (_tableView == nil) {
         _tableView = [[UITableView alloc]initWithFrame:self.bounds style:UITableViewStyleGrouped];
         [_tableView setDelegate:self];
@@ -589,7 +589,7 @@ static NSString *const kGoodsDetailsSpecificationTableCellIdentifier = @"GoodsDe
     return _tableView;
 }
 
--(WKWebView *)webView{
+- (WKWebView *)webView{
     
     if (_webView == nil) {
         //        _webView = [[WKWebView alloc]initWithFrame:CGRectZero];
@@ -616,34 +616,34 @@ static NSString *const kGoodsDetailsSpecificationTableCellIdentifier = @"GoodsDe
     
 }
 
--(GoodsDetailsHeardView *)heardView{
+- (GoodsDetailsHeardView *)heardView{
     if (_heardView == nil) {
         _heardView = [[GoodsDetailsHeardView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, 64)];
     }
     return _heardView;
 }
 
--(void)setInfoModel:(GoodsInfoModel *)infoModel{
+- (void)setInfoModel:(GoodsInfoModel *)infoModel{
     _infoModel = infoModel;
     [self.tableView reloadData];
 }
 
--(void)setStoreInfoModel:(GoodsStoreInfoModel *)storeInfoModel{
+- (void)setStoreInfoModel:(GoodsStoreInfoModel *)storeInfoModel{
     _storeInfoModel = storeInfoModel;
     [self.tableView reloadData];
 }
 
--(void)setAddressModel:(AddressListModel *)addressModel{
+- (void)setAddressModel:(AddressListModel *)addressModel{
     _addressModel = addressModel;
     [self.tableView reloadData];
 }
 
--(void)setFeeStr:(NSString *)feeStr{
+- (void)setFeeStr:(NSString *)feeStr{
     _feeStr = feeStr;
     [self.tableView reloadData];
 }
 
--(void)setSpecificaationStr:(NSString *)specificaationStr{
+- (void)setSpecificaationStr:(NSString *)specificaationStr{
     _specificaationStr = specificaationStr;
     [self.tableView reloadData];
 }

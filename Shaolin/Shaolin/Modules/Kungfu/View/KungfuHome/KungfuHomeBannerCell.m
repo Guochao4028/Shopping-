@@ -24,7 +24,7 @@
     
 }
 
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         self.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -50,7 +50,7 @@
 }
 
 
--(SDCycleScrollView *)bannerView{
+- (SDCycleScrollView *)bannerView{
     if (_bannerView == nil) {
 
         _bannerView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(16, 12, kBannerWidth, kBannerHeight) delegate:self placeholderImage:[UIImage imageNamed:@"default_banner"]];
@@ -70,7 +70,7 @@
     return _bannerView;
 }
 
--(void)setBannerList:(NSArray *)bannerList {
+- (void)setBannerList:(NSArray *)bannerList {
     _bannerList = bannerList;
     
     

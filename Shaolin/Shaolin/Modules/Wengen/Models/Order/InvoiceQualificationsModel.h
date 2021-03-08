@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///资质id
 @property(nonatomic, copy)NSString *qualificationsId;
 ///公司名称
-@property(nonatomic, copy)NSString *company_name;
+@property(nonatomic, copy)NSString *companyName;
 ///纳税人示别码
 @property(nonatomic, copy)NSString *number;
 ///注册地址
@@ -24,13 +24,15 @@ NS_ASSUME_NONNULL_BEGIN
 ///开户行
 @property(nonatomic, copy)NSString *bank;
 ///银行账户
-@property(nonatomic, copy)NSString *bank_sn;
+@property(nonatomic, copy)NSString *bankSn;
 ///创建时间
-@property(nonatomic, copy)NSString *create_time;
+@property(nonatomic, copy)NSString *createTime;
 ///0 待审核 1 审核通过 2 审核失败
 @property(nonatomic, copy)NSString *status;
 ///用户ID
-@property(nonatomic, copy)NSString *user_id;
+@property(nonatomic, copy)NSString *userId;
+///拒绝原因
+@property(nonatomic, copy)NSString *checkMessage;
 
 @end
 

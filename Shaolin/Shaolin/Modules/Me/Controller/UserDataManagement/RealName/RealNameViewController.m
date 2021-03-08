@@ -10,7 +10,7 @@
 #import "RealNameCollectionCell.h"
 #import "HomeManager.h"
 #import "MeManager.h"
-#import "ValuePickerView.h"
+//#import "ValuePickerView.h"
 #import "UIButton+CenterImageAndTitle.h"
 #import "SMAlert.h"
 #import "NSString+Tool.h"
@@ -86,7 +86,7 @@
 
 
 
--(void)layoutView
+- (void)layoutView
 {
     self.tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, kWidth, kHeight - kNavBarHeight - kStatusBarHeight - SLChange(40) - kBottomSafeHeight) style:(UITableViewStylePlain)];
     self.tableView.dataSource = self;
@@ -132,7 +132,7 @@
     [SMAlert showCustomView:title confirmButton:[SMButton initWithTitle:SLLocalizedString(@"确定") clickAction:nil]];
 }
 
--(void)chooseSexAction:(UIButton *)button
+- (void)chooseSexAction:(UIButton *)button
 {
     NSInteger i = button.tag;
     if (i == 101) {
@@ -394,7 +394,7 @@
     return YES;
 }
 
--(BOOL)textFieldShouldReturn:(UITextField *)textField {
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [self.view endEditing:YES];
     return YES;
 }
@@ -472,7 +472,7 @@
 - (void)getPersonAuthenticationResult:(NSString *)token bizId:(NSString *)bizId{
     NSDictionary *params = @{
         @"token" : token,
-        @"bizId" : bizId,
+        @"BizId" : bizId,
     };
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
     [[MeManager sharedInstance] getPersonAuthenticationResult:params finish:^(id  _Nonnull responseObject, NSString * _Nonnull errorReason) {
@@ -484,11 +484,11 @@
     }];
 }
 #pragma mark - tableviewDelegate && dataSource
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return self.titleArr.count;
 }
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
     static NSString *cellIdentifier = @"cellID";
@@ -554,7 +554,7 @@
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return SLChange(50);
 }
@@ -592,7 +592,7 @@
     return cell;
     
 }
--(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     
 }
@@ -616,7 +616,7 @@
 
 #pragma mark - setter && getter
 
--(NSArray *)titleArr {
+- (NSArray *)titleArr {
     if ([self.typeStr isEqualToString:SLLocalizedString(@"身份证")]) {
         return @[SLLocalizedString(@"姓名")/*,SLLocalizedString(@"性别")*/,SLLocalizedString(@"证件类型"),SLLocalizedString(@"身份证号")/*,SLLocalizedString(@"户籍所在地")*/];
     } else {
@@ -624,7 +624,7 @@
     }
 }
 
--(NSArray *)photoArr {
+- (NSArray *)photoArr {
     if ([self.typeStr isEqualToString:SLLocalizedString(@"身份证")]) {
         return @[@"Idcard_positive",@"Idcard_reverse",@"Idcard_handheld",@"Idcard_person"];
     } else {
@@ -632,7 +632,7 @@
     }
 }
 
--(NSArray *)photoTitleArr {
+- (NSArray *)photoTitleArr {
     if ([self.typeStr isEqualToString:SLLocalizedString(@"身份证")]) {
         return @[SLLocalizedString(@"请上传身份证正面"),SLLocalizedString(@"请上传身份证反面"),SLLocalizedString(@"请上传手持身份证照片"),SLLocalizedString(@"请上传个人自拍照")];
     } else {
@@ -640,7 +640,7 @@
     }
 }
 
--(UITextField *)nameTf
+- (UITextField *)nameTf
 {
     if (!_nameTf) {
         _nameTf = [[UITextField alloc] initWithFrame:CGRectMake(SLChange(110), SLChange(18), kWidth-SLChange(130), SLChange(18))];
@@ -658,7 +658,7 @@
     return _nameTf;
 }
 
--(UITextField *)cardNumber
+- (UITextField *)cardNumber
 {
     if (!_cardNumber) {
         _cardNumber = [[UITextField alloc] initWithFrame:CGRectMake(SLChange(110), SLChange(18), kWidth-SLChange(130), SLChange(18))];
@@ -677,7 +677,7 @@
     return _cardNumber;
 }
 
--(UIButton *)changeTypeBtn {
+- (UIButton *)changeTypeBtn {
     if (!_changeTypeBtn) {
         _changeTypeBtn = [UIButton new];
         NSInteger height = [self tableView:self.tableView heightForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]];
@@ -693,7 +693,7 @@
     return _changeTypeBtn;;
 }
 
--(UIButton *)changeTypeIcon {
+- (UIButton *)changeTypeIcon {
     if (!_changeTypeIcon) {
         _changeTypeIcon = [UIButton new];
         
@@ -707,7 +707,7 @@
 }
 
 
--(UITextField *)dressTf
+- (UITextField *)dressTf
 {
     if (!_dressTf) {
         _dressTf = [[UITextField alloc] initWithFrame:CGRectMake(SLChange(110), SLChange(18), kWidth-SLChange(130), SLChange(18))];
@@ -725,7 +725,7 @@
     return _dressTf;
 }
 
--(UIButton *)manBtn
+- (UIButton *)manBtn
 {
     if (!_manBtn) {
         _manBtn = [[UIButton alloc] initWithFrame:CGRectMake(SLChange(108), SLChange(18.5), SLChange(29), SLChange(13))];
@@ -739,7 +739,7 @@
     return _manBtn;
 }
 
--(UIButton *)womanBtn
+- (UIButton *)womanBtn
 {
     if (!_womanBtn) {
         _womanBtn = [[UIButton alloc] initWithFrame:CGRectMake(SLChange(147), SLChange(18.5), SLChange(29), SLChange(13))];
@@ -753,7 +753,7 @@
     return _womanBtn;
 }
 
--(UICollectionView *)collectionView
+- (UICollectionView *)collectionView
 {
     if (!_collectionView) {
         
@@ -765,7 +765,7 @@
     }
     return _collectionView;
 }
--(UICollectionViewFlowLayout *)layout
+- (UICollectionViewFlowLayout *)layout
 {
     if (!_layout) {
         _layout = [UICollectionViewFlowLayout new];
@@ -777,7 +777,7 @@
     return _layout;
 }
 
--(UIButton *)submitBtn {
+- (UIButton *)submitBtn {
     if (!_submitBtn) {
         _submitBtn = [[UIButton alloc]init];
         _submitBtn.backgroundColor = kMainYellow;
@@ -789,7 +789,7 @@
     return _submitBtn;
 }
 
--(UIButton *)birthBtn {
+- (UIButton *)birthBtn {
     if (!_birthBtn) {
         _birthBtn = [UIButton new];
         _birthBtn.frame = CGRectMake(SLChange(110), 5, kWidth - SLChange(110) , 45);
@@ -804,7 +804,7 @@
     return _birthBtn;
 }
 
--(SLStringPickerView *)typePickerView {
+- (SLStringPickerView *)typePickerView {
     WEAKSELF
     if (!_typePickerView) {
         _typePickerView = [[SLStringPickerView alloc]init];
@@ -859,7 +859,7 @@
     return _typePickerView;
 }
 
--(SLDatePickerView *)birthPickerView {
+- (SLDatePickerView *)birthPickerView {
     WEAKSELF
     if (!_birthPickerView) {
         _birthPickerView = [[SLDatePickerView alloc]init];
@@ -893,7 +893,7 @@
     }
 }
 
-//-(BOOL)validateIDCardNumber:(NSString *)value {
+//- (BOOL)validateIDCardNumber:(NSString *)value {
 //
 //    if ([self.typeStr isEqualToString:SLLocalizedString(@"身份证")] == NO) {
 //

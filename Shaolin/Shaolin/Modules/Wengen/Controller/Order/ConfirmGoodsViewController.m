@@ -14,6 +14,9 @@
 #import "StoreViewController.h"
 #import "OrderStoreModel.h"
 #import "DataManager.h"
+
+#import "OrderDetailsNewModel.h"
+
 @interface ConfirmGoodsViewController ()<UITableViewDataSource,UITableViewDelegate,XHStarRateViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *mTableView;
@@ -25,6 +28,8 @@
 
 // 所有数据
 @property (nonatomic, strong) NSMutableArray *arrayData;
+
+@property(nonatomic, strong)OrderDetailsNewModel *derailsNewModel;
 
 @end
 
@@ -57,11 +62,25 @@ static NSString * const confirmGoodsIdentifier                  = @"ConfirmGoods
 // 获取订单数据接口  显示商品和门店
 - (void)loadRequest{
     //   拿商户id club_id 匹配店铺 添加在一起  生成一个店铺
-    [[DataManager shareInstance]getOrderInfoNew:@{@"order_id":self.order_sn} Callback:^(NSObject *object) {
+    [[DataManager shareInstance]getOrderInfo:@{@"id":self.order_sn} Callback:^(NSObject *object) {
         
-        NSArray *array = (NSArray *)object;
-        self.arrayData = (NSMutableArray *)[ModelTool assembleData:array];
-        [self.mTableView reloadData];
+        if ([object isKindOfClass:[OrderDetailsNewModel class]]) {
+            
+            OrderDetailsNewModel *derailsNewModel = (OrderDetailsNewModel *)object;
+            
+            self.derailsNewModel = derailsNewModel;
+            
+            if (derailsNewModel.goods.count == 0){
+                [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"订单获取异常")];
+            }
+            self.arrayData = [ModelTool assembleOrderDetailsData:derailsNewModel];
+            [self.mTableView reloadData];
+            
+        }else if ([object isKindOfClass:[NSString class]]){
+               [ShaolinProgressHUD singleTextAutoHideHud:(NSString *)object];
+           }
+        
+        
     }];
 }
 
@@ -75,25 +94,26 @@ static NSString * const confirmGoodsIdentifier                  = @"ConfirmGoods
         [dic setValue:@"2" forKey:@"type"];
         [dic setValue:storeModel.storeId forKey:@"id"];
         [arr addObject:dic];
-        for (OrderDetailsModel *model in storeModel.goods) { //商品
+        for (OrderDetailsGoodsModel *goodsModel in storeModel.goods) { //商品
             NSMutableDictionary * modelDic = [NSMutableDictionary dictionary];
-            [modelDic setValue:model.currentScore forKey:@"star"];
+            [modelDic setValue:goodsModel.currentScore forKey:@"star"];
             [modelDic setValue:@"1" forKey:@"type"];
-            [modelDic setValue:model.goods_id forKey:@"id"];
+            [modelDic setValue:goodsModel.goodsId forKey:@"id"];
             [arr addObject:modelDic];
         }
     }
     
     NSMutableDictionary *param = [NSMutableDictionary dictionary];
     [param setValue:arr forKey:@"message"];
-    [param setValue:self.order_sn forKey:@"order_sn"];
+    
+    [param setValue:self.derailsNewModel.orderSn forKey:@"orderSn"];
     
     [[DataManager shareInstance]addEvaluate:param Callback:^(Message *message) {
         if (message.isSuccess) {
-            [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"您的评星已经提交成功") view:self.view afterDelay:TipSeconds];
+            [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"您的评星已经提交成功") view:WINDOWSVIEW  afterDelay:TipSeconds];
             [self.navigationController popViewControllerAnimated:YES];
         }else{
-            [ShaolinProgressHUD singleTextHud:message.reason view:self.view afterDelay:TipSeconds];
+            [ShaolinProgressHUD singleTextHud:message.reason view:WINDOWSVIEW afterDelay:TipSeconds];
         }
     }];
 }
@@ -113,12 +133,12 @@ static NSString * const confirmGoodsIdentifier                  = @"ConfirmGoods
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     OrderStoreModel *storeModel = self.arrayData[indexPath.section];
-    OrderDetailsModel *model = storeModel.goods[indexPath.row];
+    OrderDetailsGoodsModel *model = storeModel.goods[indexPath.row];
     
-    cell.labelMoney.text = [NSString stringWithFormat:@"¥%@",model.money];
-    cell.labelTitle.text = model.goods_name;
-    if (model.goods_image.count > 0) {
-        [cell.imageview sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",model.goods_image[0]]]];
+    cell.labelMoney.text = [NSString stringWithFormat:@"¥%@",model.goodsPrice];
+    cell.labelTitle.text = model.goodsName;
+    if (model.goodsImages.count > 0) {
+        [cell.imageview sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",model.goodsImages[0]]]];
     }
     
     XHStarRateView *starRateViewCell = [[XHStarRateView alloc] initWithFrame:cell.starsViewBg.bounds numberOfStars:5 rateStyle:WholeStar isAnination:YES delegate:self];
@@ -205,7 +225,7 @@ static NSString * const confirmGoodsIdentifier                  = @"ConfirmGoods
     [self.navigationController pushViewController:storeVC animated:YES];
 }
 
--(void)starRateView:(XHStarRateView *)starRateView currentScore:(CGFloat)currentScore{
+- (void)starRateView:(XHStarRateView *)starRateView currentScore:(CGFloat)currentScore{
     
     NSString *string = [NSString stringWithFormat:@"%.0f",currentScore];
     

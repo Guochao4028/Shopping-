@@ -31,7 +31,7 @@
     _httpMethod = kXMHTTPMethodPOST;
     _requestSerializerType = kXMRequestSerializerRAW;
     _responseSerializerType = kXMResponseSerializerJSON;
-    _timeoutInterval = 10.0;
+    _timeoutInterval = 5.0;
     
     _useGeneralServer = YES;
     _useGeneralHeaders = YES;

@@ -12,6 +12,8 @@
 
 #import "InvoiceModel.h"
 
+#import "OrderDetailsNewModel.h"
+
 
 @interface OrdersFooterView ()
 
@@ -64,7 +66,7 @@
 
 @implementation OrdersFooterView
 
--(instancetype)initWithFrame:(CGRect)frame viewType:(OrderDetailsType)type{
+- (instancetype)initWithFrame:(CGRect)frame viewType:(OrderDetailsType)type{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [[NSBundle mainBundle] loadNibNamed:@"OrdersFooterView" owner:self options:nil];
@@ -76,7 +78,7 @@
 }
 
 
--(void)initUI{
+- (void)initUI{
     [self.emptyView setHidden:YES];
     [self.waitingCheckInvoiceButton setHidden:YES];
     [self.normalCanceButton setHidden:YES];
@@ -179,7 +181,7 @@
 
 #pragma mark - setter / getter
 
--(void)setType:(OrderDetailsType)type{
+- (void)setType:(OrderDetailsType)type{
     
     self.viewType = type;
     self.contentView = nil;
@@ -207,7 +209,7 @@
     
 }
 
--(void)setModel:(OrderDetailsModel *)model{
+- (void)setModel:(OrderDetailsNewModel *)model{
     _model = model;
      NSString *status = model.status;
      if ([status isEqualToString:@"2"] == YES){
@@ -215,8 +217,8 @@
          [self.normalCanceButton setTitle:@"申请退款" forState:UIControlStateNormal];
          [self.deleOrderButton setHidden:YES];
 //         [self.deleOrderButton setHidden:NO];
-         
-         if (model.isUnified) {
+         OrderDetailsGoodsModel *goodsModel = [model.goods firstObject];
+         if (goodsModel.isUnified) {
              [self.normalCanceButton setHidden:NO];
              [self.normalCanceView setHidden:NO];
              [self.emptyView setHidden:YES];
@@ -252,24 +254,31 @@
     
     
     
-    InvoiceModel *invoiceModel = model.invoice;
+//    InvoiceModel *invoiceModel = model.invoice;
+//
+//    NSString *buttonTitle = SLLocalizedString(@"查看发票");
+//
+//    if (invoiceModel == nil) {
+//        buttonTitle = SLLocalizedString(@"补开发票");
+//    }else{
+//
+//        if (invoiceModel.invoice_type == nil) {
+//            buttonTitle = SLLocalizedString(@"补开发票");
+//        }
+//    }
+//
+    
     
     NSString *buttonTitle = SLLocalizedString(@"查看发票");
-  
-    if (invoiceModel == nil) {
+    if ([model.isInvoice boolValue] == NO) {
         buttonTitle = SLLocalizedString(@"补开发票");
-    }else{
-        
-        if (invoiceModel.invoice_type == nil) {
-            buttonTitle = SLLocalizedString(@"补开发票");
-        }
     }
     
     
     
        
        
-       float goodsMoney = [model.final_price floatValue];
+       float goodsMoney = [model.money floatValue];
        
        if (goodsMoney == 0) {
            [self.DeliveryCheckInvoiceButton setHidden:YES];
@@ -280,11 +289,11 @@
            
            [self.DeliveryCheckInvoiceButton setTitle:buttonTitle forState:UIControlStateNormal];
            [self.normalCheckInvoiceButton setTitle:buttonTitle forState:UIControlStateNormal];
-           
-           if ([model.is_foreign isEqualToString:@"1"] && [buttonTitle isEqualToString:SLLocalizedString(@"补开发票")]) {
-               [self.DeliveryCheckInvoiceButton setHidden:YES];
-               [self.normalCheckInvoiceButton setHidden:YES];
-           }
+//
+//           if ([model.isForeign isEqualToString:@"1"] && [buttonTitle isEqualToString:SLLocalizedString(@"补开发票")]) {
+//               [self.DeliveryCheckInvoiceButton setHidden:YES];
+//               [self.normalCheckInvoiceButton setHidden:YES];
+//           }
        }
     
 }

@@ -56,7 +56,7 @@
 @implementation LoginViewController
 
 #pragma mark - life cycle
--(void)viewWillAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [self reloadPhoneNumberAndPassword];
@@ -67,7 +67,7 @@
     
     WEAKSELF
     [[ThirdpartyAuthorizationManager sharedInstance] receiveCompletionBlock:^(ThirdpartyAuthorizationMessageCode code, Message * _Nonnull message) {
-        if (code == ThirdpartyAuthorizationCode_AuthorizationSuccess) {
+        if (code == ThirdpartyAuthorizationCodeSuccess) {
             [weakSelf checkLoginState:message.extensionDic];
         } else {
             [ShaolinProgressHUD singleTextAutoHideHud:message.reason];
@@ -96,7 +96,7 @@
     
     //    WEAKSELF
     //    [[ThirdpartyAuthorizationManager sharedInstance] receiveCompletionBlock:^(ThirdpartyAuthorizationCode code, Message * _Nonnull message) {
-    //        if (code == ThirdpartyAuthorizationCode_AuthorizationSuccess) {
+    //        if (code == ThirdpartyAuthorizationCodeSuccess) {
     //            [weakSelf checkLoginState:message.extensionDic];
     //        } else {
     //            [ShaolinProgressHUD singleTextAutoHideHud:message.reason];
@@ -122,7 +122,7 @@
     }
 }
 
--(void)setupView
+- (void)setupView
 {
     
     self.selectPassWord = 0;
@@ -151,13 +151,13 @@
     [self.view addSubview:self.appleBtn];
     [self.view addSubview:self.agreementYYLabel];
     [self.view addSubview:self.agreementBtn];
-    CGFloat bgImgHeight = kWidth/(375.0/254.0);
+    CGFloat bgImgHeight = kWidth/(315.0/225.0);
     
     [self.imageV mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.mas_equalTo(kWidth);
-        make.height.mas_equalTo(bgImgHeight);
-        make.left.mas_equalTo(0);
-        make.top.mas_equalTo(0);//(StatueBar_Height + 24);
+        make.width.mas_equalTo(315);
+        make.height.mas_equalTo(225);
+        make.centerX.mas_equalTo(0);
+        make.top.mas_equalTo(StatueBar_Height);//(StatueBar_Height + 24);
     }];
     
     [self.thirdpartyTitleLabe mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -177,7 +177,7 @@
         make.right.mas_equalTo(-32);
         make.height.mas_equalTo(50);
         make.centerX.mas_equalTo(self.view);
-        make.top.mas_equalTo(self.imageV.mas_bottom).offset(2);
+        make.top.mas_equalTo(self.imageV.mas_bottom).offset(10);
     }];
     [self.passWordView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(32);
@@ -260,16 +260,16 @@
     
     NSArray *types = [ThirdpartyAuthorizationManager thirdpartyLoginTypes];
     NSMutableArray *otherEnterArray = [@[] mutableCopy];
-    if ([types containsObject:ThirdpartyType_WX]){
+    if ([types containsObject:ThirdpartyTypeWX]){
         [otherEnterArray addObject:self.wechatBtn];
     }
-    if ([types containsObject:ThirdpartyType_QQ]){
+    if ([types containsObject:ThirdpartyTypeQQ]){
         [otherEnterArray addObject:self.qqBtn];
     }
-    if ([types containsObject:ThirdpartyType_WB]){
+    if ([types containsObject:ThirdpartyTypeWB]){
         [otherEnterArray addObject:self.sinaBtn];
     }
-    if ([types containsObject:ThirdpartyType_Apple]){
+    if ([types containsObject:ThirdpartyTypeApple]){
         [otherEnterArray addObject:self.appleBtn];
     }
     
@@ -368,7 +368,7 @@
             [dict setObject:certCode forKey:ThirdpartyCertCode];
             [weakSelf showAddPhoneView:dict];
         } else {
-            NSDictionary *userInfoDic = [resultDic objectForKey:@"userinfo"];
+            NSDictionary *userInfoDic = [resultDic objectForKey:@"userInfo"];
             NSString *phoneNumber = [userInfoDic objectForKey:@"phoneNumber"];
             [weakSelf setUserDefaults:phoneNumber passWord:@"" loginType:loginType];
             [weakSelf loginWithDic:resultDic];
@@ -387,12 +387,12 @@
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
     NSString *phoneNumber = self.phoneView.text;
     NSString *password = self.passWordView.text;
-    [self setUserDefaults:phoneNumber passWord:@"" loginType:ThirdpartyType_Phone];
+    [self setUserDefaults:phoneNumber passWord:@"" loginType:ThirdpartyTypePhone];
     [LoginManager postLoginPhoneNumber:phoneNumber PassWord:password Success:^(NSDictionary * _Nullable resultDic) {
         
         //        [self login:resultDic];
         [self loginWithDic:resultDic];
-        [self setUserDefaults:phoneNumber passWord:password loginType:ThirdpartyType_Phone];
+        [self setUserDefaults:phoneNumber passWord:password loginType:ThirdpartyTypePhone];
     } failure:^(NSString * _Nullable errorReason) {
         
         [ShaolinProgressHUD singleTextAutoHideHud:errorReason];
@@ -405,7 +405,7 @@
     //        [hud hideAnimated:YES];
     //        if ([[responseObject objectForKey:@"code"] integerValue ]== 200) {
     //            [weakSelf login:responseObject];
-    //            [weakSelf setUserDefaults:phoneNumber passWord:password loginType:ThirdpartyType_Phone];
+    //            [weakSelf setUserDefaults:phoneNumber passWord:password loginType:ThirdpartyTypePhone];
     //        }else
     //        {
     //            [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:@"msg"] view:self.view afterDelay:TipSeconds];
@@ -418,7 +418,7 @@
 
 - (void)loginWithDic:(NSDictionary *)dic {
     
-    NSDictionary *userInfoDic = [dic objectForKey:@"userinfo"];
+    NSDictionary *userInfoDic = [dic objectForKey:@"userInfo"];
     NSMutableDictionary *userDic =  [[NSMutableDictionary alloc]initWithDictionary:userInfoDic];
     NSString *token = [dic objectForKey:kToken];
     NSString *refreshInStr = [dic objectForKey:kTokenRefreshIn];
@@ -431,7 +431,7 @@
     [[AppDelegate shareAppDelegate] updateToken:token refreshInStr:refreshInStr expiresInStr:expiresInStr];
     
     
-    [self EMClientLoginHandleWithUserName:[SLAppInfoModel sharedInstance].iM_id password:[SLAppInfoModel sharedInstance].iM_password];
+    [self EMClientLoginHandleWithUserName:[SLAppInfoModel sharedInstance].IMId password:[SLAppInfoModel sharedInstance].IMPassword];
     //            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
     [[AppDelegate shareAppDelegate] enterRootViewVC];
 //    if (self.presentingViewController) {
@@ -492,7 +492,7 @@
 }
 
 // 记住密码
--(void)rememberAction:(UIButton *)button
+- (void)rememberAction:(UIButton *)button
 {
     button.selected = !button.selected;
     if (button.selected) {
@@ -506,7 +506,7 @@
 }
 
 // 登录
--(void)loginAction:(UIButton *)button
+- (void)loginAction:(UIButton *)button
 {
     if (self.phoneView.text.length == 0) {
         [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请输入手机号") view:self.view afterDelay:TipSeconds];
@@ -530,7 +530,7 @@
 }
 
 // 忘记密码
--(void)forgetAction
+- (void)forgetAction
 {
     _slForgetView = [[SLForgetAndRegistView alloc]initWithFrame:CGRectMake(0, 0, kWidth, kHeight) Title:SLLocalizedString(@"忘记密码")];
     
@@ -539,7 +539,7 @@
 }
 
 // 立即注册
--(void)registAction
+- (void)registAction
 {
     _slForgetView = [[SLForgetAndRegistView alloc]initWithFrame:CGRectMake(0, 0, kWidth, kHeight) Title:SLLocalizedString(@"注册账号")];
     WEAKSELF
@@ -552,7 +552,7 @@
 
 
 // 查看密码
--(void)lookAction:(UIButton *)button
+- (void)lookAction:(UIButton *)button
 {
     // 眼睛是否不能点击
     BOOL eyesCantTap=  [[NSUserDefaults standardUserDefaults] boolForKey:@"eyesCantTap"];
@@ -560,7 +560,11 @@
     {
         return;
     }
-    
+    /*
+     账号密码登录失败eyesCantTap也会为NO，要求只有输入过才能查看密码
+     避免退出登录后，修改账号导致的登录失败也可以查看密码
+     */
+    if (!self.passWordView.isEdit) return;
     button.selected = !button.selected;
     if (button.selected)
     {
@@ -572,7 +576,7 @@
     }
 }
 
--(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     [self.view endEditing:YES];
 }
 
@@ -599,7 +603,7 @@
         _imageV = [[UIImageView alloc]init];
         _imageV.image = [UIImage imageNamed:@"login_background"];
         _imageV.clipsToBounds = YES;
-        //        _imageV.contentMode =
+        _imageV.contentMode = UIViewContentModeScaleAspectFill;
     }
     return _imageV;
 }
@@ -613,13 +617,12 @@
 }
 - (SLCommonLoginView *)passWordView {
     if (!_passWordView) {
-        _passWordView = [[SLCommonLoginView alloc]initWithplaceholder:SLLocalizedString(@"请输入密码") secure:YES keyboardType:UIKeyboardTypeDefault];
-        _passWordView.inputType = InputType_onlyNumbersAndEnglish;
+        _passWordView = [[SLCommonLoginView alloc]initWithplaceholder:SLLocalizedString(@"请输入密码") secure:YES keyboardType:UIKeyboardTypeASCIICapable];
         _passWordView.wordNumber = 16;
     }
     return _passWordView;
 }
--(UIButton *)rememberPassWordBtn
+- (UIButton *)rememberPassWordBtn
 {
     if (!_rememberPassWordBtn) {
         _rememberPassWordBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
@@ -634,7 +637,7 @@
     }
     return _rememberPassWordBtn;
 }
--(UIButton *)loginBtn
+- (UIButton *)loginBtn
 {
     if (!_loginBtn) {
         _loginBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
@@ -648,7 +651,7 @@
     }
     return _loginBtn;
 }
--(UIButton *)forgetBtn
+- (UIButton *)forgetBtn
 {
     if (!_forgetBtn) {
         _forgetBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
@@ -660,7 +663,7 @@
     }
     return _forgetBtn;
 }
--(UIButton *)registBtn
+- (UIButton *)registBtn
 {
     if (!_registBtn) {
         _registBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
@@ -672,7 +675,7 @@
     }
     return _registBtn;
 }
--(UIView *)viewLine
+- (UIView *)viewLine
 {
     if (!_viewLine) {
         _viewLine = [[UIView alloc]init];
@@ -680,7 +683,7 @@
     }
     return _viewLine;
 }
--(UIView *)crossView1
+- (UIView *)crossView1
 {
     if (!_crossView1) {
         _crossView1 = [[UIView alloc]init];
@@ -688,7 +691,7 @@
     }
     return _crossView1;
 }
--(UIView *)crossView2
+- (UIView *)crossView2
 {
     if (!_crossView2) {
         _crossView2 = [[UIView alloc]init];
@@ -696,7 +699,7 @@
     }
     return _crossView2;
 }
--(UILabel *)thirdpartyTitleLabe
+- (UILabel *)thirdpartyTitleLabe
 {
     if (!_thirdpartyTitleLabe) {
         _thirdpartyTitleLabe = [[UILabel alloc]init];
@@ -708,50 +711,50 @@
     }
     return _thirdpartyTitleLabe;
 }
--(UIButton *)wechatBtn
+- (UIButton *)wechatBtn
 {
     if (!_wechatBtn) {
         _wechatBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
-        _wechatBtn.identifier = ThirdpartyType_WX;
+        _wechatBtn.identifier = ThirdpartyTypeWX;
         [_wechatBtn setImage:[UIImage imageNamed:@"login_wechat"] forState:(UIControlStateNormal)];
         [_wechatBtn addTarget:self action:@selector(loginHandle:) forControlEvents:(UIControlEventTouchUpInside)];
         
     }
     return _wechatBtn;
 }
--(UIButton *)qqBtn
+- (UIButton *)qqBtn
 {
     if (!_qqBtn) {
         _qqBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
-        _qqBtn.identifier = ThirdpartyType_QQ;
+        _qqBtn.identifier = ThirdpartyTypeQQ;
         [_qqBtn setImage:[UIImage imageNamed:@"login_qq"] forState:(UIControlStateNormal)];
         [_qqBtn addTarget:self action:@selector(loginHandle:) forControlEvents:(UIControlEventTouchUpInside)];
         
     }
     return _qqBtn;
 }
--(UIButton *)sinaBtn
+- (UIButton *)sinaBtn
 {
     if (!_sinaBtn) {
         _sinaBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
-        _sinaBtn.identifier = ThirdpartyType_WB;
+        _sinaBtn.identifier = ThirdpartyTypeWB;
         [_sinaBtn setImage:[UIImage imageNamed:@"login_sina"] forState:(UIControlStateNormal)];
         [_sinaBtn addTarget:self action:@selector(loginHandle:) forControlEvents:(UIControlEventTouchUpInside)];
         
     }
     return _sinaBtn;
 }
--(UIButton *)appleBtn
+- (UIButton *)appleBtn
 {
     if (!_appleBtn) {
         _appleBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
-        _appleBtn.identifier = ThirdpartyType_Apple;
+        _appleBtn.identifier = ThirdpartyTypeApple;
         [_appleBtn setImage:[UIImage imageNamed:@"login_apple"] forState:(UIControlStateNormal)];
         [_appleBtn addTarget:self action:@selector(loginHandle:) forControlEvents:(UIControlEventTouchUpInside)];
     }
     return _appleBtn;
 }
--(UIButton *)agreementBtn
+- (UIButton *)agreementBtn
 {
     if (!_agreementBtn) {
         _agreementBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
@@ -772,7 +775,7 @@
 //    return _agreementLabel;
 //}
 
--(YYLabel *)agreementYYLabel {
+- (YYLabel *)agreementYYLabel {
     if (!_agreementYYLabel) {
         _agreementYYLabel = [YYLabel new];
         _agreementYYLabel.numberOfLines = 0;
@@ -823,7 +826,7 @@
     return _agreementYYLabel;
 }
 
--(UIButton *)lookBtn
+- (UIButton *)lookBtn
 {
     if (!_lookBtn) {
         _lookBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];

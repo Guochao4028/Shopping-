@@ -15,7 +15,7 @@
 @property(nonatomic,strong) UILabel *stickLabel;
 @property(nonatomic,strong) UILabel *nameLabel;
 @property (nonatomic, strong) NSIndexPath *indexPath;
--(void)setFoundModel:(FoundModel *)f indexpath:(NSIndexPath *)indexPath;
+- (void)setFoundModel:(FoundModel *)f indexpath:(NSIndexPath *)indexPath;
 
 @end
 

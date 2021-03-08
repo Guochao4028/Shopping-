@@ -30,7 +30,7 @@
     self.titleLabe.text = SLLocalizedString(@"实名认证");
     self.methodDatas = @[@(Authentication_Person), @(Authentication_Passport)];
     self.headTipsLabel.text = SLLocalizedString(@"请进行实名身份认证核验");
-    [self setUI];
+    [self setupUI];
     [self getIdcardReason];
     
     [RPSDK setup];
@@ -38,7 +38,7 @@
     // Do any additional setup after loading the view.
 }
 
-- (void)setUI{
+- (void)setupUI{
     UIImageView *headImageView = [[UIImageView alloc] init];//WithImage:[UIImage imageNamed:@"RealNameBackImage"]];
     headImageView.backgroundColor = kMainYellow;
     UIImageView *littleMonkImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"LittleMonk"]];
@@ -124,7 +124,7 @@
             [ShaolinProgressHUD singleTextAutoHideHud:errorReason];
         }
         //更新用户信息
-        //[[NSNotificationCenter defaultCenter] postNotificationName:@"MeViewController_ReloadUserData" object:nil];
+        //[[NSNotificationCenter defaultCenter] postNotificationName:@"MeViewControllerDidReloadUserDataNotification" object:nil];
         [weakSelf.navigationController popToRootViewControllerAnimated:YES];
         [hud hideAnimated:YES];
     }];
@@ -245,9 +245,9 @@
 #pragma mark - getter
 - (NSString *)getIdCardType{
     if (self.params && NotNilAndNull([self.params objectForKey:@"idCard_type"])){
-        return [self.params objectForKey:@"idCard_type"];
+        return [NSString stringWithFormat:@"%@",[self.params objectForKey:@"idCard_type"]];
     }
-    return  [SLAppInfoModel sharedInstance].idCard_type;
+    return  [SLAppInfoModel sharedInstance].idCardType;
 }
 
 - (NSString *)getVerifiedState{

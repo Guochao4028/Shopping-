@@ -7,9 +7,9 @@
 //
 
 #import "AdvertisingOneCell.h"
-
+#import "DefinedURLs.h"
 @implementation AdvertisingOneCell
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
@@ -18,13 +18,17 @@
     return self;
 }
 
--(void)setFoundModel:(FoundModel *)f indexpath:(NSIndexPath *)indexPath
+- (void)setFoundModel:(FoundModel *)f indexpath:(NSIndexPath *)indexPath
 {
     
     self.titleL.text = f.title;
     NSString *urlStr;
-    for (NSDictionary *dic in f.coverurlList) {
+    for (NSDictionary *dic in f.coverUrlList) {
         urlStr = [dic objectForKey:@"route"];
+        //TODO: 后台bug
+        if ([urlStr hasSuffix:@"mp4"] && ![f.kind isEqualToString:@"3"]){
+            f.kind = @"3";
+        }
     }
     if ([f.kind isEqualToString:@"3"]) {
         self.plaayerBtn.hidden =NO;
@@ -43,7 +47,7 @@
     self.userNameLabel.text = [NSString stringWithFormat:@"%@（%@）", SLLocalizedString(@"广告商"), f.author] ;
     CGFloat width = [UILabel getWidthWithTitle:self.titleL.text font:self.titleL.font];
     //这里的30是tableView的左右边距
-    if ( width < kWidth - 30 - SLChange(20)) {
+    if (width < kWidth - 30 - SLChange(20)) {
         [self.titleL mas_updateConstraints:^(MASConstraintMaker *make) {
             make.height.mas_equalTo(16);
         }];
@@ -60,14 +64,14 @@
 
 
 
--(void)setupView
+- (void)setupView
 {
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
     [self.contentView addSubview:self.titleL];
     [self.contentView addSubview:self.imageV];
     [self.imageV addSubview:self.plaayerBtn];
-    [self.imageV addSubview:self.adLogoBtn];
+    [self.contentView addSubview:self.adLogoBtn];
     
     [self.contentView addSubview:self.bottomView];
     [self.bottomView addSubview:self.lookBtn];
@@ -83,7 +87,7 @@
     }];
     [self.imageV mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.mas_equalTo(self.titleL);
-        make.height.mas_equalTo(180);
+        make.height.mas_equalTo(self.imageV.mas_width).multipliedBy(9/16.0);
         make.top.mas_equalTo(self.titleL.mas_bottom).offset(10);
     }];
     [self.plaayerBtn mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -109,8 +113,8 @@
     }];
     
     [self.adLogoBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(10);
-        make.left.mas_equalTo(10);
+        make.top.mas_equalTo(self.imageV.mas_top).mas_offset(10);
+        make.left.mas_equalTo(self.imageV.mas_left).mas_equalTo(10);
         make.width.mas_equalTo(44);
         make.height.mas_equalTo(30);
     }];
@@ -128,7 +132,7 @@
     }];
 }
 
--(UILabelLeftTopAlign *)titleL
+- (UILabelLeftTopAlign *)titleL
 {
     if (!_titleL) {
         _titleL = [[UILabelLeftTopAlign alloc]init];
@@ -140,7 +144,7 @@
     }
     return _titleL;
 }
--(UIImageView *)imageV
+- (UIImageView *)imageV
 {
     if (!_imageV) {
         _imageV = [[UIImageView alloc]init];
@@ -154,7 +158,7 @@
     }
     return _imageV;
 }
--(UIView *)bottomView
+- (UIView *)bottomView
 {
     if (!_bottomView) {
         _bottomView = [[UIView alloc]init];
@@ -163,7 +167,7 @@
     return _bottomView;
 }
 
--(UIButton *)lookBtn
+- (UIButton *)lookBtn
 {
     if (!_lookBtn) {
         _lookBtn = [[UIButton alloc]init];
@@ -181,7 +185,7 @@
     }
     return _lookBtn;
 }
--(UIButton *)adLogoBtn
+- (UIButton *)adLogoBtn
 {
     if (!_adLogoBtn) {
         _adLogoBtn = [[UIButton alloc]init];
@@ -189,7 +193,7 @@
     }
     return _adLogoBtn;
 }
--(UILabel *)timeLabel
+- (UILabel *)timeLabel
 {
     if (!_timeLabel) {
         _timeLabel = [[UILabel alloc]init];
@@ -200,7 +204,7 @@
     }
     return _timeLabel;
 }
--(UILabel *)userNameLabel
+- (UILabel *)userNameLabel
 {
     if (!_userNameLabel){
         _userNameLabel = [[UILabel alloc] init];
@@ -210,7 +214,7 @@
     }
     return _userNameLabel;
 }
--(UIButton *)closeBtn
+- (UIButton *)closeBtn
 {
     if (!_closeBtn) {
         _closeBtn = [[UIButton alloc]init];
@@ -219,7 +223,7 @@
     }
     return _closeBtn;
 }
--(UIButton *)plaayerBtn
+- (UIButton *)plaayerBtn
 {
     if (!_plaayerBtn) {
         _plaayerBtn = [[UIButton alloc]init];
@@ -231,10 +235,10 @@
 }
 
 
--(void)playerAction:(UIButton *)btn
+- (void)playerAction:(UIButton *)btn
 {
-    
-    NSDictionary *dic = @{@"indexPath":self.indexPath};
+    NSString *identifier = self.identifier ? : @"";
+    NSDictionary *dic = @{@"indexPath":self.indexPath, @"identifier" : identifier };
     [[NSNotificationCenter defaultCenter]postNotificationName:@"VideoPlayerAction" object:nil userInfo:dic];
 }
 

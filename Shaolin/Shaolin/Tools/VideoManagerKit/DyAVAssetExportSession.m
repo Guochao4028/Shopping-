@@ -34,7 +34,7 @@
 //    return [JJAVAssetExportSession.alloc initWithAsset:asset];
 //}
 
--(instancetype)init
+- (instancetype)init
 {
     if ((self = [super init]))
     {

@@ -25,7 +25,7 @@
 @property(nonatomic,strong) UILabel *userNameLabel;//用户名
 
 @property (nonatomic, strong) NSIndexPath *indexPath;
--(void)setFoundModel:(FoundModel *)f indexpath:(NSIndexPath *)indexPath;
+- (void)setFoundModel:(FoundModel *)f indexpath:(NSIndexPath *)indexPath;
 
 @end
 

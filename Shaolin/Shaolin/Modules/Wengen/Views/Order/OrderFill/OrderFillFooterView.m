@@ -19,7 +19,7 @@
 
 @implementation OrderFillFooterView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [[NSBundle mainBundle] loadNibNamed:@"OrderFillFooterView" owner:self options:nil];
@@ -29,7 +29,7 @@
 }
 
 /// 初始化UI
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.contentView];
     [self.contentView setFrame:self.bounds];
     
@@ -37,18 +37,18 @@
 }
 
 /// 重写系统方法
--(void)setFrame:(CGRect)frame{
+- (void)setFrame:(CGRect)frame{
     [super setFrame:frame];
     [self.contentView setFrame:self.bounds];
 }
 
 
--(void)comittTarget:(nullable id)target action:(SEL)action{
+- (void)comittTarget:(nullable id)target action:(SEL)action{
     [self.comittButton addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
 }
 #pragma mark - getter / setter
 
--(void)setGoodsAmountTotal:(NSString *)goodsAmountTotal{
+- (void)setGoodsAmountTotal:(NSString *)goodsAmountTotal{
     _goodsAmountTotal = goodsAmountTotal;
     
 //    NSMutableAttributedString *attrStr = [[NSMutableAttributedString alloc] initWithString:goodsAmountTotal];
@@ -58,18 +58,19 @@
 //    [attrStr addAttribute:NSFontAttributeName value:[UIFont fontWithName:MediumFont size:16] range:NSMakeRange(1, goodsAmountTotal.length -1)];
 //    self.piceLabel.attributedText = attrStr;
     
-    self.piceLabel.attributedText = [goodsAmountTotal moneyStringWithFormatting:MoneyStringFormattingMoneyCoincidenceType fontArrat:@[kMediumFont(13), kMediumFont(16)]];
+//    self.piceLabel.attributedText = [goodsAmountTotal moneyStringWithFormatting:MoneyStringFormattingMoneyCoincidenceType fontArrat:@[kMediumFont(13), kMediumFont(16)]];
     
+    self.piceLabel.attributedText = [goodsAmountTotal moneyStringWithFormatting:MoneyStringFormattingMoneyAllFormattingType];
 //    [self.piceLabel setText:goodsAmountTotal];
 }
 
 
--(void)setButtonStr:(NSString *)buttonStr{
+- (void)setButtonStr:(NSString *)buttonStr{
     _buttonStr = buttonStr;
     [self.comittButton setTitle:buttonStr forState:UIControlStateNormal];
 }
 
--(void)setIsTap:(BOOL)isTap{
+- (void)setIsTap:(BOOL)isTap{
     _isTap = isTap;
     if (isTap == YES) {
         [self.comittButton setAlpha:1];

@@ -18,13 +18,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString * cover;
 @property (nonatomic, copy) NSString * level;
 @property (nonatomic, copy) NSString * weight;
-@property (nonatomic, copy) NSString * user_num;
-@property (nonatomic, copy) NSString * level_name;
+@property (nonatomic, copy) NSString * userNum;
+@property (nonatomic, copy) NSString * levelName;
 @property (nonatomic, copy) NSString * desc2;
-@property (nonatomic, copy) NSString * price;
-@property (nonatomic, copy) NSString * old_price;
-@property (nonatomic, copy) NSString * goods_value;
-@property (nonatomic, copy) NSString * is_buy;
+//@property (nonatomic, copy) NSString * price;
+@property (nonatomic, copy) NSString * oldPrice;
+@property (nonatomic, copy) NSString * goodsValue;
+@property (nonatomic, copy) NSString * isBuy;
 
 
 //"id": 53,教程id <number>

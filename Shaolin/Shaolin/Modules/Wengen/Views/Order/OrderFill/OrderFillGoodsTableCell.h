@@ -26,7 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol OrderFillGoodsTableCellDelegate <NSObject>
 
 //商品数量
--(void)orderFillGoodsTableCell:(OrderFillGoodsTableCell *)cellView calculateCount:(NSInteger)count model:(ShoppingCartGoodsModel *)model;
+- (void)orderFillGoodsTableCell:(OrderFillGoodsTableCell *)cellView calculateCount:(NSInteger)count model:(ShoppingCartGoodsModel *)model;
 
 @end
 

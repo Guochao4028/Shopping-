@@ -57,7 +57,7 @@
 }
 
 #pragma mark - action
--(void)specificationsAction{
+- (void)specificationsAction{
     
     if ([self.delegate respondsToSelector:@selector(shoppingCratTableCell:jumpSpecificationsViewWithLcotion:model:)] == YES) {
         [self.delegate shoppingCratTableCell:self jumpSpecificationsViewWithLcotion:self.indexPath model:self.model];
@@ -67,24 +67,24 @@
 
 #pragma mark - settet / getter
 
--(void)setModel:(ShoppingCartGoodsModel *)model{
+- (void)setModel:(ShoppingCartGoodsModel *)model{
     _model = model;
-    if ([model.img_data count] > 0) {
-        NSString *img = model.img_data[0];
+    if ([model.imgDataList count] > 0) {
+        NSString *img = model.imgDataList[0];
         [self.goodsImageView sd_setImageWithURL:[NSURL URLWithString:img] placeholderImage:[UIImage imageNamed:@"default_small"]];
     }else{
         [self.goodsImageView setImage:[UIImage imageNamed:@"default_small"]];
     }
     
     
-    [self.goodsTitleLabel setText:model.name];
+    [self.goodsTitleLabel setText:model.goodsName];
     
     [self.numberView setGoodsModel:model];
     
-    if ((model.attr_name.length > 0)) {
+    if ((model.goodsAttrStrName.length > 0)) {
         [self.specificationsView setHidden:NO];
         NSMutableString *specificationsSrt = [NSMutableString string];
-        [specificationsSrt appendString:model.attr_name];
+        [specificationsSrt appendString:model.goodsAttrStrName];
         CGSize size =[specificationsSrt sizeWithAttributes:@{NSFontAttributeName:kRegular(13)}];
         
 //        self.specificationsLabelW.constant = size.width+1;
@@ -104,8 +104,16 @@
     }
     
     
+    BOOL isDiscount = [model.isDiscount boolValue];
+    float price;
+    if (isDiscount) {
+        price = [model.price floatValue];
+    }else{
+        price = [model.oldPrice floatValue];
+    }
+    
     //商品价格
-    NSString *priceStr = [NSString stringWithFormat:@"¥%@",model.current_price];
+    NSString *priceStr = [NSString stringWithFormat:@"¥%.2f",price];
     
 //    NSMutableAttributedString *attrStr = [[NSMutableAttributedString alloc] initWithString:priceStr];
 //

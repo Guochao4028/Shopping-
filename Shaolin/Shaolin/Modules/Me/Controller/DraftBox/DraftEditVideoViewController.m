@@ -19,6 +19,8 @@
 #import <TZImageManager.h>
 #import "ChooseVideoiCloudView.h"
 #import "UIButton+HitBounds.h"
+#import "DefinedURLs.h"
+#import "AppDelegate+AppService.h"
 
 
 static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/635942-14593722fe3f0695.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240";
@@ -61,7 +63,7 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     self.player.viewControllerDisappear = NO;
 }
 
--(void)viewDidAppear:(BOOL)animated {
+- (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 }
 
@@ -90,13 +92,13 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     [super viewDidLoad];
     
     self.videoMaxSize = 100;
-    [self setUI];
+    [self setupUI];
     
     
     [self getVideoData];
 }
 
-- (void)setUI {
+- (void)setupUI {
     
     self.selectIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
     self.titleLabe.text = SLLocalizedString(@"发视频");
@@ -130,7 +132,7 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
 
 - (void)setupFirst {
     //在发文管理查看被拒绝原因时，点击编辑进入，此时视频列表第一条数据应该是在服务器保存的，而不是本地数据
-    NSDictionary * dic = self.model.coverurlList.firstObject;
+    NSDictionary * dic = self.model.coverUrlList.firstObject;
     if (NotNilAndNull(dic) && [dic.allKeys containsObject:@"route"]) {
         NSString * urlStr = [NSString stringWithFormat:@"%@",[dic objectForKey:@"route"]];
         NSString * imageUrl = [NSString stringWithFormat:@"%@%@",urlStr,Video_First_Photo];
@@ -285,6 +287,7 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     @weakify(self)
     self.player.orientationWillChange = ^(ZFPlayerController * _Nonnull player, BOOL isFullScreen) {
         @strongify(self)
+        [AppDelegate shareAppDelegate].allowOrentitaionRotation = isFullScreen;
         [self setNeedsStatusBarAppearanceUpdate];
     };
     
@@ -526,7 +529,7 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     return _collectionView;
 }
 
--(UICollectionViewFlowLayout *)layout
+- (UICollectionViewFlowLayout *)layout
 {
     if (!_layout) {
         _layout = [UICollectionViewFlowLayout new];
@@ -559,7 +562,7 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     return _topVideoPlayBtn;
 }
 
--(ChooseVideoiCloudView *)iCloudView {
+- (ChooseVideoiCloudView *)iCloudView {
     WEAKSELF
     if (!_iCloudView) {
         _iCloudView = [[NSBundle mainBundle] loadNibNamed:@"ChooseVideoiCloudView" owner:self options:nil].firstObject;
@@ -591,7 +594,7 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     return _iCloudView;
 }
 
--(NSMutableArray *)slAssetModelList {
+- (NSMutableArray *)slAssetModelList {
     if (!_slAssetModelList) {
         _slAssetModelList = [NSMutableArray new];
     }

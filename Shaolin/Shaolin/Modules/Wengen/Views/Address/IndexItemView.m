@@ -30,17 +30,17 @@
     return self;
 }
 
--(void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated
+- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated
 {
     [_titleLabel setHighlighted:highlighted];
 }
 
--(void)setSelected:(BOOL)selected animated:(BOOL)animated
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {
     [self setHighlighted:selected animated:animated];
 }
 
--(void)layoutSubviews
+- (void)layoutSubviews
 {
     [super layoutSubviews];
     _contentView.frame = self.bounds;

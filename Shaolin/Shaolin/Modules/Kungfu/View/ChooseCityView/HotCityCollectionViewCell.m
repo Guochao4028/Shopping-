@@ -26,7 +26,7 @@
 }
 
 
--(void)setModel:(HotCityModel *)model{
+- (void)setModel:(HotCityModel *)model{
     _model = model;
     [self.titleLabel setText:model.popularName];
 }

@@ -28,9 +28,9 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol AddressViewControllerDelegate <NSObject>
 
 @optional
--(void)addressViewController:(AddressViewController *)vc tapList:(AddressListModel *)model;
+- (void)addressViewController:(AddressViewController *)vc tapList:(AddressListModel *)model;
 
--(void)addressViewController:(AddressViewController *)vc tapBack:(AddressListModel *)model;
+- (void)addressViewController:(AddressViewController *)vc tapBack:(AddressListModel *)model;
 
 
 

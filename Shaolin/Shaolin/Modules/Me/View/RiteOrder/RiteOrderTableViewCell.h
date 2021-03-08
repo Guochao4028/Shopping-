@@ -22,19 +22,24 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol RiteOrderTableViewCellDelegate <NSObject>
 
 //删除订单
--(void)riteOrderTableViewCell:(RiteOrderTableViewCell *)cell delOrder:(OrderListModel *)model;
+- (void)riteOrderTableViewCell:(RiteOrderTableViewCell *)cell delOrder:(OrderListModel *)model;
 
 //查看发票
--(void)riteOrderTableViewCell:(RiteOrderTableViewCell *)cell lookInvoice:(OrderListModel *)model;
+- (void)riteOrderTableViewCell:(RiteOrderTableViewCell *)cell lookInvoice:(OrderListModel *)model;
 
 //补开发票
--(void)riteOrderTableViewCell:(RiteOrderTableViewCell *)cell repairInvoice:(OrderListModel *)model;
+- (void)riteOrderTableViewCell:(RiteOrderTableViewCell *)cell repairInvoice:(OrderListModel *)model;
 
 //去支付
--(void)riteOrderTableViewCell:(RiteOrderTableViewCell *)cell pay:(OrderListModel *)model;
+- (void)riteOrderTableViewCell:(RiteOrderTableViewCell *)cell pay:(OrderListModel *)model;
 
 //报名详情
--(void)riteOrderTableViewCell:(RiteOrderTableViewCell *)cell subjects:(OrderListModel *)model;
+- (void)riteOrderTableViewCell:(RiteOrderTableViewCell *)cell subjects:(OrderListModel *)model;
+
+//查看回执
+- (void)riteOrderTableViewCell:(RiteOrderTableViewCell *)cell returnReceipt:(OrderListModel *)model;
+
+
 
 @end
 

@@ -15,16 +15,16 @@
 @end
 
 @implementation StoreInfowCell
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         self.selectionStyle = UITableViewCellSelectionStyleNone;
-        [self setUI];
+        [self setupUI];
     }
     return self;
 }
--(void)setModel:(StoreInfoModel *)model
+- (void)setModel:(StoreInfoModel *)model
 {
     self.titleLabe.text = model.title;
     self.contentLabel.text = model.content;
@@ -44,7 +44,7 @@
     model.cellHeight = labelHeight + 69 + size.height;
     
 }
-- (void)setUI {
+- (void)setupUI {
     [self.contentView addSubview:self.titleLabe];
     [self.contentView addSubview:self.contentLabel];
     [self.contentView addSubview:self.imageV];

@@ -41,7 +41,7 @@
 }
 
 #pragma mark - setter / getter
--(void)setIsPersonal:(BOOL)isPersonal{
+- (void)setIsPersonal:(BOOL)isPersonal{
     _isPersonal = isPersonal;
     
     if (isPersonal == YES) {
@@ -75,12 +75,12 @@
     return YES;
 }
 
--(BOOL)textFieldShouldReturn:(UITextField *)textField{
+- (BOOL)textFieldShouldReturn:(UITextField *)textField{
    [textField resignFirstResponder];
     return YES;
 }
 
--(BOOL)textFieldShouldEndEditing:(UITextField *)textField{
+- (BOOL)textFieldShouldEndEditing:(UITextField *)textField{
     
     if (textField == self.personalTextField) {
         self.personal = self.personalTextField.text;
@@ -98,13 +98,13 @@
 
 #pragma mark - getter / setter
 
--(NSString *)personalStr{
+- (NSString *)personalStr{
     return self.personal;
 }
--(NSString *)unitNameStr{
+- (NSString *)unitNameStr{
    return self.unitName;
 }
--(NSString *)unitNumberStr{
+- (NSString *)unitNumberStr{
     return self.unitNumber;
 }
 

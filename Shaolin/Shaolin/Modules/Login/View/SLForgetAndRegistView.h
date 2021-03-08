@@ -11,7 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface SLForgetAndRegistView : UIView
--(void)showView;
+- (void)showView;
 @property (nonatomic, copy) NSString *text;
 //设置文本字数
 @property (nonatomic, assign) NSInteger wordNumber;

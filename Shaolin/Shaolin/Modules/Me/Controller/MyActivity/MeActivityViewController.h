@@ -10,8 +10,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 typedef NS_ENUM(NSInteger, MeActivityTitleButtonEnum) {
-    MeActivityTitleButtonEnum_SignUp = 101,//已签约活动 (已报名)
-    MeActivityTitleButtonEnum_Join,//已加入活动 (已参加)
+    MeActivityTitleButtonEnum_SignUp = 101,//已报名
+    MeActivityTitleButtonEnum_Join,//已参加
 };
 
 @interface MeActivityViewController : RootViewController

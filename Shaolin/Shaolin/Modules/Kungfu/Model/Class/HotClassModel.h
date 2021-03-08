@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface HotClassModel : NSObject
 
 @property (nonatomic, copy) NSString * className;
-@property (nonatomic, copy) NSString * classId;
+//@property (nonatomic, copy) NSString * classId;
 @property (nonatomic, copy) NSString * sort;
 @property (nonatomic, assign) BOOL isFire;
 

@@ -27,7 +27,7 @@ static NSString *const kClassifyDropDownTableCellIdentifier = @"ClassifyDropDown
 
 @implementation ClassifyDropDownView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [self setBackgroundColor:[UIColor clearColor]];
@@ -36,50 +36,50 @@ static NSString *const kClassifyDropDownTableCellIdentifier = @"ClassifyDropDown
     return self;
 }
 
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.dropDownBGImageView];
     
     [self.dropDownBGImageView addSubview:self.contentTabelView];
 }
 
--(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     [self dismissView];
 }
 
 
 #pragma mark - UITableViewDelegate & UITableViewDataSource
 
--(CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     return 0.01;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     return 0.01;
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     UIView *view = [[UIView alloc] init];
     view.backgroundColor = [UIColor clearColor];
     return view;
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
     UIView *view = [[UIView alloc] init];
     view.backgroundColor = KTextGray_FA;
     return view;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.dataArray.count;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     CGFloat tableViewH = 40;
    
     return tableViewH;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     ClassifyDropDownTableCell *cell = [tableView dequeueReusableCellWithIdentifier:kClassifyDropDownTableCellIdentifier];
     
@@ -88,7 +88,7 @@ static NSString *const kClassifyDropDownTableCellIdentifier = @"ClassifyDropDown
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
     for (WengenEnterModel *item in self.dataArray) {
         item.isSelected = NO;
@@ -105,7 +105,7 @@ static NSString *const kClassifyDropDownTableCellIdentifier = @"ClassifyDropDown
     [self dismissView];
 }
 
--(void)dismissView
+- (void)dismissView
 {
    
     __weak typeof(self)weakSelf =self;
@@ -114,7 +114,6 @@ static NSString *const kClassifyDropDownTableCellIdentifier = @"ClassifyDropDown
     } completion:^(BOOL finished) {
         
         if (self.selectedBlock) {
-            NSLog(@"self.selectedBlock");
             self.selectedBlock(nil);
         }
         [weakSelf removeFromSuperview];
@@ -126,7 +125,7 @@ static NSString *const kClassifyDropDownTableCellIdentifier = @"ClassifyDropDown
 
 #pragma mark - setter / getter
 
--(UIImageView *)dropDownBGImageView{
+- (UIImageView *)dropDownBGImageView{
     if (_dropDownBGImageView == nil) {
         //状态栏高度
         CGFloat barHeight ;
@@ -138,7 +137,7 @@ static NSString *const kClassifyDropDownTableCellIdentifier = @"ClassifyDropDown
         } else {
             barHeight = [[UIApplication sharedApplication] statusBarFrame].size.height;
         }
-        _dropDownBGImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, barHeight+60, ScreenWidth, 170)];
+        _dropDownBGImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, barHeight+60, ScreenWidth, 300)];
 //        [_dropDownBGImageView setImage:[UIImage imageNamed:@"dropDown"]];
 //        _dropDownBGImageView.layer.masksToBounds = YES;
 //        _dropDownBGImageView.contentMode =  UIViewContentModeScaleToFill;
@@ -148,7 +147,7 @@ static NSString *const kClassifyDropDownTableCellIdentifier = @"ClassifyDropDown
     return _dropDownBGImageView;
 }
 
--(UITableView *)contentTabelView{
+- (UITableView *)contentTabelView{
     if (_contentTabelView == nil) {
         _contentTabelView = [[UITableView alloc]initWithFrame:CGRectMake(0, 15, ScreenWidth, 170-30)];
         
@@ -164,7 +163,7 @@ static NSString *const kClassifyDropDownTableCellIdentifier = @"ClassifyDropDown
     return _contentTabelView;
 }
 
--(void)setDataArray:(NSArray *)dataArray{
+- (void)setDataArray:(NSArray *)dataArray{
     _dataArray = dataArray;
 //    if (dataArray.count < 3) {
 //        self.contentTabelView.lgf_height = dataArray.count *40;

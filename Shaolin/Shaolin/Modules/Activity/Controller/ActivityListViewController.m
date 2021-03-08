@@ -28,6 +28,8 @@
 #import "ZFPlayerControlView.h"
 #import "ZFAVPlayerManager.h"
 #import "UIScrollView+ZFPlayer.h"
+#import "DefinedURLs.h"
+#import "AppDelegate+AppService.h"
 
 @interface ActivityListViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic,strong) UITableView *tableView;
@@ -73,6 +75,7 @@
 }
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    self.player.viewControllerDisappear = NO;
     [self hideNavigationBarShadow];
 }
 - (void)viewDidAppear:(BOOL)animated{
@@ -80,6 +83,11 @@
     [self playCurrentVideo];
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    self.player.viewControllerDisappear = YES;
+    [self stopCurrentVideo];
+}
 - (void)setNoData {
     WEAKSELF
     LYEmptyView *emptyView = [LYEmptyView emptyActionViewWithImageStr:@"categorize_nogoods"
@@ -102,7 +110,7 @@
     emptyView.actionBtnBackGroundColor = UIColor.whiteColor;
     self.tableView.ly_emptyView = emptyView;
 }
--(void)getSelectPageData:(NSNotification *)user
+- (void)getSelectPageData:(NSNotification *)user
 {
     //     [self.foundArray removeAllObjects];
     NSDictionary *dic = user.userInfo;
@@ -112,7 +120,7 @@
     
     [self getData:self.selectPage];
 }
--(void)playerCellAction:(NSNotification *)user
+- (void)playerCellAction:(NSNotification *)user
 {
     NSDictionary *dic = user.userInfo;
     NSIndexPath *indexpath = [dic objectForKey:@"indexPath"];
@@ -121,7 +129,7 @@
     if ([model.type isEqualToString:@"3"]) {
         // 是广告
         if ([model.kind isEqualToString:@"3"]){ //视频广告
-            [self playTheVideoAtIndexPath:indexpath scrollToTop:NO];
+            [self playTheVideoAtIndexPath:indexpath scrollAnimated:NO];
         } else {
             [[SLAppInfoModel sharedInstance] advertEventResponseWithFoundModel:model];
         }
@@ -137,7 +145,7 @@
 }
 
 /// play the video
-- (void)playTheVideoAtIndexPath:(NSIndexPath *)indexPath scrollToTop:(BOOL)scrollToTop {
+- (void)playTheVideoAtIndexPath:(NSIndexPath *)indexPath scrollAnimated:(BOOL)animated {
     FoundModel *model = _foundArray[indexPath.row];
     //type 3:广告，kind 3:视频，非视频广告return，其实非视频广告进到这里就已经出错了
     if (!([model.type isEqualToString:@"3"] && [model.kind isEqualToString:@"3"])){
@@ -145,10 +153,14 @@
     }
     //    self.titleL.text = model.title;
     NSString *urlStr;
-    for (NSDictionary *dic in model.coverurlList) {
+    for (NSDictionary *dic in model.coverUrlList) {
         urlStr = [dic objectForKey:@"route"];
     }
-    [self.player playTheIndexPath:indexPath assetURL:[NSURL URLWithString:urlStr] scrollToTop:scrollToTop];
+    if (animated) {
+        [self.player playTheIndexPath:indexPath assetURL:[NSURL URLWithString:urlStr] scrollPosition:ZFPlayerScrollViewScrollPositionTop animated:YES];
+    } else {
+        [self.player playTheIndexPath:indexPath assetURL:[NSURL URLWithString:urlStr]];
+    }
     [self.controlView showTitle:@""
                  coverURLString:[NSString stringWithFormat:@"%@%@",urlStr, Video_First_Photo]
                placeholderImage:[ZFUtilities imageWithColor:[UIColor clearColor] size:CGSizeMake(100, 100)]
@@ -174,76 +186,81 @@
 }
 
 - (void)refreshAndScrollToTop {
-    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
-    [self.tableView.mj_header beginRefreshing];
+    @try {
+        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+    } @catch (NSException *exception) {
+        
+    } @finally {
+        [self.tableView.mj_header beginRefreshing];
+    }
 }
 
 #pragma mark - 下拉刷新
--(void)getData:(NSInteger)selectPage {
+- (void)getData:(NSInteger)selectPage {
     self.pager = 1;
-    NSString *selectStr = [NSString stringWithFormat:@"%ld",selectPage];
-    MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
-    [[ActivityManager sharedInstance] getHomeListFieldld:selectStr PageNum:@"1" PageSize:@"30" success:nil failure:nil finish:^(id _Nonnull responseObject, NSString * _Nonnull errorReason) {
-        [hud hideAnimated:YES];
-        if ([ModelTool checkResponseObject:responseObject]){
-            NSDictionary *data = responseObject[DATAS];
-            NSArray *arr = [data objectForKey:@"data"];
-            if ([arr isKindOfClass:[NSArray class]] && arr.count >0) {
-                self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
-                    [self loadNowMoreAction];
-                }];
-                self.foundArray = [FoundModel mj_objectArrayWithKeyValuesArray:arr];
-                [self.tableView reloadData];
-                [self.tableView.mj_header endRefreshing];
-                //                self.noDataView.hidden = YES;
-            } else {
-                [self.foundArray removeAllObjects];
-                [self.tableView.mj_header endRefreshing];
-                self.tableView.mj_footer.hidden = YES;
-                [self.tableView reloadData];
-            }
-        } else {
-            [self.foundArray removeAllObjects];
-            [self.tableView.mj_header endRefreshing];
-            self.tableView.mj_footer.hidden = YES;
-            [self.tableView reloadData];
-            [ShaolinProgressHUD singleTextAutoHideHud:errorReason];
-        }
-    }];
+//    NSString *selectStr = [NSString stringWithFormat:@"%ld",selectPage];
+//    MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
+//    [[ActivityManager sharedInstance] getHomeListFieldld:selectStr PageNum:@"1" PageSize:@"30" success:nil failure:nil finish:^(id _Nonnull responseObject, NSString * _Nonnull errorReason) {
+//        [hud hideAnimated:YES];
+//        if ([ModelTool checkResponseObject:responseObject]){
+//            NSDictionary *data = responseObject[DATAS];
+//            NSArray *arr = [data objectForKey:@"data"];
+//            if ([arr isKindOfClass:[NSArray class]] && arr.count >0) {
+//                self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+//                    [self loadNowMoreAction];
+//                }];
+//                self.foundArray = [FoundModel mj_objectArrayWithKeyValuesArray:arr];
+//                [self.tableView reloadData];
+//                [self.tableView.mj_header endRefreshing];
+//                //                self.noDataView.hidden = YES;
+//            } else {
+//                [self.foundArray removeAllObjects];
+//                [self.tableView.mj_header endRefreshing];
+//                self.tableView.mj_footer.hidden = YES;
+//                [self.tableView reloadData];
+//            }
+//        } else {
+//            [self.foundArray removeAllObjects];
+//            [self.tableView.mj_header endRefreshing];
+//            self.tableView.mj_footer.hidden = YES;
+//            [self.tableView reloadData];
+//            [ShaolinProgressHUD singleTextAutoHideHud:errorReason];
+//        }
+//    }];
 }
 
 #pragma mark - 上拉加载
--(void)loadNowMoreAction {
+- (void)loadNowMoreAction {
     self.pager ++;
-    NSString *selectStr =@"";
-    if (self.selectPage == 0) {
-        
-    } else {
-        selectStr = [NSString stringWithFormat:@"%ld",self.selectPage];
-    }
-    MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
-    [[ActivityManager sharedInstance] getHomeListFieldld:selectStr PageNum:[NSString stringWithFormat:@"%tu",self.pager] PageSize:@"30" success:nil failure:nil finish:^(id  _Nonnull responseObject, NSString * _Nonnull errorReason) {
-        [hud hideAnimated:YES];
-        if ([ModelTool checkResponseObject:responseObject]){
-            NSDictionary *data = responseObject[DATAS];
-            NSArray *arr = [data objectForKey:@"data"];
-            if ([arr isKindOfClass:[NSArray class]] && arr.count >0) {
-                NSArray * modelArray = [FoundModel mj_objectArrayWithKeyValuesArray:arr];
-                [self.foundArray addObjectsFromArray:modelArray];
-                [self.tableView reloadData];
-                [self.tableView.mj_footer endRefreshing];
-            } else {
-                [self.tableView.mj_header endRefreshing];
-                [self.tableView.mj_footer endRefreshingWithNoMoreData];
-            }
-        } else {
-            [self.tableView.mj_header endRefreshing];
-            [self.tableView.mj_footer endRefreshingWithNoMoreData];
-            [ShaolinProgressHUD singleTextAutoHideHud:errorReason];
-        }
-    }];
+//    NSString *selectStr =@"";
+//    if (self.selectPage == 0) {
+//        
+//    } else {
+//        selectStr = [NSString stringWithFormat:@"%ld",self.selectPage];
+//    }
+//    MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
+//    [[ActivityManager sharedInstance] getHomeListFieldld:selectStr PageNum:[NSString stringWithFormat:@"%tu",self.pager] PageSize:@"30" success:nil failure:nil finish:^(id  _Nonnull responseObject, NSString * _Nonnull errorReason) {
+//        [hud hideAnimated:YES];
+//        if ([ModelTool checkResponseObject:responseObject]){
+//            NSDictionary *data = responseObject[DATAS];
+//            NSArray *arr = [data objectForKey:@"data"];
+//            if ([arr isKindOfClass:[NSArray class]] && arr.count >0) {
+//                NSArray * modelArray = [FoundModel mj_objectArrayWithKeyValuesArray:arr];
+//                [self.foundArray addObjectsFromArray:modelArray];
+//                [self.tableView reloadData];
+//                [self.tableView.mj_footer endRefreshing];
+//            } else {
+//                [self.tableView.mj_header endRefreshing];
+//                [self.tableView.mj_footer endRefreshingWithNoMoreData];
+//            }
+//        } else {
+//            [self.tableView.mj_header endRefreshing];
+//            [self.tableView.mj_footer endRefreshingWithNoMoreData];
+//            [ShaolinProgressHUD singleTextAutoHideHud:errorReason];
+//        }
+//    }];
 }
--(void)registerCell
+- (void)registerCell
 {
     [_tableView registerClass:[StickCell class] forCellReuseIdentifier:NSStringFromClass([StickCell class])];
     [_tableView registerClass:[AdvertisingOneCell class] forCellReuseIdentifier:NSStringFromClass([AdvertisingOneCell class])];
@@ -320,9 +337,8 @@
     return cell;
     
 }
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self pauseCurrentVideo];
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     FoundModel *model = self.foundArray[indexPath.row];
     
@@ -351,7 +367,7 @@
         }
     }
 }
-//-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 //{
 //    FoundModel *model = self.foundArray[indexPath.row];
 //    return model.cellHeight;
@@ -403,6 +419,7 @@
         };
         
         _player.orientationWillChange = ^(ZFPlayerController * _Nonnull player, BOOL isFullScreen) {
+            [AppDelegate shareAppDelegate].allowOrentitaionRotation = isFullScreen;
             //        kAPPDelegate.allowOrentitaionRotation = isFullScreen;
             //        [weakSelf setNeedsStatusBarAppearanceUpdate];
             if (!isFullScreen) {
@@ -422,7 +439,7 @@
         };
         _player.zf_playerDidAppearInScrollView = ^(NSIndexPath * _Nonnull indexPath) {
             if (!weakSelf.player.playingIndexPath) {
-                [weakSelf playTheVideoAtIndexPath:indexPath scrollToTop:NO];
+                [weakSelf playTheVideoAtIndexPath:indexPath scrollAnimated:NO];
             }
         };
     }

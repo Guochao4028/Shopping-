@@ -8,7 +8,8 @@
 
 #import "AfterSalesDetailTableCell.h"
 
-#import "OrderDetailsModel.h"
+#import "OrderDetailsNewModel.h"
+
 
 @interface AfterSalesDetailTableCell ()
 @property (weak, nonatomic) IBOutlet UIImageView *goodsImageView;
@@ -40,22 +41,22 @@
 }
 
 
--(void)setModel:(OrderDetailsModel *)model{
+- (void)setModel:(OrderDetailsGoodsModel *)model{
     _model = model;
-    NSString *goodsImageUrl = model.goods_image[0];
+    NSString *goodsImageUrl = model.goodsImages[0];
     [self.goodsImageView sd_setImageWithURL:[NSURL URLWithString:goodsImageUrl] placeholderImage:[UIImage imageNamed:@"default_small"]];
     
-    [self.goodsNameLabel setText:model.goods_name];
-    [self.goodsPriceLabel setText:[NSString stringWithFormat:@"¥%@",model.final_price]];
+    [self.goodsNameLabel setText:model.goodsName];
+    [self.goodsPriceLabel setText:[NSString stringWithFormat:@"¥%@",model.goodsPrice]];
     
     CGSize size =[self.goodsPriceLabel.text sizeWithAttributes:@{NSFontAttributeName:kMediumFont(13)}];
     self.goodsPriceLabelW.constant = size.width + 1;
     
-    [self.numberLabel setText:model.num];
+    [self.numberLabel setText:model.goodsNum];
     
-    [self.afterApplyNumberLabel setText:model.num];
+    [self.afterApplyNumberLabel setText:model.goodsNum];
     
-    [self.applyNumberLabel setText:model.num];
+    [self.applyNumberLabel setText:model.goodsNum];
 
 }
 

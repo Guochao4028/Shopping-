@@ -19,27 +19,28 @@ typedef NS_ENUM(NSInteger,FoundShowType) {
 @property (nonatomic,assign) FoundShowType showType;
 @property(nonatomic,copy) NSString *abstracts;
 @property(nonatomic,copy) NSString *author;
-@property(nonatomic,copy) NSString *classif;
+@property(nonatomic,copy) NSString *classIf;
 
 
 @property(nonatomic,copy) NSString *collection;
-@property(nonatomic,copy) NSString *collections;
+@property(nonatomic,copy) NSString *collectionState;
 @property(nonatomic,copy) NSString *collectionTime;
-@property(nonatomic,copy) NSString *clicks;
+@property(nonatomic,copy) NSString *click;
 @property(nonatomic,copy) NSString *createTime;
 @property(nonatomic,copy) NSString *content;
 @property(nonatomic,copy) NSString *fieldId;
-@property(nonatomic,copy) NSString *forwards;
+@property(nonatomic,copy) NSString *forward;
 @property(nonatomic,copy) NSString *kind;
 
-@property(nonatomic,copy) NSString *praises;
+@property(nonatomic,copy) NSString *praise;
+@property(nonatomic,copy) NSString *praiseState;
 @property(nonatomic,copy) NSString *title;
 @property(nonatomic,copy) NSString *type;
-@property(nonatomic,copy) NSString *coverurl;
+@property(nonatomic,copy) NSString *coverUrl;
 
 @property(nonatomic,copy) NSString *releaseTime;
 @property(nonatomic,copy) NSString *id;
-@property(nonatomic,strong) NSArray *coverurlList;
+@property(nonatomic,strong) NSArray *coverUrlList;
 
 @property(nonatomic,copy) NSString *createtype;
 @property(nonatomic,copy) NSString *useraccount;

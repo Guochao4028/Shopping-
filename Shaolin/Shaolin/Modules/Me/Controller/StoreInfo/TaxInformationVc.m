@@ -7,12 +7,13 @@
 //
 
 #import "TaxInformationVc.h"
-#import "ValuePickerView.h"
+//#import "ValuePickerView.h"
 #import "HomeManager.h"
 #import "MeManager.h"
 #import "GCTextField.h"
+#import "StoreInformationModel.h"
 
-#import "BRStringPickerView.h"
+//#import "BRStringPickerView.h"
 #import "SLStringPickerView.h"
 
 @interface TaxInformationVc ()<UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate,TZImagePickerControllerDelegate, GCTextFieldDelegate>
@@ -45,7 +46,7 @@
 @implementation TaxInformationVc
 
 
--(void)viewWillAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     //[self setNavigationBarYellowTintColor];
 }
@@ -75,7 +76,77 @@
         make.height.mas_equalTo(SLChange(40));
         make.bottom.mas_equalTo(-SLChange(20));
     }];
+    
+    [self initSaveInfo];
 }
+
+-(void) initSaveInfo {
+    
+    if (NotNilAndNull(self.model.taxType) && self.model.taxType.length) {
+        self.typeStr = self.model.taxType;
+        switch ([self.model.taxType intValue]) {
+            case 1:
+                self.typeTf.text = SLLocalizedString(@"一般纳税人");
+                break;
+            case 2:
+                self.typeTf.text = SLLocalizedString(@"小规模纳税人");
+                break;
+            case 3:
+                self.typeTf.text = SLLocalizedString(@"大规模纳税人");
+                break;
+            case 4:
+                self.typeTf.text = SLLocalizedString(@"非增值纳税人");
+                break;
+            default:
+                break;
+        }
+    }
+    
+    if (NotNilAndNull(self.model.taxTypeNumber) && self.model.taxTypeNumber.length) {
+        self.typeNumStr = self.model.taxTypeNumber;
+        switch ([self.model.taxTypeNumber intValue]) {
+            case 1:
+                self.typeNumTf.text = @"0%";
+                break;
+            case 2:
+                self.typeNumTf.text = @"1%";
+                break;
+            case 3:
+                self.typeNumTf.text = @"3%";
+                break;
+            case 4:
+                self.typeNumTf.text = @"6%";
+                break;
+            case 5:
+                self.typeNumTf.text = @"7%";
+                break;
+            case 6:
+                self.typeNumTf.text = @"9%";
+                break;
+            case 7:
+                self.typeNumTf.text = @"10%";
+                break;
+            case 8:
+                self.typeNumTf.text = @"13%";
+                break;
+            case 9:
+                self.typeNumTf.text = @"图书9%免税";
+                break;
+            default:
+                break;
+        }
+    }
+    
+    self.dutyParagraphTf.text = NotNilAndNull(self.model.taxNumber)?self.model.taxNumber:@"";
+    
+    if (NotNilAndNull(self.model.taxQualificationsImg) && self.model.taxQualificationsImg.length > 0) {
+        self.qualificationStr = self.model.taxQualificationsImg;
+        [self.qualificationImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.qualificationStr]]];
+        self.qualificationCameraImage.hidden = YES;
+    }
+      
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 3;
 }
@@ -164,7 +235,7 @@
     
     return 0.001;
 }
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0 || indexPath.section == 1) {
         return SLChange(53);
     } else {
@@ -172,7 +243,7 @@
     }
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [self.view endEditing:YES];
     if (indexPath.section == 0) {
         if (indexPath.row == 0) {
@@ -200,7 +271,7 @@
     return _tableView;
     
 }
--(UILabelLeftTopAlign *)titleL
+- (UILabelLeftTopAlign *)titleL
 {
     if (!_titleL) {
         _titleL = [[UILabelLeftTopAlign alloc]initWithFrame:CGRectMake(SLChange(16), SLChange(15), SLChange(96), SLChange(46))];
@@ -212,7 +283,7 @@
     }
     return _titleL;
 }
--(UILabelLeftTopAlign *)titleLL
+- (UILabelLeftTopAlign *)titleLL
 {
     if (!_titleLL) {
         _titleLL = [[UILabelLeftTopAlign alloc]initWithFrame:CGRectMake(SLChange(16), SLChange(15), SLChange(96), SLChange(46))];
@@ -225,7 +296,7 @@
     return _titleLL;
 }
 #pragma mark - 纳税人类型
--(UITextField *)typeTf
+- (UITextField *)typeTf
 {
     if (!_typeTf) {
         _typeTf = [[UITextField alloc] initWithFrame:CGRectMake(SLChange(123),0, kWidth -SLChange(153), SLChange(53))];
@@ -245,7 +316,9 @@
         [_typeTf setValue:KTextGray_999 forKeyPath:@"placeholderLabel.textColor"];
         [_typeTf setValue:kRegular(15) forKeyPath:@"placeholderLabel.font"];
         
-        
+//        if (NotNilAndNull(self.model)) {
+//            <#statements#>
+//        }
     }
     return _typeTf;
 }
@@ -301,12 +374,15 @@
         [_dutyParagraphTf setValue:KTextGray_999 forKeyPath:@"placeholderLabel.textColor"];
         [_dutyParagraphTf setValue:kRegular(15) forKeyPath:@"placeholderLabel.font"];
         _dutyParagraphTf.returnKeyType = UIReturnKeyDone;
+        
+        
+        
     }
     return _dutyParagraphTf;
 }
 
 #pragma mark - 纳税类型税码
--(UITextField *)typeNumTf
+- (UITextField *)typeNumTf
 {
     if (!_typeNumTf) {
         _typeNumTf = [[UITextField alloc] initWithFrame:CGRectMake(SLChange(123),0, kWidth -SLChange(153), SLChange(53))];
@@ -408,6 +484,7 @@
         _qualificationImage.image = [UIImage imageNamed:@"photo_square"];
         _qualificationImage.userInteractionEnabled = YES;
         _qualificationImage.contentMode = UIViewContentModeScaleAspectFill;
+        _qualificationImage.clipsToBounds = YES;
     }
     return _qualificationImage;
 }
@@ -536,7 +613,7 @@
     }
     return _nextBtn;
 }
--(void)textFieldDidBeginEditing:(UITextField*)textField
+- (void)textFieldDidBeginEditing:(UITextField*)textField
 {
     if (textField == self.dutyParagraphTf){
         [self.typeTf resignFirstResponder];
@@ -587,6 +664,7 @@
             if (weakSelf.TaxInformationBlock) {
                 weakSelf.TaxInformationBlock(@"4");
             }
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"MeViewControllerDidReloadUserStoreOpenInformationDataNotfication" object:nil];
             [self.navigationController popViewControllerAnimated:YES];
         }else {
             [ShaolinProgressHUD singleTextAutoHideHud:errorReason];

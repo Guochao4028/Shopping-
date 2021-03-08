@@ -25,7 +25,7 @@
 #pragma mark - methods
 
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     
     if (self =[super initWithFrame:frame]) {
 //        @{@"title":SLLocalizedString(@"商品无货"), @"isSelect":@"0"},
@@ -36,7 +36,7 @@
     return self;
 }
 
--(void)initUI{
+- (void)initUI{
     [self setBackgroundColor:[UIColor colorWithWhite:0 alpha:0.6]];
     
     [self addSubview:self.contentView];
@@ -45,12 +45,12 @@
     [self.contentView addSubview:self.tableView];
 }
 
--(void)initData{
+- (void)initData{
     self.cellArr = [self.cellArr mutableArrayDeeoCopy];
     [self.tableView reloadData];
 }
 
--(void)disappear{
+- (void)disappear{
     [UIView animateWithDuration:0.3 animations:^{
         self.alpha = 0;
     } completion:^(BOOL finished) {
@@ -60,30 +60,30 @@
 }
 
 #pragma mark - Action
--(void)closeAction{
+- (void)closeAction{
     [self disappear];
 }
 
 #pragma mark - UITableViewDelegate && UITableViewDataSource
 
--(CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     return 0.01;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     return 0.01;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.cellArr.count;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     return 44;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     OrderInvoiceSelectedTableCell *itemCell = [tableView dequeueReusableCellWithIdentifier:@"OrderInvoiceSelectedTableCell"];
     [itemCell setModel:self.cellArr[indexPath.row]];
@@ -94,7 +94,7 @@
     
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
     NSMutableDictionary *dic = self.cellArr[indexPath.row];
     
@@ -155,7 +155,7 @@
 
 #pragma mark - getter / setter
 
--(UIView *)contentView{
+- (UIView *)contentView{
     
     if (_contentView == nil) {
         _contentView = [[UIView alloc]initWithFrame:CGRectMake(0, ScreenHeight - 500, ScreenWidth, 500)];
@@ -165,7 +165,7 @@
     return _contentView;
 }
 
--(UIView *)titleView{
+- (UIView *)titleView{
     if (_titleView == nil) {
         _titleView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, 60)];
         
@@ -189,7 +189,7 @@
 
 }
 
--(UITableView *)tableView{
+- (UITableView *)tableView{
     if (_tableView == nil) {
         
         CGFloat y = CGRectGetMaxY(self.titleView.frame);
@@ -209,12 +209,12 @@
 }
 
 
--(void)setCellArr:(NSArray *)cellArr{
+- (void)setCellArr:(NSArray *)cellArr{
     _cellArr = [cellArr mutableArrayDeeoCopy];
     [self.tableView reloadData];
 }
 
--(void)setTitleStr:(NSString *)titleStr{
+- (void)setTitleStr:(NSString *)titleStr{
     _titleStr = titleStr;
     [self.titleLabel setText:titleStr];
 }

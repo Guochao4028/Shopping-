@@ -8,6 +8,7 @@
 
 #import "ZFTableViewCell.h"
 #import "UIImageView+ZFCache.h"
+#import "DefinedURLs.h"
 
 //#define ZFTableViewCell_ColorTest
 
@@ -68,7 +69,7 @@
 - (void)setLayout:(ZFTableViewCellLayout *)layout {
     _layout = layout;
     self.headImageView.layer.cornerRadius = CGRectGetHeight(layout.headerRect)/2;
-    self.headImageView.frame = layout.headerRect;
+    
     self.nickNameLabel.frame = layout.nickNameRect;
     self.abstractsLabel.frame = layout.abstractsRect;
     self.coverImageView.frame = layout.videoRect;
@@ -77,42 +78,38 @@
     self.playBtn.frame = layout.playBtnRect;
     self.fullMaskView.frame = layout.maskViewRect;
     
-    self.praiseBtn.frame = layout.praiseRect;
-    self.shareBnt.frame = layout.shareRect;
-    self.collectionBtn.frame = layout.collectionRect;
-    
-    self.praiseImageView.frame = CGRectMake((self.praiseBtn.width - 25)/2, 0, 25, 25);
-    self.praiseLabel.frame = CGRectMake(0, self.praiseImageView.maxY + 5, self.praiseBtn.width, 18.5);
-    
-    self.shareImageView.frame = CGRectMake((self.shareBnt.width - 25)/2, 0, 25, 20);
-    self.shareLabel.frame = CGRectMake(0, self.shareImageView.maxY + 5, self.shareBnt.width, 18.5);
-    
-    self.collectionImageView.frame = CGRectMake((self.collectionBtn.width - 25)/2, 0, 25, 25);
-    self.collectionLabel.frame = CGRectMake(0, self.collectionImageView.maxY + 5, self.collectionBtn.width, 18.5);
-    
-    [self.headImageView setImageWithURLString:layout.data.headurl placeholder:[UIImage imageNamed:@"shaolinlogo"]];
-    NSString *coverImageStr = [NSString stringWithFormat:@"%@%@",layout.data.coverurl,Video_First_Photo];
+    if (layout.data.praise && layout.data.praiseState && layout.data.collection && layout.data.collection){
+        self.headImageView.frame = layout.headerRect;
+        self.praiseBtn.frame = layout.praiseRect;
+        self.shareBnt.frame = layout.shareRect;
+        self.collectionBtn.frame = layout.collectionRect;
+        
+        self.praiseImageView.frame = CGRectMake((self.praiseBtn.width - 25)/2, 0, 25, 25);
+        self.praiseLabel.frame = CGRectMake(0, self.praiseImageView.maxY + 5, self.praiseBtn.width, 18.5);
+        
+        self.shareImageView.frame = CGRectMake((self.shareBnt.width - 25)/2, 0, 25, 20);
+        self.shareLabel.frame = CGRectMake(0, self.shareImageView.maxY + 5, self.shareBnt.width, 18.5);
+        
+        self.collectionImageView.frame = CGRectMake((self.collectionBtn.width - 25)/2, 0, 25, 25);
+        self.collectionLabel.frame = CGRectMake(0, self.collectionImageView.maxY + 5, self.collectionBtn.width, 18.5);
+    }
+    [self.headImageView setImageWithURLString:layout.data.headUrl placeholder:[UIImage imageNamed:@"shaolinlogo"]];
+    NSString *coverImageStr = [NSString stringWithFormat:@"%@%@",layout.data.coverUrl,Video_First_Photo];
     [self.coverImageView setImageWithURLString:coverImageStr placeholder:[UIImage imageNamed:@"loading_bgView"]];
     [self.bgImgView setImageWithURLString:coverImageStr placeholder:[UIImage imageNamed:@"loading_bgView"]];
     self.nickNameLabel.text = [NSString stringWithFormat:@"@%@", layout.data.author];
     self.abstractsLabel.text = layout.data.title;
     
-    self.praiseLabel.text = [NSString stringWithFormat:@"%@",layout.data.praises];
-    self.collectionLabel.text = [NSString stringWithFormat:@"%@",layout.data.collections];
-    self.shareLabel.text = [NSString stringWithFormat:@"%@",layout.data.forwards];
+    self.nickNameLabel.text = layout.data.author ? layout.data.author : @"";
+    self.abstractsLabel.text = layout.data.title ? layout.data.title : @"";
+
+    self.praiseLabel.text = layout.data.praise ? [NSString stringWithFormat:@"%@",layout.data.praise] : @"";
+    self.collectionLabel.text = layout.data.collection ? [NSString stringWithFormat:@"%@",layout.data.collection] : @"";
+    self.shareLabel.text = layout.data.forward ? [NSString stringWithFormat:@"%@",layout.data.forward] : @"";
     
-    if ([layout.data.collection integerValue]==1) {//没有
-        [self setCollectionBtnSelected:NO];
-    }else
-    {
-        [self setCollectionBtnSelected:YES];
-    }
-    if ([layout.data.praise integerValue]==1) {//没有
-        [self setPraiseBtnSelected:NO];
-    }else
-    {
-        [self setPraiseBtnSelected:YES];
-    }
+    [self setCollectionBtnSelected:[layout.data.collectionState boolValue]];
+    [self setPraiseBtnSelected:[layout.data.praiseState boolValue]];
+    
     NSArray *restyleButtons = @[self.shareBnt, self.collectionBtn, self.praiseBtn];
     for (UIButton *button in restyleButtons){
         [self restyleButton:button];
@@ -247,6 +244,7 @@
         _headImageView = [[UIImageView alloc] init];
         _headImageView.userInteractionEnabled = YES;
         _headImageView.clipsToBounds = YES;
+        _headImageView.contentMode = UIViewContentModeScaleAspectFill;
 #ifdef ZFTableViewCell_ColorTest
         _headImageView.backgroundColor = [UIColor blueColor];
 #endif
@@ -288,7 +286,7 @@
     }
     return _effectView;
 }
--(UIButton *)praiseBtn
+- (UIButton *)praiseBtn
 {
     if (!_praiseBtn) {
         _praiseBtn  =[[ UIButton alloc]init];
@@ -301,7 +299,7 @@
     }
     return _praiseBtn;
 }
--(UIButton *)collectionBtn
+- (UIButton *)collectionBtn
 {
     if (!_collectionBtn) {
         _collectionBtn  =[[ UIButton alloc]init];
@@ -314,14 +312,14 @@
     }
     return _collectionBtn;
 }
--(void)collectionAction:(UIButton *)button
+- (void)collectionAction:(UIButton *)button
 {
     UITableView *table = (UITableView *)self.superview;
     NSInteger numOfSelectedCell = [table indexPathForCell:self].row;
    
     [self.delegate foucsActionButton:self IndexPath:numOfSelectedCell IndexPathRow:self.indexPath];
 }
--(void)praiseAction:(UIButton *)button
+- (void)praiseAction:(UIButton *)button
 {
     
    
@@ -330,7 +328,7 @@
         [self.delegate prasieActionButton:self IndexPath:numOfSelectedCell IndexPathRow:self.indexPath];
     
 }
--(void)shareAction:(UIButton *)button
+- (void)shareAction:(UIButton *)button
 {
      UITableView *table = (UITableView *)self.superview;
           NSInteger numOfSelectedCell = [table indexPathForCell:self].row;
@@ -338,7 +336,7 @@
     
     
 }
--(UIButton *)shareBnt
+- (UIButton *)shareBnt
 {
     if (!_shareBnt) {
         _shareBnt  =[[ UIButton alloc]init];

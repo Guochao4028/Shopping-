@@ -47,6 +47,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, copy)NSString * serial_no;
 @property(nonatomic, copy)NSString * shipping_fee;
 
+
 ///1：待付款，2：待发货，3：待收货，4：已收货，5：完成，6：取消 7：支付超时'
 @property(nonatomic, copy)NSString * status;
 ///1：实物，2：教程，3：报名，5:法事佛事类型-法会，6:法事佛事类型-佛事， 7:法事佛事类型-建寺供僧 8:普通法会 4:交流会

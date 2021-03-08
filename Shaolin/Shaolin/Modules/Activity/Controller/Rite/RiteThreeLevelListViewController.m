@@ -43,18 +43,23 @@
 }
 
 - (void)refreshAndScrollToTop {
-    if (!self.riteSecondLevelModel.value.count) return;
-    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
-    [self.tableView.mj_header beginRefreshing];
+    @try {
+        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+    } @catch (NSException *exception) {
+        
+    } @finally {
+        [self.tableView.mj_header beginRefreshing];
+    }
 }
 
 - (void)downloadFourLevelDatas:(RiteThreeLevelModel *)threeModel finish:(void (^_Nullable)(id responseObject, NSString *errorReason))finish {
     NSString *type = self.pujaType ? self.pujaType : @"";
     NSString *code = self.pujaCode ? self.pujaCode : @"";
+    RiteSecondLevelModel *riteSecondLevelModel = self.datas[self.selectIndex];
     NSDictionary *params = @{
         @"type" : type,
         @"code" : code,
-        @"buddhismId" : self.riteSecondLevelModel.buddhismId,
+        @"buddhismId" : riteSecondLevelModel.buddhismId,
         @"buddhismTypeId" : threeModel.buddhismTypeId,
     };
     WEAKSELF
@@ -75,10 +80,11 @@
     __weak typeof(itemView) weakItemView = itemView;
     itemView.selectFourLevelModelBlock = ^(RiteFourLevelModel * _Nonnull fourLevelModel) {
         if (fourLevelModel.flag){
+            RiteSecondLevelModel *riteSecondLevelModel = self.datas[self.selectIndex];
             NSDictionary *params = @{
                 @"type" : self.pujaType ? self.pujaType : @"",
                 @"code" : self.pujaCode ? self.pujaCode : @"",
-                @"buddhismId" : self.riteSecondLevelModel.buddhismId ? self.riteSecondLevelModel.buddhismId : @"",
+                @"buddhismId" : riteSecondLevelModel.buddhismId ? riteSecondLevelModel.buddhismId : @"",
                 @"buddhismTypeId" : threeLevelModel.buddhismTypeId ? threeLevelModel.buddhismTypeId : @"",
                 @"matterId" : fourLevelModel.matterId ? fourLevelModel.matterId : @"",
             };
@@ -106,7 +112,8 @@
     RiteRegistrationFormViewControllerNew *vc = [[RiteRegistrationFormViewControllerNew alloc] init];
     vc.pujaType = self.pujaType;
     vc.pujaCode = self.pujaCode;
-    vc.secondLevelModel = self.riteSecondLevelModel;
+    RiteSecondLevelModel *riteSecondLevelModel = self.datas[self.selectIndex];
+    vc.secondLevelModel = riteSecondLevelModel;
     vc.threeLevelModel = threeLevelModel;
     vc.fourLevelModel = fourLevelModel;
     [self.navigationController pushViewController:vc animated:YES];
@@ -127,8 +134,14 @@
     }];
 }
 #pragma mark - tableView Delegate
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return self.isGroup ? 1 : self.datas.count;
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.riteSecondLevelModel.value.count;
+    NSInteger newSection = self.isGroup ? self.selectIndex : section;
+    RiteSecondLevelModel *riteSecondLevelModel = self.datas[newSection];
+    return riteSecondLevelModel.value.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -140,12 +153,15 @@
     cell.pujaType = self.pujaType;
     cell.backgroundColor = [UIColor clearColor];
 //    [cell setSeparatorInset:UIEdgeInsetsMake(0, 16, 0, 16)];
-    [cell showLine:!(indexPath.row == self.riteSecondLevelModel.value.count - 1)];
+    NSInteger section = self.isGroup ? self.selectIndex : indexPath.section;
+    RiteSecondLevelModel *riteSecondLevelModel = self.datas[section];
+    [cell showLine:!(indexPath.row == riteSecondLevelModel.value.count - 1)];
     
-    RiteThreeLevelModel *model = self.riteSecondLevelModel.value[indexPath.row];
+    RiteThreeLevelModel *model = riteSecondLevelModel.value[indexPath.row];
     cell.model = model;
     WEAKSELF
     cell.buttonClickBlock = ^(UIButton * _Nonnull button) {
+        weakSelf.selectIndex = self.isGroup ? self.selectIndex : indexPath.section;
         if (model.flag) {
             [weakSelf makeAnAppointment:model];
             //法会不检查实名认证
@@ -166,15 +182,17 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    RiteThreeLevelModel *model = self.riteSecondLevelModel.value[indexPath.row];
+    self.selectIndex = self.isGroup ? self.selectIndex : indexPath.section;
+    RiteSecondLevelModel *riteSecondLevelModel = self.datas[self.selectIndex];
+    RiteThreeLevelModel *model = riteSecondLevelModel.value[indexPath.row];
     NSString *type = self.pujaType ? self.pujaType : @"";
     NSString *code = self.pujaCode ? self.pujaCode : @"";
-    KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteThreeDetail(type, code, model.buddhismTypeId, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_rite];
+    KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteThreeDetail(type, code, model.buddhismTypeId, [SLAppInfoModel sharedInstance].accessToken) type:KfWebView_rite];
     webVC.fillToView = YES;
     WEAKSELF
     webVC.receiveScriptMessageBlock = ^(NSDictionary * _Nonnull messageDict) {
         NSString *flagStr = messageDict[@"flag"];
-        if ([flagStr isEqualToString:@"buddhismTypeIdFindDetailMakeAnAppointment"]){
+        if ([flagStr isEqualToString:@"buddhismTypeIdFindDetailMakeAnAppointment"]) {
             NSString * jsonStr = messageDict[@"json"];
             NSDictionary * jsonDict = [jsonStr mj_JSONObject];
             if ([jsonDict objectForKey:@"flag"]){

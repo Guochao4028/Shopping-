@@ -25,7 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, assign)BOOL isHiddenInvoiceView;
 
--(void)invoiceTarget:(nullable id)target action:(SEL)action;
+- (void)invoiceTarget:(nullable id)target action:(SEL)action;
 
 @end
 

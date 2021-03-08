@@ -70,7 +70,7 @@
 
 #pragma mark - methods
 
--(void)initUI{
+- (void)initUI{
     [self.view setBackgroundColor:BackgroundColor_White];
 //    [self.view addSubview:self.searchView];
     [self.view addSubview:self.menuView];
@@ -78,48 +78,64 @@
 }
 
 ///初始化数据
--(void)initData{
+- (void)initData{
     
     self.pageNumber = 1;
     
+    MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
+    
     NSMutableDictionary *param = [NSMutableDictionary dictionary];
-    if (self.enterModel != nil) {
-        [param setValue:self.enterModel.enterId forKey:@"cate_pid_id"];
-    }
-     [param setValue:[NSString stringWithFormat:@"%ld", self.pageNumber] forKey:@"page"];
     
-    
-    [[DataManager shareInstance]getGoodsList:param Callback:^(NSArray *result) {
-        [self.dataArray addObjectsFromArray:result];
-        [self.goodsListView setDataArray:self.dataArray];
+    [param setValue:self.enterModel.enterId forKey:@"pid"];
+
+    [[DataManager shareInstance]getCateLevelList:param Callback:^(NSArray *result) {
+       
+        self->_enterModel.son = result;
+        [self.menuView setModel:self->_enterModel];
+        
+        NSMutableDictionary *param = [NSMutableDictionary dictionary];
+        if (self.enterModel != nil) {
+            [param setValue:self.enterModel.enterId forKey:@"catePidId"];
+        }
+         [param setValue:[NSString stringWithFormat:@"%ld", self.pageNumber] forKey:@"pageNum"];
+        
+        [param setValue:@"10" forKey:@"pageSize"];
+        [[DataManager shareInstance]getGoodsList:param Callback:^(NSArray *result) {
+            
+            [hud hideAnimated:YES];
+            [self.dataArray addObjectsFromArray:result];
+            [self.goodsListView setDataArray:self.dataArray];
+        }];
     }];
 }
 
+
+
 ///更新数据
--(void)update{
+- (void)update{
     NSMutableDictionary *param = [NSMutableDictionary dictionary];
     switch (self.listType) {
         case ListJiaGeDescType:{
-            [param setValue:@"1" forKey:@"price"];
-            [param setValue:@"desc" forKey:@"sort"];
+            [param setValue:@"2" forKey:@"priceSort"];
+//            [param setValue:@"2" forKey:@"salesSort"];
         }
             
             break;
         case ListJiaGeAscType:{
-            [param setValue:@"1" forKey:@"price"];
-            [param setValue:@"asc" forKey:@"sort"];
+            [param setValue:@"1" forKey:@"priceSort"];
+//            [param setValue:@"1" forKey:@"salesSort"];
         }
             
             break;
         case ListXiaoLiangDescType:{
             [param setValue:@"1" forKey:@"num"];
-            [param setValue:@"desc" forKey:@"sort"];
+            [param setValue:@"2" forKey:@"salesSort"];
         }
             
             break;
         case ListXiaoLiangAscType:{
             [param setValue:@"1" forKey:@"num"];
-            [param setValue:@"asc" forKey:@"sort"];
+            [param setValue:@"1" forKey:@"salesSort"];
         }
             
             break;
@@ -128,15 +144,19 @@
     }
     
     if (self.selectModel != nil) {
-        [param setValue:self.selectModel.enterId forKey:@"cate_id"];
+        [param setValue:self.selectModel.enterId forKey:@"cateId"];
+    }else{
+        [param setValue:self.enterModel.enterId forKey:@"catePidId"];
     }
+//    if (self.enterModel != nil) {
+//        [param setValue:self.enterModel.enterId forKey:@"catePidId"];
+//    }
     
-    if (self.enterModel != nil) {
-        [param setValue:self.enterModel.enterId forKey:@"cate_pid_id"];
-    }
     
     self.pageNumber = 1;
-    [param setValue:[NSString stringWithFormat:@"%ld", self.pageNumber] forKey:@"page"];
+    [param setValue:[NSString stringWithFormat:@"%ld", self.pageNumber] forKey:@"pageNum"];
+    
+    [param setValue:@"10" forKey:@"pageSize"];
     
     [self.dataArray removeAllObjects];
     
@@ -147,7 +167,7 @@
     
 }
 
--(void)refreshUI{
+- (void)refreshUI{
     [self.goodsListView.collectionView.mj_header beginRefreshing];
 }
 
@@ -155,7 +175,7 @@
 /**
  点击购物车
  */
--(void)tapShopping{
+- (void)tapShopping{
     ShoppingCartViewController *shoppingCartVC = [[ShoppingCartViewController alloc]init];
     shoppingCartVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:shoppingCartVC animated:YES];
@@ -164,7 +184,7 @@
 /**
  点击搜索
  */
--(void)tapSearch{
+- (void)tapSearch{
     SearchViewController *searchVC = [[SearchViewController alloc]init];
     searchVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:searchVC animated:YES];
@@ -173,21 +193,21 @@
 /**
  点击搜索view上的返回按钮
  */
--(void)tapBack{
+- (void)tapBack{
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - ClassifyMenuViewDelegate
 
 //点击 分类 view
--(void)view:(ClassifyMenuView *)view tapClassifyView:(BOOL)isTap{
+- (void)view:(ClassifyMenuView *)view tapClassifyView:(BOOL)isTap{
     NSArray *tempArray = self.enterModel.son;
     
     NSMutableArray *son = [NSMutableArray arrayWithArray:tempArray];
     [son insertObject:self.enterModel atIndex:0];
     
     
-    if (son.count > 0) {
+    if (son.count > 1) {
         ClassifyDropDownView *dropDoenView = [[ClassifyDropDownView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
         
         CGPoint point = [self.menuView convertPoint:CGPointMake(0,20) toView:WINDOWSVIEW];
@@ -203,6 +223,7 @@
             if (model == nil) {
                 return;
             }
+            
             if (model == self.enterModel) {
                 weakSelf.selectModel = nil;
             }else{
@@ -221,7 +242,7 @@
 }
 
 //点击 价格 view
--(void)view:(ClassifyMenuView *)view tapPriceView:(BOOL)isTap{
+- (void)view:(ClassifyMenuView *)view tapPriceView:(BOOL)isTap{
     if (self.isPriceSorting == NO ) {
         self.menuView.type = ListJiaGeAscType;
         self.listType = ListJiaGeAscType;
@@ -236,7 +257,7 @@
 }
 
 //点击 销量 view
--(void)view:(ClassifyMenuView *)view tapSalesVolumeView:(BOOL)isTap{
+- (void)view:(ClassifyMenuView *)view tapSalesVolumeView:(BOOL)isTap{
     if (self.isSalesVolumeSorting == NO ) {
         self.menuView.type = ListXiaoLiangDescType;
         self.listType = ListXiaoLiangDescType;
@@ -252,43 +273,45 @@
 }
 
 #pragma mark - ClassifyGoodsListViewDelegate
--(void)tapGoodsItem:(WengenGoodsModel *)goodsModel{
+- (void)tapGoodsItem:(WengenGoodsModel *)goodsModel{
     GoodsDetailsViewController *goodsDetailsVC = [[GoodsDetailsViewController alloc]init];
     goodsDetailsVC.goodsModel = goodsModel;
     goodsDetailsVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:goodsDetailsVC animated:YES];
 }
 
--(void)refresh:(UICollectionView *)collectionView{
+- (void)refresh:(UICollectionView *)collectionView{
     self.pageNumber = 1;
     [self.dataArray removeAllObjects];
     NSMutableDictionary *param = [NSMutableDictionary dictionary];
    
 
-    [param setValue:[NSString stringWithFormat:@"%ld", self.pageNumber] forKey:@"page"];
+    [param setValue:[NSString stringWithFormat:@"%ld", self.pageNumber] forKey:@"pageNum"];
+    
+    [param setValue:@"10" forKey:@"pageSize"];
     
     switch (self.listType) {
         case ListJiaGeDescType:{
-            [param setValue:@"1" forKey:@"price"];
-            [param setValue:@"desc" forKey:@"sort"];
+            [param setValue:@"2" forKey:@"priceSort"];
+            [param setValue:@"2" forKey:@"salesSort"];
         }
             
             break;
         case ListJiaGeAscType:{
-            [param setValue:@"1" forKey:@"price"];
-            [param setValue:@"asc" forKey:@"sort"];
+            [param setValue:@"1" forKey:@"priceSort"];
+            [param setValue:@"1" forKey:@"salesSort"];
         }
             
             break;
         case ListXiaoLiangDescType:{
             [param setValue:@"1" forKey:@"num"];
-            [param setValue:@"desc" forKey:@"sort"];
+            [param setValue:@"2" forKey:@"salesSort"];
         }
             
             break;
         case ListXiaoLiangAscType:{
             [param setValue:@"1" forKey:@"num"];
-            [param setValue:@"asc" forKey:@"sort"];
+            [param setValue:@"1" forKey:@"salesSort"];
         }
             
             break;
@@ -297,11 +320,11 @@
     }
     
     if (self.selectModel != nil) {
-        [param setValue:self.selectModel.enterId forKey:@"cate_id"];
+        [param setValue:self.selectModel.enterId forKey:@"cateId"];
     }
     
     if (self.enterModel != nil) {
-        [param setValue:self.enterModel.enterId forKey:@"cate_pid_id"];
+        [param setValue:self.enterModel.enterId forKey:@"catePidId"];
     }
     [collectionView.mj_footer resetNoMoreData];
 
@@ -313,34 +336,35 @@
     
 }
 
--(void)loadData:(UICollectionView *)collectionView{
+- (void)loadData:(UICollectionView *)collectionView{
     
     self.pageNumber ++;
     NSMutableDictionary *param = [NSMutableDictionary dictionary];
   
-    [param setValue:[NSString stringWithFormat:@"%ld", self.pageNumber] forKey:@"page"];
+    [param setValue:[NSString stringWithFormat:@"%ld", self.pageNumber] forKey:@"pageNum"];
+    [param setValue:@"10" forKey:@"pageSize"];
      switch (self.listType) {
            case ListJiaGeDescType:{
-               [param setValue:@"1" forKey:@"price"];
-               [param setValue:@"desc" forKey:@"sort"];
+               [param setValue:@"2" forKey:@"priceSort"];
+               [param setValue:@"2" forKey:@"salesSort"];
            }
                
                break;
            case ListJiaGeAscType:{
-               [param setValue:@"1" forKey:@"price"];
-               [param setValue:@"asc" forKey:@"sort"];
+               [param setValue:@"1" forKey:@"priceSort"];
+               [param setValue:@"1" forKey:@"salesSort"];
            }
                
                break;
            case ListXiaoLiangDescType:{
                [param setValue:@"1" forKey:@"num"];
-               [param setValue:@"desc" forKey:@"sort"];
+               [param setValue:@"2" forKey:@"salesSort"];
            }
                
                break;
            case ListXiaoLiangAscType:{
                [param setValue:@"1" forKey:@"num"];
-               [param setValue:@"asc" forKey:@"sort"];
+               [param setValue:@"1" forKey:@"salesSort"];
            }
                
                break;
@@ -349,11 +373,11 @@
        }
        
        if (self.selectModel != nil) {
-           [param setValue:self.selectModel.enterId forKey:@"cate_id"];
+           [param setValue:self.selectModel.enterId forKey:@"cateId"];
        }
        
        if (self.enterModel != nil) {
-           [param setValue:self.enterModel.enterId forKey:@"cate_pid_id"];
+           [param setValue:self.enterModel.enterId forKey:@"catePidId"];
        }
     
     [[DataManager shareInstance]getGoodsList:param Callback:^(NSArray *result) {
@@ -374,7 +398,7 @@
 
 #pragma mark - getter / setter
 //
-//-(WengenSearchView *)searchView{
+//- (WengenSearchView *)searchView{
 //    if (_searchView == nil) {
 //
 //        //状态栏高度
@@ -394,16 +418,21 @@
 //    return _searchView;
 //}
 
--(ClassifyMenuView *)menuView{
+- (ClassifyMenuView *)menuView{
     if (_menuView == nil) {
+        
+        static int i = 1;
         CGFloat y = 0;//CGRectGetMaxY(self.searchView.frame) + 1;
         _menuView = [[ClassifyMenuView alloc]initWithFrame:CGRectMake(0, y, ScreenWidth, 40)];
         [_menuView setDelegate:self];
+        
+        NSLog(@" < %d >", i);
+        i++;
     }
     return _menuView;
 }
 
--(ClassifyGoodsListView *)goodsListView{
+- (ClassifyGoodsListView *)goodsListView{
     if (_goodsListView == nil) {
         CGFloat y = CGRectGetMaxY(self.menuView.frame);
         _goodsListView = [[ClassifyGoodsListView alloc]initWithFrame:CGRectMake(0, y, ScreenWidth, ScreenHeight - y - 40-44 - 20)];
@@ -414,21 +443,26 @@
     return _goodsListView;
 }
 
--(void)setEnterModel:(WengenEnterModel *)enterModel{
+- (void)setEnterModel:(WengenEnterModel *)enterModel{
+    
     _enterModel = enterModel;
+
+    enterModel.isSelected = YES;
+    
+    [self.menuView setModel:enterModel];
+    
+    [self.menuView setSelectdModel:enterModel];
     
     self.listType = ListNormalType;
     
     self.selectModel.isSelected = NO;
     
     self.selectModel = nil;
-    enterModel.isSelected = YES;
-    [self.menuView setModel:enterModel];
-    
-    [self.menuView setSelectdModel:enterModel];
 }
+ 
+    
 
--(NSMutableArray *)dataArray{
+- (NSMutableArray *)dataArray{
     if (_dataArray == nil) {
         _dataArray = [NSMutableArray array];
     }

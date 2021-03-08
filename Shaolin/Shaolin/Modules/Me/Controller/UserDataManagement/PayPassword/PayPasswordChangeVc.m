@@ -30,7 +30,7 @@
     [self layoutView];
 }
 
--(void)layoutView
+- (void)layoutView
 {
     
     [self.view addSubview:self.changeView];
@@ -89,12 +89,12 @@
     }];
 }
 
--(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     [self.view endEditing:YES];
 }
 
 #pragma mark - setter && getter
--(PayPasswordChangeView *)changeView {
+- (PayPasswordChangeView *)changeView {
     
     if (!_changeView) {
         _changeView = [[[NSBundle mainBundle] loadNibNamed:@"PayPasswordChangeView" owner:self options:nil] objectAtIndex:0];
@@ -102,7 +102,7 @@
     return _changeView;
 }
 
--(UIButton *)submitBtn {
+- (UIButton *)submitBtn {
     if (!_submitBtn) {
         _submitBtn = [UIButton new];
         _submitBtn.backgroundColor = kMainYellow;

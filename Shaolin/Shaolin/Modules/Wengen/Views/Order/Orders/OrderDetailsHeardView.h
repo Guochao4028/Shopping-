@@ -10,23 +10,23 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OrderDetailsModel;
+@class OrderDetailsModel, OrderDetailsNewModel;
 
 @protocol OrderDetailsHeardViewDelegate;
 
 @interface OrderDetailsHeardView : UIView
 
--(instancetype)initWithFrame:(CGRect)frame viewType:(OrderDetailsType)type;
+- (instancetype)initWithFrame:(CGRect)frame viewType:(OrderDetailsType)type;
 
-@property(nonatomic, strong)OrderDetailsModel *model;
+@property(nonatomic, strong)OrderDetailsNewModel *model;
 
 @property(nonatomic, copy)NSString *orderPrice;
 
 @property(nonatomic, weak)id<OrderDetailsHeardViewDelegate> delegate;
 
--(void)deleteTimer;
+- (void)deleteTimer;
 
--(void)startTimer;
+- (void)startTimer;
 
 @property(nonatomic, assign)OrderDetailsType type;
 
@@ -34,8 +34,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol OrderDetailsHeardViewDelegate <NSObject>
 
--(void)orderDetailsHeardView:(OrderDetailsHeardView *)view gotoPay:(OrderDetailsModel *)model;
-- (void)lookOrderDetails:(OrderDetailsHeardView *)view look:(OrderDetailsModel *)model;
+- (void)orderDetailsHeardView:(OrderDetailsHeardView *)view gotoPay:(OrderDetailsNewModel *)model;
+- (void)lookOrderDetails:(OrderDetailsHeardView *)view look:(OrderDetailsNewModel *)model;
 
 @end
 

@@ -27,7 +27,7 @@
 
 @implementation GoodsDetailBottomView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [[NSBundle mainBundle] loadNibNamed:@"GoodsDetailBottomView" owner:self options:nil];
@@ -39,7 +39,7 @@
 #pragma mark - methods
 
 /// 初始化UI
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.contentView];
     [self.contentView setFrame:self.bounds];
     
@@ -71,7 +71,7 @@
   
 }
 
--(void)refreshUI{
+- (void)refreshUI{
     NSString *carCountStr = [[ModelTool shareInstance]carCount];
        
     NSInteger carNumber = [carCountStr integerValue];
@@ -90,7 +90,7 @@
 }
 
 /// 重写系统方法
--(void)setFrame:(CGRect)frame{
+- (void)setFrame:(CGRect)frame{
     [super setFrame:frame];
     [self.contentView setFrame:self.bounds];
 }
@@ -127,7 +127,7 @@
     }
 }
 
--(void)dealloc{
+- (void)dealloc{
     //移除监听
     [[NSNotificationCenter defaultCenter]removeObserver:self];
 }

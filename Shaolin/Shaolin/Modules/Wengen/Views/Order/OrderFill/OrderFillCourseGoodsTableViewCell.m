@@ -34,7 +34,7 @@
     // Configure the view for the selected state
 }
 
--(void)lodingGoodsPrice:(NSString *)price{
+- (void)lodingGoodsPrice:(NSString *)price{
     
     NSString *priceStr = [NSString stringWithFormat:@"¥%@",price];
     
@@ -52,14 +52,22 @@
 
 #pragma mark - setter / getter
 
--(void)setCartGoodsModel:(ShoppingCartGoodsModel *)cartGoodsModel{
+- (void)setCartGoodsModel:(ShoppingCartGoodsModel *)cartGoodsModel{
     _cartGoodsModel = cartGoodsModel;
-    NSURL *url = [NSURL URLWithString:cartGoodsModel.img_data[0]];
+    NSURL *url = [NSURL URLWithString:cartGoodsModel.imgDataList[0]];
     [self.goodsImageView sd_setImageWithURL:url placeholderImage:[UIImage imageNamed:@"default_small"]];
     
-    [self.goodsNameLabel setText:cartGoodsModel.name];
+    [self.goodsNameLabel setText:cartGoodsModel.goodsName];
     
-    [self lodingGoodsPrice:cartGoodsModel.current_price];
+    BOOL isDiscount = [cartGoodsModel.isDiscount boolValue];
+    float price;
+    if (isDiscount) {
+        price = [cartGoodsModel.price floatValue];
+    }else{
+        price = [cartGoodsModel.oldPrice floatValue];
+    }
+    [self lodingGoodsPrice:[NSString stringWithFormat:@"%.2f", price]];
+    
 }
 
 @end

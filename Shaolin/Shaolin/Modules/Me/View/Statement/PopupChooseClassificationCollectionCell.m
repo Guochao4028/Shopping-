@@ -22,7 +22,7 @@
 }
 
 
--(void)setModel:(NSDictionary *)model{
+- (void)setModel:(NSDictionary *)model{
     NSString *titleStr = model[@"title"];
     BOOL isSelected = [model[@"isSelected"] boolValue];
     

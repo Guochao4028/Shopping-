@@ -32,17 +32,17 @@
 @implementation KungfuClassHeaderView
 
 
--(void)awakeFromNib {
+- (void)awakeFromNib {
     [super awakeFromNib];
     
     self.alphaView.hidden = YES;
     self.userInteractionEnabled = YES;
     self.classImgv.userInteractionEnabled = YES;
     
-    [self setUI];
+    [self setupUI];
 }
 
-- (void)setUI{
+- (void)setupUI{
     [self.classImgv addSubview:self.sdcScrollView];
     [self.sdcScrollView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(0);
@@ -51,16 +51,16 @@
 
 
 #pragma mark - cyclyScrollerDelegate
--(Class)customCollectionViewCellClassForCycleScrollView:(SDCycleScrollView *)view
+- (Class)customCollectionViewCellClassForCycleScrollView:(SDCycleScrollView *)view
 {
     return [KungfuClassMoreCollectionViewCell class];
 }
 
--(void)setupCustomCell:(UICollectionViewCell *)cell forIndex:(NSInteger)index cycleScrollView:(SDCycleScrollView *)view {
+- (void)setupCustomCell:(UICollectionViewCell *)cell forIndex:(NSInteger)index cycleScrollView:(SDCycleScrollView *)view {
     
     KungfuClassMoreCollectionViewCell * moreCell = (KungfuClassMoreCollectionViewCell *)cell;
     
-    NSArray *imageDatas = self.model.img_data;
+    NSArray *imageDatas = self.model.imgData;
     NSString * photoUrlStr = imageDatas[index];
     
     [moreCell.imageV sd_setImageWithURL:[NSURL URLWithString:photoUrlStr] placeholderImage:[UIImage imageNamed:@"default_big"]];
@@ -88,8 +88,11 @@
     if (!self.model) return;
     self.classNameLabel.text = self.model.classDetailName;
     
-    NSString * priceString = [NSString stringWithFormat:@"¥%@", self.model.old_price];
-    NSArray <NSString *>*array = [self.model.old_price componentsSeparatedByString:@"."];
+    float oldPriceFloat = [self.model.oldPrice floatValue];
+    self.model.oldPrice = [NSString stringWithFormat:@"%.2f",oldPriceFloat];
+    
+    NSString * priceString = [NSString stringWithFormat:@"¥%@", self.model.oldPrice];
+    NSArray <NSString *>*array = [self.model.oldPrice componentsSeparatedByString:@"."];
     
     NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:priceString attributes: @{NSFontAttributeName: [UIFont fontWithName:@"PingFangSC" size: 16],NSForegroundColorAttributeName: KPriceRed}];
     [string addAttributes:@{NSForegroundColorAttributeName: KPriceRed} range:NSMakeRange(0, 1)];
@@ -103,14 +106,14 @@
     }
     self.priceLabel.attributedText = string;
     
-    if ([self.model.old_price floatValue] == 0.00) {
+    if ([self.model.oldPrice floatValue] == 0.00) {
         self.freeLabel.hidden = NO;
     } else {
         self.freeLabel.hidden = YES;
         
     }
     
-    NSArray *imageDatas = self.model.img_data;
+    NSArray *imageDatas = self.model.imgData;
 
     self.sdcScrollView.imageURLStringsGroup = imageDatas;// self.model.img_data;
     

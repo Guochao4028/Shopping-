@@ -9,7 +9,7 @@
 #import "UITextView+Placeholder.h"
 
 @implementation UITextView (Placeholder)
--(void)setPlaceholder:(NSString *)placeholdStr placeholdColor:(UIColor *)placeholdColor
+- (void)setPlaceholder:(NSString *)placeholdStr placeholdColor:(UIColor *)placeholdColor
 {
     /*
     [self setValue:(nullable id) forKey:(nonnull NSString *)]

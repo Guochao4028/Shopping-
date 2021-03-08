@@ -31,15 +31,17 @@ NS_ASSUME_NONNULL_BEGIN
 //发票内容
 @property(nonatomic, copy)NSString *invoiceContent;
 
+@property(nonatomic, assign)BOOL isHiddenInvoice;
+
 
 @end
 
 @protocol OrderFillContentViewDelegate <NSObject>
--(void)orderFillContentView:(OrderFillContentView *)contentView tapInvoiceView:(BOOL)isTap;
+- (void)orderFillContentView:(OrderFillContentView *)contentView tapInvoiceView:(BOOL)isTap;
 
--(void)orderFillContentView:(OrderFillContentView *)contentView tapAddressView:(BOOL)isTap;
+- (void)orderFillContentView:(OrderFillContentView *)contentView tapAddressView:(BOOL)isTap;
 
--(void)orderFillContentView:(OrderFillContentView *)contentView calculateCount:(NSInteger)count model:(ShoppingCartGoodsModel *)model;
+- (void)orderFillContentView:(OrderFillContentView *)contentView calculateCount:(NSInteger)count model:(ShoppingCartGoodsModel *)model;
 
 
 @end

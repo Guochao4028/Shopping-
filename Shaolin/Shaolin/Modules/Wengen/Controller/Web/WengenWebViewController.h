@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface WengenWebViewController : RootViewController
 
--(instancetype)initWithUrl:(NSString*)url title:(NSString*)title;
+- (instancetype)initWithUrl:(NSString*)url title:(NSString*)title;
 
 @end
 

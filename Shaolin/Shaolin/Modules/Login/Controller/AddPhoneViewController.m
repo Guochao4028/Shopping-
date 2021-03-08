@@ -68,12 +68,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.hasRegist = NO;
-    [self setUI];
+    [self setupUI];
     [self setDefaultData];
 }
 
 #pragma mark - UI
-- (void)setUI{
+- (void)setupUI{
     
     self.view.backgroundColor = UIColor.whiteColor;
     [self.view addSubview:self.backView];
@@ -230,7 +230,7 @@
                 [self login:self.phoneNumber password:password code:self.code certCode:certCode];
 #endif
             } else {
-                [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"密码需要包含字母大小写和数字，请重新输入")];
+                [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"密码需要包含字母和数字，请重新输入")];
             }
         } else {
             [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"两次密码不一致，请重新输入")];
@@ -383,8 +383,11 @@
     if ([string isEqualToString:@""]) {
         return YES;
     }
-    if (textField == self.passwordTextField || textField == self.passwordTextField2){
-        return [string onlyNumbersAndEnglish];
+//    if (textField == self.passwordTextField || textField == self.passwordTextField2){
+//        return [string onlyNumbersAndEnglish];
+//    }
+    if ([string isEqualToString:@" "]){
+        return NO;
     }
     return YES;
 }
@@ -422,17 +425,11 @@
         NSInteger data;
         if ([resultDic isKindOfClass:[NSDictionary class]]) {
             data = [[resultDic objectForKey:@"data"] integerValue];
-        }else{
+        } else {
             data = [(NSNumber *)resultDic  integerValue];
         }
-        
-        if(data == 1){
-            [ShaolinProgressHUD singleTextAutoHideHud:@"手机号已注册，请直接登录"];
-            if (failure) failure();
-        }else{
-            weakSelf.hasRegist = data;
-            if (success) success();
-        }
+        weakSelf.hasRegist = data;
+        if (success) success();
     } failure:^(NSString * _Nullable errorReason) {
         [ShaolinProgressHUD singleTextAutoHideHud:errorReason];
         if (failure) failure();

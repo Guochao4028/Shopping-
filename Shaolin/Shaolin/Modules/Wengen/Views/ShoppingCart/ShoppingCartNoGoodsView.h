@@ -11,7 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ShoppingCartNoGoodsView : UIView
--(void)buyTarget:(nullable id)target action:(SEL)action;
+- (void)buyTarget:(nullable id)target action:(SEL)action;
 @end
 
 NS_ASSUME_NONNULL_END

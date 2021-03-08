@@ -11,6 +11,8 @@
 #import "AFNetworking.h"
 #import "DefinedURLs.h"
 #import "DefinedHost.h"
+#import "ThumbFollowShareModel.h"
+#import "ThumbFollowShareManager.h"
 
 @implementation HomeManager
 + (instancetype)sharedInstance {
@@ -21,7 +23,7 @@
     });
     return instance;
 }
--(void)startRequestWithUrl:(NSString *)url params:(NSDictionary *)params WithBlock:(void(^)(id responseObject, NSError *error))completion
+- (void)startRequestWithUrl:(NSString *)url params:(NSDictionary *)params WithBlock:(void(^)(id responseObject, NSString *error))completion
 {
     [SLRequest postJsonRequestWithApi:url parameters:params success:^(NSDictionary * _Nullable resultDic) {
         ;
@@ -33,7 +35,7 @@
     
     [SLRequest refreshToken];
 }
--(void)cancleRequestWithUrl:(NSString *)url params:(NSMutableArray *)params WithBlock:(void(^)(id responseObject, NSError *error))completion
+- (void)cancleRequestWithUrl:(NSString *)url params:(NSMutableArray *)params WithBlock:(void(^)(id responseObject, NSString *error))completion
 {
 //       NSError *error;
 //       NSData *jsonData = [NSJSONSerialization dataWithJSONObject:params options:0 error:&error];
@@ -46,7 +48,7 @@
 //
 //       [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
 //       [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
-//       [request setValue:[SLAppInfoModel sharedInstance].access_token forHTTPHeaderField:@"token"];
+//       [request setValue:[SLAppInfoModel sharedInstance].accessToken forHTTPHeaderField:@"token"];
 //    [request setValue:@"iOS" forHTTPHeaderField:@"cellphoneType"];
 //    [request setValue:BUILD_STR forHTTPHeaderField:@"version"];
 //    [request setValue:VERSION_STR forHTTPHeaderField:@"versionName"];
@@ -85,17 +87,17 @@
     } failure:^(NSString * _Nullable errorReason) {
         
     } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
-        if (completion) completion(resultDic,nil);
+        if (completion) completion(resultDic,errorReason);
     }];
     
     [SLRequest refreshToken];
 }
-//-(void)getHomeSegmentFieldldSuccess:(void (^)(NSURLSessionDataTask * task, id responseObject))success failure:(void (^)(NSURLSessionDataTask * task, NSError * error))failure
+//- (void)getHomeSegmentFieldldSuccess:(void (^)(NSURLSessionDataTask * task, id responseObject))success failure:(void (^)(NSURLSessionDataTask * task, NSError * error))failure
 //{
 //    NSString *url = [NSString stringWithFormat:@"%@%@",Found,URL_GET_HomeSegment];
 //     [[NetworkingHandler sharedInstance]GETHandle:url parameters:nil progress:nil success:success failure:failure];
 //}
--(void)getHomeSegmentFieldldSuccess:(SLSuccessDicBlock)success failure:(SLFailureReasonBlock)failure finish:(SLFinishedResultBlock)finish{
+- (void)getHomeSegmentFieldldSuccess:(SLSuccessDicBlock)success failure:(SLFailureReasonBlock)failure finish:(SLFinishedResultBlock)finish{
     NSString *url = URL_GET_HomeSegment;
     [SLRequest getRequestWithApi:url parameters:@{} success:success failure:failure finish:finish];
 }
@@ -105,7 +107,7 @@
 
 
 #pragma mark - 发现列表
-//-(void)getHomeListFieldld:(NSString *)field PageNum:(NSString *)page PageSize:(NSString *)pageSize Success:(void (^)(NSURLSessionDataTask * task, id responseObject))success failure:(void (^)(NSURLSessionDataTask * task, NSError * error))failure
+//- (void)getHomeListFieldld:(NSString *)field PageNum:(NSString *)page PageSize:(NSString *)pageSize Success:(void (^)(NSURLSessionDataTask * task, id responseObject))success failure:(void (^)(NSURLSessionDataTask * task, NSError * error))failure
 //{
 //    NSString *url = [NSString stringWithFormat:@"%@%@",Found,URL_GET_HomeList];
 //    NSDictionary *params = @{
@@ -117,7 +119,7 @@
 //    [[NetworkingHandler sharedInstance]GETHandle:url parameters:params progress:nil success:success failure:failure];
 //}
 
--(void)getHomeListFieldld:(NSString *)field
+- (void)getHomeListFieldld:(NSString *)field
                   PageNum:(NSString *)page
                  PageSize:(NSString *)pageSize
                   Success:(SLSuccessDicBlock)success
@@ -159,23 +161,17 @@
 //       [[NetworkingHandler sharedInstance]GETHandle:url parameters:params progress:nil success:success failure:failure];
 //}
 - (void)getHomeVideoListFieldld:(NSString *)field TabbarStr:(NSString *)tabbarStr VideoId:(NSString *)videoId PageNum:(NSString *)page PageSize:(NSString *)pageSize Success:(SLSuccessDicBlock)success failure:(SLFailureReasonBlock)failure finish:(SLFinishedResultBlock)finish{
-     NSString *url =@"";
-          if ([tabbarStr isEqualToString:@"Found"]) {
-              url =Found_Video_List;
-          }else
-          {
-             url = Activity_Video_List;
-          }
-          NSDictionary *params = @{
-              @"id":videoId,
-              @"fieldId":field,
-              @"pageNum":page,
-              @"pageSize":pageSize,
+    NSString *url = Found_Video_List;
+          
+    NSDictionary *params = @{
+            @"id":videoId,
+            @"fieldId":field,
+            @"pageNum":page,
+            @"pageSize":pageSize,
               
-          };
+    };
         
-       
-       [SLRequest getRequestWithApi:url parameters:params success:success failure:failure finish:finish];
+    [SLRequest getRequestWithApi:url parameters:params success:success failure:failure finish:finish];
 }
 
 
@@ -210,7 +206,7 @@
 /**
 *  发布文章
 */
-- (void)postTextAndPhotoWithTitle:(NSString *)title Introduction:(NSString *)introductionStr Source:(NSString *)source Author:(NSString *)author Content:(NSString *)content Type:(NSString *)type State:(NSString *)state CreateId:(NSString *)createId CreateName:(NSString *)name CreateType:(NSString *)createType CoverUrlPlist:(NSArray *)plistArr WithBlock:(void(^)(id responseObject, NSError *error))completion
+- (void)postTextAndPhotoWithTitle:(NSString *)title Introduction:(NSString *)introductionStr Source:(NSString *)source Author:(NSString *)author Content:(NSString *)content Type:(NSString *)type State:(NSString *)state CreateId:(NSString *)createId CreateName:(NSString *)name CreateType:(NSString *)createType CoverUrlPlist:(NSArray *)plistArr WithBlock:(void(^)(id responseObject, NSString *error))completion
 {
     //  Found_POST_WebNewsInforMation
 //     NSString *url = [NSString stringWithFormat:@"%@%@",Found,Found_POST_WebNewsInforMation];
@@ -224,8 +220,8 @@
         @"content":content,
         @"type":type,
         @"state":state,
-        @"createtype":@"2",
-        @"coverurlList":plistArr,
+        @"createType":@"2",
+        @"coverUrlList":plistArr,
         @"abstracts":introductionStr
     };
     NSLog(@"--%@",params);
@@ -234,39 +230,28 @@
 /*
 *  修改文章
 */
-- (void)postUserChangeTextWithTitle:(NSString *)title Introduction:(NSString *)introductionStr textId:(NSString *)textId Content:(NSString *)content Type:(NSString *)type State:(NSString *)state CreateId:(NSString *)createId CreateName:(NSString *)name CreateType:(NSString *)createType Coverurilids:(NSArray *)coverurlidsArr CoverUrlPlist:(NSArray *)plistArr WithBlock:(void(^)(id responseObject, NSError *error))completion {
+- (void)postUserChangeTextWithTitle:(NSString *)title Introduction:(NSString *)introductionStr textId:(NSString *)textId Content:(NSString *)content Type:(NSString *)type State:(NSString *)state CreateId:(NSString *)createId CreateName:(NSString *)name CreateType:(NSString *)createType Coverurilids:(NSArray *)coverurlidsArr CoverUrlPlist:(NSArray *)plistArr WithBlock:(void(^)(id responseObject, NSString *error))completion {
 //    NSString *url = [NSString stringWithFormat:@"%@%@",Found,Me_User_ChangeText];
         NSString *url = Me_User_ChangeText;
         NSDictionary *params = @{
            @"title":title,
-           @"source":SLLocalizedString(@"原创"),
-           @"clicks":@"100",
            @"content":content,
            @"type":type,
            @"state":state,
-           @"createtype":@"2",
-           @"coverurlList":plistArr,
-           @"abstracts":introductionStr,
+           @"coverUrlList":plistArr,
            @"id":textId,
-           @"coverurlids":coverurlidsArr
+           @"abstracts":introductionStr,
+           
+//           @"source":SLLocalizedString(@"原创"),
+//           @"clicks":@"100",
+//           @"createType":@"2",
+//           @"abstracts":introductionStr,
+//           @"coverUrlIds":coverurlidsArr
        };
        NSLog(@"--%@",params);
        [self startRequestWithUrl:url params:params WithBlock:completion];
 }
-/**
-*   敏感词校验
-*/
-- (void)postTextContentCheck:(NSString *)str WithBlock:(void(^)(id responseObject, NSError *error))completion
-{
-//    NSString *url = [NSString stringWithFormat:@"%@%@",Found,Found_POST_TextContentCheck];
-    
-    NSString *url = Found_POST_TextContentCheck;
-    
-       NSDictionary *params = @{
-           @"text":str
-       };
-       [self startRequestWithUrl:url params:params WithBlock:completion];
-}
+
 /**
 *   视频阅读历史
 */
@@ -286,8 +271,11 @@
                           Success:(SLSuccessDicBlock)success
                           failure:(SLFailureReasonBlock)failure
                            finish:(SLFinishedResultBlock)finish{
-    
-    NSString *url = Me_Readhistory;
+//    contentId 文章id
+//    type 1发现 2活动
+//    kind 1图文 2视频
+//    watchTime 观看时间 只对视频文章使用
+    NSString *url = Foune_POST_ADDVIDEOREADHISTORY;
      NSDictionary *params = @{
         @"contentId":contentId,
         @"type":typeStr,
@@ -299,7 +287,7 @@
 /**
 *   发现分享
 */
-//-(void)postSharedContentId:(NSString *)contentId Type:(NSString *)type Kind:(NSString *)kind MemberId:(NSString *)memerId MemberName:(NSString *)memberName Success:(void (^)(NSURLSessionDataTask * task, id responseObject))success failure:(void (^)(NSURLSessionDataTask * task, NSError * error))failure
+//- (void)postSharedContentId:(NSString *)contentId Type:(NSString *)type Kind:(NSString *)kind MemberId:(NSString *)memerId MemberName:(NSString *)memberName Success:(void (^)(NSURLSessionDataTask * task, id responseObject))success failure:(void (^)(NSURLSessionDataTask * task, NSError * error))failure
 //{
 //    NSString *url = [NSString stringWithFormat:@"%@%@",Found,Foune_POST_DetailsPraise];
 //    NSDictionary *params;
@@ -323,7 +311,7 @@
 //    
 //    [[NetworkingHandler sharedInstance]POSTHandle:url head:nil parameters:params progress:nil success:success failure:failure];
 //}
--(void)postSharedContentId:(NSString *)contentId
+- (void)postSharedContentId:(NSString *)contentId
                       Type:(NSString *)type
                       Kind:(NSString *)kind
                   MemberId:(NSString *)memerId
@@ -339,19 +327,23 @@
             @"pujaCode":contentId,
             @"kind":kind,
             @"type":type,
-            @"classif":@"2",
+            @"classIf":@"2",
         };
     } else {
         params = @{
             @"contentId":contentId,
             @"kind":kind,
             @"type":type,
-            @"classif":@"2",
+            @"classIf":@"2",
         };
     }
     
     NSLog(@"%@",params);
-   [SLRequest postHttpRequestWithApi:url parameters:params success:success failure:failure finish:finish];
+//   [SLRequest postHttpRequestWithApi:url parameters:params success:success failure:failure finish:finish];
+    ThumbFollowShareModel *model = [ThumbFollowShareModel thumbFollowShareModelByDict:params modelType:ShareType modelItemType:FoundItemType];
+    [ThumbFollowShareManager insertThumbFollowShareModel:model];
+    if (success) success (nil);
+    if (finish) finish(nil, nil);
 }
 
 
@@ -360,7 +352,7 @@
 /**
 *   发现点赞
 */
-//-(void)postPraiseContentId:(NSString *)contentId Type:(NSString *)type Kind:(NSString *)kind MemberId:(NSString *)memerId MemberName:(NSString *)memberName Success:(void (^)(NSURLSessionDataTask * task, id responseObject))success failure:(void (^)(NSURLSessionDataTask * task, NSError * error))failure
+//- (void)postPraiseContentId:(NSString *)contentId Type:(NSString *)type Kind:(NSString *)kind MemberId:(NSString *)memerId MemberName:(NSString *)memberName Success:(void (^)(NSURLSessionDataTask * task, id responseObject))success failure:(void (^)(NSURLSessionDataTask * task, NSError * error))failure
 //{
 //        NSString *url = [NSString stringWithFormat:@"%@%@",Found,Foune_POST_DetailsPraise];
 //    NSDictionary *params;
@@ -382,7 +374,7 @@
 //    [[NetworkingHandler sharedInstance]POSTHandle:url head:nil parameters:params progress:nil success:success failure:failure];
 //}
 
--(void)postPraiseContentId:(NSString *)contentId Type:(NSString *)type Kind:(NSString *)kind MemberId:(NSString *)memerId MemberName:(NSString *)memberName
+- (void)postPraiseContentId:(NSString *)contentId Type:(NSString *)type Kind:(NSString *)kind MemberId:(NSString *)memerId MemberName:(NSString *)memberName
                    Success:(SLSuccessDicBlock)success
                    failure:(SLFailureReasonBlock)failure
                     finish:(SLFinishedResultBlock)finish{
@@ -402,24 +394,34 @@
         @"classif":@"1"};
     }
     NSLog(@"%@",params);
-      [SLRequest postHttpRequestWithApi:url parameters:params success:success failure:failure finish:finish];
+//      [SLRequest postHttpRequestWithApi:url parameters:params success:success failure:failure finish:finish];
+    
+    ThumbFollowShareModel *model = [ThumbFollowShareModel thumbFollowShareModelByDict:params modelType:PraiseType modelItemType:FoundItemType];
+    [ThumbFollowShareManager insertThumbFollowShareModel:model];
+    if (success) success (nil);
+    if (finish) finish(nil, nil);
 }
 
 /**
 *   发现取消点赞
 */
-- (void)postPraiseCancleArray:(NSMutableArray *)plistArr WithBlock:(void(^)(id responseObject, NSError *error))completion
+- (void)postPraiseCancleArray:(NSMutableArray *)plistArr WithBlock:(void(^)(id responseObject, NSString *error))completion
 {
     NSString *url = [NSString stringWithFormat:@"%@%@",Found,Foune_POST_CanclePraise];
           
     NSLog(@"%@",plistArr);
     
-    [self cancleRequestWithUrl:url params:plistArr WithBlock:completion];
+//    [self cancleRequestWithUrl:url params:plistArr WithBlock:completion];
+    for (NSDictionary *params in plistArr){
+        ThumbFollowShareModel *model = [ThumbFollowShareModel thumbFollowShareModelByDict:params modelType:CancelPraiseType modelItemType:FoundItemType];
+        [ThumbFollowShareManager insertThumbFollowShareModel:model];
+    }
+    if (completion) completion(nil, nil);
 }
 /**
 *   发现收藏
 */
-//-(void)postCollectionContentId:(NSString *)contentId Type:(NSString *)type Kind:(NSString *)kind MemberId:(NSString *)memerId MemberName:(NSString *)memberName Success:(void (^)(NSURLSessionDataTask * task, id responseObject))success failure:(void (^)(NSURLSessionDataTask * task, NSError * error))failure
+//- (void)postCollectionContentId:(NSString *)contentId Type:(NSString *)type Kind:(NSString *)kind MemberId:(NSString *)memerId MemberName:(NSString *)memberName Success:(void (^)(NSURLSessionDataTask * task, id responseObject))success failure:(void (^)(NSURLSessionDataTask * task, NSError * error))failure
 //{
 //        NSString *url = [NSString stringWithFormat:@"%@%@",Found,Foune_POST_DetailsCollection];
 //    NSDictionary *params;
@@ -441,7 +443,7 @@
 //
 //    [[NetworkingHandler sharedInstance]POSTHandle:url head:nil parameters:params progress:nil success:success failure:failure];
 //}
--(void)postCollectionContentId:(NSString *)contentId
+- (void)postCollectionContentId:(NSString *)contentId
                           Type:(NSString *)type
                           Kind:(NSString *)kind
                       MemberId:(NSString *)memerId
@@ -465,8 +467,12 @@
            };
        }
        
-    [SLRequest postHttpRequestWithApi:url parameters:params success:success failure:failure finish:finish];
+//    [SLRequest postHttpRequestWithApi:url parameters:params success:success failure:failure finish:finish];
     
+    ThumbFollowShareModel *model = [ThumbFollowShareModel thumbFollowShareModelByDict:params modelType:CollectionType modelItemType:FoundItemType];
+    [ThumbFollowShareManager insertThumbFollowShareModel:model];
+    if (success) success (nil);
+    if (finish) finish(nil, nil);
 }
 
 
@@ -474,12 +480,19 @@
 /**
 *   发现取消收藏
 */
-- (void)postCollectionCancleArray:(NSMutableArray *)plistArr WithBlock:(void(^)(id responseObject, NSError *error))completion
+- (void)postCollectionCancleArray:(NSMutableArray *)plistArr WithBlock:(void(^)(id responseObject, NSString *error))completion
 {
     NSString *url = [NSString stringWithFormat:@"%@%@",Found,Foune_POST_CancleCollection];
     NSLog(@"%@",plistArr);
     
-    [self cancleRequestWithUrl:url params:plistArr WithBlock:completion];
+    NSMutableArray *modelArray = [@[] mutableCopy];
+    for (NSDictionary *dict in plistArr){
+        ThumbFollowShareModel *model = [ThumbFollowShareModel thumbFollowShareModelByDict:dict modelType:CancelCollectionType modelItemType:FoundItemType];
+        [modelArray addObject:model];
+        [ThumbFollowShareManager insertThumbFollowShareModel:model];
+    }
+    if (completion) completion(nil, nil);
+//    [self cancleRequestWithUrl:url params:plistArr WithBlock:completion];
 }
 /**
 *   发现 热词
@@ -502,14 +515,8 @@
                   failure:(SLFailureReasonBlock)failure
                    finish:(SLFinishedResultBlock)finish{
     
-    NSString *url =@"";
-       if ([tabbarStr isEqualToString:@"Found"]) {
-           url =Foune_Get_Topic;
-       }else
-       {
-           url =  Activity_Get_Topic;
-       }
-       
+    NSString *url = Foune_Get_Topic;
+  
     [SLRequest getRequestWithApi:url parameters:@"" success:success failure:failure finish:finish];
 }
 
@@ -544,20 +551,15 @@
                    Success:(SLSuccessDicBlock)success
                    failure:(SLFailureReasonBlock)failure
                     finish:(SLFinishedResultBlock)finish{
-    NSString *url = @"";
-       if ([tabbarStr isEqualToString:@"Found"]) {
-           url = Foune_Get_SearchAndDetails;
-       }else
-       {
-           url = Activity_GET_Search;
-       }
-       NSDictionary *params = @{
-           @"search":searchStr,
-           @"pageNum":pageNum,
-           @"pageSize":pageSize,
-           @"state":@"6"
-       };
-       NSLog(@"%@",params);
+    NSString *url = Foune_Get_SearchAndDetails;
+       
+    NSDictionary *params = @{
+        @"search":searchStr,
+        @"pageNum":pageNum,
+        @"pageSize":pageSize,
+        @"state":@"6"
+    };
+    NSLog(@"%@",params);
     [SLRequest getRequestWithApi:url parameters:params success:success failure:failure finish:finish];
 }
 

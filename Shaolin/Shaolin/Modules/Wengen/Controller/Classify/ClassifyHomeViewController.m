@@ -23,6 +23,8 @@
 
 #import "WengenEnterModel.h"
 
+#import "DataManager.h"
+
 //@interface ClassifyHomeViewController ()<XLPageViewControllerDelegate,XLPageViewControllerDataSrouce, WengenSearchViewDelegate>
 
 @interface ClassifyHomeViewController ()<XLPageViewControllerDelegate,XLPageViewControllerDataSrouce>
@@ -36,14 +38,14 @@
 //top 搜索栏
 //@property(nonatomic, strong)WengenSearchView *searchView;
 
-@property(nonatomic, weak)ClassifyViewController *baseVC;
+//@property(nonatomic, weak)ClassifyViewController *baseVC;
 
 
 @end
 
 @implementation ClassifyHomeViewController
 
--(void)viewWillAppear:(BOOL)animated{
+- (void)viewWillAppear:(BOOL)animated{
     
     UIButton *leftButton = [self leftBtn];
     
@@ -73,7 +75,7 @@
 }
 
 
--(void)initUI{
+- (void)initUI{
     [self.view setBackgroundColor:[UIColor whiteColor]];
 //    [self.view addSubview:self.searchView];
     
@@ -90,11 +92,11 @@
 }
 
 
--(void)searchDidSelectHandle {
+- (void)searchDidSelectHandle {
     [self tapSearch];
 }
 
--(void)leftAction{
+- (void)leftAction{
     WengenEnterModel *enterModel = self.allGoodsCateList[self.loction];
     
     enterModel.isSelected = NO;
@@ -110,7 +112,7 @@
 /**
  点击购物车
  */
--(void)tapShopping{
+- (void)tapShopping{
     ShoppingCartViewController *shoppingCartVC = [[ShoppingCartViewController alloc]init];
     shoppingCartVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:shoppingCartVC animated:YES];
@@ -119,7 +121,7 @@
 /**
  点击搜索
  */
--(void)tapSearch{
+- (void)tapSearch{
     SearchViewController *searchVC = [[SearchViewController alloc]init];
     searchVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:searchVC animated:YES];
@@ -128,15 +130,18 @@
 /**
  点击搜索view上的返回按钮
  */
--(void)tapBack{
+- (void)tapBack{
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - TableViewDelegate&DataSource
 - (UIViewController *)pageViewController:(XLPageViewController *)pageViewController viewControllerForIndex:(NSInteger)index {
     ClassifyViewController *classifyVC = [[ClassifyViewController alloc]init];
-    self.baseVC = classifyVC;
+//    self.baseVC = classifyVC;
+    
     classifyVC.enterModel = self.allGoodsCateList[index];
+    
+    
     return classifyVC;
 }
 
@@ -152,23 +157,23 @@
 - (void)pageViewController:(XLPageViewController *)pageViewController didSelectedAtIndex:(NSInteger)index {
     NSLog(@"切换到了：%@",self.titles[index]);
     NSLog(@"切换到了：%ld", index);
- self.baseVC.enterModel = self.allGoodsCateList[index];
+// self.baseVC.enterModel = self.allGoodsCateList[index];
     
     
 }
 
--(void)pageViewController:(XLPageViewController *)pageViewController refreshAtIndex:(NSInteger)index{
-    NSLog(@"刷新了：%@",self.titles[index]);
-    NSLog(@"刷新了：%ld", index);
-    self.baseVC.enterModel = self.allGoodsCateList[index];
-    [self.baseVC refreshUI];
-    
-    
-}
+//- (void)pageViewController:(XLPageViewController *)pageViewController refreshAtIndex:(NSInteger)index{
+//    NSLog(@"刷新了：%@",self.titles[index]);
+//    NSLog(@"刷新了：%ld", index);
+////    self.baseVC.enterModel = self.allGoodsCateList[index];
+////    [self.baseVC refreshUI];
+//    
+//    
+//}
 
 #pragma mark - getter / setter
 
-//-(WengenSearchView *)searchView{
+//- (WengenSearchView *)searchView{
 //    if (_searchView == nil) {
 //
 //        //状态栏高度
@@ -200,7 +205,7 @@
 //    return nil;
 //}
 
--(XLPageViewController *)pageViewController{
+- (XLPageViewController *)pageViewController{
     
     if (_pageViewController == nil) {
         _pageViewController = [[XLPageViewController alloc]initWithConfig:self.config];
@@ -211,7 +216,7 @@
     
 }
 
--(XLPageViewControllerConfig *)config{
+- (XLPageViewControllerConfig *)config{
     
     if (_config == nil) {
         _config = [XLPageViewControllerConfig defaultConfig];
@@ -240,10 +245,12 @@
     
 }
 
--(void)setLoction:(NSInteger)loction{
+- (void)setLoction:(NSInteger)loction{
     _loction = loction;
     [self.pageViewController setSelectedIndex:loction];
 }
+
+
 
 
 

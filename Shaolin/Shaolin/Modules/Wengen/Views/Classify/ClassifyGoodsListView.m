@@ -26,7 +26,7 @@ static NSString *const kClassifyGoodsCollectionCellIdentifier = @"ClassifyGoodsC
 
 @implementation ClassifyGoodsListView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [self initUI];
@@ -35,7 +35,7 @@ static NSString *const kClassifyGoodsCollectionCellIdentifier = @"ClassifyGoodsC
 }
 
 #pragma mark - methods
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.collectionView];
     [self addSubview:self.notGoodsView];
     [self.notGoodsView setHidden:YES];
@@ -44,13 +44,13 @@ static NSString *const kClassifyGoodsCollectionCellIdentifier = @"ClassifyGoodsC
 
 #pragma mark - UICollectionViewDelegate & UICollectionViewDataSource
 
--(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
     
     return self.dataArray.count;
 }
 
 
--(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     ClassifyGoodsCollectionCell * cell  = [collectionView dequeueReusableCellWithReuseIdentifier:kClassifyGoodsCollectionCellIdentifier forIndexPath:indexPath];
     cell.model = [self.dataArray objectAtIndex:indexPath.row];
     
@@ -58,7 +58,7 @@ static NSString *const kClassifyGoodsCollectionCellIdentifier = @"ClassifyGoodsC
     return cell;
 }
 
--(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     
     WengenGoodsModel *model = [self.dataArray objectAtIndex:indexPath.row];
     
@@ -70,7 +70,7 @@ static NSString *const kClassifyGoodsCollectionCellIdentifier = @"ClassifyGoodsC
 
 
 #pragma mark - setter / gettter
--(UICollectionView *)collectionView{
+- (UICollectionView *)collectionView{
     if (_collectionView == nil) {
         
         CGFloat collectionWidth = CGRectGetWidth(self.bounds);
@@ -113,7 +113,7 @@ static NSString *const kClassifyGoodsCollectionCellIdentifier = @"ClassifyGoodsC
     return _collectionView;
 }
 
--(UIView *)notGoodsView{
+- (UIView *)notGoodsView{
     
     if (_notGoodsView == nil) {
         _notGoodsView = [[UIView alloc]initWithFrame:self.bounds];
@@ -149,7 +149,7 @@ static NSString *const kClassifyGoodsCollectionCellIdentifier = @"ClassifyGoodsC
 
 }
 
--(void)setDataArray:(NSArray *)dataArray{
+- (void)setDataArray:(NSArray *)dataArray{
     _dataArray = dataArray;
     
     if ([dataArray count] > 0) {

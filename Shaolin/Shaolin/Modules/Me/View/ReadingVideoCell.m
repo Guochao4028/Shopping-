@@ -7,9 +7,10 @@
 //
 
 #import "ReadingVideoCell.h"
+#import "DefinedURLs.h"
 
 @implementation ReadingVideoCell
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
@@ -18,7 +19,7 @@
     }
     return self;
 }
--(void)setModel:(FoundModel *)model {
+- (void)setModel:(FoundModel *)model {
     _model = model;
     self.nameLabel.text = model.title;
     if (self.isCollect) {
@@ -32,20 +33,20 @@
     }
     
     
-    if (model.coverurlList == nil || model.coverurlList.count == 0) {
+    if (model.coverUrlList == nil || model.coverUrlList.count == 0) {
         self.imageV.image = [UIImage imageNamed:@"default_big"];
     }else {
         //        [self.imageV sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", model.coverurlList[0][@"route"], Video_First_Photo]]];
-        
-        [self.imageV sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", model.coverurlList[0][@"route"], Video_First_Photo]] placeholderImage:[UIImage imageNamed:@"default_big"]];
-        
+        NSString *imageName = [NSString stringWithFormat:@"%@%@", model.coverUrlList[0][@"route"], Video_First_Photo];
+        [self.imageV sd_setImageWithURL:[NSURL URLWithString:imageName] placeholderImage:[UIImage imageNamed:@"default_big"]];
+        //https://static.oss.cdn.oss.gaoshier.cn/other/3a417838-6889-42cd-af46-40ace83b100e.mp4?x-oss-process=video/snapshot,t_3000,m_fast,ar_auto
         if (model.videoTimeStr.length){
             [self.timeBtn setTitle:[NSString stringWithFormat:@" %@", model.videoTimeStr] forState:UIControlStateNormal];
         } else {
             WEAKSELF
             dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
             dispatch_async(queue, ^{
-                NSString *videoTimeStr = [weakSelf getVideoTimeByUrlString:model.coverurlList[0][@"route"]];
+                NSString *videoTimeStr = [weakSelf getVideoTimeByUrlString:model.coverUrlList[0][@"route"]];
                 if (model.hash == weakSelf.model.hash){
                     model.videoTimeStr = videoTimeStr;
                     dispatch_async(dispatch_get_main_queue(), ^{
@@ -55,10 +56,10 @@
             });
         }
     }
-    if ([model.collection isEqualToString:@"1"]) {
-        [self.priseBtn setSelected:NO];
-    }else {
+    if ([model.collectionState isEqualToString:@"1"]) {
         [self.priseBtn setSelected:YES];
+    }else {
+        [self.priseBtn setSelected:NO];
     }
 }
 
@@ -82,7 +83,7 @@
     
 }
 
--(void)setupView {
+- (void)setupView {
     [self.contentView addSubview:self.bgView];
     [self.bgView addSubview:self.imageV];
     [self.imageV addSubview:self.playBtn];

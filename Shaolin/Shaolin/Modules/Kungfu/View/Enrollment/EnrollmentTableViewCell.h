@@ -42,9 +42,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol EnrollmentTableViewCellDelegate <NSObject>
 
--(void)enrollmentTableViewCell:(EnrollmentTableViewCell *)cell tapMore:(EnrollmentListModel *)model;
+- (void)enrollmentTableViewCell:(EnrollmentTableViewCell *)cell tapMore:(EnrollmentListModel *)model;
 
--(void)enrollmentTableViewCell:(EnrollmentTableViewCell *)cell tapSignUp:(EnrollmentListModel *)model;
+- (void)enrollmentTableViewCell:(EnrollmentTableViewCell *)cell tapSignUp:(EnrollmentListModel *)model;
 
 @end
 

@@ -9,7 +9,7 @@
 #import "LongPhotoCell.h"
 
 @implementation LongPhotoCell
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
       if (self) {
@@ -17,19 +17,19 @@
       }
       return self;
 }
--(void)setIndexPath:(NSIndexPath *)indexPath
+- (void)setIndexPath:(NSIndexPath *)indexPath
 {
     
 }
 
--(void)setFoundModel:(FoundModel *)f
+- (void)setFoundModel:(FoundModel *)f
 {
      f.cellHeight =  227;
 }
 
 
 
--(void)setupView
+- (void)setupView
 {
     
     [self.contentView addSubview:self.titleL];
@@ -37,7 +37,7 @@
     [self.imageV addSubview:self.strategyBtn];
   
 }
--(void)layoutSubviews
+- (void)layoutSubviews
 {
     [super layoutSubviews];
     [self.titleL mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -59,7 +59,7 @@
          make.height.mas_equalTo(SLChange(30));
      }];
 }
--(UILabel *)titleL
+- (UILabel *)titleL
 {
     if (!_titleL) {
         _titleL = [[UILabel alloc]init];
@@ -71,7 +71,7 @@
     }
     return _titleL;
 }
--(UIImageView *)imageV
+- (UIImageView *)imageV
 {
     if (!_imageV) {
         _imageV = [[UIImageView alloc]init];
@@ -80,7 +80,7 @@
     }
     return _imageV;
 }
--(UIButton *)strategyBtn
+- (UIButton *)strategyBtn
 {
     if (!_strategyBtn) {
         _strategyBtn = [[UIButton alloc]init];

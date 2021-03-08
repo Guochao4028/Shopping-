@@ -136,19 +136,19 @@ NSString const *badgeValueKey = @"badgeValueKey";
 }
 
 #pragma mark - getters/setters
--(UILabel*) badge {
+- (UILabel*) badge {
     return objc_getAssociatedObject(self, &badgeKey);
 }
--(void)setBadge:(UILabel *)badgeLabel
+- (void)setBadge:(UILabel *)badgeLabel
 {
     objc_setAssociatedObject(self, &badgeKey, badgeLabel, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 // Badge value to be display
--(NSString *)badgeValue {
+- (NSString *)badgeValue {
     return objc_getAssociatedObject(self, &badgeValueKey);
 }
--(void) setBadgeValue:(NSString *)badgeValue
+- (void) setBadgeValue:(NSString *)badgeValue
 {
     objc_setAssociatedObject(self, &badgeValueKey, badgeValue, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     
@@ -175,10 +175,10 @@ NSString const *badgeValueKey = @"badgeValueKey";
 }
 
 // Badge background color
--(UIColor *)badgeBGColor {
+- (UIColor *)badgeBGColor {
     return objc_getAssociatedObject(self, &badgeBGColorKey);
 }
--(void)setBadgeBGColor:(UIColor *)badgeBGColor
+- (void)setBadgeBGColor:(UIColor *)badgeBGColor
 {
     objc_setAssociatedObject(self, &badgeBGColorKey, badgeBGColor, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     if (self.badge) {
@@ -187,10 +187,10 @@ NSString const *badgeValueKey = @"badgeValueKey";
 }
 
 // Badge text color
--(UIColor *)badgeTextColor {
+- (UIColor *)badgeTextColor {
     return objc_getAssociatedObject(self, &badgeTextColorKey);
 }
--(void)setBadgeTextColor:(UIColor *)badgeTextColor
+- (void)setBadgeTextColor:(UIColor *)badgeTextColor
 {
     objc_setAssociatedObject(self, &badgeTextColorKey, badgeTextColor, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     if (self.badge) {
@@ -199,10 +199,10 @@ NSString const *badgeValueKey = @"badgeValueKey";
 }
 
 // Badge font
--(UIFont *)badgeFont {
+- (UIFont *)badgeFont {
     return objc_getAssociatedObject(self, &badgeFontKey);
 }
--(void)setBadgeFont:(UIFont *)badgeFont
+- (void)setBadgeFont:(UIFont *)badgeFont
 {
     objc_setAssociatedObject(self, &badgeFontKey, badgeFont, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     if (self.badge) {
@@ -211,11 +211,11 @@ NSString const *badgeValueKey = @"badgeValueKey";
 }
 
 // Padding value for the badge
--(CGFloat) badgePadding {
+- (CGFloat) badgePadding {
     NSNumber *number = objc_getAssociatedObject(self, &badgePaddingKey);
     return number.floatValue;
 }
--(void) setBadgePadding:(CGFloat)badgePadding
+- (void) setBadgePadding:(CGFloat)badgePadding
 {
     NSNumber *number = [NSNumber numberWithDouble:badgePadding];
     objc_setAssociatedObject(self, &badgePaddingKey, number, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
@@ -225,11 +225,11 @@ NSString const *badgeValueKey = @"badgeValueKey";
 }
 
 // Minimum size badge to small
--(CGFloat) badgeMinSize {
+- (CGFloat) badgeMinSize {
     NSNumber *number = objc_getAssociatedObject(self, &badgeMinSizeKey);
     return number.floatValue;
 }
--(void) setBadgeMinSize:(CGFloat)badgeMinSize
+- (void) setBadgeMinSize:(CGFloat)badgeMinSize
 {
     NSNumber *number = [NSNumber numberWithDouble:badgeMinSize];
     objc_setAssociatedObject(self, &badgeMinSizeKey, number, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
@@ -239,11 +239,11 @@ NSString const *badgeValueKey = @"badgeValueKey";
 }
 
 // Values for offseting the badge over the BarButtonItem you picked
--(CGFloat) badgeOriginX {
+- (CGFloat) badgeOriginX {
     NSNumber *number = objc_getAssociatedObject(self, &badgeOriginXKey);
     return number.floatValue;
 }
--(void) setBadgeOriginX:(CGFloat)badgeOriginX
+- (void) setBadgeOriginX:(CGFloat)badgeOriginX
 {
     NSNumber *number = [NSNumber numberWithDouble:badgeOriginX];
     objc_setAssociatedObject(self, &badgeOriginXKey, number, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
@@ -252,11 +252,11 @@ NSString const *badgeValueKey = @"badgeValueKey";
     }
 }
 
--(CGFloat) badgeOriginY {
+- (CGFloat) badgeOriginY {
     NSNumber *number = objc_getAssociatedObject(self, &badgeOriginYKey);
     return number.floatValue;
 }
--(void) setBadgeOriginY:(CGFloat)badgeOriginY
+- (void) setBadgeOriginY:(CGFloat)badgeOriginY
 {
     NSNumber *number = [NSNumber numberWithDouble:badgeOriginY];
     objc_setAssociatedObject(self, &badgeOriginYKey, number, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
@@ -266,7 +266,7 @@ NSString const *badgeValueKey = @"badgeValueKey";
 }
 
 // In case of numbers, remove the badge when reaching zero
--(BOOL) shouldHideBadgeAtZero {
+- (BOOL) shouldHideBadgeAtZero {
     NSNumber *number = objc_getAssociatedObject(self, &shouldHideBadgeAtZeroKey);
     return number.boolValue;
 }
@@ -277,7 +277,7 @@ NSString const *badgeValueKey = @"badgeValueKey";
 }
 
 // Badge has a bounce animation when value changes
--(BOOL) shouldAnimateBadge {
+- (BOOL) shouldAnimateBadge {
     NSNumber *number = objc_getAssociatedObject(self, &shouldAnimateBadgeKey);
     return number.boolValue;
 }

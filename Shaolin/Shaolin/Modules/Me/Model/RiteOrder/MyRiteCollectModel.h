@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) NSString *buddhismId;
 @property (nonatomic, copy) NSString *buddhismTypeId;
-@property (nonatomic, copy) NSString *classif;
+@property (nonatomic, copy) NSString *classIf;
 /*!是否点赞*/
 @property (nonatomic, copy) NSString *collectionsState;
 @end

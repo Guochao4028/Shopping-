@@ -9,7 +9,7 @@
 #import "ReadingTextCell.h"
 
 @implementation ReadingTextCell
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
       if (self) {
@@ -17,7 +17,7 @@
       }
       return self;
 }
--(void)setupView
+- (void)setupView
 {
     
     [self.contentView addSubview:self.imageV];
@@ -25,13 +25,13 @@
     [self.contentView addSubview:self.nameLabel];
 //    [self.contentView addSubview:self.deleteBtn];
 }
--(void)setMePostManagerModel:(FoundModel *)model indexpath:(NSIndexPath *)indexPath
+- (void)setMePostManagerModel:(FoundModel *)model indexpath:(NSIndexPath *)indexPath
 {
-    if (model.coverurlList.count < 1) {
+    if (model.coverUrlList.count < 1) {
            self.imageV.image = [UIImage imageNamed:@"shaolinlogo"];
           }else
           {
-              [self.imageV sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",model.coverurlList[0][@"route"]]] placeholderImage:[UIImage imageNamed:@"default_banner"]];
+              [self.imageV sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",model.coverUrlList[0][@"route"]]] placeholderImage:[UIImage imageNamed:@"default_banner"]];
           }
        NSDate *date= [self nsstringConversionNSDate:model.returnTime];
        NSString *timeStr = [NSString stringWithFormat:@"%@",[self compaareCurrentTime:date]];
@@ -39,7 +39,7 @@
        self.titleL.text = [NSString stringWithFormat:@"%@",model.title];
 }
 
--(void)layoutSubviews
+- (void)layoutSubviews
 {
    [super layoutSubviews];
     [self.imageV mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -90,7 +90,7 @@
 }
 
 
--(UILabelLeftTopAlign *)titleL
+- (UILabelLeftTopAlign *)titleL
 {
     if (!_titleL) {
         _titleL = [[UILabelLeftTopAlign alloc]init];
@@ -102,7 +102,7 @@
     }
     return _titleL;
 }
--(UIImageView *)imageV
+- (UIImageView *)imageV
 {
     if (!_imageV) {
         _imageV = [[UIImageView alloc]init];
@@ -115,7 +115,7 @@
     return _imageV;
 }
 
--(UILabel *)nameLabel
+- (UILabel *)nameLabel
 {
     if (!_nameLabel) {
            _nameLabel = [[UILabel alloc]init];
@@ -127,7 +127,7 @@
        }
        return _nameLabel;
 }
--(UIButton *)deleteBtn {
+- (UIButton *)deleteBtn {
     if (!_deleteBtn) {
         _deleteBtn = [[UIButton alloc]init];
         [_deleteBtn setImage:[UIImage imageNamed:@"me_postmanagement_normal"] forState:(UIControlStateNormal)];
@@ -153,7 +153,7 @@
 
     }
 }
--(NSString *)compaareCurrentTime:(NSDate *)compareDate
+- (NSString *)compaareCurrentTime:(NSDate *)compareDate
 {
     NSTimeInterval  timeInterval = [compareDate timeIntervalSinceNow];
 
@@ -212,7 +212,7 @@
     return  result;
   
 }
--(NSDate *)nsstringConversionNSDate:(NSString *)dateStr
+- (NSDate *)nsstringConversionNSDate:(NSString *)dateStr
 {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"YYYY-MM-dd HH:mm:ss"];

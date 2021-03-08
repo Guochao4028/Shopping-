@@ -27,7 +27,7 @@
     return [[[NSBundle mainBundle] loadNibNamed:(NSStringFromClass([KungfuClassVideoChooseView class])) owner:self options:nil] objectAtIndex:0];
 }
 
--(void)layoutSubviews {
+- (void)layoutSubviews {
     switch (self.endViewType) {
         case 0:
             self.leftReplyBtn.hidden = YES;

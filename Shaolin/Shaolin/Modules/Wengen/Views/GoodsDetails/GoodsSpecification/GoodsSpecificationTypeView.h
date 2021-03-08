@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol GoodsSpecificationTypeViewDelegate <NSObject>
 
--(void)goodsSpecificationTypeView:(GoodsSpecificationTypeView *)view selectedModel:(GoodsAttrBasisModel *)model allDataArray:(NSArray *)dataArray;
+- (void)goodsSpecificationTypeView:(GoodsSpecificationTypeView *)view selectedModel:(GoodsAttrBasisModel *)model allDataArray:(NSArray *)dataArray;
 
 
 @end
@@ -38,7 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
 +(instancetype)goodsSpecificationTypeViewInit;
 
 ///刷新数据
--(void)reloadData;
+- (void)reloadData;
 
 @end
 

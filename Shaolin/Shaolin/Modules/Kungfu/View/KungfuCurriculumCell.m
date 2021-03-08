@@ -10,7 +10,7 @@
 #import "SubjectModel.h"
 
 @implementation KungfuCurriculumCell
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
@@ -28,14 +28,14 @@
     
     self.imageV.layer.cornerRadius = 4;
 }
--(void)layoutSubviews
+- (void)layoutSubviews
 {
     [super layoutSubviews];
     
     [self.imageV mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(16);
+        make.left.mas_equalTo(8);
         make.right.mas_equalTo(-16);
-        make.top.mas_equalTo(5);
+        make.top.mas_equalTo(10);
         make.bottom.mas_equalTo(-5);
     }];
     
@@ -43,30 +43,41 @@
         make.edges.mas_equalTo(self.imageV);
     }];
     
-    [self.contentLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.mas_equalTo(kWidth-64);
-        make.height.mas_equalTo(20);
-        make.left.mas_equalTo(32);
-        make.bottom.mas_equalTo(-16);
-        
-    }];
-    
-    [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(32);
-        make.height.mas_equalTo(33);
-        make.left.mas_equalTo(64);
-        make.bottom.mas_equalTo(self.contentLabel.mas_top);
-    }];
+   
     
     [self.titleLabe mas_makeConstraints:^(MASConstraintMaker *make) {
 //        make.width.mas_equalTo(112);
         make.height.mas_equalTo(16);
-        make.left.mas_equalTo(32);
+        make.left.mas_equalTo(self.imageV.mas_left).mas_offset(16);
         make.top.mas_equalTo(self.imageV.mas_top).mas_offset(12);
     }];
     
+    [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.mas_equalTo(32);
+//        make.height.mas_equalTo(33);
+//        make.left.mas_equalTo(64);
+//        make.left.mas_equalTo(64);
+//        make.bottom.mas_equalTo(self.contentLabel.mas_top);
+        
+        make.left.mas_equalTo(self.contentLabel);
+        make.height.mas_equalTo(33);
+        make.top.mas_equalTo(self.titleLabe.mas_bottom).mas_offset(19);
+//        make.bottom.mas_equalTo(self.contentLabel.mas_top);
+        
+    }];
+    
+    [self.contentLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.width.mas_equalTo(kWidth-64);
+        make.height.mas_equalTo(20);
+        make.left.mas_equalTo(self.imageV.mas_left).mas_offset(16);
+        make.right.mas_equalTo(self.imageV.mas_right).mas_offset(16);
+        make.bottom.mas_equalTo(-5);
+        
+    }];
+    
+    
 }
--(UIImageView *)imageV
+- (UIImageView *)imageV
 {
     if (!_imageV) {
         _imageV = [[UIImageView alloc]init];
@@ -78,7 +89,7 @@
     return _imageV;
 }
 
--(UIView *)alphaView
+- (UIView *)alphaView
 {
     if (!_alphaView) {
         _alphaView = [[UIView alloc]init];
@@ -88,6 +99,8 @@
         //        _alphaView.contentMode = UIViewContentModeScaleAspectFill;
         //        _alphaView.userInteractionEnabled = YES;
         //        _alphaView.clipsToBounds = YES;
+        
+        _alphaView.layer.cornerRadius = 4;
     }
     return _alphaView;
 }
@@ -137,12 +150,15 @@
     _model = model;
     self.nameLabel.text = model.name;
     
-    NSString *timeStr = [ModelTool calculatedTimeWith:CalculatedTimeTypeDonotSecond secondStr:model.time];
+//    NSString *timeStr = [ModelTool calculatedTimeWith:CalculatedTimeTypeDonotSecond secondStr:model.time];
     
-    self.contentLabel.text = [NSString stringWithFormat:SLLocalizedString(@"%@ · %@ · %@人练过"), model.level_name, timeStr, model.num];
+//    self.contentLabel.text = [NSString stringWithFormat:SLLocalizedString(@"%@ · %@ · %@人练过"), model.level_name, timeStr, model.num];
+    
+    self.contentLabel.text = [NSString stringWithFormat:SLLocalizedString(@"%@人练过"), model.num];
+    
     self.titleLabe.text = [NSString stringWithFormat:@"  %@  ",NotNilAndNull(model.recommend)?model.recommend:@""];
     
-    [self.imageV sd_setImageWithURL:[NSURL URLWithString:model.image] placeholderImage:[UIImage imageNamed:@"default_small"]];
+    [self.imageV sd_setImageWithURL:[NSURL URLWithString:model.image] placeholderImage:[UIImage imageNamed:@"default_classList"]];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

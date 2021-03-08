@@ -31,12 +31,12 @@
 {
     self = [super init];
     if (self) {
-        [self setUI];
+        [self setupUI];
     }
     return self;
 }
 
-- (void)setUI{
+- (void)setupUI{
     UIImageView *decorateImageView = [[UIImageView alloc] init];
     decorateImageView.image = [UIImage imageNamed:@"updateViewDecorate"];
     

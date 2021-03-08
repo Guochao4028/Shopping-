@@ -24,7 +24,7 @@
 
 @implementation GCPickTimeView
 
--(instancetype)init{
+- (instancetype)init{
     if (self = [super init]) {
         [self initData];
         [self initUI];
@@ -32,12 +32,12 @@
     return self;
 }
 
--(void)initData{
+- (void)initData{
     NSDateComponents *comps = [self p_DefaultTimeTrocessing:[NSDate date]];
     NSInteger year=[comps year];
     NSInteger month = [comps month];
-    self.startYear = year - 10;
-    self.yearRange = 11;
+    self.startYear = 2020;
+    self.yearRange = year - self.startYear + 1;
     self.selectedYear = year;
     self.selectedMonth = month;
     
@@ -46,7 +46,7 @@
     
 }
 
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.fullPickView];
     
     [self p_Autolayout];
@@ -61,7 +61,7 @@
 }
 #pragma mark - private
 //时间处理
--(NSDateComponents *)p_DefaultTimeTrocessing:(NSDate *)date{
+- (NSDateComponents *)p_DefaultTimeTrocessing:(NSDate *)date{
     //获取当前时间
     NSCalendar *calendar0 = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     NSDateComponents *comps = [[NSDateComponents alloc] init];
@@ -70,7 +70,7 @@
     return comps;
 }
 
--(void)p_Autolayout{
+- (void)p_Autolayout{
     [self.fullPickView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:0];
     [self.fullPickView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
     [self.fullPickView autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0];
@@ -83,7 +83,7 @@
 
 #pragma mark - UIPickerViewDataSource && UIPickerViewDelegate
 
--(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
 {
     switch (component) {
         case 0:
@@ -102,11 +102,11 @@
     }
     return 0;
 }
--(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
 {
     return 2;
 }
--(UIView*)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view
+- (UIView*)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view
 {
     UILabel*label
     = [[UILabel alloc]initWithFrame:CGRectMake(ScreenWidth*component/6.0, 0,ScreenWidth/6.0, 30)];
@@ -221,7 +221,7 @@
     return string;
 }
 
--(UIPickerView *)fullPickView{
+- (UIPickerView *)fullPickView{
     if (_fullPickView == nil) {
         _fullPickView = [UIPickerView newAutoLayoutView];
         [_fullPickView setDelegate:self];

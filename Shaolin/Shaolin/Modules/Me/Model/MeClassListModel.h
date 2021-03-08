@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *weight;
 @property (nonatomic, copy) NSString *classId;
 @property (nonatomic, copy) NSString *desc2;
-@property (nonatomic, copy) NSString *goods_value;
+@property (nonatomic, copy) NSString *goodsValue;
 
 @property (nonatomic, copy) NSString *testStr;
 @end

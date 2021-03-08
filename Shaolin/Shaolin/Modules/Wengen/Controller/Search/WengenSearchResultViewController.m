@@ -63,7 +63,7 @@
     [self initData];
 }
 
--(void)initData{
+- (void)initData{
     [self.searchView setTitleStr:self.searchStr];
     
     self.pageNumber = 1;
@@ -75,7 +75,8 @@
         [param setValue:self.storeId forKey:@"club_id"];
     }
     
-    [param setValue:[NSString stringWithFormat:@"%ld", self.pageNumber] forKey:@"page"];
+    [param setValue:[NSString stringWithFormat:@"%ld", self.pageNumber] forKey:@"pageNum"];
+    [param setValue:@"10" forKey:@"pageSize"];
     [param setValue:self.searchStr forKey:@"name"];
     
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
@@ -87,7 +88,7 @@
     
 }
 
--(void)initUI{
+- (void)initUI{
     [self.view setBackgroundColor:BackgroundColor_White];
     [self.view addSubview:self.searchView];
     [self.view addSubview:self.menuView];
@@ -101,7 +102,7 @@
 }
 
 ///更新数据
--(void)update{
+- (void)update{
     self.pageNumber = 1;
     [self.dataArray removeAllObjects];
     
@@ -117,44 +118,44 @@
     
 }
 
--(NSMutableDictionary *)assembleData{
+- (NSMutableDictionary *)assembleData{
     NSMutableDictionary *param = [NSMutableDictionary dictionary];
      
      switch (self.listType) {
          case ListJiaGeDescType:{
-             [param setValue:@"1" forKey:@"price"];
-             [param setValue:@"desc" forKey:@"sort"];
+             [param setValue:@"2" forKey:@"priceSort"];
+//             [param setValue:@"2" forKey:@"salesSort"];
          }
              
              break;
          case ListJiaGeAscType:{
-             [param setValue:@"1" forKey:@"price"];
-             [param setValue:@"asc" forKey:@"sort"];
+             [param setValue:@"1" forKey:@"priceSort"];
+//             [param setValue:@"1" forKey:@"salesSort"];
          }
              
              break;
          case ListXiaoLiangDescType:{
              [param setValue:@"1" forKey:@"num"];
-             [param setValue:@"desc" forKey:@"sort"];
+             [param setValue:@"2" forKey:@"salesSort"];
          }
              
              break;
          case ListXiaoLiangAscType:{
              [param setValue:@"1" forKey:@"num"];
-             [param setValue:@"asc" forKey:@"sort"];
+//             [param setValue:@"1" forKey:@"salesSort"];
          }
              
              break;
          case ListStarAscType:{
-             [param setValue:@"1" forKey:@"star"];
-             [param setValue:@"asc" forKey:@"sort"];
+//             [param setValue:@"1" forKey:@"starSort"];
+//             [param setValue:@"1" forKey:@"salesSort"];
          }
              
              break;
              
          case ListStarDescType:{
-             [param setValue:@"1" forKey:@"star"];
-              [param setValue:@"desc" forKey:@"sort"];
+             [param setValue:@"2" forKey:@"starSort"];
+//              [param setValue:@"2" forKey:@"salesSort"];
          }
              
              break;
@@ -162,11 +163,13 @@
              break;
      }
      if (self.storeId != nil) {
-         [param setValue:self.storeId forKey:@"club_id"];
+         [param setValue:self.storeId forKey:@"clubId"];
      }
      
-     [param setValue:[NSString stringWithFormat:@"%ld", self.pageNumber] forKey:@"page"];
      [param setValue:self.searchStr forKey:@"name"];
+    
+    [param setValue:[NSString stringWithFormat:@"%ld", self.pageNumber] forKey:@"pageNum"];
+    [param setValue:@"10" forKey:@"pageSize"];
     return param;
 }
 
@@ -175,7 +178,7 @@
 ///**
 // 点击购物车
 // */
-//-(void)tapShopping{
+//- (void)tapShopping{
 //    ShoppingCartViewController *shoppingCartVC = [[ShoppingCartViewController alloc]init];
 //    shoppingCartVC.hidesBottomBarWhenPushed = YES;
 //    [self.navigationController pushViewController:shoppingCartVC animated:YES];
@@ -184,25 +187,25 @@
 ///**
 // 点击搜索
 // */
-//-(void)tapSearch{
+//- (void)tapSearch{
 //    [self.navigationController popViewControllerAnimated:YES];
 //}
 //
 ///**
 // 点击搜索view上的返回按钮
 // */
-//-(void)tapBack{
+//- (void)tapBack{
 //    [self.navigationController popViewControllerAnimated:YES];
 //}
 
 
 #pragma mark - SearchNavgationViewDelegate
--(void)tapBack{
+- (void)tapBack{
     [self.searchView resignFirstResponder];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
--(void)searchNavgationView:(SearchNavgationView *)navgationView searchWord:(NSString *)text{
+- (void)searchNavgationView:(SearchNavgationView *)navgationView searchWord:(NSString *)text{
     if (text.length == 0) {
         [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请输入搜索内容") view:self.view afterDelay:TipSeconds];
         return;
@@ -231,7 +234,7 @@
 
 #pragma mark - SearchMenuViewDelegate
 
--(void)searchMenuView:(SearchMenuView *)view tapStarView:(BOOL)isTap{
+- (void)searchMenuView:(SearchMenuView *)view tapStarView:(BOOL)isTap{
 //
 //    if (self.isStar == NO ) {
 //        self.menuView.type = ListStarAscType;
@@ -260,7 +263,7 @@
     
 }
 
--(void)searchMenuView:(SearchMenuView *)view tapPriceView:(BOOL)isTap{
+- (void)searchMenuView:(SearchMenuView *)view tapPriceView:(BOOL)isTap{
     
 //    if (self.isPriceSorting == NO ) {
 //        self.menuView.type = ListJiaGeAscType;
@@ -284,7 +287,7 @@
     [self update];
 }
 
--(void)searchMenuView:(SearchMenuView *)view tapSalesVolumeView:(BOOL)isTap{
+- (void)searchMenuView:(SearchMenuView *)view tapSalesVolumeView:(BOOL)isTap{
     
     
 //    if (self.isSalesVolume == NO ) {
@@ -312,7 +315,7 @@
 
 #pragma mark - ClassifyGoodsListViewDelegate
 
--(void)refresh:(UICollectionView *)collectionView{
+- (void)refresh:(UICollectionView *)collectionView{
     self.pageNumber = 1;
     
     [self.dataArray removeAllObjects];
@@ -329,7 +332,7 @@
     
 }
 
--(void)loadData:(UICollectionView *)collectionView{
+- (void)loadData:(UICollectionView *)collectionView{
     
     self.pageNumber ++;
     
@@ -344,7 +347,7 @@
     }];
 }
 
--(void)tapGoodsItem:(WengenGoodsModel *)goodsModel{
+- (void)tapGoodsItem:(WengenGoodsModel *)goodsModel{
     GoodsDetailsViewController *goodsDetailsVC = [[GoodsDetailsViewController alloc]init];
     goodsDetailsVC.goodsModel = goodsModel;
     goodsDetailsVC.hidesBottomBarWhenPushed = YES;
@@ -355,7 +358,7 @@
 
 #pragma mark - getter / setter
 
-//-(WengenSearchView *)searchView{
+//- (WengenSearchView *)searchView{
 //    if (_searchView == nil) {
 //
 //        //状态栏高度
@@ -376,7 +379,7 @@
 //}
 
 
--(SearchNavgationView *)searchView{
+- (SearchNavgationView *)searchView{
     if (_searchView == nil) {
         
         //状态栏高度
@@ -396,7 +399,7 @@
 }
 
 
--(SearchMenuView *)menuView{
+- (SearchMenuView *)menuView{
     
     if (_menuView == nil) {
         CGFloat y = CGRectGetMaxY(self.searchView.frame);
@@ -407,7 +410,7 @@
     
 }
 
--(ClassifyGoodsListView *)goodsListView{
+- (ClassifyGoodsListView *)goodsListView{
     if (_goodsListView == nil) {
         CGFloat y = CGRectGetMaxY(self.menuView.frame);
         _goodsListView = [[ClassifyGoodsListView alloc]initWithFrame:CGRectMake(0, y, ScreenWidth, ScreenHeight - y)];
@@ -417,14 +420,14 @@
     return _goodsListView;
 }
 
--(NSMutableArray *)dataArray{
+- (NSMutableArray *)dataArray{
     if (_dataArray == nil) {
         _dataArray = [NSMutableArray array];
     }
     return _dataArray;
 }
 
--(NSMutableArray *)historyArray{
+- (NSMutableArray *)historyArray{
     if (!_historyArray) {
 //           _historyArray = [NSKeyedUnarchiver unarchiveObjectWithFile:KGoodsHistorySearchPath];
         _historyArray = [[[ModelTool shareInstance] select:[SearchHistoryModel class] tableName:@"searchHistory" where:[NSString stringWithFormat:@"type = '%ld' AND userId = '%@' ORDER BY id DESC", SearchHistoryGoodsType, [SLAppInfoModel sharedInstance].id]] mutableCopy];

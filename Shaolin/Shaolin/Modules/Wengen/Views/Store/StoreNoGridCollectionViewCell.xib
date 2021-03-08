@@ -18,20 +18,17 @@
                 <rect key="frame" x="0.0" y="0.0" width="368" height="150"/>
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
-                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="StoreNoGrid" translatesAutoresizingMaskIntoConstraints="NO" id="oQ5-EE-K76">
-                        <rect key="frame" x="11" y="0.0" width="346" height="150"/>
-                    </imageView>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2CT-QV-3eY">
-                        <rect key="frame" x="16" y="6" width="336" height="136"/>
+                        <rect key="frame" x="16" y="6" width="336" height="138"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="cjd-TO-cLI">
-                                <rect key="frame" x="0.0" y="0.0" width="136" height="136"/>
+                                <rect key="frame" x="0.0" y="0.0" width="138" height="138"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="cjd-TO-cLI" secondAttribute="height" multiplier="37:37" id="E5r-Rx-jkS"/>
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1jb-uU-xDG">
-                                <rect key="frame" x="146" y="21" width="160" height="39.5"/>
+                                <rect key="frame" x="148" y="21" width="158" height="39.5"/>
                                 <string key="text">少林寺精品小和尚茶宠
 茶宠可泡茶</string>
                                 <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="14"/>
@@ -39,7 +36,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="¥268.00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="D6f-oN-RQe">
-                                <rect key="frame" x="146" y="84.5" width="62" height="22.5"/>
+                                <rect key="frame" x="148" y="84.5" width="62" height="22.5"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="62" id="tSt-Tz-Rqr"/>
                                 </constraints>
@@ -59,7 +56,7 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="130人付款" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="s1V-vs-T6O">
-                                <rect key="frame" x="215.5" y="87.5" width="55.5" height="17"/>
+                                <rect key="frame" x="217.5" y="87.5" width="55.5" height="17"/>
                                 <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="12"/>
                                 <color key="textColor" red="0.4941176471" green="0.4941176471" blue="0.4941176471" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -83,7 +80,7 @@
                         </constraints>
                         <userDefinedRuntimeAttributes>
                             <userDefinedRuntimeAttribute type="color" keyPath="lgf_ShadowColor">
-                                <color key="value" red="0.8980392157" green="0.8980392157" blue="0.8980392157" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="value" red="0.58039215686274503" green="0.58039215686274503" blue="0.58039215686274503" alpha="0.099169234154929578" colorSpace="custom" customColorSpace="displayP3"/>
                             </userDefinedRuntimeAttribute>
                             <userDefinedRuntimeAttribute type="number" keyPath="lgf_ShadowRadius">
                                 <real key="value" value="6"/>
@@ -91,20 +88,19 @@
                             <userDefinedRuntimeAttribute type="size" keyPath="lgf_ShadowOffset">
                                 <size key="value" width="2" height="2"/>
                             </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="lgf_ShadowOpacity">
+                                <real key="value" value="2"/>
+                            </userDefinedRuntimeAttribute>
                         </userDefinedRuntimeAttributes>
                     </view>
                 </subviews>
             </view>
             <viewLayoutGuide key="safeArea" id="SEy-5g-ep8"/>
             <constraints>
-                <constraint firstItem="2CT-QV-3eY" firstAttribute="leading" secondItem="oQ5-EE-K76" secondAttribute="leading" constant="5" id="9wc-KX-pzw"/>
-                <constraint firstItem="2CT-QV-3eY" firstAttribute="top" secondItem="oQ5-EE-K76" secondAttribute="top" constant="6" id="KBY-41-D2M"/>
-                <constraint firstItem="2CT-QV-3eY" firstAttribute="trailing" secondItem="oQ5-EE-K76" secondAttribute="trailing" constant="-5" id="Pd3-Lf-uZf"/>
-                <constraint firstAttribute="bottom" secondItem="oQ5-EE-K76" secondAttribute="bottom" id="YKk-Bf-A1Q"/>
-                <constraint firstItem="oQ5-EE-K76" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="cB6-TR-xcy"/>
-                <constraint firstAttribute="trailing" secondItem="oQ5-EE-K76" secondAttribute="trailing" constant="11" id="ddP-1x-ctD"/>
-                <constraint firstItem="oQ5-EE-K76" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="11" id="gmM-nF-M1f"/>
-                <constraint firstItem="2CT-QV-3eY" firstAttribute="bottom" secondItem="oQ5-EE-K76" secondAttribute="bottom" constant="-8" id="jyN-aI-Bho"/>
+                <constraint firstAttribute="trailing" secondItem="2CT-QV-3eY" secondAttribute="trailing" constant="16" id="3hA-sW-6Ae"/>
+                <constraint firstAttribute="bottom" secondItem="2CT-QV-3eY" secondAttribute="bottom" constant="6" id="FI0-NS-C4z"/>
+                <constraint firstItem="2CT-QV-3eY" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="16" id="H9K-ae-03W"/>
+                <constraint firstItem="2CT-QV-3eY" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="6" id="eFm-hX-BJx"/>
             </constraints>
             <size key="customSize" width="160" height="256"/>
             <connections>
@@ -119,7 +115,6 @@
     </objects>
     <resources>
         <image name="StoreBuy" width="20.5" height="20.5"/>
-        <image name="StoreNoGrid" width="353" height="150"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

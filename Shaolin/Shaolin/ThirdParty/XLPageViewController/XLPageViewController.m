@@ -318,25 +318,31 @@ extern NSString *ViewWillAppearFinish;
 }
 #pragma mark -
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
-    NSLog(@"observeValueForKeyPath:className(%@)", NSStringFromClass([self.currentVC class]));
     if (!self.currentVC) return;
+    UIScrollView *scrollView = object;
+    if (![scrollView isKindOfClass:[UIScrollView class]]) return;
+    AppDelegate *appdelegate = (AppDelegate *)[AppDelegate sharedApplication];
+    if (appdelegate.touchPhase != UITouchPhaseMoved) return;
     if (![keyPath isEqualToString:@"contentOffset"]) return;
     if (![change objectForKey:NSKeyValueChangeNewKey] || ![change objectForKey:NSKeyValueChangeOldKey]) return;
     CGPoint newP = [[change objectForKey:NSKeyValueChangeNewKey] CGPointValue];
     CGPoint oldP = [[change objectForKey:NSKeyValueChangeOldKey] CGPointValue];
     if (CGPointEqualToPoint(newP, oldP)) return;
     CGVector vec =  CGVectorMake(newP.x - oldP.x, newP.y - oldP.y);
-    AppDelegate *appdelegate = (AppDelegate *)[AppDelegate sharedApplication];
-    if (appdelegate.touchPhase != UITouchPhaseMoved) return;
-    CGFloat moveHeight = [self.titleView pictureHeight];
+    
+    __block CGFloat moveHeight = [self.titleView pictureHeight];
+    NSTimeInterval duration = 0.5;
     if (vec.dy < 0 && fabs(fabs(self.titleView.y) - moveHeight) < 1){//向下动画
-        [UIView animateWithDuration:0.5 animations:^{
+        [UIView animateWithDuration:duration animations:^{
             self.titleView.frame = CGRectMake(0, 0, self.contentView.bounds.size.width, self.config.titleViewHeight);
             self.pageVC.view.frame = CGRectMake(0, self.config.titleViewHeight, self.contentView.bounds.size.width, self.contentView.bounds.size.height - self.config.titleViewHeight);
         }];
     } else if (vec.dy > 0 && fabs(self.titleView.y) < 1){//向上动画
-        [UIView animateWithDuration:0.5 animations:^{
+        [UIView animateWithDuration:duration animations:^{
             self.titleView.frame = CGRectMake(0, -moveHeight, self.contentView.bounds.size.width, self.config.titleViewHeight);
+            if (scrollView.contentSize.height < scrollView.height){
+                moveHeight = 0;
+            }
             self.pageVC.view.frame = CGRectMake(0, self.titleView.maxY, self.contentView.bounds.size.width, self.contentView.bounds.size.height - self.config.titleViewHeight + moveHeight);
         }];
     }
@@ -417,39 +423,37 @@ extern NSString *ViewWillAppearFinish;
 
 #pragma mark -
 #pragma mark 辅助方法
-- (UIScrollView *)getScrollViewByView:(UIView *)view{
+- (NSArray <UIScrollView *> *)getScrollViewByView:(UIView *)view{
+    NSMutableArray *array = [@[] mutableCopy];
     for (UIView *v in view.subviews){
         if ([v isKindOfClass:[UITableView class]] || [v isKindOfClass:[UICollectionView class]]){
-            return (UIScrollView *)v;
+            [array addObject:(UIScrollView *)v];
         } else if ([v isKindOfClass:[WKWebView class]]){
-            return [(WKWebView *)v scrollView];
+            [array addObject:[(WKWebView *)v scrollView]];
         } else {
-            [self getScrollViewByView:v];
+            [array addObjectsFromArray:[self getScrollViewByView:v]];
         }
     }
-    return nil;
-}
-
-- (UIScrollView *)getScrollViewByViewController:(UIViewController *)viewCollection{
-    UIScrollView *scrollView = [self getScrollViewByView:viewCollection.view];
-    return scrollView;
+    return array;
 }
 
 - (void)viewWillAppearFinish:(NSNotification *)notification {
     if (!self.config.scrollTitleView) return;
     UIViewController *currentVC = notification.object;
     if (self.currentVC && currentVC != self.currentVC){
-        UIScrollView *scrollView = [self getScrollViewByViewController:self.currentVC];
+        NSArray <UIScrollView *> *scrollViewArray = [self getScrollViewByView:self.currentVC.view];
         @try {
-            [scrollView removeObserver:self forKeyPath:@"contentOffset" context:nil];//(__bridge void * _Nullable)(self.viewController)
+            for (UIScrollView *scrollView in scrollViewArray){
+                [scrollView removeObserver:self forKeyPath:@"contentOffset" context:nil];//(__bridge void * _Nullable)(self.viewController)
+            }
         } @catch (NSException *exception) {
             
         };
     }
     
     if (currentVC != self.currentVC){
-        UIScrollView *scrollView = [self getScrollViewByViewController:currentVC];
-        if (scrollView){
+        NSArray <UIScrollView *> *scrollViewArray = [self getScrollViewByView:currentVC.view];
+        for (UIScrollView *scrollView in scrollViewArray){
             [scrollView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew context:nil];
         }
     } 

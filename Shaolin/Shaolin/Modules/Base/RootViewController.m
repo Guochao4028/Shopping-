@@ -7,6 +7,7 @@
 //
 
 #import "RootViewController.h"
+#import "UIButton+HitBounds.h"
 
 NSString *ViewWillAppearFinish = @"ViewWillAppearFinish";
 
@@ -279,6 +280,7 @@ NSString *ViewWillAppearFinish = @"ViewWillAppearFinish";
         
         _leftBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 45);
         [_leftBtn addTarget:self action:@selector(leftAction) forControlEvents:UIControlEventTouchUpInside];
+        [_leftBtn setEnlargeEdgeWithTop:15 right:15 bottom:15 left:15];
     }
     return _leftBtn;
 }
@@ -292,7 +294,7 @@ NSString *ViewWillAppearFinish = @"ViewWillAppearFinish";
     return _rightBtn;
 }
 
--(UISearchBar *)searchBar {
+- (UISearchBar *)searchBar {
     if (!_searchBar) {
         _searchBar = [[UISearchBar alloc]initWithFrame:CGRectZero];
         _searchBar.barStyle = UIBarStyleDefault;

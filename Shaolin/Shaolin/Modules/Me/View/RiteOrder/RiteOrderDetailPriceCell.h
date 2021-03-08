@@ -9,10 +9,10 @@
 #import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
-@class OrderDetailsModel;
+@class OrderDetailsNewModel;
 
 @interface RiteOrderDetailPriceCell : UITableViewCell
-@property (nonatomic, strong) OrderDetailsModel * model;
+@property (nonatomic, strong) OrderDetailsNewModel * model;
 
 @end
 

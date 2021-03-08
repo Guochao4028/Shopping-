@@ -9,6 +9,7 @@
 
 #import <Foundation/Foundation.h>
 
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface NSString (Tool)
@@ -57,23 +58,23 @@ NS_ASSUME_NONNULL_BEGIN
 +(BOOL)isContainsEmoji:(NSString *)string;
 
 ///只允许输入中英文
--(BOOL)onlyChineseAndEnglish;
+- (BOOL)onlyChineseAndEnglish;
 
 ///只允许输入数字
--(BOOL)onlyNumbers;
+- (BOOL)onlyNumbers;
 
 ///只允许输入数字英文
--(BOOL)onlyNumbersAndEnglish;
+- (BOOL)onlyNumbersAndEnglish;
 
 ///验证邮箱
--(BOOL)validationEmail;
+- (BOOL)validationEmail;
 
 ///输入中英文和数字
--(BOOL)ChineseAndEnglishAndNumber;
+- (BOOL)ChineseAndEnglishAndNumber;
 
 ///验证密码复杂度
 ///必须包含大写字母，小写字母，数字，特殊字符四种中的三种，长度要求8到16位
--(BOOL)passwordComplexityVerification;
+- (BOOL)passwordComplexityVerification;
 
 ///替换rang区域字符串为*，实现信息脱敏
 - (NSString *)dataMasking:(NSRange)rang;
@@ -81,9 +82,34 @@ NS_ASSUME_NONNULL_BEGIN
 ///保留首尾字符，中间全部变为星号
 - (NSString *)replaceStringWithAsterisk:(NSInteger)frontNum endNum:(NSInteger)endNum;
 
--(NSAttributedString *)moneyStringWithFormatting:(MoneyStringFormattingType)type fontArrat:(NSArray <UIFont *>*)fontArray;
+- (NSAttributedString *)moneyStringWithFormatting:(MoneyStringFormattingType)type fontArrat:(NSArray <UIFont *>*)fontArray;
 
--(NSAttributedString *)moneyStringWithFormatting:(MoneyStringFormattingType)type;
+- (NSAttributedString *)moneyStringWithFormatting:(MoneyStringFormattingType)type;
+
+///AES加密
+- (NSString *)aes256_encrypt:(NSString *)key;
+///AES解密
+- (NSString *)aes256_decrypt:(NSString *)key;
+
+///数据加密
++(NSDictionary *)dataEncryption:(NSDictionary *)packetDic;
+
+
+/**
+ * -------RSA 字符串公钥加密-------
+ @param plainDic 明文，待加密的数据字典
+ @return 密文，加密后的字符串
+ */
++ (NSDictionary *)encryptRSA:(NSDictionary *)plainDic;
+
+///精度格式化价格
+-(NSString *)formattedPrice;
+///格式化价格
+-(NSString *)formattingPriceString;
+
+///获取当前时间戳方法(以毫秒为单位)
++ (NSString *)getNowTimeTimestamp;
+
 
 
 @end

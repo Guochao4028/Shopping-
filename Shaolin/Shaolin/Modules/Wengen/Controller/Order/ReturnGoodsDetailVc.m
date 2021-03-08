@@ -38,13 +38,13 @@ static NSString *const returnGoodsCellId = @"ReturnGoodsDetailCellTableViewCell"
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     
-    self.navLine.hidden = YES;
+//    self.navLine.hidden = YES;
 }
 
--(void)viewWillAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
     
-    self.navLine.hidden = NO;
+//    self.navLine.hidden = NO;
 }
 
 - (void)viewDidLoad {
@@ -56,15 +56,15 @@ static NSString *const returnGoodsCellId = @"ReturnGoodsDetailCellTableViewCell"
     [self layoutView];
 }
 
--(void)initData{
-    [[DataManager shareInstance]getRefundInfo:@{@"id":self.orderNo} Callback:^(NSObject *object) {
+- (void)initData{
+    [[DataManager shareInstance]getRefundInfo:@{@"orderId":self.orderNo} Callback:^(NSObject *object) {
            
            if([object isKindOfClass:[OrderRefundInfoModel class]] == YES){
                NSLog(@"%@", object);
                self.model = (OrderRefundInfoModel *)object;
                [self.footerView setModel:self.model];
                
-               [[DataManager shareInstance]getStoreInfo:@{@"id":self.storeId} Callback:^(NSObject *object) {
+               [[DataManager shareInstance]getStoreInfo:@{@"clubId":self.storeId} Callback:^(NSObject *object) {
                    
                   self.storeInfoModel = (GoodsStoreInfoModel *)object;
                    [self.tableView reloadData];
@@ -93,17 +93,17 @@ static NSString *const returnGoodsCellId = @"ReturnGoodsDetailCellTableViewCell"
 }
 
 #pragma mark - delegate && dataSources
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return 1;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return 1;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     WEAKSELF
      ReturnGoodsDetailCellTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:returnGoodsCellId forIndexPath:indexPath];
@@ -124,7 +124,7 @@ static NSString *const returnGoodsCellId = @"ReturnGoodsDetailCellTableViewCell"
         [customView addSubview:title];
         [SMAlert showCustomView:customView stroke:YES confirmButton:[SMButton initWithTitle:SLLocalizedString(@"确定") clickAction:^{
           
-            [[DataManager shareInstance]cannelRefund:@{@"id":self.model.order_no} Callback:^(Message *message) {
+            [[DataManager shareInstance]cannelRefund:@{@"id":self.model.orderId} Callback:^(Message *message) {
                 
                 if (message.isSuccess) {
                     [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"撤销成功") view:self.view afterDelay:TipSeconds];
@@ -150,31 +150,31 @@ static NSString *const returnGoodsCellId = @"ReturnGoodsDetailCellTableViewCell"
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return tableView.rowHeight;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
     return 10;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     return .001;
 }
--(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
     UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWidth, 10)];
     return v;
 }
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWidth, 10)];
     return v;
@@ -183,14 +183,14 @@ static NSString *const returnGoodsCellId = @"ReturnGoodsDetailCellTableViewCell"
 
 #pragma mark - setter && getter
 
--(ReturnGoodsDetailHeader *)headerView {
+- (ReturnGoodsDetailHeader *)headerView {
     if (!_headerView) {
         _headerView = [[[NSBundle mainBundle] loadNibNamed:@"ReturnGoodsDetailHeader" owner:self options:nil] objectAtIndex:0];
     }
     return _headerView;
 }
 
--(ReturnGoodsDetailFooter *)footerView {
+- (ReturnGoodsDetailFooter *)footerView {
     if (!_footerView) {
         _footerView = [[[NSBundle mainBundle] loadNibNamed:@"ReturnGoodsDetailFooter" owner:self options:nil] objectAtIndex:0];
     }

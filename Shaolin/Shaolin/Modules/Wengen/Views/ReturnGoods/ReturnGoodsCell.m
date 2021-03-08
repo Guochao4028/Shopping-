@@ -35,16 +35,18 @@
     // Configure the view for the selected state
 }
 
--(void)setModel:(OrderRefundInfoModel *)model{
+- (void)setModel:(OrderRefundInfoModel *)model{
     _model = model;
-       NSString *goodsImageUrl = model.goods_image[0];
+//    NSArray *goodsImages = [model.imgData componentsSeparatedByString:@","];
+    NSString *goodsImageUrl = model.goodsImage[0];
+    
        [self.goodsImageView sd_setImageWithURL:[NSURL URLWithString:goodsImageUrl] placeholderImage:[UIImage imageNamed:@"default_small"]];
               
-       [self.goodsNameLabel setText:model.goods_name];
-       [self.numberLabel setText:model.goods_num];
-       [self.applyNumberLabel setText:model.goods_num];
+       [self.goodsNameLabel setText:model.goodsName];
+       [self.numberLabel setText:model.goodsNum];
+       [self.applyNumberLabel setText:model.goodsNum];
        
-       [self.goodsPriceLabel setText:[NSString stringWithFormat:@"¥%@",model.final_price]];
+       [self.goodsPriceLabel setText:[NSString stringWithFormat:@"¥%@",model.finalPrice]];
 }
 
 @end

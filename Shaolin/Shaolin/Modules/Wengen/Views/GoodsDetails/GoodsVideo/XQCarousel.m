@@ -57,7 +57,7 @@
 }
 
 
--(UIImageView *)productionImageView:(NSInteger)index{
+- (UIImageView *)productionImageView:(NSInteger)index{
     if ([self.scrollView viewWithTag:888+index] != nil) {
         [[self.scrollView viewWithTag:888+index] removeFromSuperview];
     }
@@ -94,7 +94,7 @@
 
 #pragma mark - setter / getter
 
--(UIScrollView *)scrollView{
+- (UIScrollView *)scrollView{
     if (_scrollView == nil) {
         _scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
         _scrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
@@ -108,7 +108,7 @@
     return _scrollView;
 }
 
--(XQVideoView *)videoView{
+- (XQVideoView *)videoView{
     
     if (_videoView == nil) {
         _videoView = [XQVideoView videoViewFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height) videoUrl:nil];
@@ -118,7 +118,7 @@
 }
 
 
--(UIPageControl *)pageControl{
+- (UIPageControl *)pageControl{
     if (_pageControl == nil) {
         _pageControl = [[UIPageControl alloc]init];
         _pageControl.frame = CGRectMake(0, self.frame.size.height - 30, self.frame.size.width, 30);

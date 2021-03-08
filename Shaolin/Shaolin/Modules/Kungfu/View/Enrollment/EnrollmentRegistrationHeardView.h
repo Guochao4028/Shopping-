@@ -25,7 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol EnrollmentRegistrationHeardViewDelegate <NSObject>
 
--(void)enrollmentRegistrationHeardView:(EnrollmentRegistrationHeardView *)view tapUploadPictures:(BOOL)isTap;
+- (void)enrollmentRegistrationHeardView:(EnrollmentRegistrationHeardView *)view tapUploadPictures:(BOOL)isTap;
 
 @end
 

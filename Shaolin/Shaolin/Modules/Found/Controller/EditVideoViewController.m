@@ -20,11 +20,11 @@
 #import "ZFPlayer.h"
 #import "ZFAVPlayerManager.h"
 #import "ZFIJKPlayerManager.h"
-#import "KSMediaPlayerManager.h"
 #import "ZFPlayerControlView.h"
 #import "ZFUtilities.h"
 #import "UIImageView+ZFCache.h"
 #import "UITextView+Placeholder.h"
+#import "AppDelegate+AppService.h"
 
 @interface EditVideoViewController ()<UITextViewDelegate>
 @property(nonatomic,strong) UITextView *textField;
@@ -82,7 +82,7 @@
     self.oneVideoImage.image = self.slAssetModel.videoImage;
     [self.view addSubview:self.oneVideoImage];
     [self.oneVideoImage addSubview:self.bgPlayBtn];
-    [self setUI];
+    [self setupUI];
     
     // 添加通知监听见键盘弹出/退出
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardAction:) name:UIKeyboardWillShowNotification object:nil];
@@ -95,7 +95,7 @@
     //    self.imageV.image = _imageViewStr;
     
 }
-- (void)setUI {
+- (void)setupUI {
     [self.bgPlayBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.centerY.mas_equalTo(self.oneVideoImage);
         make.size.mas_equalTo(SLChange(29));
@@ -163,6 +163,7 @@
     @weakify(self)
     self.player.orientationWillChange = ^(ZFPlayerController * _Nonnull player, BOOL isFullScreen) {
         @strongify(self)
+        [AppDelegate shareAppDelegate].allowOrentitaionRotation = isFullScreen;
         [self setNeedsStatusBarAppearanceUpdate];
     };
     
@@ -254,26 +255,26 @@
 #pragma mark - 保存草稿
 - (void)saveAction {
     if (self.textField.text.length == 0) {
-        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请填写标题") view:self.view afterDelay:TipSeconds];
+        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请输入标题") view:self.view afterDelay:TipSeconds];
         return;
     }
 //    if (self.introductionField.text.length == 0) {
-//        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请填写简介") view:self.view afterDelay:TipSeconds];
+//        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请输入简介") view:self.view afterDelay:TipSeconds];
 //        return;
 //    }
     //敏感词校验由服务器进行
     [self videoPush:SLLocalizedString(@"草稿")];
 }
 #pragma mark - 发布视频步骤1
--(void)pushAction
+- (void)pushAction
 {
     WEAKSELF
     if (self.textField.text.length == 0) {
-        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请填写标题") view:self.view afterDelay:TipSeconds];
+        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请输入标题") view:self.view afterDelay:TipSeconds];
         return;
     }
 //    if (self.introductionField.text.length == 0) {
-//        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请填写简介") view:self.view afterDelay:TipSeconds];
+//        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请输入简介") view:self.view afterDelay:TipSeconds];
 //        return;
 //    }
 //    NSString *allStr = [NSString stringWithFormat:@"%@%@",self.textField.text,self.introductionField.text];
@@ -302,7 +303,7 @@
     
 }
 #pragma mark - 发布视频步骤2--压缩视频
--(void)videoPush:(NSString *)identifier
+- (void)videoPush:(NSString *)identifier
 {
     [ShaolinProgressHUD defaultSingleLoadingWithText:SLLocalizedString(@"正在上传视频")];
     NSString *outPutPath;
@@ -358,7 +359,7 @@
 }
 
 #pragma mark - 发布视频步骤3 -- 上传相关信息
--(void)updatePushVideo:(NSString *)urlStr Identifier:(NSString *)identifier
+- (void)updatePushVideo:(NSString *)urlStr Identifier:(NSString *)identifier
 {
     NSData *data ;
     if (urlStr.length == 0) {
@@ -423,7 +424,7 @@
         
     }];
 }
--(void)postTextAndPhoto:(NSString *)title Introduction:(NSString *)introductionStr Source:(NSString *)source Author:(NSString *)author Content:(NSString *)content Type:(NSString *)type State:(NSString *)state CreateId:(NSString *)createId CreateName:(NSString *)name CreateType:(NSString *)createType CoverUrlPlist:(NSMutableArray *)plistArr
+- (void)postTextAndPhoto:(NSString *)title Introduction:(NSString *)introductionStr Source:(NSString *)source Author:(NSString *)author Content:(NSString *)content Type:(NSString *)type State:(NSString *)state CreateId:(NSString *)createId CreateName:(NSString *)name CreateType:(NSString *)createType CoverUrlPlist:(NSMutableArray *)plistArr
 {
     NSString *alertStr ;
     if ([state isEqualToString:@"1"]) {
@@ -431,7 +432,7 @@
     }else {
         alertStr = SLLocalizedString(@"已提交审核");
     }
-    [[HomeManager sharedInstance]postTextAndPhotoWithTitle:title Introduction:introductionStr Source:source Author:author Content:content Type:type State:state CreateId:createId CreateName:name CreateType:createType CoverUrlPlist:plistArr WithBlock:^(id  _Nonnull responseObject, NSError * _Nonnull error) {
+    [[HomeManager sharedInstance]postTextAndPhotoWithTitle:title Introduction:introductionStr Source:source Author:author Content:content Type:type State:state CreateId:createId CreateName:name CreateType:createType CoverUrlPlist:plistArr WithBlock:^(id  _Nonnull responseObject, NSString * _Nonnull error) {
         NSLog(@"%@",responseObject);
         [ShaolinProgressHUD hideSingleProgressHUD];
         if ([[responseObject objectForKey:@"code"]integerValue]==200) {
@@ -506,7 +507,7 @@
     }
     return _playBtn;
 }
--(UITextView *)textField
+- (UITextView *)textField
 {
     if (!_textField) {
         _textField = [[UITextView alloc] initWithFrame:CGRectMake(SLChange(75), CGRectGetMinY(self.titleLabels.frame) - SLChange(3), kWidth - SLChange(85), SLChange(37))];
@@ -522,7 +523,7 @@
     }
     return _textField;
 }
--(UITextView *)introductionField
+- (UITextView *)introductionField
 {
     if (!_introductionField) {
         _introductionField = [[UITextView alloc] initWithFrame:CGRectMake(SLChange(75), CGRectGetMinY(self.inLabel.frame)+SLChange(5), kWidth - SLChange(85), SLChange(37))];
@@ -563,7 +564,7 @@
     return _introductionTipsLabel;
 }
 
--(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
     [self.textField resignFirstResponder];
     [self.introductionField resignFirstResponder];
@@ -638,7 +639,7 @@
         textMaxCount = self.titleTextMaxCount;
         if (textCount > textMaxCount){
             self.titleTipsLabel.text = [NSString stringWithFormat:SLLocalizedString(@"标题字数不可超过%ld个字"), textMaxCount];
-            self.titleTipsLabel.textColor = kMainYellow;
+            self.titleTipsLabel.textColor = KPriceRed;
         } else {
             self.titleTipsLabel.text = @"";
         }
@@ -647,7 +648,7 @@
         textMaxCount = self.introductionTextMaxCount;
         if (textCount > textMaxCount){
             self.introductionTipsLabel.text = [NSString stringWithFormat:SLLocalizedString(@"简介字数不可超过%ld个字"), textMaxCount];
-            self.introductionTipsLabel.textColor = kMainYellow;
+            self.introductionTipsLabel.textColor = KPriceRed;
         } else {
             self.introductionTipsLabel.text = @"";
         }
@@ -733,7 +734,7 @@
 
 
 #pragma mark - setter
--(void)setSlAssetModel:(SLAssetModel *)slAssetModel {
+- (void)setSlAssetModel:(SLAssetModel *)slAssetModel {
     _slAssetModel = slAssetModel;
     
     self.urlAsset = (AVURLAsset *)self.slAssetModel.videoAsset;

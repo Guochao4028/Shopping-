@@ -23,9 +23,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
      self.titleLabe.text = SLLocalizedString(@"考试通知");
-    [self setUI];
+    [self setupUI];
 }
-- (void)setUI {
+- (void)setupUI {
     [self.view addSubview:self.logoIcon];
     [self.view addSubview:self.nameLabel];
     [self.view addSubview:self.personLabel];

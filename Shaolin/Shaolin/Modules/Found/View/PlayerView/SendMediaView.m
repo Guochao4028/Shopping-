@@ -47,7 +47,7 @@ typedef NS_ENUM(NSInteger, ZFPlayerState) {
 @property (nonatomic, strong) UISlider  *volumeViewSlider;
 @end
 @implementation SendMediaView
--(instancetype)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
@@ -103,7 +103,7 @@ typedef NS_ENUM(NSInteger, ZFPlayerState) {
 
 #pragma mark - Volume 系统音量
 
--(void)getVolumeVolue
+- (void)getVolumeVolue
 {
     MPVolumeView *volumeView = [[MPVolumeView alloc] init];
     _volumeViewSlider = nil;
@@ -122,7 +122,7 @@ typedef NS_ENUM(NSInteger, ZFPlayerState) {
     [self performSelector:@selector(afterOneSecond) withObject:nil afterDelay:1];
 }
 
--(void)afterOneSecond
+- (void)afterOneSecond
 {
     self.maskView.volumeProgress.progress = _volumeViewSlider.value;
 }
@@ -219,7 +219,7 @@ typedef NS_ENUM(NSInteger, ZFPlayerState) {
 }
 
 //设置播放进度和时间
--(void)setTheProgressOfPlayTime
+- (void)setTheProgressOfPlayTime
 {
     __weak typeof(self) weakSelf = self;
     [self.player addPeriodicTimeObserverForInterval:CMTimeMake(1.0, 1.0) queue:dispatch_get_main_queue() usingBlock:^(CMTime time) {
@@ -266,7 +266,7 @@ typedef NS_ENUM(NSInteger, ZFPlayerState) {
     }
 }
 
--(void)fullScreenBtnClick:(UIButton *)sender
+- (void)fullScreenBtnClick:(UIButton *)sender
 {
     sender.selected = !sender.selected;
     [self interfaceOrientation:(sender.selected==YES)?UIInterfaceOrientationLandscapeRight:UIInterfaceOrientationPortrait];
@@ -274,7 +274,7 @@ typedef NS_ENUM(NSInteger, ZFPlayerState) {
 }
 
 
--(void)setVideoURL:(NSURL *)videoURL
+- (void)setVideoURL:(NSURL *)videoURL
 {
     
     //将之前的监听时间移除掉。
@@ -329,7 +329,7 @@ typedef NS_ENUM(NSInteger, ZFPlayerState) {
 }
 
 
--(void)transformScreenDirection:(UIInterfaceOrientation)direction
+- (void)transformScreenDirection:(UIInterfaceOrientation)direction
 {
     
     if (direction == UIInterfaceOrientationPortrait ) {
@@ -483,7 +483,7 @@ typedef NS_ENUM(NSInteger, ZFPlayerState) {
 
 
 
--(void)layoutSubviews
+- (void)layoutSubviews
 {
     [super layoutSubviews];
     [UIApplication sharedApplication].statusBarHidden = NO;
@@ -492,7 +492,7 @@ typedef NS_ENUM(NSInteger, ZFPlayerState) {
     
 }
 
--(void)dealloc
+- (void)dealloc
 {
     [[NSNotificationCenter defaultCenter]removeObserver:self];
     [self.playerItme removeObserver:self forKeyPath:@"status"];
@@ -579,7 +579,7 @@ typedef NS_ENUM(NSInteger, ZFPlayerState) {
         self.volumeViewSlider.value      -= value / 10000;// 越小幅度越小
 
 }
--(void)horizontalMoved:(CGFloat)value
+- (void)horizontalMoved:(CGFloat)value
 {
     self.maskView.videoSlider.value += value/10000;
 }
@@ -589,7 +589,7 @@ typedef NS_ENUM(NSInteger, ZFPlayerState) {
 #pragma mark - Setter
 
 
--(void)setPlayState:(ZFPlayerState)playState
+- (void)setPlayState:(ZFPlayerState)playState
 {
     if (playState != ZFPlayerStateBuffering) {
         [self.maskView.activity stopAnimating];

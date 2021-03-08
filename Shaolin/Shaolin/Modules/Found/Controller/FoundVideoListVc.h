@@ -9,12 +9,15 @@
 #import "RootViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
+@class MePostManagerModel;
 
 @interface FoundVideoListVc : RootViewController
 @property(nonatomic,copy) NSString *videoId;
 @property(nonatomic,copy) NSString *fieldId;
 @property(nonatomic,copy) NSString *tabbarStr;
 @property (nonatomic,copy) NSString *typeStr;
+
+@property (nonatomic, strong) MePostManagerModel *model;
 @end
 
 NS_ASSUME_NONNULL_END

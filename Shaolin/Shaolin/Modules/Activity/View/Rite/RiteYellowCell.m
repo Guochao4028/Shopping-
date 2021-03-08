@@ -36,13 +36,13 @@
     // Configure the view for the selected state
 }
 
--(void)setCellModel:(RiteModel *)cellModel {
+- (void)setCellModel:(RiteModel *)cellModel {
     _cellModel = cellModel;
     
-    NSString * timeString = cellModel.startDate;
+    NSString * timeString = cellModel.startTime;
     
-    if (cellModel.endDate.length) {
-        timeString = [NSString stringWithFormat:@"%@-%@",cellModel.startDate,cellModel.endDate];
+    if (cellModel.endTime.length) {
+        timeString = [NSString stringWithFormat:@"%@-%@",cellModel.startTime,cellModel.endTime];
     }
 //    timeString = [NSString stringWithFormat:@"%@-%@",cellModel.startDate,cellModel.endDate];
     

@@ -38,6 +38,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *payStateVo;
 @property (nonatomic, copy) NSString *createTime;
 @property (nonatomic, copy) NSString *orderCode;
+@property (nonatomic, copy) NSString *orderCarId;
+
 @property (nonatomic, copy) NSString *statementValueId;//id
 @property (nonatomic, copy) NSString *state;
 @property (nonatomic, copy) NSString *isYearAndMonth;

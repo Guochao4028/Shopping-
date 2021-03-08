@@ -37,13 +37,13 @@
 
 #pragma mark - UICollectionViewDelegate && UICollectionViewDataSource
 
--(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
     
     return self.dataArray.count;
 }
 
 
--(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     EnrollmentRegistrationCollectionViewCell * cell  = [collectionView dequeueReusableCellWithReuseIdentifier:@"EnrollmentRegistrationCollectionViewCell" forIndexPath:indexPath];
     if([[self.dataArray firstObject] isKindOfClass:[NSString class]]){
         [cell setTitleStr:[self.dataArray objectAtIndex:indexPath.row]];
@@ -66,7 +66,7 @@
     return cell;
 }
 
--(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     if ([self.delegate respondsToSelector:@selector(enrollmentRegistrationLowerLevelTableCell:didSelectItemAtIndexPath:currentData:)]) {
         [self.delegate enrollmentRegistrationLowerLevelTableCell:self didSelectItemAtIndexPath:indexPath currentData:self.model];
     }
@@ -91,7 +91,7 @@
 
 #pragma mark - setter / getter
 
--(void)setModel:(NSDictionary *)model{
+- (void)setModel:(NSDictionary *)model{
     _model = model;
     NSString *title = model[@"title"];
     self.dataArray = model[@"subArray"];
@@ -102,7 +102,7 @@
     }
 }
 
--(void)setDataArray:(NSArray *)dataArray{
+- (void)setDataArray:(NSArray *)dataArray{
     _dataArray = dataArray;
     [self.collectionView reloadData];
 }

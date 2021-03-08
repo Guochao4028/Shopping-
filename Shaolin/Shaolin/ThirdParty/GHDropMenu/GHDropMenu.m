@@ -98,6 +98,12 @@ typedef NS_ENUM (NSUInteger,GHDropMenuShowType) {
     
 //    dropMenu.titles = configuration.titles.mutableCopy;
     
+    GHDropMenuModel *dropMenuModel =[dropMenu.titles lastObject];
+    
+    GHDropMenuModel *menuModel = [dropMenuModel.sections objectAtIndex:2];
+    
+    menuModel.sectionSeleted = [ModelTool shareInstance].isScreeningSpread;
+    
     dropMenu.dropMenuTagArrayBlock = dropMenuTagArrayBlock;
     [dropMenu setupFilterUI];
     return dropMenu;
@@ -873,6 +879,14 @@ typedef NS_ENUM (NSUInteger,GHDropMenuShowType) {
     }
 }
 - (void)clickControl {
+    
+    
+    GHDropMenuModel *dropMenuTitleModel = [self.titles by_ObjectAtIndex:self.currentIndex];
+    
+    GHDropMenuModel * menuModel = [dropMenuTitleModel.sections objectAtIndex:2];
+    
+    [[ModelTool shareInstance] setIsScreeningSpread:menuModel.sectionSeleted];
+    
     [self resetMenuStatus];
 }
 #pragma mark - 懒加载

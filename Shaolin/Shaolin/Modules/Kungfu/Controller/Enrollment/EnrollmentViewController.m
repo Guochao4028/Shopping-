@@ -67,7 +67,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
 
 @implementation EnrollmentViewController
 
--(void)viewWillAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self hideNavigationBarShadow];
     
@@ -91,7 +91,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
 }
 
 
--(void)initUI
+- (void)initUI
 {
     self.view.backgroundColor = UIColor.whiteColor;
     [self.view addSubview:self.tableView];
@@ -134,7 +134,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     [self.searchTypeTableBgView addSubview:self.searchTypeTable];
 }
 
--(void)initData{
+- (void)initData{
     
 //    __block NSArray *dbDataArray =[[ModelTool shareInstance]selectALL:[LevelModel class] tableName:@"level"];
     NSArray *dbDataArray =[[ModelTool shareInstance]selectALL:[LevelModel class] tableName:@"level"];
@@ -261,16 +261,17 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     
     for (LevelModel *model in pinArray) {
         NSArray *dbArray = [[ModelTool shareInstance]select:[LevelModel class] tableName:@"level" where:[NSString stringWithFormat:@"levelType=2 AND fid=%@",model.levelId]];
-        for (NSDictionary *dic in dbArray) {
-            [ids addObject:dic[@"levelId"]];
+        
+        for (LevelModel *pinModel in dbArray) {
+            [ids addObject:pinModel.levelId];
         }
     }
     
     if ([pinjieArray count] == 0) {
         for (LevelModel *model in pinArray) {
             NSArray *dbArray = [[ModelTool shareInstance]select:[LevelModel class] tableName:@"level" where:[NSString stringWithFormat:@"levelType=2 AND fid=%@",model.levelId]];
-            for (NSDictionary *dic in dbArray) {
-                [ids addObject:dic[@"levelId"]];
+            for (LevelModel *pinjieModel in dbArray) {
+                [ids addObject:pinjieModel.levelId];
             }
         }
     }else{
@@ -300,7 +301,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     
 }
 
--(void)updata{
+- (void)updata{
     
     [self.tableView.mj_footer resetNoMoreData];
     
@@ -350,7 +351,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
 }
 #pragma mark - action
 //加载更多
--(void)loadMoreData{
+- (void)loadMoreData{
     self.pageNmuber++;
     NSMutableDictionary *param = [NSMutableDictionary dictionaryWithDictionary:self.currentDic];
     [param setValue:@"10" forKey:@"pageSize"];
@@ -448,7 +449,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
 
 #pragma mark - UITableViewDataSource && UITableViewDelegate
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     if (tableView == self.searchTypeTable) {
         return 1;
     }
@@ -467,7 +468,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     }
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     
     if (section == 0 || tableView == self.searchTypeTable) {
         return 0.01;
@@ -476,7 +477,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     }
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     if (tableView == self.searchTypeTable) {
         return .001;
     } else {
@@ -489,7 +490,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     }
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     if (tableView == self.searchTypeTable) {
         return 40;
     } else {
@@ -501,7 +502,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     }
 }
 
--(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
     if (tableView == self.searchTypeTable) {
         UIView *view = [[UIView alloc]init];
         [view setBackgroundColor:[UIColor colorForHex:@"F8F8F8"]];
@@ -517,7 +518,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     }
 }
 
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     if (tableView == self.searchTypeTable){
         return [UIView new];
     } else {
@@ -583,7 +584,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     }
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
     [self hideSearchTypeTable];
     
@@ -594,7 +595,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
             
             EnrollmentListModel *model =  self.dataArray[indexPath.row];
             
-            NSString * url = URL_H5_EventRegistration(model.activityCode,[SLAppInfoModel sharedInstance].access_token);
+            NSString * url = URL_H5_EventRegistration(model.activityCode,[SLAppInfoModel sharedInstance].accessToken);
             
             KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:url type:KfWebView_activityDetail];
             webVC.hidesBottomBarWhenPushed = YES;
@@ -605,7 +606,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
 
 #pragma mark - EnrollmentTableViewCellDelegate
 //点击更多
--(void)enrollmentTableViewCell:(EnrollmentTableViewCell *)cell tapMore:(EnrollmentListModel *)model{
+- (void)enrollmentTableViewCell:(EnrollmentTableViewCell *)cell tapMore:(EnrollmentListModel *)model{
     
     NSString *intervalNameStr = model.intervalName;
     
@@ -618,10 +619,10 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
 }
 
 //点击报名
--(void)enrollmentTableViewCell:(EnrollmentTableViewCell *)cell tapSignUp:(EnrollmentListModel *)model{
+- (void)enrollmentTableViewCell:(EnrollmentTableViewCell *)cell tapSignUp:(EnrollmentListModel *)model{
     
     
-    NSString * url = URL_H5_EventRegistration(model.activityCode,[SLAppInfoModel sharedInstance].access_token);
+    NSString * url = URL_H5_EventRegistration(model.activityCode,[SLAppInfoModel sharedInstance].accessToken);
     
     KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:url type:KfWebView_activityDetail];
     webVC.hidesBottomBarWhenPushed = YES;
@@ -647,7 +648,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
 }
 
 - (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView {
-    NSString *text = SLLocalizedString(@"暂无数据");
+    NSString *text = SLLocalizedString(@"暂无活动");
     
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont boldSystemFontOfSize:15.0f],
                                  NSForegroundColorAttributeName: KTextGray_999};
@@ -664,14 +665,14 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
 /**
  banner 点击方法
  */
--(void)pushToOtherViewControllerwithHomeItem:(WengenBannerModel *)item{
+- (void)pushToOtherViewControllerwithHomeItem:(WengenBannerModel *)item{
     NSLog(@"%s",__func__);
     SLAppInfoModel *infoModel = [SLAppInfoModel sharedInstance];
     [infoModel bannerEventResponseWithBannerModel:item];
 }
 
 #pragma mark - Getter and Setter
--(void)setTypeString:(NSString *)typeString {
+- (void)setTypeString:(NSString *)typeString {
     _typeString = typeString;
     
     self.searchView.searchTF.placeholder = [NSString stringWithFormat:@"%@%@", SLLocalizedString(@"搜索"), typeString];
@@ -679,7 +680,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     [self hideSearchTypeTable];
 }
 
--(UITableView *)tableView{
+- (UITableView *)tableView{
     if (_tableView == nil) {
         _tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight - NavBar_Height - TabbarHeight) style:UITableViewStylePlain];
         
@@ -707,14 +708,14 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     return _tableView;
 }
 
--(NSMutableArray *)dataArray{
+- (NSMutableArray *)dataArray{
     if (_dataArray == nil) {
         _dataArray = [NSMutableArray array];
     }
     return _dataArray;
 }
 
--(GHDropMenuModel *)configuration{
+- (GHDropMenuModel *)configuration{
     if (_configuration == nil) {
         _configuration = [[GHDropMenuModel alloc]init];
         _configuration.titles = [_configuration creaFilterDropMenuData];
@@ -725,7 +726,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     return _configuration;
 }
 
--(EnrollmentHeaderView *)headerView{
+- (EnrollmentHeaderView *)headerView{
     if (_headerView == nil) {
         _headerView = [[[NSBundle mainBundle] loadNibNamed:@"EnrollmentHeaderView" owner:nil options:nil] lastObject];
         _headerView.curTitle = SLLocalizedString(@"考试");
@@ -734,7 +735,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     return _headerView;
 }
 
--(KfNavigationSearchView *)searchView{
+- (KfNavigationSearchView *)searchView{
     WEAKSELF
     if (_searchView == nil) {
         _searchView = [[[NSBundle mainBundle] loadNibNamed:@"KfNavigationSearchView" owner:self options:nil] objectAtIndex:0];
@@ -779,7 +780,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
 
 - (void)setNoData {
     WEAKSELF
-    NSString *titleStr = SLLocalizedString(@"暂无数据");
+    NSString *titleStr = SLLocalizedString(@"暂无活动");
     LYEmptyView *emptyView = [LYEmptyView emptyActionViewWithImageStr:@"categorize_nogoods"
                                                              titleStr:titleStr
                                                             detailStr:@""
@@ -844,7 +845,7 @@ static NSString *const searchTypeCellId = @"searchTypeTableCell";
     return _searchTypeTableBgView;
 }
 
--(NSMutableArray *)historyArray
+- (NSMutableArray *)historyArray
 {
     if (!_historyArray) {
 //        _historyArray = [NSKeyedUnarchiver unarchiveObjectWithFile:KGoodsHistorySearchPath];

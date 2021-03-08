@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, strong)GoodsStoreInfoModel *storeInfoModel;
 
--(void)focusTarget:(nullable id)target action:(SEL)action;
+- (void)focusTarget:(nullable id)target action:(SEL)action;
 
 @end
 

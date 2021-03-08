@@ -22,8 +22,9 @@ static NSError * SLNetworkErrorGenerator(NSInteger code, NSString *msg) {
 + (void)setup {
     
     
-        // 对 app.kangzubin.com 域名下的接口做 SSL Pinning 验证
-    //    [XMCenter addSSLPinningURL:@"https://app.kangzubin.com"];
+    // 对以下域名下的接口做 SSL Pinning 验证
+//    [XMCenter addSSLPinningURL:@"https://api-pre.shaolinapp.com"];
+//    [XMCenter addSSLPinningURL:@"https://api.shaolinapp.com"];
     
     [self configHost];
     [self configHeader];
@@ -50,7 +51,7 @@ static NSError * SLNetworkErrorGenerator(NSInteger code, NSString *msg) {
         NSMutableDictionary *headers = [[NSMutableDictionary alloc] initWithDictionary:request.headers];
         
         SLAppInfoModel *appInfoModel = [[SLAppInfoModel sharedInstance] getCurrentUserInfo];
-        NSString * token = NotNilAndNull(appInfoModel.access_token)?appInfoModel.access_token:@"";
+        NSString * token = NotNilAndNull(appInfoModel.accessToken)?appInfoModel.accessToken:@"";
         NSString * deviceString = [SLAppInfoModel sharedInstance].deviceString;
         NSString * systemStr = [NSString stringWithFormat:@"%.2f",SYSTEM_VERSION];
         
@@ -59,9 +60,14 @@ static NSError * SLNetworkErrorGenerator(NSInteger code, NSString *msg) {
         [headers setValue:BUILD_STR forKey:@"version"];
         [headers setValue:VERSION_STR forKey:@"versionName"];
         [headers setValue:deviceString forKey:@"device-type"];
-        [headers setValue:BUILD_STR forKey:@"version"];
+//        [headers setValue:BUILD_STR forKey:@"version"];
         [headers setValue:systemStr forKey:@"SystemVersionCode"];
+        [headers setValue:VERSIONKEY forKey:@"vk"];
         
+        NSString *identifier = [[NSLocale currentLocale] localeIdentifier];
+//        NSString *displayName = [[NSLocale currentLocale] displayNameForKey:NSLocaleIdentifier value:identifier];
+        [headers setValue:identifier forKey:@"Language"];
+//        [headers setValue:displayName forKey:@"DisplayName"];
         request.headers = headers;
     }];
 }

@@ -9,6 +9,7 @@
 #import "RiteOrderDetailHeaderView.h"
 #import "OrderDetailsModel.h"
 #import "NSString+Tool.h"
+#import "OrderDetailsNewModel.h"
 
 @interface RiteOrderDetailHeaderView ()
 
@@ -22,17 +23,20 @@
 @property (weak, nonatomic) IBOutlet UILabel *contentLabel;
 @property (weak, nonatomic) IBOutlet UIButton *payBtn;
 @property (weak, nonatomic) IBOutlet UIView *bottomView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *payBtnH;
 
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *phoneLabel;
 @property (weak, nonatomic) IBOutlet UIView *bgView;
 @property (weak, nonatomic) IBOutlet UIView *contactView;
 
+@property(nonatomic, strong)dispatch_source_t timer;
+
 @end
 
 @implementation RiteOrderDetailHeaderView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [[NSBundle mainBundle] loadNibNamed:@"RiteOrderDetailHeaderView" owner:self options:nil];
@@ -42,7 +46,7 @@
 }
 
 /// 初始化UI
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.contentView];
     [self.contentView setFrame:self.bounds];
 
@@ -61,7 +65,7 @@
 }
 
 //设置圆角
--(void)setRoundedCornersView:(UIView *)view corners:(UIRectCorner)corners{
+- (void)setRoundedCornersView:(UIView *)view corners:(UIRectCorner)corners{
     UIBezierPath* maskPath = [UIBezierPath bezierPathWithRoundedRect:view.bounds byRoundingCorners:corners cornerRadii:CGSizeMake(10, 10)];
     maskPath.lineWidth     = 0.f;
     CAShapeLayer *maskLayer = [[CAShapeLayer alloc] init];
@@ -70,71 +74,107 @@
     view.layer.mask = maskLayer;
 }
 
--(void)setDetailsModel:(OrderDetailsModel *)detailsModel {
+- (void)setDetailsModel:(OrderDetailsNewModel *)detailsModel {
     _detailsModel = detailsModel;
     
     NSString * nameStr ;
     NSString * telephoneStr ;
-
     
-    if ([detailsModel.name length] != 0 && [detailsModel.phone length] != 0) {
-        nameStr = detailsModel.name;
-        telephoneStr = detailsModel.phone;
-    }else{
-        
-            nameStr = NotNilAndNull([SLAppInfoModel sharedInstance].realname)?[SLAppInfoModel sharedInstance].realname:[SLAppInfoModel sharedInstance].nickname;
-//            if (detailsModel.name.length > 0) {
-//                nameStr = detailsModel.name;
-//            }
-            telephoneStr = [SLAppInfoModel sharedInstance].phoneNumber;
-        
+    OrderAddressModel *addressModel = detailsModel.address;
+    
+    
+    nameStr = addressModel.name;
+    telephoneStr = addressModel.phone;
+    
+    
+    if (nameStr.length == 0) {
+//        nameStr = [SLAppInfoModel sharedInstance].realName;
+        nameStr = [SLAppInfoModel sharedInstance].nickName;
+        telephoneStr = [SLAppInfoModel sharedInstance].phoneNumber;
     }
+    
+    
     
     self.nameLabel.text = NotNilAndNull(nameStr)?nameStr:@"";
 //    self.phoneLabel.text = NotNilAndNull(telephoneStr)?telephoneStr:@"";
     
     self.phoneLabel.text = [NSString numberSuitScanf:telephoneStr];
     
-    if ([detailsModel.status isEqualToString:@"1"])
-    {
-        [self obligationLayout];
-        NSString *currentTime  = detailsModel.time;
-        NSString *createTimeStr  = detailsModel.create_time;
+    NSInteger status = [detailsModel.status integerValue];
+    
+    /**
+     判断 法会 是否需要有回执，有回执 需要有回执布局
+     */
+    if ([detailsModel.needReturnReceipt boolValue]) {
         
-        NSInteger create = [NSString timeSwitchTimestamp:createTimeStr andFormatter:@"YYYY-MM-dd HH:mm:ss"];
-        /**
-         1800 = 30 * 60(30分钟 时间 转秒)
-         ([currentTime integerValue] - [createTime integerValue]) 剩下的时间
-         */
-        NSInteger timeDifference = ((30 * 60) - ([currentTime integerValue] - create));
-        [self timerFireWithTimeLeft:timeDifference];
-        
-    }else if ([detailsModel.status isEqualToString:@"6"]
-              || [detailsModel.status isEqualToString:@"7"] )
-    {
-        [self cancelLayout];
-    }else if ([detailsModel.status isEqualToString:@"4"]
-              ||[detailsModel.status isEqualToString:@"5"])
-    {
-        [self completeLayout];
+        if (status == 1){
+            [self p_HasReturnReceiptobligation];
+        }else if (status == 6 || status == 7 ){
+            [self cancelLayout];
+        }else if (status == 4 || status == 5){
+            [self completeLayout];
+        }
+    }else{
+        if (status == 1)
+        {
+            [self obligationLayout];
+    //        NSString *currentTime  = detailsModel.time;
+    //        NSString *createTimeStr  = detailsModel.createTime;
+    //
+    //        NSInteger create = [NSString timeSwitchTimestamp:createTimeStr andFormatter:@"YYYY-MM-dd HH:mm:ss"];
+    //        /**
+    //         1800 = 30 * 60(30分钟 时间 转秒)
+    //         ([currentTime integerValue] - [createTime integerValue]) 剩下的时间
+    //         */
+            
+//            NSString *currentTimeStr  = detailsModel.time;
+//            NSString *createTimeStr  = detailsModel.createTime2TimeStamp;
+//
+//    //            NSInteger create = [NSString timeSwitchTimestamp:createTimeStr andFormatter:@"YYYY-MM-dd HH:mm:ss"];
+//
+//             NSInteger createTime = [createTimeStr integerValue] / 1000;
+//             /**
+//              1800 = 30 * 60(30分钟 时间 转秒)
+//              ([currentTime integerValue] - [createTime integerValue]) 剩下的时间
+//              */
+//             NSInteger currentTime = [currentTimeStr integerValue] / 1000;
+//
+//
+//
+//
+//            NSInteger timeDifference = ((30 * 60) - (currentTime - createTime));
+//            [self timerFireWithTimeLeft:timeDifference];
+            
+            self.contentLabel.text = [NSString stringWithFormat:@"需付款：%@ ",[self.detailsModel.money formattingPriceString]];
+            
+        }else if (status == 6 || status == 7 )
+        {
+            if (self.timer) {
+                dispatch_source_cancel(self.timer);
+            }
+            [self cancelLayout];
+        }else if (status == 4 || status == 5)
+        {
+            [self completeLayout];
+        }
     }
     
     
     
 }
 
--(void)timerFireWithTimeLeft:(NSInteger)timeLeft {
+- (void)timerFireWithTimeLeft:(NSInteger)timeLeft {
     
     //设置倒计时时间
     __block NSInteger timeout = timeLeft;
     dispatch_queue_t global = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    dispatch_source_t timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, global);
-    dispatch_source_set_timer(timer, DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC, 0 * NSEC_PER_SEC);
-    dispatch_source_set_event_handler(timer, ^{
+    self.timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, global);
+    dispatch_source_set_timer(self.timer, DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC, 0 * NSEC_PER_SEC);
+    dispatch_source_set_event_handler(self.timer, ^{
         timeout --;
         if (timeout <= 0) {
             //关闭定
-            dispatch_source_cancel(timer);
+            dispatch_source_cancel(self.timer);
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (self.timeOutHandle) {
                     self.timeOutHandle();
@@ -148,12 +188,12 @@
                 } else {
                     title = [NSString stringWithFormat:@"%ld秒",(long)timeout];
                 }
-                self.contentLabel.text = [NSString stringWithFormat:@"需付款：¥%@  剩余：%@",self.detailsModel.orderPrice,title];
+                self.contentLabel.text = [NSString stringWithFormat:@"需付款：¥%@  剩余：%@",self.detailsModel.money,title];
             });
         }
     });
     
-    dispatch_resume(timer);
+    dispatch_resume(self.timer);
 }
 
 
@@ -163,8 +203,26 @@
     
     self.payBtn.hidden = NO;
     
-    self.contentLabel.text = [NSString stringWithFormat:@"需付款：¥%@  剩余：1分钟",self.detailsModel.orderPrice];
+    self.payBtnH.constant = 40;
+    
+    self.contentLabel.text = [NSString stringWithFormat:@"需付款：¥%@  剩余：1分钟",self.detailsModel.money];
 }
+
+
+- (void) p_HasReturnReceiptobligation {
+    self.statusIcon.image = [UIImage imageNamed:@"Waiting"];
+    self.statusLabel.text = @"等待支付";
+    
+    self.payBtn.hidden = YES;
+    
+    self.payBtnH.constant = 0;
+    
+    self.contentLabel.text = [NSString stringWithFormat:@"需付款：%@ ",[self.detailsModel.money formattingPriceString]];
+    
+    
+    [self.contentLabel setHidden:![self.detailsModel.payable boolValue]];
+}
+
 
 - (void) cancelLayout {
     self.statusIcon.image = [UIImage imageNamed:@"warning-circle"];
@@ -172,7 +230,7 @@
     
     self.payBtn.hidden = YES;
     
-    self.contentLabel.text = [NSString stringWithFormat:@"取消原因：%@",self.detailsModel.cannel];
+    self.contentLabel.text = [NSString stringWithFormat:@"取消原因：%@",self.detailsModel.cancel];
 }
 
 - (void) completeLayout{

@@ -30,7 +30,7 @@
     // Configure the view for the selected state
 }
 
--(void)setModel:(NSDictionary *)model{
+- (void)setModel:(NSDictionary *)model{
     _model = model;
     [self.nameLabel setText:model[@"title"]];
     [self.iconImageView setImage:[UIImage imageNamed:model[@"icon"]]];

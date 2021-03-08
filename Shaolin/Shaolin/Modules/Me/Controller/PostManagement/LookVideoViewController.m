@@ -18,13 +18,14 @@
 #import "ZFPlayer.h"
 #import "ZFAVPlayerManager.h"
 #import "ZFIJKPlayerManager.h"
-#import "KSMediaPlayerManager.h"
 #import "ZFPlayerControlView.h"
 #import "ZFUtilities.h"
 #import "UIImageView+ZFCache.h"
 #import "SLShareView.h"
 #import "SLPlayerControlView.h"
 #import "DefinedHost.h"
+#import "DefinedURLs.h"
+#import "AppDelegate+AppService.h"
 
 @interface LookVideoViewController ()
 @property(nonatomic,strong) UIButton *backButton;
@@ -98,7 +99,7 @@
     [self.view addSubview:self.collectionBtn];
     [self.view addSubview:self.praiseBtn];
     [self.view addSubview:self.backButton];
-    [self setUI];
+    [self setupUI];
     if ([self.model.state isEqualToString:@"6"]) {
         
     }else {
@@ -177,7 +178,7 @@
         NSLog(@"%@",responseObject);
     }];
 }
-- (void)setUI {
+- (void)setupUI {
     CGFloat min_x = 0;
     CGFloat min_y = 0;
     CGFloat min_w = 0;
@@ -291,6 +292,7 @@
     @weakify(self)
     self.player.orientationWillChange = ^(ZFPlayerController * _Nonnull player, BOOL isFullScreen) {
         @strongify(self)
+        [AppDelegate shareAppDelegate].allowOrentitaionRotation = isFullScreen;
         [self setNeedsStatusBarAppearanceUpdate];
     };
     
@@ -402,7 +404,7 @@
 - (void)leftAction {
     [self.navigationController popViewControllerAnimated:YES];
 }
--(UIButton *)shareBnt
+- (UIButton *)shareBnt
 {
     if (!_shareBnt) {
         _shareBnt  =[[ UIButton alloc]init];
@@ -415,12 +417,8 @@
     return _shareBnt;
 }
 - (void)shareAction {
-    
-    NSMutableArray *imgArr = [NSMutableArray array];
-    [imgArr addObject:[NSString stringWithFormat:@"%@",self.imgUrl]];
-    
     SharedModel *model = [[SharedModel alloc] init];
-    model.type = SharedModelType_URL;
+    model.type = SharedModelURLType;
     model.titleStr = self.model.title;
     model.descriptionStr = self.model.abstracts;
 //    model.webpageURL = self.videoStr;
@@ -430,8 +428,8 @@
 //        model.webpageURL = URL_H5_SharedVideo(self.model.id, @"2");//data.data.coverurl;
 //    }
     model.image = self.oneVideoImage.image;//[SharedModel toThumbImage:self.oneVideoImage.image];
-    if (imgArr.count){
-        model.imageURL = imgArr.firstObject;
+    if (self.imgUrl && self.imgUrl.length){
+        model.imageURL = self.imgUrl;
     }
     WEAKSELF
     _slShareView = [[SLShareView alloc]initWithFrame:CGRectMake(0, 0, kWidth, kHeight)];
@@ -475,7 +473,7 @@
     }];
 }
 
--(UIButton *)praiseBtn
+- (UIButton *)praiseBtn
 {
     if (!_praiseBtn) {
         _praiseBtn  =[[ UIButton alloc]init];
@@ -496,7 +494,7 @@
     }else {
         NSString *strId = [NSString stringWithFormat:@"%@", self.model.id];
         NSMutableArray *arr = [NSMutableArray array];
-        NSDictionary *dic = @{@"contentId":strId,@"type":@"1"};
+        NSDictionary *dic = @{@"contentId":strId,@"type":@"1", @"kind":@"2"};
         [arr addObject:dic];
         [self canclePraiseAction:arr Button:btn];
     }
@@ -540,27 +538,28 @@
             [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"点赞成功") view:self.view afterDelay:TipSeconds];
         }else
         {
-            [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
+            [ShaolinProgressHUD singleTextHud:errorReason view:self.view afterDelay:TipSeconds];
         }
     }];
 }
--(void)canclePraiseAction:(NSMutableArray *)arr Button:(UIButton *)btn {
-    [[HomeManager sharedInstance]postPraiseCancleArray:arr WithBlock:^(id  _Nonnull responseObject, NSError * _Nonnull error) {
+- (void)canclePraiseAction:(NSMutableArray *)arr Button:(UIButton *)btn {
+    [[HomeManager sharedInstance]postPraiseCancleArray:arr WithBlock:^(id  _Nonnull responseObject, NSString * _Nonnull error) {
         NSLog(@"%@",responseObject);
         if ([[responseObject objectForKey:@"code"] integerValue]== 200) {
             NSInteger likeCount = [self.praiseStr integerValue];
             likeCount --;
+            if (likeCount < 0) likeCount = 0;
             self.praiseStr =[NSString stringWithFormat:@" %ld",likeCount];
             [btn setSelected:NO];
             [btn setTitle:[NSString stringWithFormat:@" %ld",likeCount] forState:(UIControlStateNormal)];
             [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"取消点赞") view:self.view afterDelay:TipSeconds];
         }else
         {
-            [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
+            [ShaolinProgressHUD singleTextHud:error view:self.view afterDelay:TipSeconds];
         }
     }];
 }
--(UIButton *)collectionBtn
+- (UIButton *)collectionBtn
 {
     if (!_collectionBtn) {
         _collectionBtn  =[[ UIButton alloc]init];
@@ -582,7 +581,7 @@
         //取消收藏
         NSString *strId = [NSString stringWithFormat:@"%@", self.model.id];
         NSMutableArray *arr = [NSMutableArray array];
-        NSDictionary *dic = @{@"contentId":strId,@"type":@"1"};
+        NSDictionary *dic = @{@"contentId":strId,@"type":@"1", @"kind":@"2"};
         [arr addObject:dic];
         
         NSLog(@"%@",arr);
@@ -612,45 +611,54 @@
 //    }];
 //    
     [[HomeManager sharedInstance]postCollectionContentId:contentId Type:@"1" Kind:@"2" MemberId:@"" MemberName:@"" Success:^(NSDictionary * _Nullable resultDic) {
+        NSInteger likeCount = [self.collectionStr integerValue];
+        likeCount += 1;
+        self.collectionStr = [NSString stringWithFormat:@" %ld",likeCount];
+        [btn setSelected:YES];
+        [btn setTitle:[NSString stringWithFormat:@" %ld",likeCount] forState:(UIControlStateNormal)];
         
+        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"收藏成功") view:self.view afterDelay:TipSeconds];
     } failure:^(NSString * _Nullable errorReason) {
+        [ShaolinProgressHUD singleTextHud:errorReason view:self.view afterDelay:TipSeconds];
     } finish:^(NSDictionary * _Nullable responseObject, NSString * _Nullable errorReason) {
-        NSLog(@"%@",responseObject);
-        if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
-            
-            NSInteger likeCount = [self.collectionStr integerValue];
-            likeCount += 1;
-            self.collectionStr = [NSString stringWithFormat:@" %ld",likeCount];
-            [btn setSelected:YES];
-            [btn setTitle:[NSString stringWithFormat:@" %ld",likeCount] forState:(UIControlStateNormal)];
-            
-            [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"收藏成功") view:self.view afterDelay:TipSeconds];
-        }else
-        {
-            [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
-        }
+//        NSLog(@"%@",responseObject);
+//        if ([[responseObject objectForKey:@"code"] integerValue] == 200) {
+//            
+//            NSInteger likeCount = [self.collectionStr integerValue];
+//            likeCount += 1;
+//            self.collectionStr = [NSString stringWithFormat:@" %ld",likeCount];
+//            [btn setSelected:YES];
+//            [btn setTitle:[NSString stringWithFormat:@" %ld",likeCount] forState:(UIControlStateNormal)];
+//            
+//            [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"收藏成功") view:self.view afterDelay:TipSeconds];
+//        }else
+//        {
+//            [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
+//        }
     }];
 }
 #pragma mark - 取消收藏
--(void)cancleCollectionAction:(NSMutableArray *)arr button:(UIButton *)btn {
-    [[HomeManager sharedInstance]postCollectionCancleArray:arr WithBlock:^(id  _Nonnull responseObject, NSError * _Nonnull error) {
+- (void)cancleCollectionAction:(NSMutableArray *)arr button:(UIButton *)btn {
+    [[HomeManager sharedInstance]postCollectionCancleArray:arr WithBlock:^(id  _Nonnull responseObject, NSString * _Nonnull error) {
         NSLog(@"%@",responseObject);
-        if ([[responseObject objectForKey:@"code"] integerValue]== 200) {
-            
-            NSInteger likeCount = [self.collectionStr integerValue];
-            likeCount --;
-            self.collectionStr = [NSString stringWithFormat:@" %ld",likeCount];
-            [btn setSelected:NO];
-            [btn setTitle:[NSString stringWithFormat:@" %ld",likeCount] forState:(UIControlStateNormal)];
-            
-            [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"取消收藏") view:self.view afterDelay:TipSeconds];
-        }else
-        {
-            [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:@"message"] view:self.view afterDelay:TipSeconds];
-        }
+        NSInteger likeCount = [self.collectionStr integerValue];
+        likeCount --;
+        if (likeCount < 0) likeCount = 0;
+        self.collectionStr = [NSString stringWithFormat:@" %ld",likeCount];
+        [btn setSelected:NO];
+        [btn setTitle:[NSString stringWithFormat:@" %ld",likeCount] forState:(UIControlStateNormal)];
+        
+        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"取消收藏") view:self.view afterDelay:TipSeconds];
+//        if ([[responseObject objectForKey:@"code"] integerValue]== 200) {
+//
+//
+//        }else
+//        {
+//            [ShaolinProgressHUD singleTextHud:error view:self.view afterDelay:TipSeconds];
+//        }
     }];
 }
--(UIImageView *)headerImage {
+- (UIImageView *)headerImage {
     if (!_headerImage) {
         _headerImage = [[UIImageView alloc]init];
         _headerImage.clipsToBounds = YES;
@@ -658,7 +666,7 @@
     }
     return _headerImage;
 }
--(UILabel *)nameLabel {
+- (UILabel *)nameLabel {
     if (!_nameLabel) {
         _nameLabel = [[UILabel alloc]init];
         _nameLabel.font = kMediumFont(16);

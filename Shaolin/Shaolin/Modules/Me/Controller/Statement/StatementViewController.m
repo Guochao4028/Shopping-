@@ -45,7 +45,7 @@
     
 }
 
--(void)initData{
+- (void)initData{
     self.pager = 1;
     GCPickTimeView *pickTimeView = [[GCPickTimeView alloc]initForAutoLayout];
     self.endTimeStr = [pickTimeView getTimeString];
@@ -53,7 +53,7 @@
     
 }
 
--(void)initUI{
+- (void)initUI{
     [self.titleLabe setText:SLLocalizedString(@"消费明细")];
     [self.view setBackgroundColor:BackgroundColor_White];
     [self.view addSubview:self.selectTypeButton];
@@ -61,7 +61,7 @@
     [self p_Autolayout];
 }
 
--(void)chooseClassification{
+- (void)chooseClassification{
     BillingDetailsPopupView *popView = [[BillingDetailsPopupView alloc]init];
     [popView setTitleStr:SLLocalizedString(@"选择交易类型")];
     [popView setPopType:PopupViewChooseClassificationType];
@@ -191,7 +191,7 @@
 
 #pragma mark -  private
 
--(void)p_Autolayout{
+- (void)p_Autolayout{
     [self.selectTypeButton autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:0];
     [self.selectTypeButton autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
     [self.selectTypeButton autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
@@ -218,7 +218,7 @@
     return YES;
 }
 
--(CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
+- (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
     return -50;
 }
 
@@ -239,20 +239,20 @@
 
 
 #pragma mark - UITableViewDelegate & UITableViewDataSource
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return self.dataArray.count;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     return 0.01;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     
     return 58;
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
      
     static NSString *hIdentifier = @"hIdentifier";
     
@@ -299,24 +299,24 @@
       return view;
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
     
     UIView *view = [[UIView alloc] init];
     view.backgroundColor = KTextGray_FA;
     return view;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     StatementModel *model = self.dataArray[section];
     return model.value.count;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     return 90;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
 //    StatementTableViewCell *statementCell = [tableView dequeueReusableCellWithIdentifier:@"StatementTableViewCell"];
     StatementModel *model = self.dataArray[indexPath.section];
     StatementValueModel *cellModel = model.value[indexPath.row];
@@ -326,7 +326,7 @@
     return statementCell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     //账单详情
     StatementModel *model = self.dataArray[indexPath.section];
     StatementValueModel *cellModel = model.value[indexPath.row];
@@ -336,7 +336,7 @@
 }
 
 #pragma mark - setter / getter
--(UIButton *)selectTypeButton{
+- (UIButton *)selectTypeButton{
     
     if (_selectTypeButton == nil) {
         _selectTypeButton = [UIButton newAutoLayoutView];
@@ -359,7 +359,7 @@
 
 
 
--(UITableView *)tabelView{
+- (UITableView *)tabelView{
     
     if (_tabelView == nil) {
         _tabelView = [UITableView newAutoLayoutView];
@@ -384,7 +384,7 @@
     return _tabelView;
 }
 
--(NSMutableArray *)dataArray{
+- (NSMutableArray *)dataArray{
     if (_dataArray == nil) {
         _dataArray = [NSMutableArray array];
     }

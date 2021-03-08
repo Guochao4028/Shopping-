@@ -10,6 +10,8 @@
 
 #import "OrderDetailsModel.h"
 
+#import "OrderDetailsNewModel.h"
+
 @interface AfterSalesTypeView ()
 @property (strong, nonatomic) IBOutlet UIView *contentView;
 @property (weak, nonatomic) IBOutlet UIImageView *goodsImageView;
@@ -27,7 +29,7 @@
 
 @implementation AfterSalesTypeView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
         [[NSBundle mainBundle] loadNibNamed:@"AfterSalesTypeView" owner:self options:nil];
         [self initUI];
@@ -36,7 +38,7 @@
 }
 
 #pragma mark - methods
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.contentView];
     [self.contentView setFrame:self.bounds];
 }
@@ -56,19 +58,19 @@
 
 #pragma mark - getter / setter
 
--(void)setModel:(OrderDetailsModel *)model{
+- (void)setModel:(OrderDetailsGoodsModel *)model{
     _model = model;
     
-    NSString *goodsImageUrl = model.goods_image[0];
+    NSString *goodsImageUrl = model.goodsImages[0];
     
     [self.goodsImageView sd_setImageWithURL:[NSURL URLWithString:goodsImageUrl] placeholderImage:[UIImage imageNamed:@"default_small"]];
     
-    [self.goodsNameLabel setText:model.goods_name];
-    [self.goodsPriceLabel setText:[NSString stringWithFormat:@"¥%@",model.final_price]];
+    [self.goodsNameLabel setText:model.goodsName];
+    [self.goodsPriceLabel setText:[NSString stringWithFormat:@"¥%@",model.goodsPrice]];
     
     CGSize size =[self.goodsPriceLabel.text sizeWithAttributes:@{NSFontAttributeName:kMediumFont(13)}];
     self.goodsPriceLabelW.constant = size.width + 1;
-    [self.numberLabel setText:model.num];
+    [self.numberLabel setText:model.goodsNum];
     
 }
 

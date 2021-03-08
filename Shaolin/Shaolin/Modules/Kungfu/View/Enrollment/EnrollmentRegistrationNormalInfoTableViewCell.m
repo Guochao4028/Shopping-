@@ -33,13 +33,13 @@
     // Configure the view for the selected state
 }
 
--(void)setRegistModel:(EnrollmentRegistModel *)registModel {
+- (void)setRegistModel:(EnrollmentRegistModel *)registModel {
     _registModel = registModel;
     [self.titleLabel setText:registModel.gender];
 }
 
 ///装饰view
--(void)decorationView:(UIView *)view{
+- (void)decorationView:(UIView *)view{
     view.layer.cornerRadius = 4;
     view.layer.borderWidth = 0.5;
     view.layer.borderColor = [UIColor colorForHex:@"CECECE"].CGColor;

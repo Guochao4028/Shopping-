@@ -128,11 +128,13 @@
 #define KTextGray_333   [UIColor colorForHex:@"333333"]
 #define KTextGray_999   [UIColor colorForHex:@"999999"]
 #define KTextGray_666   [UIColor colorForHex:@"666666"]
+#define KTextGray_666   [UIColor colorForHex:@"666666"]
 #define KTextGray_DDD   [UIColor colorForHex:@"DDDDDD"]
 #define KTextGray_EEE   [UIColor colorForHex:@"EEEEEE"]
 #define KTextGray_B7    [UIColor colorForHex:@"B7B7B7"]
 #define KTextGray_12    [UIColor colorForHex:@"121212"]
 #define KTextGray_96    [UIColor colorForHex:@"969696"]
+#define KTextGray_97    [UIColor colorForHex:@"979797"]
 #define KTextGray_E5    [UIColor colorForHex:@"E5E5E5"]
 #define KTextGray_F3    [UIColor colorForHex:@"F3F3F3"]
 #define KTextGray_FA    [UIColor colorForHex:@"FAFAFA"]
@@ -142,7 +144,6 @@
 //字体
 #define kFont(A) [UIFont fontWithName:@"PingFangSC-Light" size:A]
 #define kRegular(A) [UIFont fontWithName:@"PingFangSC-Regular" size:A]
-
 #define kDINFONT(A) [UIFont fontWithName:@"DINAlternate-Bold" size:A]
 
 //banner图比例 343*145
@@ -152,7 +153,7 @@
 
 //加粗字体
 #define kBoldFont(A) [UIFont fontWithName:@"PingFangSC-Semibold" size:A]
-#define kMediumFont(A) [UIFont fontWithName:@"PingFang-SC-Medium" size:A]
+#define kMediumFont(A) [UIFont fontWithName:@"PingFangSC-Medium" size:A]
 
 //等宽字体
 #define kHelveticaFont(A) [UIFont fontWithName:@"HelveticaNeue" size:A]
@@ -228,13 +229,16 @@ if(!bCreateDir){NSLog(@"创建文件夹失败！", nil));}NSLog(@"创建文件�
 #define kNetErrorPrompt SLLocalizedString(@"网络异常，请检查网络设置！")
 
 // token
-#define kToken @"access_token"
+#define kToken @"accessToken"
 
 // token的刷新时间
-#define kTokenRefreshIn @"refresh_in"
+#define kTokenRefreshIn @"refreshIn"
 
 // token的过期时间
-#define kTokenExpiresIn @"expires_in"
+#define kTokenExpiresIn @"expiresIn"
+
+// token的过期时间
+#define KVideoPlayStatusStop @"VideoPlayStatusStop"
 
 
 

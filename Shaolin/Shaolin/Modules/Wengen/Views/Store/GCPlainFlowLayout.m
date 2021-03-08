@@ -10,7 +10,7 @@
 
 @implementation GCPlainFlowLayout
 
--(instancetype)init{
+- (instancetype)init{
     
     self = [super init];
     

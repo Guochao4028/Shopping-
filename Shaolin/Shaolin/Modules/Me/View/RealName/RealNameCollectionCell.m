@@ -17,12 +17,12 @@
     }
     return self;
 }
--(void)layoutView{
+- (void)layoutView{
     [self.contentView addSubview:self.bgImage];
     [self.contentView addSubview:self.alertLabel];
     [self.contentView addSubview:self.photoBtn];
 }
--(void)layoutSubviews
+- (void)layoutSubviews
 {
     [super layoutSubviews];
     [self.bgImage mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -42,7 +42,7 @@
         make.size.mas_equalTo(SLChange(47));
     }];
 }
--(UIImageView *)bgImage
+- (UIImageView *)bgImage
 {
     if (!_bgImage) {
         _bgImage = [[UIImageView alloc]init];
@@ -52,7 +52,7 @@
     }
     return _bgImage;
 }
--(UILabel *)alertLabel
+- (UILabel *)alertLabel
 {
     if (!_alertLabel) {
         _alertLabel = [[UILabel alloc]init];
@@ -62,7 +62,7 @@
     }
     return _alertLabel;
 }
--(UIButton *)photoBtn
+- (UIButton *)photoBtn
 {
     if (!_photoBtn) {
         _photoBtn = [[UIButton alloc]init];

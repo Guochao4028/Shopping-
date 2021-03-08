@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @optional
 
--(void)tapBack;
+- (void)tapBack;
 
 @end
 
@@ -28,7 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, assign)BOOL isEditor;
 
--(void)rightTarget:(nullable id)target action:(SEL)action;
+- (void)rightTarget:(nullable id)target action:(SEL)action;
 
 //记录右按钮点击状态
 @property(nonatomic, assign)BOOL isRight;

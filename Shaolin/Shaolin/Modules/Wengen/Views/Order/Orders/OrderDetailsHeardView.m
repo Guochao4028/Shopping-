@@ -12,6 +12,8 @@
 
 #import "OrderDetailsModel.h"
 
+#import "OrderDetailsNewModel.h"
+
 @interface OrderDetailsHeardView ()
 
 @property (nonatomic, assign)OrderDetailsType viewType;
@@ -62,7 +64,7 @@
 
 @implementation OrderDetailsHeardView
 
--(instancetype)initWithFrame:(CGRect)frame viewType:(OrderDetailsType)type{
+- (instancetype)initWithFrame:(CGRect)frame viewType:(OrderDetailsType)type{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [[NSBundle mainBundle] loadNibNamed:@"OrderDetailsHeardView" owner:self options:nil];
@@ -78,7 +80,7 @@
 #pragma mark - methods
 
 //设置圆角
--(void)setRoundedCornersView:(UIView *)view corners:(UIRectCorner)corners{
+- (void)setRoundedCornersView:(UIView *)view corners:(UIRectCorner)corners{
     UIBezierPath* maskPath = [UIBezierPath bezierPathWithRoundedRect:view.bounds byRoundingCorners:corners cornerRadii:CGSizeMake(10, 10)];
     maskPath.lineWidth     = 0.f;
     CAShapeLayer *maskLayer = [[CAShapeLayer alloc] init];
@@ -87,7 +89,7 @@
     view.layer.mask = maskLayer;
 }
 
--(void)initUI{
+- (void)initUI{
     switch (self.viewType) {
         case OrderDetailsHeardObligationType:{
             
@@ -147,31 +149,22 @@
 
 #pragma mark - action
 
--(void)setModel:(OrderDetailsModel *)model{
+- (void)setModel:(OrderDetailsNewModel *)model{
     _model = model;
+    
+    OrderAddressModel *addressModel = model.address;
     
     switch (self.viewType) {
         case OrderDetailsHeardObligationType:{
-            [self.waitingNameLabel setText:model.name];
+            [self.waitingNameLabel setText:addressModel.name];
             
             
-            [self.waitingPhoneNumberLabel setText:[NSString numberSuitScanf:model.phone]];
+            [self.waitingPhoneNumberLabel setText:[NSString numberSuitScanf:addressModel.phone]];
             
 //            [self.waitingPhoneNumberLabel setText:model.phone];
-            [self.waitingAddressLabel setText:[NSString stringWithFormat:SLLocalizedString(@"地址：%@"),model.address_info]];
+            [self.waitingAddressLabel setText:[NSString stringWithFormat:SLLocalizedString(@"地址：%@"),addressModel.addressInfo]];
             
-            NSString *money = [NSString stringWithFormat:@"¥%@", model.orderPrice];
-//
-//            NSRange range = [money rangeOfString:@"."];
-//
-//            NSMutableAttributedString *attrStr = [[NSMutableAttributedString alloc] initWithString:money];
-//
-//            [attrStr addAttribute:NSFontAttributeName value:[UIFont fontWithName:MediumFont size:13] range:NSMakeRange(0, 1)];
-//
-//            [attrStr addAttribute:NSFontAttributeName value:[UIFont fontWithName:MediumFont size:17] range:NSMakeRange(1, range.location-1)];
-//            [attrStr addAttribute:NSFontAttributeName value:[UIFont fontWithName:MediumFont size:14] range:NSMakeRange(range.location, 3)];
-//
-//            self.waitingPriceLabel.attributedText = attrStr;
+            NSString *money = [NSString stringWithFormat:@"¥%@", model.money];
             
             NSAttributedString *attrStr = [money moneyStringWithFormatting:MoneyStringFormattingMoneyAllFormattingType fontArrat:@[kMediumFont(13), kMediumFont(17), kMediumFont(14)]];
             
@@ -182,18 +175,19 @@
             
             self.waitingPriceLabelW.constant = size.width+3.5;
             
-           NSString *currentTime  = model.time;
-           NSString *createTimeStr  = model.create_time;
+           NSString *currentTimeStr  = model.time;
+           NSString *createTimeStr  = model.createTime2TimeStamp;
             
-            NSInteger create = [NSString timeSwitchTimestamp:createTimeStr andFormatter:@"YYYY-MM-dd HH:mm:ss"];
+//            NSInteger create = [NSString timeSwitchTimestamp:createTimeStr andFormatter:@"YYYY-MM-dd HH:mm:ss"];
             
-            
+            NSInteger create = [createTimeStr integerValue] / 1000;
             /**
              1800 = 30 * 60(30分钟 时间 转秒)
              ([currentTime integerValue] - [createTime integerValue]) 剩下的时间
              */
+            NSInteger currentTime = [currentTimeStr integerValue] / 1000;
             
-            self.timeDifference = (1800 - ([currentTime integerValue] - create));
+            self.timeDifference = (1800 - (currentTime - create));
             
             [self.waitingTimeLabel setText:[NSString convertStrToTime:self.timeDifference]];
             
@@ -204,23 +198,23 @@
             break;
         case OrderDetailsHeardCancelType:{
             
-            [self.canceNameLabel setText:model.name];
+            [self.canceNameLabel setText:addressModel.name];
 //            [self.cancePhoneNumberLabel setText:model.phone];
             
-            [self.cancePhoneNumberLabel setText:[NSString numberSuitScanf:model.phone]];
+            [self.cancePhoneNumberLabel setText:[NSString numberSuitScanf:addressModel.phone]];
             
-            [self.canceAddressLabel setText:[NSString stringWithFormat:SLLocalizedString(@"地址：%@"),model.address_info]];
+            [self.canceAddressLabel setText:[NSString stringWithFormat:SLLocalizedString(@"地址：%@"),addressModel.addressInfo]];
             
-            [self.canceReasonLabel setText:[NSString stringWithFormat:SLLocalizedString(@"取消原因：%@"),model.cannel]];
+            [self.canceReasonLabel setText:[NSString stringWithFormat:SLLocalizedString(@"取消原因：%@"),model.cancel]];
         }
             break;
         case OrderDetailsHeardNormalType:{
-            [self.normalNameLabel setText:model.name];
+            [self.normalNameLabel setText:addressModel.name];
 //            [self.normalPhoneNumberLabel setText:model.phone];
             
-            [self.normalPhoneNumberLabel setText:[NSString numberSuitScanf:model.phone]];
+            [self.normalPhoneNumberLabel setText:[NSString numberSuitScanf:addressModel.phone]];
             
-            [self.normalAddressLabel setText:[NSString stringWithFormat:SLLocalizedString(@"地址：%@"),model.address_info]];
+            [self.normalAddressLabel setText:[NSString stringWithFormat:SLLocalizedString(@"地址：%@"),addressModel.addressInfo]];
             
             NSString *status = model.status;
           if ([status isEqualToString:@"2"] == YES){
@@ -228,7 +222,7 @@
               [self.normalInstructionsLabel setText:SLLocalizedString(@"您提交了订单，耐心等候发货时间，非常感谢您的支持！")];
               [self.normalIconImageView setImage:[UIImage imageNamed:@"daishouh"]];
 
-            }else if ( [status isEqualToString:@"3"] == YES) {
+            }else if ([status isEqualToString:@"3"] == YES) {
                 [self.normalTitleLabel setText:SLLocalizedString(@"等待收货")];
                 [self.normalInstructionsLabel setText:SLLocalizedString(@"您的订单已发货，请留察物流信息，非常感谢您的支持！")];
                 [self.normalIconImageView setImage:[UIImage imageNamed:@"daishouh"]];
@@ -255,17 +249,17 @@
     }
 }
 
--(void)deleteTimer{
+- (void)deleteTimer{
     [self.timer invalidate];
     self.timer = nil;
 }
 
--(void)startTimer{
+- (void)startTimer{
     [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSRunLoopCommonModes];
     [self.timer fire];
 }
 
--(void)setType:(OrderDetailsType)type{
+- (void)setType:(OrderDetailsType)type{
     
     [self.contentView removeFromSuperview];
     self.contentView = nil;
@@ -300,7 +294,7 @@
     [self.contentView setFrame:self.bounds];
 }
 
--(NSTimer *)timer{
+- (NSTimer *)timer{
     
     if (_timer == nil) {
         _timer = [NSTimer timerWithTimeInterval:1.0 target:self selector:@selector(timeChange) userInfo:nil repeats:YES];
@@ -309,7 +303,7 @@
 
 }
 
--(void)setOrderPrice:(NSString *)orderPrice{
+- (void)setOrderPrice:(NSString *)orderPrice{
     
     NSString *money = [NSString stringWithFormat:@"¥%@", orderPrice];
     

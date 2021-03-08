@@ -21,7 +21,7 @@
 @implementation KungfuHomeHotTagView
 
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self) {
         totalHeight=0;
@@ -30,7 +30,7 @@
     }
     return self;
 }
--(void)setTagWithTagArray:(NSArray*)arr{
+- (void)setTagWithTagArray:(NSArray*)arr{
 
 
     /**
@@ -172,7 +172,7 @@
     return bgView;
 }
 
--(void)touchSubTagView:(UITapGestureRecognizer*)tapOne
+- (void)touchSubTagView:(UITapGestureRecognizer*)tapOne
 {
     UILabel *lab = (UILabel *)tapOne.view;
 //    NSLog(@"%@",lab.text);

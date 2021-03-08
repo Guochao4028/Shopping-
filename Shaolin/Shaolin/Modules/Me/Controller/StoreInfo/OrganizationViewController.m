@@ -7,13 +7,14 @@
 //
 
 #import "OrganizationViewController.h"
-#import "UICustomDatePicker.h"
+//#import "UICustomDatePicker.h"
 #import "HomeManager.h"
 #import "MeManager.h"
 #import "BRPickerView.h"
 #import "UIView+Identifier.h"
 #import "GCTextField.h"
 #import "SLDatePickerView.h"
+#import "StoreInformationModel.h"
 
 @interface OrganizationViewController ()<UITextFieldDelegate,TZImagePickerControllerDelegate,UIImagePickerControllerDelegate>
 @property (weak, nonatomic) IBOutlet UIImageView *photoView;
@@ -23,6 +24,7 @@
 
 @property (strong, nonatomic) IBOutlet UIImageView *imageCamera;
 
+@property (weak, nonatomic) IBOutlet UIButton *longtimeBtn;
 
 
 @property(nonatomic,assign) NSInteger selectLongTime; //判断是否是长期
@@ -35,7 +37,7 @@
 
 @implementation OrganizationViewController
 
--(void)viewWillAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     //[self setNavigationBarYellowTintColor];
 }
@@ -52,7 +54,45 @@
 
     self.titleLabe.textColor = [UIColor whiteColor];
     [self.leftBtn setImage:[UIImage imageNamed:@"real_left"] forState:(UIControlStateNormal)];
+    
+    [self initSaveInfo];
 }
+
+-(void) initSaveInfo {
+    
+    self.codeTf.text = NotNilAndNull(self.model.organizationNumber)?self.model.organizationNumber:@"";
+    
+    if (NotNilAndNull(self.model.organizationImg) && self.model.organizationImg.length > 0) {
+        self.imgStr = self.model.organizationImg;
+        [self.photoView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.imgStr]]];
+        self.imageCamera.hidden = YES;
+    }
+    
+    if (NotNilAndNull(self.model.organizationStartTime) && self.model.organizationStartTime.length) {
+        self.startTimeStr = self.model.organizationStartTime;
+        [self.startBtn setTitle:self.startTimeStr forState:UIControlStateNormal];
+        [self.startBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    }
+    
+    if ([self.model.organizationLong boolValue]) {
+        self.selectLongTime = 1;
+        self.endTimeStr = @"";
+        [self.endBtn setTitle:SLLocalizedString(@"结束日期") forState:(UIControlStateNormal)];
+        [self.endBtn setTitleColor:KTextGray_999 forState:(UIControlStateNormal)];
+        self.endBtn.enabled = NO;
+        self.longtimeBtn.selected = YES;
+    } else {
+        if (NotNilAndNull(self.model.organizationEndTime) && self.model.organizationEndTime.length) {
+            [self.endBtn setTitle:self.model.organizationEndTime forState:UIControlStateNormal];
+            [self.endBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        }
+    }
+    
+    
+    
+    
+}
+
 #pragma mark 开始时间
 - (IBAction)startAction:(UIButton *)sender {
     [self.codeTf resignFirstResponder];
@@ -196,6 +236,7 @@
             if (weakSelf.InstitutionBlock) {
                 weakSelf.InstitutionBlock(@"3", self.codeTf.text);
             }
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"MeViewControllerDidReloadUserStoreOpenInformationDataNotfication" object:nil];
             [self.navigationController popViewControllerAnimated:YES];
         } else {
             [ShaolinProgressHUD singleTextAutoHideHud:errorReason];

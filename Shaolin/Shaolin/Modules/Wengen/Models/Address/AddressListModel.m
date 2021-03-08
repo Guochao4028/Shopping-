@@ -11,7 +11,10 @@
 @implementation AddressListModel
 + (NSDictionary *)mj_replacedKeyFromPropertyName{
     return @{
-             @"addressId" : @"id",
+        @"addressId" : @"id",
              };
 }
+
+
+
 @end

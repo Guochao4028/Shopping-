@@ -27,7 +27,7 @@
     [super viewWillDisappear:animated];
 }
 
--(void)viewWillAppear:(BOOL)animated{
+- (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
 }
 
@@ -41,13 +41,13 @@
     [self initUI];
 }
 
--(void)initUI{
+- (void)initUI{
     [self.view setBackgroundColor:[UIColor whiteColor]];
     [self.view addSubview:self.detailsView];
 }
 
 #pragma mark - Action
--(void)rightAction{
+- (void)rightAction{
     
     NSMutableArray *temp = [NSMutableArray arrayWithArray:[self.navigationController viewControllers]];
     [temp removeLastObject];
@@ -62,7 +62,7 @@
 //    [self.navigationController pushViewController:orderVC animated:YES];
 }
 
--(void)queryAction{
+- (void)queryAction{
     NSMutableArray *temp = [NSMutableArray arrayWithArray:[self.navigationController viewControllers]];
     [temp removeLastObject];
     [temp removeLastObject];
@@ -78,13 +78,13 @@
 }
 
 //返回按钮
--(void)leftAction{
+- (void)leftAction{
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 #pragma mark - getter / setter
 
--(PaySuccessDetailsView *)detailsView{
+- (PaySuccessDetailsView *)detailsView{
     
     if (_detailsView == nil) {
         CGFloat y = 0;

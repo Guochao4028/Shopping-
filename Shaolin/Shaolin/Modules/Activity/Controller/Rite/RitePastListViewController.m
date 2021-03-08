@@ -46,11 +46,11 @@ static NSString *const riteCellId = @"RitePastListCell";
 @implementation RitePastListViewController
 
 
--(void)viewWillAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 }
 
--(void)viewDidAppear:(BOOL)animated {
+- (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 }
 
@@ -93,8 +93,9 @@ static NSString *const riteCellId = @"RitePastListCell";
     }];
     
     [self.homeTableView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.right.bottom.mas_equalTo(self.view);
         make.top.mas_equalTo(self.timeChooseBtn.mas_bottom);
+        make.left.right.mas_equalTo(self.view);
+        make.bottom.mas_equalTo(self.view).mas_offset(-kBottomSafeHeight);
     }];
     
     [self.timeChooseBtn horizontalCenterTitleAndImage:15];
@@ -116,7 +117,7 @@ static NSString *const riteCellId = @"RitePastListCell";
         [self.yearsRange removeAllObjects];
         
         for (int i = startDate; i <= endDate; i++) {
-            [self.yearsRange addObject:[NSString stringWithFormat:@"%d",i]];
+            [self.yearsRange addObject:[NSString stringWithFormat:@"%d年",i]];
         }
         
         self.timePickerView.dataSourceArr = self.yearsRange;
@@ -133,11 +134,17 @@ static NSString *const riteCellId = @"RitePastListCell";
     
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
 
+    NSString * year = @"";
+    
+    if ([self.yearStr containsString:@"年"]) {
+        year = [self.yearStr stringByReplacingOccurrencesOfString:@"年" withString:@""];
+    }
+    
     NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithDictionary:@{
         @"pageSize":@(30),
         @"pageNum":@(self.pageNum),
         @"ownedLabel":self.ownedLabel,
-        @"year":self.yearStr
+        @"year":year
     }];
  
     [ActivityManager getPastRiteListWithParams:[params copy] success:^(NSDictionary * _Nullable resultDic) {
@@ -195,12 +202,12 @@ static NSString *const riteCellId = @"RitePastListCell";
 }
 
 #pragma mark - delegate && dataSources
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return self.riteList.count;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 //    WEAKSELF
     RitePastListCell * cell = [tableView dequeueReusableCellWithIdentifier:riteCellId];
@@ -213,11 +220,11 @@ static NSString *const riteCellId = @"RitePastListCell";
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     RitePastModel * model = self.riteList[indexPath.row];
     
-    KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteDetail(model.code, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_rite];
+    KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteDetail(model.code, [SLAppInfoModel sharedInstance].accessToken) type:KfWebView_rite];
     webVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:webVC animated:YES];
 
@@ -229,7 +236,7 @@ static NSString *const riteCellId = @"RitePastListCell";
 //        }
 //            break;
 //        case 2:{
-//            webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteSL(model.type, model.code, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_rite];
+//            webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteSL(model.type, model.code, [SLAppInfoModel sharedInstance].accessToken) type:KfWebView_rite];
 //            webVC.hidesBottomBarWhenPushed = YES;
 //            [self.navigationController pushViewController:webVC animated:YES];
 //        }
@@ -239,7 +246,7 @@ static NSString *const riteCellId = @"RitePastListCell";
 //        }
 //            break;
 //        case 4:{
-//            webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteBuild(model.type, model.code, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_rite];
+//            webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteBuild(model.type, model.code, [SLAppInfoModel sharedInstance].accessToken) type:KfWebView_rite];
 //            webVC.hidesBottomBarWhenPushed = YES;
 //            [self.navigationController pushViewController:webVC animated:YES];
 //        }
@@ -254,24 +261,24 @@ static NSString *const riteCellId = @"RitePastListCell";
     }
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return tableView.rowHeight;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
     return .001;
 }
 
--(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
     return [UIView new];
 }
 
 #pragma mark - getter && setter
 
--(UITableView *)homeTableView {
+- (UITableView *)homeTableView {
     WEAKSELF
     if (!_homeTableView) {
         _homeTableView = [[UITableView alloc]initWithFrame:CGRectZero style:(UITableViewStylePlain)];
@@ -323,7 +330,7 @@ static NSString *const riteCellId = @"RitePastListCell";
 }
 
 
--(NSMutableArray *)riteList {
+- (NSMutableArray *)riteList {
     if (!_riteList) {
         _riteList = [NSMutableArray new];
     }
@@ -331,14 +338,14 @@ static NSString *const riteCellId = @"RitePastListCell";
 }
 
 
--(NSMutableArray *)yearsRange {
+- (NSMutableArray *)yearsRange {
     if (!_yearsRange) {
         _yearsRange = [NSMutableArray new];
     }
     return _yearsRange;
 }
 
--(UIButton *)timeChooseBtn {
+- (UIButton *)timeChooseBtn {
     if (!_timeChooseBtn) {
         _timeChooseBtn = [UIButton new];
         _timeChooseBtn.titleLabel.font = kRegular(15);
@@ -359,7 +366,7 @@ static NSString *const riteCellId = @"RitePastListCell";
     return _timeChooseBtn;
 }
 
--(SLStringPickerView *)timePickerView {
+- (SLStringPickerView *)timePickerView {
     WEAKSELF
     if (!_timePickerView) {
         _timePickerView = [[SLStringPickerView alloc] init];

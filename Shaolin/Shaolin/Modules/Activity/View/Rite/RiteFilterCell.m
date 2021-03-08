@@ -42,7 +42,7 @@
     // Configure the view for the selected state
 }
 
--(void)layoutSubviews {
+- (void)layoutSubviews {
     
     [self.pointImgv mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(15);
@@ -87,7 +87,7 @@
     [self.timeBtn lgf_SetImagePosition:lgf_PositionRight spacing:15];
 }
 
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         self.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -102,7 +102,7 @@
     return self;
 }
 
-//-(void)resetTimeBtn {
+//- (void)resetTimeBtn {
 //   
 //}
 
@@ -128,7 +128,7 @@
 }
 
 #pragma mark - setter
--(void)setTimeRangeStr:(NSString *)timeRangeStr {
+- (void)setTimeRangeStr:(NSString *)timeRangeStr {
     _timeRangeStr = timeRangeStr;
     
     if (IsNilOrNull(_timeRangeStr)) {
@@ -140,7 +140,7 @@
     [self.timeBtn lgf_SetImagePosition:lgf_PositionRight spacing:15];
 }
 
--(void)setTypeStr:(NSString *)typeStr {
+- (void)setTypeStr:(NSString *)typeStr {
     _typeStr = typeStr;
     
     if ([typeStr isEqualToString:@"近期"]) {
@@ -164,7 +164,7 @@
 
 #pragma mark - getter
 
--(UIButton *)timeBtn {
+- (UIButton *)timeBtn {
     if (!_timeBtn) {
         _timeBtn = [UIButton new];
         _timeBtn.titleLabel.font = kMediumFont(15);
@@ -177,7 +177,7 @@
     return _timeBtn;
 }
 
--(UIButton *)doingBtn {
+- (UIButton *)doingBtn {
     if (!_doingBtn) {
         _doingBtn = [UIButton new];
         
@@ -194,7 +194,7 @@
     return _doingBtn;
 }
 
--(UIButton *)finishedBtn {
+- (UIButton *)finishedBtn {
     if (!_finishedBtn) {
         _finishedBtn = [UIButton new];
         
@@ -211,7 +211,7 @@
     return _finishedBtn;
 }
 
--(UIView *)buttonBgView {
+- (UIView *)buttonBgView {
     if (!_buttonBgView) {
         _buttonBgView = [UIView new];
         _buttonBgView.cornerRadius = 15.0;
@@ -221,21 +221,21 @@
     return _buttonBgView;
 }
 
--(UIImageView *)pointImgv {
+- (UIImageView *)pointImgv {
     if (!_pointImgv) {
         _pointImgv = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"new_sectionHeaderPoint"]];
     }
     return _pointImgv;
 }
 
--(UIImageView *)lineImgv {
+- (UIImageView *)lineImgv {
     if (!_lineImgv) {
         _lineImgv = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"new_sectionHeaderLine"]];
     }
     return _lineImgv;
 }
 
-//-(UILabel *)titleLabel {
+//- (UILabel *)titleLabel {
 //    if (!_titleLabel) {
 //        _titleLabel = [UILabel new];
 //        _titleLabel.font =
@@ -243,16 +243,16 @@
 //    return _titleLabel;
 //}
 
-//-(UIColor *)gradientColor {
+//- (UIColor *)gradientColor {
 //    return [UIColor lgf_GradientFromColor:[UIColor hexColor:@"8e2b25" alpha:0.5] toColor:[UIColor hexColor:@"8e2b25" alpha:1] height:35];
 //}
 //
 //
-//-(UIColor *)alphaColor {
+//- (UIColor *)alphaColor {
 //    return [UIColor lgf_GradientFromColor:[UIColor hexColor:@"8e2b25" alpha:0.15] toColor:[UIColor hexColor:@"8e2b25" alpha:0.3] height:35];
 //}
 
-//-(UIView *)bottomLine {
+//- (UIView *)bottomLine {
 //    if (!_bottomLine) {
 //        _bottomLine = [UIView new];
 //        _bottomLine.backgroundColor = kMainYellow;

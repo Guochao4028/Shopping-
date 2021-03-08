@@ -22,7 +22,7 @@
 #import "SLRouteManager.h"
 #import "ActivityManager.h"
 #import "DataManager.h"
-
+#import "ThumbFollowShareManager.h"
 #import "EnrollmentPopoverView.h"
 
 @interface HtmlJsonModel : NSObject
@@ -37,15 +37,17 @@
 @property (nonatomic, copy) NSString * code;
 
 @property (nonatomic, copy) NSString * imId;
+@property (nonatomic, copy) NSString * pujaServiceIMId;
+
 @property (nonatomic, copy) NSString * buddhismId;
 @property (nonatomic, copy) NSString * buddhismTypeId;
 
-@property (nonatomic, copy) NSString * praises;
-@property (nonatomic, copy) NSString * collections;
+@property (nonatomic, copy) NSString * praise;
+@property (nonatomic, copy) NSString * collection;
 @property (nonatomic, copy) NSString * forward;
 
-@property (nonatomic, copy) NSString * praisesState;
-@property (nonatomic, copy) NSString * collectionsState;
+@property (nonatomic, copy) NSString * praiseState;
+@property (nonatomic, copy) NSString * collectionState;
 
 @property (nonatomic, copy) NSString * thumbnailUrl;
 @property (nonatomic, copy) NSString * name;
@@ -68,9 +70,10 @@
 @property (nonatomic, strong) UIButton * backButton;
 @property (nonatomic, strong) MBProgressHUD * hud;
 
-@property (nonatomic, strong) NSString * urlStr;;
-@property (nonatomic, strong) WKWebView * webView;
-
+@property (nonatomic, strong) NSString *urlStr;
+@property (nonatomic, strong) WKWebView *webView;
+// 解决iOS12.0, 12.1直接设置webView.customUserAgent，h5接收不到的bug
+@property (nonatomic, strong) WKWebView *fuckWKWebView;
 
 @property (nonatomic, strong) UIButton * collectBtn;//收藏
 @property (nonatomic, strong) UILabel * collectLabel;
@@ -89,32 +92,11 @@
 @implementation KungfuWebViewController
 
 #pragma mark - life cycle
--(void)viewDidAppear:(BOOL)animated {
+- (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
     self.titleLabe.text = self.titleStr;
-    if (self.webType == KfWebView_rite) {
-        self.likeBtn.hidden = NO;
-        self.likeLabel.hidden = NO;
-        self.collectBtn.hidden = NO;
-        self.collectLabel.hidden = NO;
-        self.shareBtn.hidden = NO;
-        self.shareLabel.hidden = NO;
-    } else if (self.webType == KfWebView_oldRite) {
-        self.likeBtn.hidden = YES;
-        self.likeLabel.hidden = YES;
-        self.collectBtn.hidden = YES;
-        self.collectLabel.hidden = YES;
-        self.shareBtn.hidden = NO;
-        self.shareLabel.hidden = NO;
-    } else {
-        self.likeBtn.hidden = YES;
-        self.likeLabel.hidden = YES;
-        self.collectBtn.hidden = YES;
-        self.collectLabel.hidden = YES;
-        self.shareBtn.hidden = YES;
-        self.shareLabel.hidden = YES;
-    }
+    [self reloadNavigationBarButtonsHiddenState];
 }
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
@@ -126,7 +108,7 @@
     self.shareLabel.hidden = YES;
 }
 
--(void)viewDidDisappear:(BOOL)animated {
+- (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     if (!self.navigationController || self.navigationController.viewControllers.count == 1) {
         
@@ -148,7 +130,7 @@
 }
 
 
--(instancetype)initWithUrl:(NSString *)url type:(KfWebViewType)type {
+- (instancetype)initWithUrl:(NSString *)url type:(KfWebViewType)type {
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
     self = [super init];
     if (self) {
@@ -179,9 +161,10 @@
     [super viewDidLoad];
     
     [self initUI];
+    [self reloadNavigationBar];
 }
 
--(void)initUI{
+- (void)initUI{
     
     [self.view addSubview:self.webView];
     [self.view addSubview:self.backButton];
@@ -205,7 +188,7 @@
     [self initData];
 }
 
--(void)initData{
+- (void)initData{
     NSMutableURLRequest *request =[NSMutableURLRequest requestWithURL:[NSURL URLWithString:self.urlStr]];
     [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
     [self.webView loadRequest:request];
@@ -214,6 +197,41 @@
 - (void)hideWebViewScrollIndicator{
     [self.webView.scrollView setShowsVerticalScrollIndicator:NO];
     [self.webView.scrollView setShowsHorizontalScrollIndicator:NO];
+}
+
+- (void)reloadNavigationBarButtonsHiddenState{
+    NSDictionary *dict = [self.jsonModel mj_keyValues];
+    if (![dict allKeys].count) {
+        self.likeBtn.hidden = YES;
+        self.likeLabel.hidden = YES;
+        self.collectBtn.hidden = YES;
+        self.collectLabel.hidden = YES;
+        self.shareBtn.hidden = YES;
+        self.shareLabel.hidden = YES;
+        return;
+    }
+    if (self.webType == KfWebView_rite) {
+        self.likeBtn.hidden = NO;
+        self.likeLabel.hidden = NO;
+        self.collectBtn.hidden = NO;
+        self.collectLabel.hidden = NO;
+        self.shareBtn.hidden = NO;
+        self.shareLabel.hidden = NO;
+    } else if (self.webType == KfWebView_oldRite) {
+        self.likeBtn.hidden = YES;
+        self.likeLabel.hidden = YES;
+        self.collectBtn.hidden = YES;
+        self.collectLabel.hidden = YES;
+        self.shareBtn.hidden = NO;
+        self.shareLabel.hidden = NO;
+    } else {
+        self.likeBtn.hidden = YES;
+        self.likeLabel.hidden = YES;
+        self.collectBtn.hidden = YES;
+        self.collectLabel.hidden = YES;
+        self.shareBtn.hidden = YES;
+        self.shareLabel.hidden = YES;
+    }
 }
 #pragma mark - event
 - (void)leftAction{
@@ -260,7 +278,7 @@
     WEAKSELF
     
     SharedModel *model = [[SharedModel alloc] init];
-    model.type = SharedModelType_URL;
+    model.type = SharedModelURLType;
     model.titleStr = self.jsonModel.name;
     model.descriptionStr = self.jsonModel.introduction;
     model.imageURL = self.jsonModel.thumbnailUrl;
@@ -286,23 +304,27 @@
 #pragma mark - request
 - (void)reloadNavigationBar {
     // 根据信息显示右上角控件状态和数量
-    self.likeLabel.text = ![self.jsonModel.praises isEqualToString:@"0"]?self.jsonModel.praises:@"";
-    self.collectLabel.text = ![self.jsonModel.collections isEqualToString:@"0"]?self.jsonModel.collections:@"";
+    self.likeLabel.text = ![self.jsonModel.praise isEqualToString:@"0"]?self.jsonModel.praise:@"";
+    self.collectLabel.text = ![self.jsonModel.collection isEqualToString:@"0"]?self.jsonModel.collection:@"";
     self.shareLabel.text = ![self.jsonModel.forward isEqualToString:@"0"]?self.jsonModel.forward:@"";
 
-    if ([self.jsonModel.praisesState intValue] != 0) {
+    if ([self.jsonModel.praiseState intValue] != 0) {
         self.likeBtn.selected = YES;
+        [self.likeBtn setImage:[UIImage imageNamed:@"praise_select_yellow"] forState:UIControlStateNormal];
         self.likeLabel.textColor = kMainYellow;
     } else {
         self.likeBtn.selected = NO;
+        [self.likeBtn setImage:[UIImage imageNamed:@"praise_normal"] forState:UIControlStateNormal];
         self.likeLabel.textColor = KTextGray_333;
     }
     
-    if ([self.jsonModel.collectionsState intValue] != 0) {
+    if ([self.jsonModel.collectionState intValue] != 0) {
         self.collectBtn.selected = YES;
+        [self.collectBtn setImage:[UIImage imageNamed:@"focus_select_yellow"] forState:UIControlStateNormal];
         self.collectLabel.textColor = kMainYellow;
     } else {
         self.collectBtn.selected = NO;
+        [self.collectBtn setImage:[UIImage imageNamed:@"focus_normal"] forState:UIControlStateNormal];
         self.collectLabel.textColor = KTextGray_333;
     }
 }
@@ -319,11 +341,11 @@
     
     [ActivityManager postLikeRiteWithParams:dic success:^(NSDictionary * _Nullable resultDic) {
         
-        int praisesCount = [self.jsonModel.praises intValue]+1;
+        int praisesCount = [self.jsonModel.praise intValue]+1;
         praisesCount = praisesCount < 0 ? 0:praisesCount;
         
-        self.jsonModel.praises = [NSString stringWithFormat:@"%d",praisesCount];
-        self.jsonModel.praisesState = @"1";
+        self.jsonModel.praise = [NSString stringWithFormat:@"%d",praisesCount];
+        self.jsonModel.praiseState = @"1";
         
         [self reloadNavigationBar];
         
@@ -348,11 +370,11 @@
     
     [ActivityManager postCancelLikeRiteWithParams:dic success:^(NSDictionary * _Nullable resultDic) {
         
-        int praisesCount = [self.jsonModel.praises intValue]-1;
+        int praisesCount = [self.jsonModel.praise intValue]-1;
         praisesCount = praisesCount < 0 ? 0:praisesCount;
         
-        self.jsonModel.praises = [NSString stringWithFormat:@"%d",praisesCount];
-        self.jsonModel.praisesState = @"0";
+        self.jsonModel.praise = [NSString stringWithFormat:@"%d",praisesCount];
+        self.jsonModel.praiseState = @"0";
         
         [self reloadNavigationBar];
         
@@ -378,11 +400,11 @@
     
     [ActivityManager postCollectRiteWithParams:dic success:^(NSDictionary * _Nullable resultDic) {
         
-        int collectionCount = [self.jsonModel.collections intValue]+1;
+        int collectionCount = [self.jsonModel.collection intValue]+1;
         collectionCount = collectionCount < 0 ? 0:collectionCount;
         
-        self.jsonModel.collections = [NSString stringWithFormat:@"%d",collectionCount];
-        self.jsonModel.collectionsState = @"1";
+        self.jsonModel.collection = [NSString stringWithFormat:@"%d",collectionCount];
+        self.jsonModel.collectionState = @"1";
         
         [self reloadNavigationBar];
         
@@ -408,11 +430,11 @@
     
     [ActivityManager postCancelCollectRiteWithParams:dic success:^(NSDictionary * _Nullable resultDic) {
         
-        int collectionCount = [self.jsonModel.collections intValue]-1;
+        int collectionCount = [self.jsonModel.collection intValue]-1;
         collectionCount = collectionCount < 0 ? 0:collectionCount;
         
-        self.jsonModel.collections = [NSString stringWithFormat:@"%d",collectionCount];
-        self.jsonModel.collectionsState = @"0";
+        self.jsonModel.collection = [NSString stringWithFormat:@"%d",collectionCount];
+        self.jsonModel.collectionState = @"0";
         
         [self reloadNavigationBar];
         
@@ -427,7 +449,7 @@
     }];
 }
 
--(void)requestShareRite{
+- (void)requestShareRite{
     NSMutableDictionary * dic = [NSMutableDictionary new];
     [dic setObject:self.jsonModel.code forKey:@"pujaCode"];
     [dic setObject:self.jsonModel.type forKey:@"pujaType"];
@@ -439,7 +461,7 @@
     
     [ActivityManager postShareRiteWithParams:dic success:^(NSDictionary * _Nullable resultDic) {
         
-        self.jsonModel.forward = [NSString stringWithFormat:@"%d",[self.jsonModel.collections intValue]+1];
+        self.jsonModel.forward = [NSString stringWithFormat:@"%d",[self.jsonModel.forward intValue]+1];
         [self reloadNavigationBar];
         
     } failure:^(NSString * _Nullable errorReason) {
@@ -475,7 +497,7 @@
 }
 
 // 内容开始加载
--(void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation{
+- (void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation{
     self.hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
 }
 
@@ -498,8 +520,15 @@
     }
     
     if ([flagStr isEqualToString:@"pujaInfo"] && NotNilAndNull(subJsonStr)) {
-        HtmlJsonModel * model = [HtmlJsonModel mj_objectWithKeyValues:subJsonStr];
+        NSData *jsonData = [subJsonStr dataUsingEncoding:NSUTF8StringEncoding];
+        NSError *err;
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:jsonData
+                                                            options:NSJSONReadingMutableContainers
+                                                              error:&err];
+        dic = [ThumbFollowShareManager reloadDictByLocalCache:dic modelItemType:WorkItemType modelItemKind:ImageText];
+        HtmlJsonModel * model = [HtmlJsonModel mj_objectWithKeyValues:dic];
         self.jsonModel = model;
+        [self reloadNavigationBarButtonsHiddenState];
         [self reloadNavigationBar];
         return;
     }
@@ -547,7 +576,7 @@
     
     if (self.webType == KfWebView_mechanismDetail) {
         // 机构详情
-        NSString * mechanismCodeStr = [NSString stringWithFormat:@"%@",subJsonDic[@"mechanismCodeStr"]];
+        NSString * mechanismCodeStr = [NSString stringWithFormat:@"%@",subJsonDic[@"mechanismCode"]];
         InstitutionSignupViewController *institutionSignupVC = [[InstitutionSignupViewController alloc]init];
         institutionSignupVC.mechanismCodeStr = mechanismCodeStr;
         [self.navigationController pushViewController:institutionSignupVC animated:YES];
@@ -558,14 +587,15 @@
         if ([flagStr isEqualToString:@"service"]) {
             // 在线客服
             CustomerServicViewController * serviceVC = [CustomerServicViewController new];
-            serviceVC.imID = self.jsonModel.imId;
+            serviceVC.imID = self.jsonModel.pujaServiceIMId;
             serviceVC.servicType = @"2";
+            serviceVC.chatName = @"客服";
             [self.navigationController pushViewController:serviceVC animated:YES];
         }
         
         if ([flagStr isEqualToString:@"RevieOfThisissue"]) {
             // 本期回顾
-            KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteDetailFinished(self.jsonModel.code, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_oldRite];
+            KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteDetailFinished(self.jsonModel.code, [SLAppInfoModel sharedInstance].accessToken) type:KfWebView_oldRite];
             webVC.fillToView = YES;
             [webVC hideWebViewScrollIndicator];
             [self.navigationController pushViewController:webVC animated:YES];
@@ -598,7 +628,7 @@
 /// 活动详情 处理
 /// @param dataDic NSDictionary jsonDic h5传过了的数据
 /// @param flagStr 标识 透传 不做处理
--(void)eventDetails:(NSDictionary *)dataDic andFlagStr:(NSString *)flagStr{
+- (void)eventDetails:(NSDictionary *)dataDic andFlagStr:(NSString *)flagStr{
     //活动id
     NSString * activityCode = [NSString stringWithFormat:@"%@",dataDic[@"activityCode"]];
     //是否显示补考弹窗
@@ -660,7 +690,7 @@
 }
 
 ///跳转弹窗页 选择 报名费， 考试费
--(void)jumpDirectlyPoperPage:(NSDictionary *)dataDic andFlagStr:(NSString *)flagStr{
+- (void)jumpDirectlyPoperPage:(NSDictionary *)dataDic andFlagStr:(NSString *)flagStr{
     //在补考弹窗报名费是否可以点击
     BOOL isSignUpButton = [dataDic[@"signUpButton"] boolValue];
     //活动id
@@ -704,7 +734,7 @@
 
 
 ///直接跳转到表单页
--(void)jumpDirectlyFormPage:(NSString *)activityCode andFlagStr:(NSString *)flagStr{
+- (void)jumpDirectlyFormPage:(NSString *)activityCode andFlagStr:(NSString *)flagStr{
         [[DataManager shareInstance]activityDetails:@{
                 @"activityCode":activityCode,
                 @"makeUpTestData":@"0"
@@ -730,7 +760,7 @@
 
 /// 跳转 活动报名表单
 /// @param dataPacketDic 数据包：flagStr，activityCode，model
--(void)jumpEnrollmentRegistrationInfoPage:(NSDictionary *)dataPacketDic{
+- (void)jumpEnrollmentRegistrationInfoPage:(NSDictionary *)dataPacketDic{
     SLRouteModel *model = [[SLRouteModel alloc] init];
     model.vcClass = NSClassFromString(@"EnrollmentRegistrationInfoViewController");
     model.params = dataPacketDic;
@@ -763,15 +793,25 @@
         
         // UserAgent中添加"shaolin"，用于给h5标识该请求是通过app端发起的
         typeof(_webView) weakWebView = _webView;
-        [_webView evaluateJavaScript:@"navigator.userAgent" completionHandler:^(id result, NSError *error) {
-            NSString *oldUserAgent = result;
-            NSString *newUserAgent = [NSString stringWithFormat:@"%@ %@",oldUserAgent,@"shaolin"];
-            weakWebView.customUserAgent = newUserAgent;
-        }];
+        if (@available(iOS 13.0, *)) {
+            [_webView evaluateJavaScript:@"navigator.userAgent" completionHandler:^(id result, NSError *error) {
+                NSString *oldUserAgent = result;
+                NSString *newUserAgent = [NSString stringWithFormat:@"%@ %@",oldUserAgent,@"shaolin"];
+                weakWebView.customUserAgent = newUserAgent;
+            }];
+        } else {
+            self.fuckWKWebView = [[WKWebView alloc] init];
+            [self.fuckWKWebView evaluateJavaScript:@"navigator.userAgent" completionHandler:^(NSString* _Nullable result, NSError * _Nullable error) {
+                self.fuckWKWebView = nil;
+                NSString *oldUserAgent = result;
+                NSString *newUserAgent = [NSString stringWithFormat:@"%@ %@",oldUserAgent,@"shaolin"];
+                weakWebView.customUserAgent = newUserAgent;
+            }];
+        }
     }
     return _webView;
 }
--(UIButton *)backButton {
+- (UIButton *)backButton {
     if (!_backButton) {
         _backButton = [[UIButton alloc] initWithFrame:CGRectMake(21, 40, 35, 35)];
         [_backButton setImage:[UIImage imageNamed:@"left"] forState:UIControlStateNormal];
@@ -781,18 +821,17 @@
     return _backButton;
 }
 
--(UIButton *)collectBtn{
+- (UIButton *)collectBtn{
     if (!_collectBtn) {
         _collectBtn = [[UIButton alloc] init];
-        [_collectBtn setImage:[UIImage imageNamed:@"focus_normal"] forState:(UIControlStateNormal)];
-        [_collectBtn setImage:[UIImage imageNamed:@"focus_select_yellow"] forState:(UIControlStateSelected)];
+        [_collectBtn setImage:[UIImage imageNamed:@"focus_normal"] forState:UIControlStateNormal];
         [_collectBtn addTarget:self action:@selector(collectAction) forControlEvents:(UIControlEventTouchUpInside)];
         _collectBtn.hidden = YES;
     }
     return _collectBtn;
 }
 
--(UILabel *)collectLabel{
+- (UILabel *)collectLabel{
     if (!_collectLabel) {
         _collectLabel = [[UILabel alloc] init];
         _collectLabel.textColor = KTextGray_333;   //BE0B1F
@@ -803,18 +842,17 @@
     return _collectLabel;
 }
 
--(UIButton *)likeBtn{
+- (UIButton *)likeBtn{
     if (!_likeBtn) {
         _likeBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
-        [_likeBtn setImage:[UIImage imageNamed:@"praise_normal"] forState:(UIControlStateNormal)];
-        [_likeBtn setImage:[UIImage imageNamed:@"praise_select_yellow"] forState:(UIControlStateSelected)];
+        [_likeBtn setImage:[UIImage imageNamed:@"praise_normal"] forState:UIControlStateNormal];
         [_likeBtn addTarget:self action:@selector(likeAction) forControlEvents:(UIControlEventTouchUpInside)];
         _likeBtn.hidden = YES;
     }
     return _likeBtn;
 }
 
--(UILabel *)likeLabel{
+- (UILabel *)likeLabel{
     if (!_likeLabel) {
         _likeLabel = [[UILabel alloc] init];
         _likeLabel.textColor = KTextGray_333;   //BE0B1F
@@ -824,17 +862,17 @@
     return _likeLabel;
 }
 
--(UIButton *)shareBtn{
+- (UIButton *)shareBtn{
     if (!_shareBtn) {
         _shareBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
-        [_shareBtn setImage:[UIImage imageNamed:@"share_normal"] forState:(UIControlStateNormal)];
+        [_shareBtn setImage:[UIImage imageNamed:@"share_normal"] forState:UIControlStateNormal];
         [_shareBtn addTarget:self action:@selector(shareAction) forControlEvents:(UIControlEventTouchUpInside)];
         _shareBtn.hidden = YES;
     }
     return _shareBtn;
 }
 
--(UILabel *)shareLabel{
+- (UILabel *)shareLabel{
     if (!_shareLabel) {
         _shareLabel = [[UILabel alloc] init];
         _shareLabel.textColor = KTextGray_333;   //BE0B1F
@@ -844,7 +882,7 @@
     return _shareLabel;
 }
 
--(HtmlJsonModel *)jsonModel {
+- (HtmlJsonModel *)jsonModel {
     if (!_jsonModel) {
         _jsonModel = [HtmlJsonModel new];
     }

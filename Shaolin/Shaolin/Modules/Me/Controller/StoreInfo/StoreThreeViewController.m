@@ -43,7 +43,7 @@
     self.titleLabe.text = SLLocalizedString(@"店铺信息");
     [self.view addSubview:self.tableView];
     //       [self registerForKeyboardNotifications];
-    [self setUI];
+    [self setupUI];
     [IQKeyboardManager sharedManager].shouldResignOnTouchOutside = YES;
     [IQKeyboardManager sharedManager].enableAutoToolbar = NO;
     if ([self.statusStr isEqualToString:@"4"]) {
@@ -55,6 +55,21 @@
         };
         [[UIApplication sharedApplication].keyWindow addSubview:_statusView];
     }
+    
+    [self initSaveInfo];
+}
+
+-(void) initSaveInfo {
+    self.storeTf.text = NotNilAndNull(self.model.name)?self.model.name:@"";
+    self.contentTf.text = NotNilAndNull(self.model.intro)?self.model.intro:@"";
+    self.addressTf.text = NotNilAndNull(self.model.clubAddress)?self.model.clubAddress:@"";
+    self.textView.text = NotNilAndNull(self.model.clubInfo)?self.model.clubInfo:@"";
+  
+    if (NotNilAndNull(self.model.logo) && self.model.logo.length > 0) {
+        self.taxStr = self.model.logo;
+        [self.imageViewLogo sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",self.taxStr]]];
+        self.taxCameraImage.hidden = YES;
+    }
 }
 
 - (void)leftAction{
@@ -65,7 +80,7 @@
     }
 }
 
-- (void)setUI {
+- (void)setupUI {
     UIView *line1 = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWidth, 10)];
     line1.backgroundColor = RGBA(250, 250, 250, 1);
     [self.view addSubview:line1];
@@ -98,7 +113,7 @@
     
 //WithFrame:CGRectMake(SLChange(16), SLChange(530), kWidth-SLChange(32), SLChange(40))
 }
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return 5;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -146,7 +161,7 @@
     return cell;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.row ==3 || indexPath.row == 4) {
         return SLChange(130);
     }else {
@@ -182,7 +197,7 @@
     return _nextBtn;
 }
 #pragma mark - 店铺名称
--(GCTextField *)storeTf
+- (GCTextField *)storeTf
 {
     if (!_storeTf) {
         _storeTf = [[GCTextField alloc] initWithFrame:CGRectMake(SLChange(138),0, kWidth -SLChange(153), SLChange(53))];
@@ -200,7 +215,7 @@
     return _storeTf;
 }
 #pragma mark - 店铺简称
--(GCTextField *)contentTf
+- (GCTextField *)contentTf
 {
     if (!_contentTf) {
         _contentTf = [[GCTextField alloc] initWithFrame:CGRectMake(SLChange(138),0, kWidth -SLChange(153), SLChange(53))];
@@ -218,7 +233,7 @@
     return _contentTf;
 }
 #pragma mark - 店铺地址
--(GCTextField *)addressTf
+- (GCTextField *)addressTf
 {
     if (!_addressTf) {
         _addressTf = [[GCTextField alloc] initWithFrame:CGRectMake(SLChange(138),0, kWidth -SLChange(153), SLChange(53))];
@@ -240,10 +255,12 @@
 }
 - (UIImageView *)imageViewLogo {
     if (!_imageViewLogo) {
-        _imageViewLogo = [[UIImageView alloc]initWithFrame:CGRectMake(SLChange(127), SLChange(15), SLChange(120), SLChange(115))];
-        _imageViewLogo.image = [UIImage imageNamed:@"person_photo"];
+        _imageViewLogo = [[UIImageView alloc]initWithFrame:CGRectMake(SLChange(127), SLChange(15), SLChange(120), SLChange(120))];
+        _imageViewLogo.image = [UIImage imageNamed:@"photo_square"];
         _imageViewLogo.userInteractionEnabled = YES;
         _imageViewLogo.contentMode = UIViewContentModeScaleAspectFill;
+        _imageViewLogo.clipsToBounds = YES;
+        
     }
     return _imageViewLogo;
 }
@@ -280,6 +297,7 @@
         _textView.textAlignment = NSTextAlignmentLeft;
         _textView.layer.borderColor = RGBA(189, 189, 189, 1).CGColor;
         _textView.layer.borderWidth = 1;
+        
     }
     return _textView;
 }
@@ -371,13 +389,14 @@
         [hud hideAnimated:YES];
         if ([ModelTool checkResponseObject:responseObject]) {
             WEAKSELF
-            weakSelf.statusView = [[StoreStatusThree alloc]initWithFrame:CGRectMake(0, 0, kWidth, kHeight)];
-            weakSelf.statusView.statusLabel.text = SLLocalizedString(@"恭喜您店铺信息审核通过，请前去店铺后台完善商品信息");
-            weakSelf.statusView.determineTextAction = ^{
-                [weakSelf.navigationController popToRootViewControllerAnimated:YES];
-            };
-            [[UIApplication sharedApplication].keyWindow addSubview:weakSelf.statusView];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"MeViewController_reloadUserStoreOpenInformation" object:nil];
+            [weakSelf.navigationController popToRootViewControllerAnimated:YES];
+//            weakSelf.statusView = [[StoreStatusThree alloc]initWithFrame:CGRectMake(0, 0, kWidth, kHeight)];
+//            weakSelf.statusView.statusLabel.text = SLLocalizedString(@"恭喜您店铺信息审核通过，请前去店铺后台完善商品信息");
+//            weakSelf.statusView.determineTextAction = ^{
+//                [weakSelf.navigationController popToRootViewControllerAnimated:YES];
+//            };
+//            [[UIApplication sharedApplication].keyWindow addSubview:weakSelf.statusView];
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"MeViewControllerDidReloadUserStoreOpenInformationDataNotfication" object:nil];
         } else {
             [ShaolinProgressHUD singleTextAutoHideHud:errorReason];
         }
@@ -396,7 +415,7 @@
 //                [weakSelf.navigationController popToRootViewControllerAnimated:YES];
 //            };
 //            [[UIApplication sharedApplication].keyWindow addSubview:weakSelf.statusView];
-//            [[NSNotificationCenter defaultCenter] postNotificationName:@"MeViewController_reloadUserStoreOpenInformation" object:nil];
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"MeViewControllerDidReloadUserStoreOpenInformationDataNotfication" object:nil];
 //        }else {
 //            [ShaolinProgressHUD singleTextHud:[responseObject objectForKey:MSG] view:self.view afterDelay:TipSeconds];
 //        }
@@ -414,7 +433,7 @@
 //    //       }];
 //    //
 }
--(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     [self.storeTf resignFirstResponder];
     [self.contentTf resignFirstResponder];
     [self.addressTf resignFirstResponder];
@@ -434,11 +453,11 @@
     
     return !isEmoji;
 }
--(BOOL)textFieldShouldReturn:(UITextField *)textField {
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];
     return YES;
 }
--(void)viewDidDisappear:(BOOL)animated {
+- (void)viewDidDisappear:(BOOL)animated {
     [_statusView removeFromSuperview];
 }
 /*

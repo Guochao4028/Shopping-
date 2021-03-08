@@ -20,7 +20,7 @@ typedef enum {
 
 @implementation UIImage (ImageDarken)
 
--(UIImage *)imageDarkenWithLevel:(float) level
+- (UIImage *)imageDarkenWithLevel:(float) level
 {
     level = level > 1.0 ? 1.0 : level;
     level = level < 0.0 ? 0.0 : level;

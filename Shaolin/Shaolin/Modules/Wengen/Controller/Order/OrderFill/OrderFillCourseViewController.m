@@ -60,14 +60,14 @@
     
 }
 
--(void)initUI{
+- (void)initUI{
     
     [self.titleLabe setText:SLLocalizedString(@"填写订单")];
     [self.view addSubview:self.tableView];
     [self.view addSubview:self.footerView];
 }
 
--(void)initData{
+- (void)initData{
     
     [[DataManager shareInstance]userQualifications:@{} Callback:^(NSObject *object) {
         if ([object isKindOfClass:[InvoiceQualificationsModel class]] == YES) {
@@ -99,7 +99,7 @@
 #pragma mark - action
 
 - (void)freeOrderPayWithOrderCode:(NSString *)orderCode money:(NSString *)money {
-    [[DataManager shareInstance] orderPay:@{@"ordercode" :orderCode, @"orderMoney": money, @"payType":@"6"} Callback:^(Message *message) {
+    [[DataManager shareInstance] orderPay:@{@"orderCarId" :orderCode, @"orderMoney": money, @"payType":@"6"} Callback:^(Message *message) {
         if (message.isSuccess) {
             // 支付成功
             PaySuccessViewController *paySuccessVC = [[PaySuccessViewController alloc] init];
@@ -110,7 +110,9 @@
     }];
 }
 
--(void)invoiceViewAction{
+- (void)invoiceViewAction{
+    
+ 
     
     [self.invoiceView setAlpha:1];
     [self.invoiceView setHidden:NO];
@@ -119,77 +121,80 @@
     
     
     AddressListModel *model = [[AddressListModel alloc]init];
-    model.realname = infoModel.realname;
+    model.realname = infoModel.realName;
     model.phone = infoModel.phoneNumber;
     
     [self.invoiceView setAddressListModel:model];
     [self.invoiceView setQualificationsModel:self.qualificationsModel];
     
-    UIWindow *window =[[UIApplication sharedApplication]keyWindow];
-    [window addSubview:self.invoiceView];
+    [WINDOWSVIEW addSubview:self.invoiceView];
     
 }
 
--(void)comittAction{
+- (void)comittAction{
     NSMutableArray *allGoodsArray = [NSMutableArray array];
     for (NSDictionary *dic in self.dataArray) {
         NSArray *goodsArray = dic[@"goods"];
         [allGoodsArray addObjectsFromArray:goodsArray];
     }
     
-    NSMutableDictionary *parma = [NSMutableDictionary dictionary];
-    
+    //发票信息 参数
+    NSMutableDictionary *invoiceParma = [NSMutableDictionary dictionary];
     //发票信息
-    if (self.invoiceDic == nil || self.invoiceDic.allKeys.count == 0) {
-        [parma setValue:@"0" forKey:@"is_invoice"];
-    }else{
-        [parma setValue:@"1" forKey:@"is_invoice"];
+        if (self.invoiceDic != nil || self.invoiceDic.allKeys.count > 0) {
         
-        NSString *is_paper = self.invoiceDic[@"is_paper"];
-        [parma setValue:is_paper forKey:@"is_paper"];
-        
-        [parma setValue:@"2" forKey:@"type"];
-        
-        NSString *type = self.invoiceDic[@"type"];
-        NSString *invoiceType = self.invoiceDic[@"invoiceType"];
-        
-        if ([invoiceType isEqualToString:@"UnSpecial"]) {
-            if ([type isEqualToString:@"1"]) {
-                [parma setValue:self.invoiceDic[@"personal"] forKey:@"buy_name"];
-                [parma setValue:@"1" forKey:@"companyOrpersonal"];
-            }else{
-                
-                NSString *unitNameStr =  self.invoiceDic[@"unitName"];
-                NSString *unitNumberStr = self.invoiceDic[@"unitNumber"];
-                
-                [parma setValue:unitNameStr forKey:@"buy_name"];
-                [parma setValue:unitNumberStr forKey:@"duty_num"];
-                [parma setValue:@"2" forKey:@"companyOrpersonal"];
+            [invoiceParma setValue:@"1" forKey:@"is_invoice"];
+            
+            NSString *is_paper = self.invoiceDic[@"is_paper"];
+            [invoiceParma setValue:is_paper forKey:@"isPaper"];
+            
+            NSString *type = self.invoiceDic[@"type"];
+            NSString *invoiceType = self.invoiceDic[@"invoiceType"];
+            
+            if (self.invoiceDic[@"email"]) {
+                [invoiceParma setValue:self.invoiceDic[@"email"] forKey:@"email"];
             }
-        }else if ([invoiceType isEqualToString:@"Special"]){
             
-            [parma setValue:self.qualificationsModel.address forKey:@"address"];
-            [parma setValue:self.qualificationsModel.phone forKey:@"phone"];
-            [parma setValue:self.qualificationsModel.bank forKey:@"bank"];
-            [parma setValue:self.qualificationsModel.bank_sn forKey:@"bank_sn"];
-            [parma setValue:self.qualificationsModel.company_name forKey:@"compay_name"];
-            [parma setValue:self.qualificationsModel.number forKey:@"user_number"];
-            [parma setValue:self.qualificationsModel.company_name forKey:@"buy_name"];
-            
-            [parma setValue:self.qualificationsModel.number forKey:@"duty_num"];
-            [parma setValue:@"2" forKey:@"invoice_type"];
-            
-            NSString *nameStr =  self.invoiceDic[@"nameStr"];
-            NSString *phoneStr =  self.invoiceDic[@"phoneStr"];
-            NSString *addressStr =  self.invoiceDic[@"addressStr"];
-            NSLog(@"nameStr : %@, phoneStr : %@, addressStr : %@", nameStr, phoneStr, addressStr);
-            [parma setValue:nameStr forKey:@"revice_name"];
-            [parma setValue:phoneStr forKey:@"revice_phone"];
-            [parma setValue:addressStr forKey:@"revice_address"];
+            if ([invoiceType isEqualToString:@"UnSpecial"]) {
+                if ([type isEqualToString:@"1"]) {
+                    [invoiceParma setValue:self.invoiceDic[@"personal"] forKey:@"buyName"];
+                    [invoiceParma setValue:@"1" forKey:@"type"];
+                }else{
+                    
+                    NSString *unitNameStr =  self.invoiceDic[@"unitName"];
+                    NSString *unitNumberStr = self.invoiceDic[@"unitNumber"];
+                    
+                    [invoiceParma setValue:unitNameStr forKey:@"buyName"];
+                    [invoiceParma setValue:unitNumberStr forKey:@"dutyNum"];
+                    [invoiceParma setValue:@"2" forKey:@"type"];
+                }
+                [invoiceParma setValue:@"1" forKey:@"invoiceType"];
+            }else if ([invoiceType isEqualToString:@"Special"]){
+                
+                [invoiceParma setValue:self.qualificationsModel.address forKey:@"address"];
+                [invoiceParma setValue:self.qualificationsModel.phone forKey:@"phone"];
+                [invoiceParma setValue:self.qualificationsModel.bank forKey:@"bank"];
+                [invoiceParma setValue:self.qualificationsModel.bankSn forKey:@"bankSn"];
+                [invoiceParma setValue:self.qualificationsModel.companyName forKey:@"compayName"];
+                [invoiceParma setValue:self.qualificationsModel.number forKey:@"userNumber"];
+                [invoiceParma setValue:self.qualificationsModel.companyName forKey:@"buyName"];
+                [invoiceParma setValue:self.qualificationsModel.number forKey:@"dutyNum"];
+                [invoiceParma setValue:@"2" forKey:@"invoiceType"];
+
+                NSString *nameStr =  self.invoiceDic[@"nameStr"];
+                NSString *phoneStr =  self.invoiceDic[@"phoneStr"];
+                NSString *addressStr =  self.invoiceDic[@"addressStr"];
+                [invoiceParma setValue:nameStr forKey:@"reviceName"];
+                [invoiceParma setValue:phoneStr forKey:@"revicePhone"];
+                [invoiceParma setValue:addressStr forKey:@"reviceAddress"];
+            }
             
         }
-        
-    }
+
+    
+
+//商品 生成订单 参数
+   NSMutableDictionary *parma = [NSMutableDictionary dictionary];
     
     // 商品信息
     NSMutableArray *carIdArray = [NSMutableArray array];
@@ -202,29 +207,36 @@
     NSString * productId;
     
     if ([carIdArray count] > 0) {
-        NSString *carID = [carIdArray componentsJoinedByString:@","];
-        [parma setValue:carID forKey:@"car_id"];
+        [parma setValue:carIdArray forKey:@"cartIds"];
     }else{
         if ([allGoodsArray count] == 1) {
             ShoppingCartGoodsModel *goodsModel = [allGoodsArray lastObject];
             [parma setValue:goodsModel.num forKey:@"num"];
-            [parma setValue:goodsModel.goods_id forKey:@"goods_id"];
-            [parma setValue:goodsModel.goods_attr_id forKey:@"attr_id"];
+                        [parma setValue:goodsModel.goodsId forKey:@"goodsId"];
+                        [parma setValue:goodsModel.goodsAttrId forKey:@"goodsAttrId"];
             
-            productId = goodsModel.app_store_id;
+            productId = goodsModel.appStoreId;
         }
     }
     
-    [parma setValue:@"2" forKey:@"type"];
+    [parma setValue:@"1" forKey:@"ifCourse"];
     
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
     [[DataManager shareInstance] creatOrder:parma Callback:^(Message *message) {
         [hud hideAnimated:YES];
         if (message.isSuccess == YES) {
+            NSString *orderId = message.extensionDic[@"id"] ? message.extensionDic[@"id"] : @"";
+            NSString *orderCarSn = message.extensionDic[@"orderCarSn"];
+            
+            if (IsNilOrNull(orderCarSn) || orderCarSn.length == 0) {
+                
+                [ShaolinProgressHUD singleTextHud:@"订单获取失败，请联系客服处理" view:self.view afterDelay:TipSeconds];
+                return;
+            }
             
             NSString * price = [self.footerView.goodsAmountTotal substringFromIndex:1];
             if ([price floatValue] == 0.00) {
-                [self freeOrderPayWithOrderCode:message.extension money:price];
+                [self freeOrderPayWithOrderCode:orderId money:price];
                 return;
             }
             
@@ -233,7 +245,8 @@
             checkstandVC.isCourse = YES;
             NSString *total = self.footerView.goodsAmountTotal;
             checkstandVC.goodsAmountTotal = total;
-            checkstandVC.order_no = message.extension;
+            checkstandVC.orderCarId = orderId;
+            checkstandVC.order_no = orderCarSn;
             checkstandVC.productId = productId;
             [self.navigationController pushViewController:checkstandVC animated:YES];
             //
@@ -245,20 +258,20 @@
 }
 
 #pragma mark - UITableViewDelegate && UITableViewDataSource
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return self.dataArray.count;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     return 10;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     
     return 35;
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     static NSString *hIdentifier = @"hIdentifier";
     
     UITableViewHeaderFooterView *view= [tableView dequeueReusableHeaderFooterViewWithIdentifier:hIdentifier];
@@ -277,25 +290,25 @@
     
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
     
     UIView *view = [[UIView alloc] init];
     view.backgroundColor = KTextGray_FA;
     return view;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     NSDictionary *dic = [self.dataArray objectAtIndex:section];
     NSArray *goodsArray = dic[@"goods"];
     return goodsArray.count;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     return 120;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     OrderFillCourseGoodsTableViewCell *orderFillGoodsCell = [tableView dequeueReusableCellWithIdentifier:@"OrderFillCourseGoodsTableViewCell"];
     
@@ -310,7 +323,7 @@
 }
 
 #pragma mark - OrderFillInvoiceViewDelegate
--(void)orderFillInvoiceView:(OrderFillInvoiceView *)view tapDetermine:(NSDictionary *)dic{
+- (void)orderFillInvoiceView:(OrderFillInvoiceView *)view tapDetermine:(NSDictionary *)dic{
     
     self.invoiceDic = dic;
     NSString *invoiceType = dic[@"invoiceType"];
@@ -336,7 +349,7 @@
 
 
 #pragma mark - getter / setter
--(UITableView *)tableView{
+- (UITableView *)tableView{
     if (_tableView == nil) {
         _tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight - NavBar_Height - 49- kBottomSafeHeight) style:UITableViewStylePlain];
         
@@ -350,7 +363,7 @@
     return _tableView;
 }
 
--(OrderFillCourseTableHeadView *)headView{
+- (OrderFillCourseTableHeadView *)headView{
     if (_headView == nil) {
         _headView = [[OrderFillCourseTableHeadView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, 53)];
         
@@ -358,7 +371,7 @@
     return _headView;
 }
 
--(OrderFillContentTableFooterView *)tabelFooterView{
+- (OrderFillContentTableFooterView *)tabelFooterView{
     
     if (_tabelFooterView == nil) {
         _tabelFooterView = [[OrderFillContentTableFooterView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, 83)];
@@ -369,7 +382,7 @@
     
 }
 
--(OrderFillFooterView *)footerView{
+- (OrderFillFooterView *)footerView{
     if (_footerView == nil) {
         CGFloat y = CGRectGetMaxY(self.tableView.frame);
         _footerView = [[OrderFillFooterView alloc]initWithFrame:CGRectMake(0, y, ScreenWidth, 49)];
@@ -379,7 +392,7 @@
     
 }
 
--(OrderFillInvoiceView *)invoiceView{
+- (OrderFillInvoiceView *)invoiceView{
     if (_invoiceView == nil) {
         _invoiceView = [[OrderFillInvoiceView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
         

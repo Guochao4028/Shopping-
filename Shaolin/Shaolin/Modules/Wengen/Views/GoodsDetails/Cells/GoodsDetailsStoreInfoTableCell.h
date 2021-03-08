@@ -27,9 +27,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol GoodsDetailsStoreInfoTableCellDelegate <NSObject>
 
--(void)goodsStoreInfoCell:(GoodsDetailsStoreInfoTableCell *)cell tapStroeNameView:(BOOL)istap;
+- (void)goodsStoreInfoCell:(GoodsDetailsStoreInfoTableCell *)cell tapStroeNameView:(BOOL)istap;
 
--(void)goodsStoreInfoCell:(GoodsDetailsStoreInfoTableCell *)cell tapOnlineView:(BOOL)istap;
+- (void)goodsStoreInfoCell:(GoodsDetailsStoreInfoTableCell *)cell tapOnlineView:(BOOL)istap;
 
 @end
 

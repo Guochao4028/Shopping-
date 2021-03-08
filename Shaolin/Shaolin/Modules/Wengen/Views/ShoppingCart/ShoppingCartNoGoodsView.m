@@ -20,7 +20,7 @@
 @implementation ShoppingCartNoGoodsView
 
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [[NSBundle mainBundle] loadNibNamed:@"ShoppingCartNoGoodsView" owner:self options:nil];
@@ -30,7 +30,7 @@
 }
 
 /// 初始化UI
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.contentView];
     [self.contentView setFrame:self.bounds];
     
@@ -43,12 +43,12 @@
 }
 
 /// 重写系统方法
--(void)setFrame:(CGRect)frame{
+- (void)setFrame:(CGRect)frame{
     [super setFrame:frame];
     [self.contentView setFrame:self.bounds];
 }
 
--(void)buyTarget:(nullable id)target action:(SEL)action{
+- (void)buyTarget:(nullable id)target action:(SEL)action{
     [self.goBuyButton addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
 }
 

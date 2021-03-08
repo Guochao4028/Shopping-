@@ -11,32 +11,71 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface OrderRefundInfoModel : NSObject
-
+///售后id
+@property(nonatomic, copy)NSString *refundInfoId;
+///取消理由
 @property(nonatomic, copy)NSString *cannel;
-@property(nonatomic, copy)NSString *content;
-@property(nonatomic, copy)NSString *create_time;
-@property(nonatomic, copy)NSString *desc;
-@property(nonatomic, copy)NSString *final_price;
-@property(nonatomic, copy)NSString *goods_attr_id;
-@property(nonatomic, copy)NSString *goods_attr_name;
-@property(nonatomic, copy)NSArray *goods_image;
-@property(nonatomic, copy)NSString *goods_name;
-@property(nonatomic, copy)NSString *goods_num;
-@property(nonatomic, copy)NSString *goods_status;
-@property(nonatomic, copy)NSString *is_check;
-@property(nonatomic, copy)NSString *logistics_name;
-@property(nonatomic, copy)NSString *logistics_no;
-@property(nonatomic, copy)NSString *money;
-@property(nonatomic, copy)NSString *order_id;
-@property(nonatomic, copy)NSString *order_no;
-@property(nonatomic, copy)NSString *remark;
-@property(nonatomic, copy)NSString *send_time;
-@property(nonatomic, copy)NSString *status;
-@property(nonatomic, copy)NSString *true_name;
-@property(nonatomic, copy)NSString *type;
-@property(nonatomic, copy)NSString *user_id;
 
-@property(nonatomic, copy)NSString *user_send_time;
+@property(nonatomic, copy)NSString *content;
+///商品名称
+@property(nonatomic, copy)NSString *goodsName;
+
+//@property(nonatomic, copy)NSString *imgData;
+///审核时间
+@property(nonatomic, copy)NSString *isCheck;
+///审核状态
+@property(nonatomic, copy)NSString *remark;
+///快递公司名称
+@property(nonatomic, copy)NSString *logisticsName;
+///发货单号
+@property(nonatomic, copy)NSString *logisticsNo;
+///订单id
+@property(nonatomic, copy)NSString *orderId;
+///订单号
+@property(nonatomic, copy)NSString *orderNo;
+///发货时间
+@property(nonatomic, copy)NSString *sendTime;
+///售后状态
+@property(nonatomic, copy)NSString *status;
+///订单状态
+@property(nonatomic, copy)NSString *orderStatus;
+///商品状态
+@property(nonatomic, copy)NSString *goodsStatus;
+///售后类型
+@property(nonatomic, copy)NSString *type;
+///用户id
+@property(nonatomic, copy)NSString *userId;
+///运费
+@property(nonatomic, copy)NSString *shippingFee;
+///创建时间
+@property(nonatomic, copy)NSString *createTime;
+///订单金额
+@property(nonatomic, copy)NSString *money;
+///交易金额
+@property(nonatomic, copy)NSString *finalPrice;
+///商品数量
+@property(nonatomic, copy)NSString *goodsNum;
+
+@property(nonatomic, copy)NSArray *goodsImage;
+
+//@property(nonatomic, copy)NSString *goods_attr_id;
+//@property(nonatomic, copy)NSString *goods_attr_name;
+//@property(nonatomic, copy)NSArray *goods_image;
+
+//@property(nonatomic, copy)NSString *logistics_no;
+//@property(nonatomic, copy)NSString *money;
+//
+//
+//
+//
+//@property(nonatomic, copy)NSString *true_name;
+//
+//
+//
+//@property(nonatomic, copy)NSString *user_send_time;
+
+
+
 
 @end
 

@@ -44,7 +44,7 @@
     [self.tableView addGestureRecognizer:tap];
 }
 
--(void)initUI{
+- (void)initUI{
     [self.view setBackgroundColor:[UIColor whiteColor]];
     
     self.titleLabe.text = SLLocalizedString(@"填写报名信息");
@@ -54,7 +54,7 @@
 
 }
 
--(void)initData{
+- (void)initData{
     self.registModel = [[EnrollmentRegistModel alloc]init];
     /**
      type : 1,正常  （标题 加 输入框）
@@ -81,7 +81,7 @@
     [self.view endEditing:YES];
 }
 
--(void)submitButtonAction{
+- (void)submitButtonAction{
     NSLog(@"self.registModel : %@", self.registModel);
     
     [self.view endEditing:YES];
@@ -158,39 +158,39 @@
 
 #pragma mark - UITableViewDelegate && UITableViewDataSource
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return 1;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     return 0.01;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     return 0.01;
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     UIView *view = [[UIView alloc] init];
     view.backgroundColor = [UIColor clearColor];
     return view;
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+- (UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
     UIView *view = [[UIView alloc] init];
     view.backgroundColor = KTextGray_FA;
     return view;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.dataArray.count;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return 60;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell;
     EnrollmentRegistrationInfoTableCell *infoCell = [tableView dequeueReusableCellWithIdentifier:@"EnrollmentRegistrationInfoTableCell"];
     
@@ -204,7 +204,7 @@
 }
 
 #pragma mark - getter / setter
--(UITableView *)tableView{
+- (UITableView *)tableView{
     
     if (_tableView == nil) {
         _tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight - NavBar_Height - 44 - 20)];
@@ -218,7 +218,7 @@
 
 }
 
--(UIButton *)submitButton{
+- (UIButton *)submitButton{
     
     if (_submitButton == nil) {
         _submitButton = [UIButton buttonWithType:UIButtonTypeCustom];

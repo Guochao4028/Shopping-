@@ -23,12 +23,12 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        [self setUI];
+        [self setupUI];
     }
     return self;
 }
 
-- (void)setUI {
+- (void)setupUI {
     [self addSubview:self.imageV];
     [self.imageV addSubview:self.alphaView];
     [self.imageV addSubview:self.contentLabel];
@@ -108,7 +108,7 @@
     
     NSString *timeStr = [ModelTool calculatedTimeWith:CalculatedTimeTypeDonotSecond secondStr:model.weight];
     
-    self.contentLabel.text = [NSString stringWithFormat:SLLocalizedString(@"%@ · %@"), model.level_name, timeStr];
+    self.contentLabel.text = [NSString stringWithFormat:SLLocalizedString(@"%@ · %@"), model.levelName, timeStr];
 
     [self.imageV sd_setImageWithURL:[NSURL URLWithString:model.cover] placeholderImage:[UIImage imageNamed:@"default_big"]];
 }

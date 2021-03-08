@@ -35,7 +35,7 @@ static NSString *const moduleCollectionCellId = @"KungfuHomeModuleCollectionCell
     // Configure the view for the selected state
 }
 
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         [self.contentView addSubview:self.collectionView];
@@ -124,7 +124,7 @@ static NSString *const moduleCollectionCellId = @"KungfuHomeModuleCollectionCell
 
 #pragma mark - getter
 
--(NSArray *)iconList {
+- (NSArray *)iconList {
     return @[@"new_kungfu_classIcon"
              ,@"new_class_infoIcon"
              ,@"new_class_search"
@@ -133,11 +133,11 @@ static NSString *const moduleCollectionCellId = @"KungfuHomeModuleCollectionCell
              ,@"new_class_notiIcon"];
 }
 
--(NSArray *)titleList {
+- (NSArray *)titleList {
     return @[SLLocalizedString(@"位阶教程"),SLLocalizedString(@"段品制介绍"),SLLocalizedString(@"报名查询"),SLLocalizedString(@"成绩查询"),SLLocalizedString(@"证书查询"),SLLocalizedString(@"考点公告")];
 }
 
--(UICollectionView *)collectionView {
+- (UICollectionView *)collectionView {
     if (!_collectionView) {
         
         _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 10, kWidth,170) collectionViewLayout:self.layout];
@@ -149,7 +149,7 @@ static NSString *const moduleCollectionCellId = @"KungfuHomeModuleCollectionCell
     }
     return _collectionView;
 }
--(UICollectionViewFlowLayout *)layout {
+- (UICollectionViewFlowLayout *)layout {
     if (!_layout) {
         _layout = [UICollectionViewFlowLayout new];
         _layout.minimumLineSpacing = 1;
@@ -160,7 +160,7 @@ static NSString *const moduleCollectionCellId = @"KungfuHomeModuleCollectionCell
    
 }
 
--(void)setMessageNum:(NSString *)messageNum{
+- (void)setMessageNum:(NSString *)messageNum{
     _messageNum = messageNum;
     [self.collectionView reloadData];
 }

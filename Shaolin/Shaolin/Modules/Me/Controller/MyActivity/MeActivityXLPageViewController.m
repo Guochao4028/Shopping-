@@ -21,11 +21,11 @@
     [super viewDidLoad];
     self.titleLabe.text = SLLocalizedString(@"我的活动");
     [self initData];
-    [self setUI];
+    [self setupUI];
     // Do any additional setup after loading the view.
 }
 
-- (void)setUI{
+- (void)setupUI{
     [self addChildViewController:self.pageViewController];
     [self.view addSubview:self.pageViewController.view];
 }

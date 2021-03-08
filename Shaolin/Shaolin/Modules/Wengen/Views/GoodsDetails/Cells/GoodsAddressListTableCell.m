@@ -34,14 +34,14 @@
 }
 
 #pragma mark - getter / setter
--(void)setModel:(AddressListModel *)model{
+- (void)setModel:(AddressListModel *)model{
     _model = model;
     
     NSString *str;
-    if ([model.country_s isEqualToString:SLLocalizedString(@"中国")] == NO) {
-        str  = [NSString stringWithFormat:@"%@%@%@%@%@",model.country_s, model.province_s, model.city_s, model.re_s, model.address];
+    if ([model.countryS isEqualToString:SLLocalizedString(@"中国")] == NO) {
+        str  = [NSString stringWithFormat:@"%@%@%@%@%@",model.countryS, model.provinceS, model.cityS, model.reS, model.address];
     }else{
-       str = [NSString stringWithFormat:@"%@%@%@%@", model.province_s, model.city_s, model.re_s, model.address];
+       str = [NSString stringWithFormat:@"%@%@%@%@", model.provinceS, model.cityS, model.reS, model.address];
     }
     
     [self.addressLabel setText:str];

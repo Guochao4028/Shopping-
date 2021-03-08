@@ -24,7 +24,7 @@ typedef void(^PayViewGoneBlock)(BOOL isGone);
 @property(nonatomic, copy)PayViewBlock inputPassword;
 @property(nonatomic, copy)PayViewGoneBlock goneBlock;
 
--(void)gone;
+- (void)gone;
 
 @end
 

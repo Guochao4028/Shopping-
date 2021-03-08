@@ -24,7 +24,7 @@
 
 @implementation ShoppingCratFootView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [[NSBundle mainBundle] loadNibNamed:@"ShoppingCratFootView" owner:self options:nil];
@@ -34,7 +34,7 @@
 }
 
 #pragma mark - methods
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.contentView];
     [self.contentView setFrame:self.bounds];
     
@@ -46,26 +46,26 @@
 }
 
 /// 重写系统方法
--(void)setFrame:(CGRect)frame{
+- (void)setFrame:(CGRect)frame{
     [super setFrame:frame];
     [self.contentView setFrame:self.bounds];
 }
 
--(void)selectedAllTarget:(nullable id)target action:(SEL)action{
+- (void)selectedAllTarget:(nullable id)target action:(SEL)action{
     [self.selectedButton addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
 }
 
--(void)settlementTarget:(nullable id)target action:(SEL)action{
+- (void)settlementTarget:(nullable id)target action:(SEL)action{
     [self.resultsButton addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
 }
 
--(void)deleteTarget:(nullable id)target action:(SEL)action{
+- (void)deleteTarget:(nullable id)target action:(SEL)action{
     [self.deleteButton addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
 }
 
 #pragma mark - setter / getter
 //是否全选
--(void)setIsAll:(BOOL)isAll{
+- (void)setIsAll:(BOOL)isAll{
     [self.selectedButton setSelected:isAll];
     
     if (isAll) {
@@ -77,12 +77,12 @@
 }
 
 //商品数量
--(void)setGoodsNumber:(NSInteger)goodsNumber{
+- (void)setGoodsNumber:(NSInteger)goodsNumber{
     _goodsNumber = goodsNumber;
     [self.resultsButton setTitle:[NSString stringWithFormat:SLLocalizedString(@"去结算(%ld)"),goodsNumber] forState:UIControlStateNormal];
 }
 
--(void)setTotalPrice:(float)totalPrice{
+- (void)setTotalPrice:(float)totalPrice{
     
     NSString *priceStr = [NSString stringWithFormat:@"¥%.2f", totalPrice];
     
@@ -93,7 +93,7 @@
     self.priceLabelW.constant = size.width+3.5;
 }
 
--(void)setIsDelete:(BOOL)isDelete{
+- (void)setIsDelete:(BOOL)isDelete{
     [self.deleteButton setHidden:!isDelete];
     [self.resultsButton setHidden:isDelete];
 }

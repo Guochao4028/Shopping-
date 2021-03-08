@@ -14,7 +14,7 @@
 @property(nonatomic,strong) UIButton *sendBtn;
 @end
 @implementation StoreRefusedView
--(instancetype)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     
@@ -23,7 +23,7 @@
     }
     return self;
 }
--(void)layoutView
+- (void)layoutView
 {
     _bgView = [[UIView alloc]initWithFrame:self.frame];
     _bgView.alpha = 0;
@@ -31,13 +31,13 @@
     [self addSubview:_bgView];
     
     UIView *v = [[UIView alloc]initWithFrame:CGRectMake(SLChange(16), SLChange(200), kWidth-SLChange(32), SLChange(196))];
-    v.backgroundColor = [UIColor colorForHex:@"000000"];
+    v.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.6];;
     v.layer.cornerRadius = 4;
     v.layer.masksToBounds = YES;
     v.userInteractionEnabled = YES;
     [self addSubview:v];
   
-    self.statusLabel = [[UILabel alloc]initWithFrame:CGRectMake(SLChange(21), SLChange(46), kWidth-SLChange(74), SLChange(42.5))];
+    self.statusLabel = [[UILabel alloc]initWithFrame:CGRectMake(SLChange(21), SLChange(53), kWidth-SLChange(74), SLChange(42.5))];
     self.statusLabel.font = kRegular(15);
     self.statusLabel.numberOfLines = 0;
     self.statusLabel.textColor = UIColor.whiteColor;
@@ -72,7 +72,7 @@
 - (void)closeAction {
      [self dismissView];
 }
--(void)dismissView
+- (void)dismissView
 {
    
     __weak typeof(self)weakSelf =self;

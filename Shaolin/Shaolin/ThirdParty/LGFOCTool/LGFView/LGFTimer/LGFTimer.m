@@ -53,7 +53,7 @@
     return timer;
 }
 
--(void)lgf_RepeatSelector{
+- (void)lgf_RepeatSelector{
 #pragma clang diagnostic push
 #pragma clang diagnostic warning "-Wimplicit-retain-self"
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.ti * NSEC_PER_SEC));

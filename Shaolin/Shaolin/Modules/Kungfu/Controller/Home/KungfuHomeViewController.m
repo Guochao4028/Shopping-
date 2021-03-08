@@ -62,19 +62,19 @@ static NSString *const compilationCellId = @"KungfuHomeCompilationCell";
 
 @implementation KungfuHomeViewController
 
--(void)viewWillAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self hideNavigationBarShadow];
     
-    dispatch_group_t group = dispatch_group_create();
-    [self requestLevelAchievementsWithGroup:nil];
-    [self getNoobClassListWithGroup:nil];
-    [self getUpClassListWithGroup:nil];
-    [self requestAnnouncementUnReadNumberWithGroup:nil];
-    
-    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
-        [self.homeTableView reloadData];
-    });
+//    dispatch_group_t group = dispatch_group_create();
+//    [self requestLevelAchievementsWithGroup:nil];
+//    [self getNoobClassListWithGroup:nil];
+//    [self getUpClassListWithGroup:nil];
+//    [self requestAnnouncementUnReadNumberWithGroup:nil];
+//
+//    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+//        [self.homeTableView reloadData];
+//    });
 }
 
 - (void)viewDidLoad {
@@ -98,14 +98,13 @@ static NSString *const compilationCellId = @"KungfuHomeCompilationCell";
 
 #pragma mark - request
 
--(void) requestData {
+- (void) requestData {
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
     
     dispatch_group_t group = dispatch_group_create();
     [self requestAnnouncementUnReadNumberWithGroup:group];
     [self requestBannerWithGroup:group];
     [self requestHotClassWithGroup:group];
-//    [self requestHotClassListWithGroup:group];
     [self requestHotActivityWithGroup:group];
     [self requestLevelAchievementsWithGroup:group];
     [self getNoobClassListWithGroup:group];
@@ -115,35 +114,11 @@ static NSString *const compilationCellId = @"KungfuHomeCompilationCell";
         [hud hideAnimated:YES];
         self.isShowEmpty = NO;
         [self.homeTableView reloadData];
+        [self.homeTableView.mj_header endRefreshing];
     });
 }
 
-- (void) requestHotClassListWithGroup:(dispatch_group_t)group {
-    if (group) {
-        dispatch_group_enter(group);
-    }
-    NSDictionary *params = @{@"page" : @"1"};
-    
-    [[KungfuManager sharedInstance] getSubjectList:params success:^(NSDictionary * _Nullable resultDic) {
-        if ([resultDic isKindOfClass:[NSArray class]]) {
-            NSArray *dataList = [SubjectModel mj_objectArrayWithKeyValuesArray:(NSArray *)resultDic];
-            NSMutableArray *array = [@[] mutableCopy];
-            for (int i = 0; i < dataList.count && i < 2; i++){
-                [array addObject:dataList[i]];
-            }
-            self.hotClassList = array;
-        }
-    } failure:^(NSString * _Nullable errorReason) {
-        
-    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
-        if (group) {
-            dispatch_group_leave(group);
-        }
-        [self.homeTableView reloadSections:[NSIndexSet indexSetWithIndex:3] withRowAnimation:UITableViewRowAnimationNone];
-    }];
-}
-
--(void) requestAnnouncementUnReadNumberWithGroup:(dispatch_group_t)group {
+- (void) requestAnnouncementUnReadNumberWithGroup:(dispatch_group_t)group {
     
     if (group) {
         dispatch_group_enter(group);
@@ -164,7 +139,7 @@ static NSString *const compilationCellId = @"KungfuHomeCompilationCell";
 }
 
 
--(void) requestBannerWithGroup:(dispatch_group_t)group {
+- (void) requestBannerWithGroup:(dispatch_group_t)group {
     
     dispatch_group_enter(group);
     
@@ -176,7 +151,7 @@ static NSString *const compilationCellId = @"KungfuHomeCompilationCell";
     }];
 }
 
--(void) requestHotClassWithGroup:(dispatch_group_t)group {
+- (void) requestHotClassWithGroup:(dispatch_group_t)group {
     
     dispatch_group_enter(group);
     
@@ -228,8 +203,8 @@ static NSString *const compilationCellId = @"KungfuHomeCompilationCell";
         dispatch_group_enter(group);
     }
 
-    [[KungfuManager sharedInstance] getClassWithDic:@{@"is_new":@"1"} success:^(NSDictionary * _Nullable resultDic) {
-        NSArray *arr = [resultDic objectForKey:LIST];
+    [[KungfuManager sharedInstance] getClassWithDic:@{@"isNew":@"1"} success:^(NSDictionary * _Nullable resultDic) {
+        NSArray *arr = [resultDic objectForKey:DATAS];
         self.noobClassList = [ClassListModel mj_objectArrayWithKeyValuesArray:arr];
     } failure:^(NSString * _Nullable errorReason) {
         [ShaolinProgressHUD singleTextAutoHideHud:errorReason];
@@ -248,9 +223,9 @@ static NSString *const compilationCellId = @"KungfuHomeCompilationCell";
         dispatch_group_enter(group);
     }
     
-    [[KungfuManager sharedInstance] getClassWithDic:@{@"is_delicate":@"1"} success:^(NSDictionary * _Nullable resultDic) {
+    [[KungfuManager sharedInstance] getClassWithDic:@{@"isDelicate":@"1"} success:^(NSDictionary * _Nullable resultDic) {
         
-        NSArray *arr = [resultDic objectForKey:LIST];
+        NSArray *arr = [resultDic objectForKey:DATAS];
         self.upClassList = [ClassListModel mj_objectArrayWithKeyValuesArray:arr];
        
     } failure:^(NSString * _Nullable errorReason) {
@@ -262,13 +237,6 @@ static NSString *const compilationCellId = @"KungfuHomeCompilationCell";
             dispatch_group_leave(group);
         }
     }];
-//    [[KungfuManager sharedInstance] getClassWithDic:@{@"is_delicate":@"1"} ListAndCallback:^(NSArray *result) {
-//        self.upClassList = result;
-//
-//        if (group) {
-//            dispatch_group_leave(group);
-//        }
-//    }];
 }
 
 
@@ -278,7 +246,7 @@ static NSString *const compilationCellId = @"KungfuHomeCompilationCell";
     return self.isShowEmpty;
 }
 
--(CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
+- (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
     return -30;
 }
 
@@ -297,7 +265,7 @@ static NSString *const compilationCellId = @"KungfuHomeCompilationCell";
 }
 
 #pragma mark - tagViewDelegate
--(void)WTagView:(UIView*)tagView fetchWordToTextFiled:(NSString *)KeyWord {
+- (void)WTagView:(UIView*)tagView fetchWordToTextFiled:(NSString *)KeyWord {
     
     NSMutableArray * historyArray = [NSKeyedUnarchiver unarchiveObjectWithFile:KGoodsHistorySearchPath];
     if (!historyArray) {
@@ -316,17 +284,17 @@ static NSString *const compilationCellId = @"KungfuHomeCompilationCell";
 }
 
 #pragma mark - delegate && dataSources
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return self.sectionArray.count;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return 1;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     WEAKSELF
     if (indexPath.section == 0) {
@@ -384,7 +352,7 @@ static NSString *const compilationCellId = @"KungfuHomeCompilationCell";
         
         cell.selectHandle = ^(NSString * _Nonnull activityCode) {
             SLAppInfoModel *appInfoModel = [[SLAppInfoModel sharedInstance] getCurrentUserInfo];
-            NSString *urlStr = URL_H5_EventRegistration(activityCode,appInfoModel.access_token);
+            NSString *urlStr = URL_H5_EventRegistration(activityCode,appInfoModel.accessToken);
             KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:urlStr type:KfWebView_activityDetail];
             webVC.hidesBottomBarWhenPushed = YES;
             [weakSelf.navigationController pushViewController:webVC animated:YES];
@@ -419,12 +387,12 @@ static NSString *const compilationCellId = @"KungfuHomeCompilationCell";
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 0) {
         return kBannerHeight + 12;
@@ -459,7 +427,7 @@ static NSString *const compilationCellId = @"KungfuHomeCompilationCell";
     return .001;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
     if (section == 1 || section == 2) {
         return 10;
@@ -467,20 +435,20 @@ static NSString *const compilationCellId = @"KungfuHomeCompilationCell";
     return .001;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     if (section == 2 || section == 1 || section == 0) {
         return .001;
     }
     return 45;
 }
--(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
     UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWidth, 10)];
     v.backgroundColor = KTextGray_FA;
     return v;
 }
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     KungfuHomeTableSectionHeaderView * sectionHeader = [[[NSBundle mainBundle] loadNibNamed:@"KungfuHomeTableSectionHeaderView" owner:self options:nil] objectAtIndex:0];
     if (section == 2) {
@@ -518,7 +486,7 @@ static NSString *const compilationCellId = @"KungfuHomeCompilationCell";
 
 #pragma mark - getter && setter
 
--(UITableView *)homeTableView {
+- (UITableView *)homeTableView {
     if (!_homeTableView) {
         _homeTableView = [[UITableView alloc]initWithFrame:CGRectZero style:(UITableViewStyleGrouped)];
         _homeTableView.delegate = self;
@@ -536,6 +504,11 @@ static NSString *const compilationCellId = @"KungfuHomeCompilationCell";
         [_homeTableView registerClass:[KungfuHomeModuleCell class] forCellReuseIdentifier:moduleCellId];
         [_homeTableView registerClass:[KungfuHomeHotClassCell class] forCellReuseIdentifier:hotClassCellId];
         [_homeTableView registerClass:[KungfuHomeLatestEventsCell class] forCellReuseIdentifier:eventsCellId];
+        
+        WEAKSELF
+        _homeTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+            [weakSelf requestData];
+        }];
     }
     return _homeTableView;
 }

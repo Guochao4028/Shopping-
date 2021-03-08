@@ -58,11 +58,11 @@
 
 #pragma mark - UITableViewDelegate && UITableViewDataSource
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.dataArray.count;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     CGFloat rowH = 45.5;
     if(indexPath.row == 0){
@@ -72,7 +72,7 @@
     return rowH;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     CustomerServiceHeardTableCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CustomerServiceHeardTableCell"];
     
     [cell setModel:[self.dataArray objectAtIndex:indexPath.row]];
@@ -81,7 +81,7 @@
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
     CustomerServieListModel *listModel =  [self.dataArray objectAtIndex:indexPath.row];
     if (listModel.answer) {
@@ -94,7 +94,7 @@
 
 #pragma mark - setter / getter
 
--(void)setModel:(CustomerServieItemMessageModel *)model{
+- (void)setModel:(CustomerServieItemMessageModel *)model{
     _model = model;
     
     MessageType type = model.type;
@@ -108,7 +108,7 @@
         [self.artificialButton setHidden:YES];
         
         SLAppInfoModel *infoModel = [SLAppInfoModel sharedInstance];
-        [self.myHeardImageView sd_setImageWithURL:[NSURL URLWithString:infoModel.headurl]];
+        [self.myHeardImageView sd_setImageWithURL:[NSURL URLWithString:infoModel.headUrl]];
         
         
         [self settingShowLabel:self.messageLabel showIcon:self.myHeardImageView hiddenLabel:self.otherLabel hiddentIcon:self.otherHeardImageView];
@@ -180,7 +180,7 @@
 
 #pragma mark - 计算 和 重新布局
 
--(void)settingShowLabel:(UILabel *)showLabel
+- (void)settingShowLabel:(UILabel *)showLabel
                 showIcon:(UIImageView *)showIcon
             hiddenLabel:(UILabel *) hiddenLabel
              hiddentIcon:(UIImageView *)hiddenIcon

@@ -10,6 +10,7 @@
 #import "OrderDetailsModel.h"
 #import "OrderStoreModel.h"
 #import "InvoiceModel.h"
+#import "OrderDetailsNewModel.h"
 
 
 @interface KungfuOrderDetailFooterView()
@@ -30,12 +31,14 @@
     return (KungfuOrderDetailFooterView *)[[[NSBundle mainBundle] loadNibNamed:@"KungfuOrderDetailFooterView" owner:nil options:nil] lastObject];
 }
 
--(void)setDetailsModel:(OrderDetailsModel *)detailsModel {
+- (void)setDetailsModel:(OrderDetailsNewModel *)detailsModel {
     _detailsModel = detailsModel;
     
     self.deleteButton.hidden = YES;
     self.centerButton.hidden = YES;
     self.rightButton.hidden = YES;
+    
+    OrderDetailsGoodsModel *goodsModel = [detailsModel.goods firstObject];
     
     if ([detailsModel.status isEqualToString:@"1"])
     {
@@ -50,7 +53,9 @@
     {
         //已取消
         self.deleteButton.hidden = NO;
-        if ([detailsModel.type intValue] == 3) {
+        
+       
+        if ([goodsModel.type intValue] == 3) {
             //活动
             self.rightButton.hidden = YES;
         } else {
@@ -65,28 +70,23 @@
         self.deleteButton.hidden = NO;
         self.centerButton.hidden = NO;
         
-        if ([detailsModel.type intValue] == 2) {
+        if ([goodsModel.type intValue] == 2) {
             //课
             self.rightButton.hidden = NO;
             [self.rightButton setTitle:SLLocalizedString(@"观看视频") forState:UIControlStateNormal];
         }
-        if ([detailsModel.type intValue] == 3) {
+        if ([goodsModel.type intValue] == 3) {
             //活动
             self.centerBtnRightCon.constant = 16;
         }
         
-        InvoiceModel *invoiceModel = detailsModel.invoice;
         NSString *buttonTitle = SLLocalizedString(@"查看发票");
-        if (invoiceModel == nil) {
+        if ([detailsModel.isInvoice boolValue] == NO) {
             buttonTitle = SLLocalizedString(@"补开发票");
-        }else{
-            if (invoiceModel.invoice_type == nil) {
-                buttonTitle = SLLocalizedString(@"补开发票");
-            }
         }
         [self.centerButton setTitle:buttonTitle forState:UIControlStateNormal];
         
-        if ([detailsModel.final_price floatValue] == 0) {
+        if ([detailsModel.money floatValue] == 0) {
            [self.centerButton setHidden:YES];
         }else{
              [self.centerButton setHidden:NO];

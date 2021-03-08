@@ -29,18 +29,18 @@
     // Configure the view for the selected state
 }
 
--(BOOL)textFieldShouldReturn:(UITextField *)textField{
+- (BOOL)textFieldShouldReturn:(UITextField *)textField{
    [textField resignFirstResponder];
     return YES;
 }
 
--(BOOL)textFieldShouldEndEditing:(UITextField *)textField{
+- (BOOL)textFieldShouldEndEditing:(UITextField *)textField{
     
     self.email = textField.text;
     return YES;
 }
 
--(NSString *)emailStr{
+- (NSString *)emailStr{
     return self.email;
 }
 

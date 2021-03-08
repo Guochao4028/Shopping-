@@ -20,15 +20,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol GoodsDetailBottomViewDelegate <NSObject>
 
--(void)bottomView:(GoodsDetailBottomView *)view tapAddCart:(BOOL)isTap;
+- (void)bottomView:(GoodsDetailBottomView *)view tapAddCart:(BOOL)isTap;
 
--(void)bottomView:(GoodsDetailBottomView *)view tapNowBuy:(BOOL)isTap;
+- (void)bottomView:(GoodsDetailBottomView *)view tapNowBuy:(BOOL)isTap;
 
--(void)bottomView:(GoodsDetailBottomView *)view tapCart:(BOOL)isTap;
+- (void)bottomView:(GoodsDetailBottomView *)view tapCart:(BOOL)isTap;
 
--(void)bottomView:(GoodsDetailBottomView *)view tapStore:(BOOL)isTap;
+- (void)bottomView:(GoodsDetailBottomView *)view tapStore:(BOOL)isTap;
 
--(void)bottomView:(GoodsDetailBottomView *)view tapService:(BOOL)isTap;
+- (void)bottomView:(GoodsDetailBottomView *)view tapService:(BOOL)isTap;
 
 
 @end

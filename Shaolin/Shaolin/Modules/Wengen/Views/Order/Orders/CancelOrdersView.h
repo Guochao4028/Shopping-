@@ -19,15 +19,17 @@ typedef void(^CancelOrdersViewSelectedBlock)(NSString * cause);
 @property(nonatomic, copy)CancelOrdersViewSelectedBlock selectedBlock;
 @property(nonatomic,strong)NSArray * cellArr;
 
--(instancetype)initWithFrame:(CGRect)frame reasonList:(NSArray *)list;
+- (instancetype)initWithFrame:(CGRect)frame reasonList:(NSArray *)list;
 ///标题
 @property(nonatomic, copy)NSString *titleStr;
 ///是否隐藏副标题
 @property(nonatomic, assign)BOOL isHiddenSubtitle;
 
-@property(nonatomic, strong)OrderDetailsModel *detailsModel;
+@property(nonatomic, strong)OrderDetailsNewModel *detailsModel;
 
 @property(nonatomic, assign)BOOL isFromKungfuOrder;
+
+- (void)disappear;
 
 
 

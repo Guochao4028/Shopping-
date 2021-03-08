@@ -12,9 +12,12 @@ NS_ASSUME_NONNULL_BEGIN
 @class RiteSecondLevelModel;
 //@class RiteThreeLevelModel;
 @interface RiteThreeLevelListViewController : RootViewController
+@property (nonatomic) BOOL isGroup;
 @property (nonatomic, copy) NSString *pujaType;
 @property (nonatomic, copy) NSString *pujaCode;
-@property (nonatomic, strong) RiteSecondLevelModel *riteSecondLevelModel;
+@property (nonatomic) NSInteger selectIndex;
+@property (nonatomic, strong) NSArray<RiteSecondLevelModel *> *datas;
+//@property (nonatomic, strong) RiteSecondLevelModel *riteSecondLevelModel;
 - (void)refreshAndScrollToTop;
 @end
 

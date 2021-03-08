@@ -30,7 +30,7 @@ static CGFloat kFooterHeight = 47.f;
 @end
 
 @implementation EditTextViewController
--(NSMutableArray *)imageArr
+- (NSMutableArray *)imageArr
 {
     if (!_imageArr) {
         _imageArr = [NSMutableArray array];
@@ -85,12 +85,12 @@ static CGFloat kFooterHeight = 47.f;
 
 - (void)pushData {
     if (self.titleStr.length == 0) {
-        [_titleTextView setPlaceholder:SLLocalizedString(@"请填写标题") placeholdColor:KTextGray_333];
+        [_titleTextView setPlaceholder:SLLocalizedString(@"请输入标题") placeholdColor:KTextGray_333];
     } else {
         _titleTextView.text = self.titleStr;
     }
 //    if (self.introductStr.length == 0) {
-//        [_introductionTextView setPlaceholder:SLLocalizedString(@"请填写简介") placeholdColor:KTextGray_333];
+//        [_introductionTextView setPlaceholder:SLLocalizedString(@"请输入简介") placeholdColor:KTextGray_333];
 //    } else {
         _introductionTextView.text = self.introductStr;
 //    }
@@ -99,19 +99,19 @@ static CGFloat kFooterHeight = 47.f;
 - (void)rightAction
 {
     if (self.titleTextView.text.length == 0) {
-        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请填写文章标题") view:self.view afterDelay:TipSeconds];
+        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请输入文章标题") view:self.view afterDelay:TipSeconds];
         return;
     }
-    if (self.introductionTextView.text.length == 0) {
-        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请填写文章内容") view:self.view afterDelay:TipSeconds];
-        return;
-    }
+//    if (self.introductionTextView.text.length == 0) {
+//        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请输入文章内容") view:self.view afterDelay:TipSeconds];
+//        return;
+//    }
     
     [self.editorView getHTMLAndBlock:^(NSString *html) {
         NSString *htmlStr = html;
         
         if (htmlStr.length == 0) {
-            [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请填写内容") view:self.view afterDelay:TipSeconds];
+            [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请输入内容") view:self.view afterDelay:TipSeconds];
             return;
         }
         
@@ -172,25 +172,25 @@ static CGFloat kFooterHeight = 47.f;
 }
 
 #pragma mark - 发布文章
--(void)postTextAndPhoto:(NSString *)title Introduction:(NSString *)introductionStr TextId:(NSString *)textId Source:(NSString *)source Author:(NSString *)author Content:(NSString *)content Type:(NSString *)type State:(NSString *)state CreateId:(NSString *)createId CreateName:(NSString *)name CreateType:(NSString *)createType Coverurlids:(NSMutableArray *)urlLids CoverUrlPlist:(NSMutableArray *)plistArr
+- (void)postTextAndPhoto:(NSString *)title Introduction:(NSString *)introductionStr TextId:(NSString *)textId Source:(NSString *)source Author:(NSString *)author Content:(NSString *)content Type:(NSString *)type State:(NSString *)state CreateId:(NSString *)createId CreateName:(NSString *)name CreateType:(NSString *)createType Coverurlids:(NSMutableArray *)urlLids CoverUrlPlist:(NSMutableArray *)plistArr
 {
-    [ShaolinProgressHUD defaultSingleLoadingWithText:SLLocalizedString(@"正在发布文章")];
     NSString *alertStr =@"";
     if ([state isEqualToString:@"1"]) {
-        alertStr = SLLocalizedString(@"保存草稿成功!");
+        alertStr = SLLocalizedString(@"保存成功");
         
     }else
     {
         alertStr = SLLocalizedString(@"已提交审核");
         
     }
-    
-    [[HomeManager sharedInstance]postUserChangeTextWithTitle:title Introduction:introductionStr textId:textId Content:content Type:type State:state CreateId:createId CreateName:name CreateType:createType Coverurilids:urlLids CoverUrlPlist:plistArr WithBlock:^(id  _Nonnull responseObject, NSError * _Nonnull error) {
+    MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:SLLocalizedString(@"正在发布文章")];
+    [[HomeManager sharedInstance]postUserChangeTextWithTitle:title Introduction:introductionStr textId:textId Content:content Type:type State:state CreateId:createId CreateName:name CreateType:createType Coverurilids:urlLids CoverUrlPlist:plistArr WithBlock:^(id  _Nonnull responseObject, NSString * _Nonnull error) {
         NSLog(@"%@",responseObject);
+        [hud hideAnimated:YES];
         if ([[responseObject objectForKey:@"code"]integerValue]==200) {
-            [ShaolinProgressHUD singleTextHud:alertStr view:self.view afterDelay:TipSeconds];
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                
+            MBProgressHUD *hud = [ShaolinProgressHUD textHud:alertStr view:[ShaolinProgressHUD frontWindow] afterDelay:TipSeconds isFill:YES];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(TipSeconds * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [hud hideAnimated:YES];
                 [[NSNotificationCenter defaultCenter]postNotificationName:@"RefreshData" object:nil];
                 
                 [self.navigationController popViewControllerAnimated:YES];
@@ -246,7 +246,7 @@ static CGFloat kFooterHeight = 47.f;
             NSLog(@"3333");
             [self.navigationController popViewControllerAnimated:YES];
             return;
-        } else if(self.titleTextView.text == self.titleStr && [sssss isEqualToString:@"1"] && self.introductStr == self.introductionTextView.text && [newStr isEqualToString:oldStr]) {
+        } else if([self.titleTextView.text isEqualToString:self.titleStr] && [sssss isEqualToString:@"1"] && [self.introductStr isEqualToString:self.introductionTextView.text] && [newStr isEqualToString:oldStr]) {
             NSLog(@"22222");
             [self.navigationController popViewControllerAnimated:YES];
             
@@ -259,7 +259,7 @@ static CGFloat kFooterHeight = 47.f;
                                                                     preferredStyle:UIAlertControllerStyleAlert];
             
             //
-            UIAlertAction *defaultAction = [UIAlertAction actionWithTitle:SLLocalizedString(@"保存")
+            UIAlertAction *defaultAction = [UIAlertAction actionWithTitle:SLLocalizedString(@"保存草稿")
                                                                     style:UIAlertActionStyleDestructive
                                                                   handler:^(UIAlertAction * _Nonnull action) {
                 // 点击按钮，调用此block
@@ -289,7 +289,7 @@ static CGFloat kFooterHeight = 47.f;
     }];
 }
 #pragma mark - 保存草稿
--(void)saveAction
+- (void)saveAction
 {
     [self.editorView getHTMLAndBlock:^(NSString *html) {
         NSString *htmlStr = html;
@@ -331,7 +331,9 @@ static CGFloat kFooterHeight = 47.f;
         
         //敏感词校验由服务器进行
 //        [self postTextAndPhoto:self.titleTextView.text Introduction:self.introductionTextView.text TextId:model.id Source:@"" Author:@"" Content:htmlStr Type:@"2" State:@"1" CreateId:@"" CreateName:@"" CreateType:@"2" Coverurlids:lidsArr CoverUrlPlist:self.imageArr];
-        [self postTextAndPhoto:self.titleTextView.text Introduction:self.introductionTextView.text TextId:model.id Source:@"" Author:@"" Content:strUrl Type:@"2" State:@"1" CreateId:@"" CreateName:@"" CreateType:@"2" Coverurlids:lidsArr CoverUrlPlist:self.imageArr];
+        // 1.纯文字 2.图文 3.视频
+        NSString *type = self.imageArr.count ? @"2" : @"1";
+        [self postTextAndPhoto:self.titleTextView.text Introduction:self.introductionTextView.text TextId:model.id Source:@"" Author:@"" Content:strUrl Type:type State:@"1" CreateId:@"" CreateName:@"" CreateType:@"2" Coverurlids:lidsArr CoverUrlPlist:self.imageArr];
     }];
 }
 
@@ -415,7 +417,7 @@ static CGFloat kFooterHeight = 47.f;
             self.titleTipsLabel.textColor = KTextGray_999;
         } else if (textCount > textMaxCount){
             self.titleTipsLabel.text = [NSString stringWithFormat:SLLocalizedString(@"标题字数不可超过%ld个字"), textMaxCount];
-            self.titleTipsLabel.textColor = kMainYellow;
+            self.titleTipsLabel.textColor = KPriceRed;
         } else {
             self.titleTipsLabel.text = @"";
         }
@@ -427,7 +429,7 @@ static CGFloat kFooterHeight = 47.f;
             self.introductionTipsLabel.textColor = KTextGray_999;
         } else if (textCount > textMaxCount){
             self.introductionTipsLabel.text = [NSString stringWithFormat:SLLocalizedString(@"简介字数不可超过%ld个字"), textMaxCount];
-            self.introductionTipsLabel.textColor = kMainYellow;
+            self.introductionTipsLabel.textColor = KPriceRed;
         } else {
             self.introductionTipsLabel.text = @"";
         }
@@ -634,7 +636,7 @@ static CGFloat kFooterHeight = 47.f;
         _titleTextView.returnKeyType = UIReturnKeyDone;
         _titleTextView.delegate = self;
         _titleTextView.keyboardType = UIKeyboardTypeDefault;
-        [_titleTextView setPlaceholder:SLLocalizedString(@"请填写标题") placeholdColor:KTextGray_333];
+        [_titleTextView setPlaceholder:SLLocalizedString(@"请输入标题") placeholdColor:KTextGray_333];
         _titleTextView.scrollEnabled = NO;
     }
     return _titleTextView;
@@ -655,7 +657,7 @@ static CGFloat kFooterHeight = 47.f;
         _introductionTextView = [[UITextView alloc] initWithFrame:CGRectMake(SLChange(13), 0, kWidth-SLChange(32), SLChange(25))];
         [_introductionTextView setTextColor:[UIColor blackColor]];
         _introductionTextView.font = kMediumFont(14);
-        [_introductionTextView setPlaceholder:SLLocalizedString(@"请填写简介") placeholdColor:KTextGray_333];
+        [_introductionTextView setPlaceholder:SLLocalizedString(@"请输入简介") placeholdColor:KTextGray_333];
         _introductionTextView.textColor = KTextGray_666;
         _introductionTextView.returnKeyType = UIReturnKeyDone;
         _introductionTextView.delegate = self;

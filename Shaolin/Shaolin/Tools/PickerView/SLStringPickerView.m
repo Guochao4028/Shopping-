@@ -16,7 +16,7 @@
 
 @implementation SLStringPickerView
 
--(instancetype)init {
+- (instancetype)init {
     self = [super init];
     if (self) {
         [self addSubview:self.chooseBtn];
@@ -25,7 +25,7 @@
 }
 
 
--(void)layoutSubviews {
+- (void)layoutSubviews {
     
     [super layoutSubviews];
     
@@ -51,7 +51,7 @@
     [self dismiss];
 }
 
--(void)show {
+- (void)show {
     [super show];
     [UIView animateWithDuration:0.3 animations:^{
         self.chooseBtn.alpha = 1;

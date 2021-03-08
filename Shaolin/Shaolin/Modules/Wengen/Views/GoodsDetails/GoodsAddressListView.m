@@ -29,7 +29,7 @@ static NSString *const kGoodsAddressListTableCellIdentifier = @"GoodsAddressList
 
 @implementation GoodsAddressListView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [self initUI];
@@ -37,7 +37,7 @@ static NSString *const kGoodsAddressListTableCellIdentifier = @"GoodsAddressList
     return self;
 }
 
--(void)initUI{
+- (void)initUI{
     [self setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6]];
     
     [self addSubview:self.contentView];
@@ -56,37 +56,37 @@ static NSString *const kGoodsAddressListTableCellIdentifier = @"GoodsAddressList
 
 #pragma mark - action
 
--(void)closeTarget:(nullable id)target action:(SEL)action{
+- (void)closeTarget:(nullable id)target action:(SEL)action{
     [self.closeButton addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
 }
 
--(void)createAddressTarget:(nullable id)target action:(SEL)action{
+- (void)createAddressTarget:(nullable id)target action:(SEL)action{
     [self.addressButton addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
 }
 
 #pragma mark - UITableViewDelegate & UITableViewDataSource
 
--(CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     return 0.01;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     return 0.01;
 }
 
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     
     return self.dataArray.count;
 }
 
--(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     CGFloat tableViewH = 0;
     tableViewH = 44;
     return tableViewH;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     
     GoodsAddressListTableCell *cell = [tableView dequeueReusableCellWithIdentifier:kGoodsAddressListTableCellIdentifier];
@@ -96,7 +96,7 @@ static NSString *const kGoodsAddressListTableCellIdentifier = @"GoodsAddressList
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
     for (AddressListModel *model in self.dataArray) {
         model.isSelected = NO;
@@ -115,7 +115,7 @@ static NSString *const kGoodsAddressListTableCellIdentifier = @"GoodsAddressList
 
 #pragma mark - getter / setter
 
--(UIView *)contentView{
+- (UIView *)contentView{
     
     if (_contentView == nil) {
         CGFloat heigth = 500 + TabBarButtom_H;
@@ -129,7 +129,7 @@ static NSString *const kGoodsAddressListTableCellIdentifier = @"GoodsAddressList
 
 }
 
--(UILabel *)titleLabel{
+- (UILabel *)titleLabel{
     
     if (_titleLabel == nil) {
         CGFloat x = (self.width - 51)/2;
@@ -143,7 +143,7 @@ static NSString *const kGoodsAddressListTableCellIdentifier = @"GoodsAddressList
     return _titleLabel;
 }
 
--(UIButton *)closeButton{
+- (UIButton *)closeButton{
     
     if (_closeButton == nil) {
         
@@ -158,7 +158,7 @@ static NSString *const kGoodsAddressListTableCellIdentifier = @"GoodsAddressList
 
 }
 
--(UITableView *)tableView{
+- (UITableView *)tableView{
     
     if (_tableView == nil) {
         
@@ -182,7 +182,7 @@ static NSString *const kGoodsAddressListTableCellIdentifier = @"GoodsAddressList
 
 }
 
--(UIButton *)addressButton{
+- (UIButton *)addressButton{
     
     if (_addressButton == nil) {
         _addressButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -201,7 +201,7 @@ static NSString *const kGoodsAddressListTableCellIdentifier = @"GoodsAddressList
 
 }
 
--(void)setDataArray:(NSArray *)dataArray{
+- (void)setDataArray:(NSArray *)dataArray{
     _dataArray = dataArray;
     [self.tableView reloadData];
 }

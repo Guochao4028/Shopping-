@@ -172,7 +172,7 @@
     return view;
 }
 
--(NSString*)subTextString:(NSString*)str len:(NSInteger)len{
+- (NSString*)subTextString:(NSString*)str len:(NSInteger)len{
     if(str.length<=len)return str;
     int count=0;
     NSMutableString *sb = [NSMutableString string];
@@ -190,7 +190,7 @@
     return str;
 }
 
--(NSString*)subModelTextString:(SearchHistoryModel*)model len:(NSInteger)len{
+- (NSString*)subModelTextString:(SearchHistoryModel*)model len:(NSInteger)len{
     NSString *searchContent = model.searchContent;
     if (searchContent.length<=len) return searchContent;
     int count=0;
@@ -256,7 +256,7 @@
         self.tapAction(label.text);
     }
 }
--(NSUInteger)textLength: (NSString *) text{
+- (NSUInteger)textLength: (NSString *) text{
 
     NSUInteger asciiLength = 0;
 

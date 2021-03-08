@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, strong)AddressListModel *addressListModel;
 
--(void)orderFillContentTableHeadTarget:(nullable id)target action:(SEL)action;
+- (void)orderFillContentTableHeadTarget:(nullable id)target action:(SEL)action;
 
 
 @end

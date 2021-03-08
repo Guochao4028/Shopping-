@@ -90,6 +90,7 @@
         _photoView.image = [UIImage imageNamed:@"photo_square"];
         _photoView.userInteractionEnabled = YES;
         _photoView.contentMode = UIViewContentModeScaleAspectFill;
+        _photoView.clipsToBounds = YES;
     }
     return _photoView;
 }

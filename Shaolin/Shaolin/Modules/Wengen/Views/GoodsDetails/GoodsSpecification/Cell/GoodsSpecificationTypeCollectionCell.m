@@ -30,7 +30,7 @@
 
 #pragma mark - getter / setter
 
--(void)setModel:(GoodsAttrBasisModel *)model{
+- (void)setModel:(GoodsAttrBasisModel *)model{
     _model = model;
     
     BOOL isSelected = model.isSeleced;

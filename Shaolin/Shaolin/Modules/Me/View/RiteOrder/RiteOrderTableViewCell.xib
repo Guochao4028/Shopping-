@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -151,9 +151,33 @@
                             <constraint firstAttribute="height" constant="10" id="bSn-q6-u77"/>
                         </constraints>
                     </view>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1hz-ob-lVk">
+                        <rect key="frame" x="54" y="177.5" width="80" height="30"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="80" id="TLZ-kA-2Wj"/>
+                            <constraint firstAttribute="height" constant="30" id="yeZ-36-Z36"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="15"/>
+                        <state key="normal" title="查看回执">
+                            <color key="titleColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        </state>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="color" keyPath="lgf_BorderColor">
+                                <color key="value" red="0.59215686270000001" green="0.59215686270000001" blue="0.59215686270000001" alpha="1" colorSpace="calibratedRGB"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                <real key="value" value="17.5"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                        <connections>
+                            <action selector="firstButonAction:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="0dn-SE-hal"/>
+                            <action selector="returnReceiptAction:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="X0s-Na-ndQ"/>
+                        </connections>
+                    </button>
                 </subviews>
                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 <constraints>
+                    <constraint firstItem="Dk9-qm-u5S" firstAttribute="top" secondItem="1hz-ob-lVk" secondAttribute="top" id="1cq-ID-CuM"/>
                     <constraint firstItem="O1x-7I-8fc" firstAttribute="leading" secondItem="UnW-Ij-exd" secondAttribute="trailing" constant="12" id="1mx-fF-WRg"/>
                     <constraint firstItem="hGx-ey-Qf7" firstAttribute="top" secondItem="O1x-7I-8fc" secondAttribute="bottom" constant="10" id="3EG-kq-Xvv"/>
                     <constraint firstItem="OoV-k9-Ban" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="7LG-yj-p8X"/>
@@ -161,6 +185,7 @@
                     <constraint firstItem="af7-n0-vxt" firstAttribute="leading" secondItem="Dk9-qm-u5S" secondAttribute="trailing" constant="5" id="GjM-Lt-p9d"/>
                     <constraint firstItem="OoV-k9-Ban" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="MVa-9C-Mg6"/>
                     <constraint firstAttribute="trailing" secondItem="af7-n0-vxt" secondAttribute="trailing" constant="16" id="Q7s-Zd-98S"/>
+                    <constraint firstItem="Dk9-qm-u5S" firstAttribute="leading" secondItem="1hz-ob-lVk" secondAttribute="trailing" constant="5" id="Rgh-tE-dNd"/>
                     <constraint firstAttribute="trailing" secondItem="OoV-k9-Ban" secondAttribute="trailing" id="Vu6-Qk-L8P"/>
                     <constraint firstItem="BnR-jD-h9g" firstAttribute="centerY" secondItem="UnW-Ij-exd" secondAttribute="centerY" id="YOQ-x7-8q1"/>
                     <constraint firstItem="UnW-Ij-exd" firstAttribute="top" secondItem="W4D-dJ-ak0" secondAttribute="bottom" constant="15" id="Z13-43-Z67"/>
@@ -184,6 +209,7 @@
                 <outlet property="introductionLabel" destination="hGx-ey-Qf7" id="tB2-0K-mqm"/>
                 <outlet property="numberLabel" destination="Sty-gg-tIo" id="sVy-kp-yN5"/>
                 <outlet property="priceLabel" destination="BnR-jD-h9g" id="0Ex-GY-qYF"/>
+                <outlet property="returnReceiptButton" destination="1hz-ob-lVk" id="sXb-bO-kpU"/>
                 <outlet property="secondButton" destination="af7-n0-vxt" id="6Uu-kn-dcJ"/>
                 <outlet property="secondButtonW" destination="wzn-sQ-HnL" id="eUP-gG-BGZ"/>
                 <outlet property="stateLabel" destination="84V-lZ-jbg" id="Agp-du-eOI"/>

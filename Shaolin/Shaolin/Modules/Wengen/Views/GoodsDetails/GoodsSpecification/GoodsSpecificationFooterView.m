@@ -23,7 +23,7 @@
 
 @implementation GoodsSpecificationFooterView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [[NSBundle mainBundle] loadNibNamed:@"GoodsSpecificationFooterView" owner:self options:nil];
@@ -35,7 +35,7 @@
 #pragma mark - methods
 
 /// 初始化UI
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.contentView];
     [self.contentView setFrame:self.bounds];
     
@@ -52,26 +52,26 @@
 }
 
 /// 重写系统方法
--(void)setFrame:(CGRect)frame{
+- (void)setFrame:(CGRect)frame{
     [super setFrame:frame];
     [self.contentView setFrame:self.bounds];
 }
 
--(void)addCartTarget:(nullable id)target action:(SEL)action{
+- (void)addCartTarget:(nullable id)target action:(SEL)action{
     [self.addCarButton addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
 }
 
--(void)buyTarget:(nullable id)target action:(SEL)action{
+- (void)buyTarget:(nullable id)target action:(SEL)action{
     [self.buyButton addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
 }
 
--(void)determineTarget:(nullable id)target action:(SEL)action{
+- (void)determineTarget:(nullable id)target action:(SEL)action{
     [self.determineButton addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
 }
 
 
 #pragma mark - setter / getter
--(void)setIsSingle:(BOOL)isSingle{
+- (void)setIsSingle:(BOOL)isSingle{
     if (isSingle) {
         [self addSubview:self.singleButtonView];
         [self.singleButtonView setFrame:self.bounds];
@@ -81,7 +81,7 @@
     }
 }
 
--(void)setIsShowInsufficientInventory:(BOOL)isShowInsufficientInventory{
+- (void)setIsShowInsufficientInventory:(BOOL)isShowInsufficientInventory{
     
       [self.insufficientInventoryView setHidden:!(isShowInsufficientInventory)];
 }

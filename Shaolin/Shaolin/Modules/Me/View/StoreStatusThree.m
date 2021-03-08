@@ -14,7 +14,7 @@
 @property(nonatomic,strong) UIButton *sendBtn;
 @end
 @implementation StoreStatusThree
--(instancetype)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     
@@ -23,7 +23,7 @@
     }
     return self;
 }
--(void)layoutView
+- (void)layoutView
 {
     _bgView = [[UIView alloc]initWithFrame:self.frame];
     _bgView.alpha = 0.3;
@@ -77,7 +77,7 @@
     }
      [self dismissView];
 }
--(void)dismissView
+- (void)dismissView
 {
    
     __weak typeof(self)weakSelf =self;

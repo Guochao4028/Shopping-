@@ -9,7 +9,7 @@
 #import "OrderPriceBuyCarCell.h"
 
 @implementation OrderPriceBuyCarCell
--(instancetype)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
@@ -42,7 +42,7 @@
 //    [self.contentView addSubview:self.vieW];
 //    [self.contentView bringSubviewToFront:self.vieW];
 }
-//-(void)layoutSubviews
+//- (void)layoutSubviews
 //{
 //    [super layoutSubviews];
     
@@ -54,7 +54,7 @@
 //    }];
 //}
 
--(UILabel *)numberLabel {
+- (UILabel *)numberLabel {
     if (!_numberLabel) {
         _numberLabel = [[UILabel alloc]init];
 //        _numberLabel.textColor = [UIColor whiteColor];
@@ -67,7 +67,7 @@
     return _numberLabel;
 }
 
--(UILabel *)nameLabel {
+- (UILabel *)nameLabel {
     if (!_nameLabel) {
         _nameLabel = [[UILabel alloc]init];
 //        _nameLabel.textColor = [UIColor whiteColor];
@@ -89,7 +89,7 @@
     return _imageView;
 }
 
--(UIView *)vieW {
+- (UIView *)vieW {
     if (!_vieW) {
         _vieW = [[UIView alloc]init];
 //        _vieW.backgroundColor = RGBA(199, 199, 199, 1);

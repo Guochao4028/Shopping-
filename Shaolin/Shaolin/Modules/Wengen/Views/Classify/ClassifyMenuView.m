@@ -22,7 +22,7 @@
 
 @implementation ClassifyMenuView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [[NSBundle mainBundle] loadNibNamed:@"ClassifyMenuView" owner:self options:nil];
@@ -35,19 +35,19 @@
 
 
 /// 初始化UI
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.contentView];
     [self.contentView setFrame:self.bounds];
     
 }
 
 /// 重写系统方法
--(void)setFrame:(CGRect)frame{
+- (void)setFrame:(CGRect)frame{
     [super setFrame:frame];
     [self.contentView setFrame:self.bounds];
 }
 
--(void)changeClassifyDirection:(NSInteger)dirction{
+- (void)changeClassifyDirection:(NSInteger)dirction{
     if (dirction == 0) {
         [self.classifyDirectionImageView setImage:[UIImage imageNamed:@"down"]];
         
@@ -79,7 +79,7 @@
 
 #pragma mark - setter / getter
 
--(void)setModel:(WengenEnterModel *)model{
+- (void)setModel:(WengenEnterModel *)model{
     
     [self.classifyNameLabel setText:model.name];
     
@@ -91,14 +91,17 @@
     
 }
 
--(void)setSelectdModel:(WengenEnterModel *)selectdModel{
+- (void)setSelectdModel:(WengenEnterModel *)selectdModel{
     _selectdModel = selectdModel;
-     [self.classifyDirectionImageView setImage:[UIImage imageNamed:@"down"]];
+    
+    [self.classifyDirectionImageView setImage:[UIImage imageNamed:@"down"]];
     [self.classifyNameLabel setTextColor:kMainYellow];
     [self.classifyNameLabel setText:selectdModel.name];
+
+    
 }
 
--(void)setType:(ListType)type{
+- (void)setType:(ListType)type{
     _type = type;
     switch (type) {
         case ListXiaoLiangAscType:{
@@ -130,6 +133,9 @@
             break;
     }
 }
+
+
+
 
 
 @end

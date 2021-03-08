@@ -22,7 +22,7 @@
     self.goodsImageView.layer.cornerRadius = SLChange(4);
 }
 
--(void)setImageStr:(NSString *)imageStr{
+- (void)setImageStr:(NSString *)imageStr{
     _imageStr = imageStr;
     [self.goodsImageView sd_setImageWithURL:[NSURL URLWithString:imageStr] placeholderImage:[UIImage imageNamed:@"default_small"]];
 }

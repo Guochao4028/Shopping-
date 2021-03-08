@@ -15,11 +15,11 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface NSArray (Catetory)
--(NSMutableArray *)mutableArrayDeeoCopy;
+- (NSMutableArray *)mutableArrayDeeoCopy;
 @end
 
 @interface NSDictionary (Catetory)
--(NSMutableDictionary *)mutableDicDeepCopy;
+- (NSMutableDictionary *)mutableDicDeepCopy;
 @end
 
 

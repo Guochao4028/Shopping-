@@ -27,15 +27,28 @@
 - (void)awakeFromNib {
     [super awakeFromNib];
     
-//    CGRect bounds = CGRectMake(0, 0, 140, 130);
-//    UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:bounds byRoundingCorners:UIRectCornerTopLeft | UIRectCornerBottomLeft cornerRadii:CGSizeMake(2, 2)];
-//    CAShapeLayer *maskLayer = [[CAShapeLayer alloc] init];
-//    maskLayer.frame = bounds;
-//    maskLayer.path = maskPath.CGPath;
-//    [self.goodsImageView.layer addSublayer:maskLayer];
-//    self.goodsImageView.layer.mask = maskLayer;
-    [self.goodsImageView.layer setCornerRadius:4];
+    self.goodsImageView.layer.shouldRasterize = YES;
     self.goodsImageView.layer.masksToBounds = YES;
+    
+    CGRect bounds = CGRectMake(0, 0, 138, 130);
+    UIBezierPath *maskPath = [UIBezierPath
+                              bezierPathWithRoundedRect: bounds
+                              byRoundingCorners: (UIRectCornerTopLeft | UIRectCornerBottomLeft)
+                              cornerRadii:CGSizeMake(8, 8)];
+    maskPath.lineWidth     = 0.f;
+
+    CAShapeLayer *maskLayer = [[CAShapeLayer alloc] init];
+    maskLayer.frame = bounds;
+    
+    maskLayer.path = maskPath.CGPath;
+
+    self.goodsImageView.layer.mask = maskLayer;
+    
+    
+    
+    
+//    [self.goodsImageView.layer setCornerRadius:4];
+//    self.goodsImageView.layer.masksToBounds = YES;
     
 }
 
@@ -45,12 +58,14 @@
 
 
 #pragma mark - setter / getter
--(void)setGoodsModel:(WengenGoodsModel *)goodsModel{
+- (void)setGoodsModel:(WengenGoodsModel *)goodsModel{
     _goodsModel = goodsModel;
     
     //商品图片
-    NSString *imgeUrlStr = [goodsModel.img_data firstObject];
+    NSString *imgeUrlStr = [goodsModel.imgDataList firstObject];
     [self.goodsImageView sd_setImageWithURL:[NSURL URLWithString:imgeUrlStr] placeholderImage:[UIImage imageNamed:@"default_small"]];
+    
+    
     
     //商品名称
     [self.goodsNameLabel setText:goodsModel.name];
@@ -58,12 +73,12 @@
     //商品价格
     NSString *priceStr ;
     
-    if ([goodsModel.is_discount boolValue] == YES) {
-        priceStr = [NSString stringWithFormat:@"¥%@",goodsModel.old_price];
+    if ([goodsModel.isDiscount boolValue] == YES) {
+        priceStr = [NSString stringWithFormat:@"¥%@",goodsModel.price];
         
         
     }else{
-        priceStr = [NSString stringWithFormat:@"¥%@",goodsModel.price];
+        priceStr = [NSString stringWithFormat:@"¥%@",goodsModel.oldPrice];
     }
     
 //
@@ -86,7 +101,7 @@
     self.goodsPriceLabelW.constant = size.width+3.5;
     
     //销量
-    [self.userNumberLabel setText:[NSString stringWithFormat:SLLocalizedString(@"%@人付款"), goodsModel.user_num]];
+    [self.userNumberLabel setText:[NSString stringWithFormat:SLLocalizedString(@"%@人付款"), goodsModel.userNum]];
     
 }
 

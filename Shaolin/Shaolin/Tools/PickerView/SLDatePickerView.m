@@ -16,7 +16,7 @@
 
 @implementation SLDatePickerView
 
--(instancetype)init {
+- (instancetype)init {
     self = [super init];
     if (self) {
         [self addSubview:self.chooseBtn];
@@ -25,7 +25,7 @@
 }
 
 
--(void)layoutSubviews {
+- (void)layoutSubviews {
     
     [super layoutSubviews];
     
@@ -33,7 +33,7 @@
     [self.chooseBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(0);
         make.right.mas_equalTo(0);
-        make.bottom.mas_equalTo(-(5 + kBottomSafeHeight));
+        make.bottom.mas_equalTo(- (5 + kBottomSafeHeight));
         make.height.mas_equalTo(40);
     }];
     
@@ -52,7 +52,7 @@
     [self dismiss];
 }
 
--(void)show {
+- (void)show {
     [super show];
     [UIView animateWithDuration:0.3 animations:^{
         self.chooseBtn.alpha = 1;

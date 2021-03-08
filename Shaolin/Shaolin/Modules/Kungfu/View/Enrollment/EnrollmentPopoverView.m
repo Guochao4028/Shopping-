@@ -52,7 +52,7 @@
 
 @implementation EnrollmentPopoverView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [[NSBundle mainBundle] loadNibNamed:@"EnrollmentPopoverView" owner:self options:nil];
@@ -63,7 +63,7 @@
 }
 #pragma mark - methods
 /// 初始化UI
--(void)initUI{
+- (void)initUI{
     
     [self setBackgroundColor:[UIColor colorWithWhite:0 alpha:0.6]];
     [self addSubview:self.contentView];
@@ -77,7 +77,7 @@
 }
 
 //关闭view
--(void)closeView{
+- (void)closeView{
     
     [UIView animateWithDuration:0.3 animations:^{
         self.alpha = 0;
@@ -146,7 +146,7 @@
 
 
 #pragma mark - setter / getter
--(void)setIsApplySelect:(BOOL)isApplySelect{
+- (void)setIsApplySelect:(BOOL)isApplySelect{
     _isApplySelect = isApplySelect;
     if (isApplySelect == NO) {
         [self.applyImageView setImage:[UIImage imageNamed:@"KungfuNoSelected"]];
@@ -155,7 +155,7 @@
 
 //（¥5500.00）
 
--(void)setPricePackage:(NSDictionary *)pricePackage{
+- (void)setPricePackage:(NSDictionary *)pricePackage{
     _pricePackage = pricePackage;
     NSString *applyMoney = pricePackage[@"applyMoney"];
     NSString *makeUpMoney = pricePackage[@"makeUpMoney"];

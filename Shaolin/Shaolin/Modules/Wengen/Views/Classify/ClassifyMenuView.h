@@ -24,19 +24,22 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, strong)WengenEnterModel *selectdModel;
 
+@property(nonatomic, copy)NSString *selectdModelName;
+
+
 /// 修改分类旁边的箭头方向
 /// @param dirction 0向下，1向上
--(void)changeClassifyDirection:(NSInteger)dirction;
+- (void)changeClassifyDirection:(NSInteger)dirction;
 
 @end
 
 @protocol ClassifyMenuViewDelegate <NSObject>
 
--(void)view:(ClassifyMenuView *)view tapClassifyView:(BOOL)isTap;
+- (void)view:(ClassifyMenuView *)view tapClassifyView:(BOOL)isTap;
 
--(void)view:(ClassifyMenuView *)view tapPriceView:(BOOL)isTap;
+- (void)view:(ClassifyMenuView *)view tapPriceView:(BOOL)isTap;
 
--(void)view:(ClassifyMenuView *)view tapSalesVolumeView:(BOOL)isTap;
+- (void)view:(ClassifyMenuView *)view tapSalesVolumeView:(BOOL)isTap;
 
 @end
 

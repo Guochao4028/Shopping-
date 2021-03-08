@@ -56,7 +56,7 @@
     }
     return _logoImageView;
 }
--(UILabel *)nameLabel {
+- (UILabel *)nameLabel {
     if (!_nameLabel) {
         _nameLabel = [[UILabel alloc]init];
         _nameLabel.font = kRegular(15);

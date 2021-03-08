@@ -12,11 +12,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface OrderInvoiceFillOpenViewController : RootViewController
 
+/// 需要补开发票的订单id
+@property(nonatomic, copy)NSString *orderId;
+
 ///订单号显示用
 @property(nonatomic, copy)NSString *orderSn;
 
 ///订单号 操作用。调接口传参
-@property(nonatomic, copy)NSString *orderTotalSn;
+//@property(nonatomic, copy)NSString *orderTotalSn;
 
 ///店铺ID 拼成的字符串 格式 xxx,xxx,xxx
 @property(nonatomic, copy)NSString *allStroeIdStr;

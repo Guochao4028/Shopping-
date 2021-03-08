@@ -23,7 +23,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2020-05-13 更新" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kTn-13-ewm">
-                        <rect key="frame" x="33" y="38" width="124.5" height="19"/>
+                        <rect key="frame" x="33" y="38" width="271" height="19"/>
                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
                         <color key="textColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
@@ -38,10 +38,10 @@
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="fem-D1-hpI" secondAttribute="trailing" constant="64" id="2jH-ig-iDd"/>
-                    <constraint firstItem="kTn-13-ewm" firstAttribute="trailing" secondItem="fem-D1-hpI" secondAttribute="trailing" id="AGu-It-L25"/>
                     <constraint firstItem="kTn-13-ewm" firstAttribute="leading" secondItem="fem-D1-hpI" secondAttribute="leading" id="Lju-CI-jNv"/>
                     <constraint firstItem="J3L-0s-E4H" firstAttribute="centerY" secondItem="fem-D1-hpI" secondAttribute="centerY" id="LvK-tJ-8mZ"/>
                     <constraint firstItem="kTn-13-ewm" firstAttribute="top" secondItem="fem-D1-hpI" secondAttribute="bottom" constant="8" id="Ouk-bm-5au"/>
+                    <constraint firstAttribute="trailing" secondItem="kTn-13-ewm" secondAttribute="trailing" constant="16" id="QPW-AU-WcC"/>
                     <constraint firstItem="J3L-0s-E4H" firstAttribute="leading" secondItem="fem-D1-hpI" secondAttribute="trailing" constant="9" id="Zib-ks-saA"/>
                     <constraint firstItem="fem-D1-hpI" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="aP0-sJ-QRF"/>
                     <constraint firstItem="J3L-0s-E4H" firstAttribute="top" secondItem="fem-D1-hpI" secondAttribute="top" id="akl-ou-YaZ"/>

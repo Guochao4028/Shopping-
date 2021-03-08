@@ -28,7 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol CreateAddressTableViewCellDelegate <NSObject>
 
--(void)createAddressCell:(CreateAddressTableViewCell *)cell tap:(BOOL)istap;
+- (void)createAddressCell:(CreateAddressTableViewCell *)cell tap:(BOOL)istap;
 
 @end
 

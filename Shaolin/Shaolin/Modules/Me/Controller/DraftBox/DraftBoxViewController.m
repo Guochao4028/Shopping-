@@ -29,21 +29,21 @@
 @end
 
 @implementation DraftBoxViewController
--(NSMutableArray *)dataArray
+- (NSMutableArray *)dataArray
 {
     if (!_dataArray) {
         _dataArray = [NSMutableArray array];
     }
     return _dataArray;
 }
--(NSMutableArray *)deleteArray
+- (NSMutableArray *)deleteArray
 {
     if (!_deleteArray) {
         _deleteArray = [NSMutableArray array];
     }
     return _deleteArray;
 }
--(PostManagementBottomView *)bottomView
+- (PostManagementBottomView *)bottomView
 {
     if (!_bottomView) {
         _bottomView = [[PostManagementBottomView alloc]initWithFrame:CGRectMake(0, kHeight-NavBar_Height, kWidth, SLChange(40)+BottomMargin_X)];
@@ -53,12 +53,12 @@
     }
     return _bottomView;
 }
--(void)viewWillAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     //[self setNavigationBarYellowTintColor];
 }
--(void)viewWillDisappear:(BOOL)animated
+- (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
 }
@@ -66,16 +66,16 @@
     [super viewDidLoad];
     _isInsertEdit = NO;
     self.total = 1;
-    [self setUI];
+    [self setupUI];
     
     
-    
+    WEAKSELF
     self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-        [self getTableviewData];
+        [weakSelf getTableviewData];
     }];
     self.tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
         // 上拉加载
-        [self loadNowMoreAction];
+        [weakSelf loadNowMoreAction];
     }];
     
     [self.tableView.mj_header beginRefreshing];
@@ -90,10 +90,10 @@
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(getRefreshPageData:) name:@"RefreshData" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(lookOneImage:) name:@"SelectLookOneImage" object:nil];
 }
--(void)getRefreshPageData:(NSNotification *)user {
+- (void)getRefreshPageData:(NSNotification *)user {
     [self getTableviewData];
 }
--(void)lookOneImage:(NSNotification *)user
+- (void)lookOneImage:(NSNotification *)user
 {
     //    NSDictionary *dic = user.userInfo;
     //    NSArray *arr = [dic objectForKey:@"selectImage"];
@@ -104,7 +104,7 @@
     //              browser.currentPhotoIndex= 2;
     //    [self.navigationController pushViewController:browser animated:YES];
 }
--(void)setUI{
+- (void)setupUI{
     self.titleLabe.text = SLLocalizedString(@"草稿箱");
     self.titleLabe.textColor = [UIColor whiteColor];
     [self.leftBtn setImage:[UIImage imageNamed:@"real_left"] forState:(UIControlStateNormal)];
@@ -116,7 +116,7 @@
     [self.rightBtn addTarget:self action:@selector(rightAction:) forControlEvents:(UIControlEventTouchUpInside)];
     self.rightBtn.titleLabel.font =kRegular(15);
 }
--(void)registerCell
+- (void)registerCell
 {
     
     [_tableView registerClass:[PostPureTextCell class] forCellReuseIdentifier:NSStringFromClass([PostPureTextCell class])];
@@ -146,11 +146,12 @@
             [[MeManager sharedInstance] postDeleteText:deleteArr finish:^(id  _Nonnull responseObject, NSString * _Nonnull errorReason) {
                 if ([ModelTool checkResponseObject:responseObject]){
                     [ShaolinProgressHUD hideSingleProgressHUD];
-                    [self hiddenBoomtoView];
                     [self.dataArray removeObjectsInArray:self.deleteArray];
                     if (self.dataArray.count == 0){
                         self.tableView.mj_footer.hidden = YES;
+//                        [self hiddenBoomtoView];
                     }
+                    [self hiddenBoomtoView];
                     [self.tableView reloadData];
                     [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"删除成功")];
                 } else {
@@ -171,7 +172,7 @@
         [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"没有选择文章") view:self.view afterDelay:TipSeconds];
     }
 }
--(void)hiddenBoomtoView
+- (void)hiddenBoomtoView
 {
     [self.rightBtn setSelected:NO];
     _isInsertEdit = NO;
@@ -220,7 +221,7 @@
 //        [hud hideAnimated:YES];
     }];
 }
--(void)loadNowMoreAction
+- (void)loadNowMoreAction
 {
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:@"数据加载中..."];
     self.pager ++;
@@ -245,7 +246,7 @@
     }];
 }
 #pragma mark - 右侧编辑
--(void)rightAction:(UIButton *)button
+- (void)rightAction:(UIButton *)button
 {
     if (self.dataArray.count == 0){
         [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"暂无可编辑内容")];
@@ -317,15 +318,15 @@
     
     
 }
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return 1;
 }
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return _dataArray.count;
 }
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     MePostManagerModel *model = _dataArray[indexPath.row];
     PostALLCell *cell;
@@ -346,12 +347,12 @@
     return cell;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     MePostManagerModel *model = self.dataArray[indexPath.row];
     return model.cellHeight;
 }
--(UITableView *)tableView
+- (UITableView *)tableView
 {
     if (!_tableView) {
         _tableView = [[UITableView alloc]init];
@@ -370,7 +371,7 @@
     return _tableView;
 }
 
-//-(NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
+//- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
 //    return SLLocalizedString(@"删除");
 //}
 //
@@ -378,7 +379,7 @@
 //{
 //    return YES;
 //}
--(UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 
     //根据不同状态返回不同编辑模式
@@ -466,7 +467,7 @@
     return !self.dataArray.count;
 }
 
--(CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
+- (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
     return -70;
 }
 
@@ -477,7 +478,7 @@
     return [[NSAttributedString alloc] initWithString:text attributes:attributes];
 }
 
-//-(NSAttributedString *)descriptionForEmptyDataSet:(UIScrollView *)scrollView {
+//- (NSAttributedString *)descriptionForEmptyDataSet:(UIScrollView *)scrollView {
 //    NSString *text = SLLocalizedString(@"快去写文章吧");
 //
 //    NSDictionary *attributes = @{NSFontAttributeName: [UIFont boldSystemFontOfSize:13.0f],

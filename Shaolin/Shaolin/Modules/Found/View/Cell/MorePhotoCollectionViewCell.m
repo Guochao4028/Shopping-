@@ -12,7 +12,7 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        [self setUI];
+        [self setupUI];
     }
     return self;
 }
@@ -39,7 +39,7 @@
     }
  
 }
--(void)setUI
+- (void)setupUI
 {
     [self.contentView addSubview: self.imageV];
     [self.imageV addSubview:self.numLabel];
@@ -62,7 +62,7 @@
            make.centerY.mas_equalTo(self.numLabel);
        }];
 }
--(UIImageView *)imageV
+- (UIImageView *)imageV
 {
     if (!_imageV) {
         _imageV = [[UIImageView alloc]init];
@@ -74,7 +74,7 @@
     }
     return _imageV;
 }
--(UILabel *)numLabel
+- (UILabel *)numLabel
 {
     if (!_numLabel) {
         _numLabel = [[UILabel alloc]init];
@@ -84,7 +84,7 @@
     }
     return _numLabel;
 }
--(UILabel *)addLabel
+- (UILabel *)addLabel
 {
     if (!_addLabel) {
         _addLabel = [[UILabel alloc]init];

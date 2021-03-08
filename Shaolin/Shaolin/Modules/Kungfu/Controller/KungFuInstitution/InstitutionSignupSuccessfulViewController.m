@@ -34,7 +34,7 @@
 }
 
 #pragma mark - action
--(void)leftAction{
+- (void)leftAction{
     
     UIViewController *vc = [self.navigationController viewControllers][1];
     

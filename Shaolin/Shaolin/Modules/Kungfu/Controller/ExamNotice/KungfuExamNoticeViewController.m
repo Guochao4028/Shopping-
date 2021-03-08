@@ -39,7 +39,7 @@
     [self initDate];
 }
 
--(void)initDate{
+- (void)initDate{
     
     self.pageNmuber = 1;
     
@@ -51,10 +51,16 @@
         if (total <= [self.dataArray count]) {
             [self.tableView.mj_footer setHidden:YES];
         }
+        
+//        if (!self.dataArray.count) {
+//            self.rightBtn.hidden = YES;
+//        } else {
+//            self.rightBtn.hidden = NO;
+//        }
     }];
 }
 
--(void)refreshData{
+- (void)refreshData{
     self.pageNmuber = 1;
     [self.dataArray removeAllObjects];
     [[KungfuManager sharedInstance]getActivityAnnouncement:@{@"pageSize":@"10", @"pageNum":[NSString stringWithFormat:@"%ld", self.pageNmuber]} Callback:^(NSDictionary *result) {
@@ -73,7 +79,7 @@
     }];
 }
 
--(void)loadingMoreData{
+- (void)loadingMoreData{
     [[KungfuManager sharedInstance]getActivityAnnouncement:@{@"pageSize":@"10", @"pageNum":[NSString stringWithFormat:@"%ld", self.pageNmuber]} Callback:^(NSDictionary *result) {
         
         [self.dataArray addObjectsFromArray:result[@"dataArray"]];
@@ -84,10 +90,11 @@
         if (total <= [self.dataArray count]) {
             [self.tableView.mj_footer endRefreshingWithNoMoreData];
         }
+
     }];
 }
 
--(void)viewWillAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
     [self.rightBtn setTitle:@"标为已读" forState:UIControlStateNormal];
@@ -95,7 +102,7 @@
     [self.rightBtn.titleLabel setFont:kRegular(14)];
 }
 
--(void)initUI{
+- (void)initUI{
     [self.titleLabe setText:@"考点公告"];
     
     
@@ -104,18 +111,33 @@
     [self.view addSubview:self.tableView];
     
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.top.right.bottom.mas_equalTo(self.view);
+        make.left.top.right.mas_equalTo(0);
+        make.bottom.mas_equalTo(-kBottomSafeHeight);
     }];
 }
 
+- (CGFloat)sectionHeaderHeightWithSection:(NSInteger)section {
+    
+    ExamNoticeModel *noticeModel = [self.dataArray objectAtIndex:section];
+    
+    CGSize titleSize = [NSString sizeWithText:NotNilAndNull(noticeModel.title)?noticeModel.title:@"" font:kRegular(16) maxSize:CGSizeMake(kScreenWidth - 88, MAXFLOAT)];
+    
+    CGFloat viewHeight = titleSize.height + 28;
+    if (viewHeight < 48) {
+        viewHeight = 48;
+    }
+    return viewHeight;
+}
+
 #pragma mark - Action
--(void)rightAction{
+- (void)rightAction{
     NSLog(@"%s", __func__);
     
     [[KungfuManager sharedInstance]activityAnnouncementMarkRead:@{} Callback:^(Message *message) {
         for (ExamNoticeModel *noticeModel in self.dataArray) {
             noticeModel.ifRead = @"1";
         }
+
         [self.tableView reloadData];
     }];
 }
@@ -126,7 +148,7 @@
     return !self.dataArray.count;
 }
 
--(CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
+- (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
     return -30;
 }
 
@@ -146,8 +168,9 @@
 
 #pragma mark - UITableViewDelegate & UITableViewDataSource
 //组头高度
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    return 48;
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+    
+    return [self sectionHeaderHeightWithSection:section];
 }
 //组尾高度
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
@@ -155,44 +178,49 @@
 }
 //组头
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-    static NSString *hIdentifier = @"hIdentifier";
+//    static NSString *hIdentifier = @"hIdentifier";
     
-    UITableViewHeaderFooterView *view= [tableView dequeueReusableHeaderFooterViewWithIdentifier:hIdentifier];
+//    UITableViewHeaderFooterView *view= [tableView dequeueReusableHeaderFooterViewWithIdentifier:hIdentifier];
     KungfuExamNoticeTabelHeardView *headView;
-    
-    if(view == nil){
-        view = [[UITableViewHeaderFooterView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, 48)];
-        headView = [[KungfuExamNoticeTabelHeardView alloc]initWithFrame:view.bounds];
-        [view.contentView addSubview:headView];
-    }
+    headView = [[KungfuExamNoticeTabelHeardView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, [self sectionHeaderHeightWithSection:section])];
+//    if(view == nil){
+//        view = [[UITableViewHeaderFooterView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, [self sectionHeaderHeightWithSection:section])];
+//        headView = [[KungfuExamNoticeTabelHeardView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, [self sectionHeaderHeightWithSection:section])];
+//        [view.contentView addSubview:headView];
+//    }
     ExamNoticeModel *noticeModel = [self.dataArray objectAtIndex:section];
+    
     [headView setTitleStr:noticeModel.title];
     
     [headView setSection:section];
     
     [headView setModel:noticeModel];
     
+    WEAKSELF
     [headView setExamNoticeTabletActionBclok:^(NSInteger itemSection) {
-        ExamNoticeModel *noticeModel = [self.dataArray objectAtIndex:itemSection];
+        ExamNoticeModel *noticeModel = [weakSelf.dataArray objectAtIndex:itemSection];
         noticeModel.isSelected = !noticeModel.isSelected;
         
         if([noticeModel.ifRead boolValue] == NO){
-            [[KungfuManager sharedInstance]activityAnnouncementMarkRead:@{@"announcementId" : noticeModel.examNoticeModelID} Callback:^(Message *message) {
+            MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
+            [[KungfuManager sharedInstance]activityAnnouncementMarkRead:@{@"id" : noticeModel.examNoticeModelID} Callback:^(Message *message) {
+                [hud hideAnimated:YES];
                 noticeModel.ifRead = @"1";
+                NSRange range = NSMakeRange(itemSection, 1);
+                NSIndexSet *sectionToReload = [NSIndexSet indexSetWithIndexesInRange:range];
+                [tableView reloadSections:sectionToReload withRowAnimation:UITableViewRowAnimationAutomatic];
             }];
+        }else{
+            NSRange range = NSMakeRange(itemSection, 1);
+            NSIndexSet *sectionToReload = [NSIndexSet indexSetWithIndexesInRange:range];
+            [tableView reloadSections:sectionToReload withRowAnimation:UITableViewRowAnimationAutomatic];
         }
-        
-        NSRange range = NSMakeRange(itemSection, 1);
-        NSIndexSet *sectionToReload = [NSIndexSet indexSetWithIndexesInRange:range];
-        [tableView reloadSections:sectionToReload withRowAnimation:UITableViewRowAnimationAutomatic];
-        
-      
     }];
     
-    return view;
+    return headView;
 }
 
--(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
     return [UIView new];
 }
 
@@ -200,7 +228,7 @@
     return [self.dataArray count];
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     ExamNoticeModel *noticeModel = [self.dataArray objectAtIndex:section];
     if (noticeModel.isSelected) {
         return 1;
@@ -210,7 +238,7 @@
     
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(nonnull NSIndexPath *)indexPath{
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(nonnull NSIndexPath *)indexPath{
     
     ExamNoticeModel *noticeModel = [self.dataArray objectAtIndex:indexPath.section];
     
@@ -223,7 +251,7 @@
     
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     UITableViewCell *cell;
     
@@ -241,7 +269,7 @@
 
 
 #pragma mark - getter / setter
--(UITableView *)tableView{
+- (UITableView *)tableView{
     if (_tableView == nil) {
         _tableView = [[UITableView alloc]initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
         [_tableView setDelegate:self];
@@ -251,24 +279,24 @@
         
         
          [_tableView registerNib:[UINib nibWithNibName:NSStringFromClass([KungfuExamNoticeTableViewCell class])bundle:nil] forCellReuseIdentifier:@"KungfuExamNoticeTableViewCell"];
-        
+        WEAKSELF
         MJRefreshNormalHeader *headerView = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-            [self refreshData];
+            [weakSelf refreshData];
         }];
         
         _tableView.mj_header = headerView;
         
         
         _tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
-            self.pageNmuber ++;
-            [self loadingMoreData];
+            weakSelf.pageNmuber ++;
+            [weakSelf loadingMoreData];
         }];
         
     }
     return _tableView;
 }
 
--(NSMutableArray *)dataArray{
+- (NSMutableArray *)dataArray{
     if (_dataArray == nil) {
         _dataArray = [NSMutableArray array];
         

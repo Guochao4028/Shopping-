@@ -10,15 +10,18 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class GoodsStoreInfoModel;
+//@class GoodsStoreInfoModel;
+@class ShoppingCartListModel;
 
 @protocol ShoppingCratHeadViewDelegate;
 
 @interface ShoppingCratHeadView : UIView
 
--(instancetype)initWithFrame:(CGRect)frame ViewType:(ShoppingCartHeadViewType)type;
+- (instancetype)initWithFrame:(CGRect)frame ViewType:(ShoppingCartHeadViewType)type;
 
-@property(nonatomic, strong)GoodsStoreInfoModel *model;
+//@property(nonatomic, strong)GoodsStoreInfoModel *model;
+
+@property(nonatomic, strong)ShoppingCartListModel *model;
 
 @property(nonatomic, assign)BOOL isSelected;
 
@@ -33,9 +36,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol ShoppingCratHeadViewDelegate <NSObject>
 
--(void)shoppingCratHeadView:(ShoppingCratHeadView *)headView lcotion:(NSInteger)section model:(GoodsStoreInfoModel *)storeInfoModel;
+//- (void)shoppingCratHeadView:(ShoppingCratHeadView *)headView lcotion:(NSInteger)section model:(GoodsStoreInfoModel *)storeInfoModel;
+//
+//- (void)shoppingCratHeadView:(ShoppingCratHeadView *)headView jumpStoreModel:(GoodsStoreInfoModel *)storeInfoModel;
 
--(void)shoppingCratHeadView:(ShoppingCratHeadView *)headView jumpStoreModel:(GoodsStoreInfoModel *)storeInfoModel;
+
+- (void)shoppingCratHeadView:(ShoppingCratHeadView *)headView lcotion:(NSInteger)section model:(ShoppingCartListModel *)storeInfoModel;
+
+- (void)shoppingCratHeadView:(ShoppingCratHeadView *)headView jumpStoreModel:(ShoppingCartListModel *)storeInfoModel;
 
 @end
 

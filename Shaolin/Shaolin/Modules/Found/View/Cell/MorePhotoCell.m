@@ -22,7 +22,7 @@
 @end
 
 @implementation MorePhotoCell
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
@@ -35,7 +35,7 @@
     return self;
 }
 
--(void)setupView {
+- (void)setupView {
     
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
@@ -61,9 +61,9 @@
     }];
 }
 
--(void)setFoundModel:(FoundModel *)f indexpath:(NSIndexPath *)indexPath
+- (void)setFoundModel:(FoundModel *)f indexpath:(NSIndexPath *)indexPath
 {
-    self.imgDatasources = [NSMutableArray arrayWithArray:f.coverurlList];
+    self.imgDatasources = [NSMutableArray arrayWithArray:f.coverUrlList];
     
     self.titleL.text = [NSString stringWithFormat:@"%@",f.title];
 
@@ -71,7 +71,7 @@
     NSString *timeStr = @"";//[NSString stringWithFormat:@"%@",[self compaareCurrentTime:date]];
     
     
-    NSString *strCount = f.clicks;
+    NSString *strCount = f.click;
     if (strCount.integerValue <= 0) {
         strCount = [NSString stringWithFormat:@"0"];
     }else if(strCount.integerValue < 10000){
@@ -131,7 +131,7 @@
 
 #pragma mark - getter
 
--(UILabel *)titleL {
+- (UILabel *)titleL {
     if (!_titleL) {
         _titleL = [[UILabelLeftTopAlign alloc]init];
         _titleL.font = kRegular(16);
@@ -143,7 +143,7 @@
     return _titleL;
 }
 
--(UILabel *)nameLabel {
+- (UILabel *)nameLabel {
     if (!_nameLabel) {
         _nameLabel = [[UILabel alloc]init];
         _nameLabel.font = kRegular(12);
@@ -155,7 +155,7 @@
     return _nameLabel;
 }
 
--(UICollectionView *)collectionView {
+- (UICollectionView *)collectionView {
     if (!_collectionView) {
         _collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:self.layout];
         _collectionView.dataSource = self;

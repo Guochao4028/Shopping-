@@ -34,7 +34,7 @@
     [self initUI];
 }
 
--(void)viewWillAppear:(BOOL)animated{
+- (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self.notHasView setHidden:YES];
     WEAKSELF
@@ -56,21 +56,21 @@
     }];
 }
 
--(void)viewWillDisappear:(BOOL)animated{
+- (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
 }
 
 
 
 #pragma mark - methods
--(void)initUI{
+- (void)initUI{
     [self.view setBackgroundColor:[UIColor whiteColor]];
     [self.view addSubview:self.notHasView];
     [self.view addSubview:self.listView];
     
 }
 
--(void)leftAction{
+- (void)leftAction{
     
     if ([self.dataArray count] == 1) {
         if ([self.delegate respondsToSelector:@selector(addressViewController:tapBack:)] == YES) {
@@ -82,7 +82,7 @@
 }
 
 #pragma mark - AddressNotHasViewDelegate
--(void)notHasView:(AddressNotHasView *)view tapAddress:(BOOL)istap{
+- (void)notHasView:(AddressNotHasView *)view tapAddress:(BOOL)istap{
     CreateAddressViewController *createAddressVC = [[CreateAddressViewController alloc]init];
     createAddressVC.type = AddressCreateType;
     
@@ -90,7 +90,7 @@
 }
 
 #pragma mark - AddressListViewDelegate
--(void)addressListView:(AddressListView *)view tap:(BOOL)istap{
+- (void)addressListView:(AddressListView *)view tap:(BOOL)istap{
     
     CreateAddressViewController *createAddressVC = [[CreateAddressViewController alloc]init];
     createAddressVC.type = AddressCreateType;
@@ -98,7 +98,7 @@
     
 }
 
--(void)addressListView:(AddressListView *)view isModify:(AddressListModel *)model{
+- (void)addressListView:(AddressListView *)view isModify:(AddressListModel *)model{
     
     CreateAddressViewController *createAddressVC = [[CreateAddressViewController alloc]init];
     createAddressVC.type = AddressModifyType;
@@ -106,7 +106,7 @@
     [self.navigationController pushViewController:createAddressVC animated:YES];
 }
 
--(void)addressListView:(AddressListView *)view isTap:(AddressListModel *)model{
+- (void)addressListView:(AddressListView *)view isTap:(AddressListModel *)model{
     
     if ([self.delegate respondsToSelector:@selector(addressViewController:tapList:) ] == YES) {
         [self.delegate addressViewController:self tapList:model];
@@ -116,7 +116,7 @@
     }
 }
 
--(AddressNotHasView *)notHasView{
+- (AddressNotHasView *)notHasView{
     
     if (_notHasView == nil) {
         _notHasView = [[AddressNotHasView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight - NavBar_Height)];
@@ -126,7 +126,7 @@
 
 }
 
--(AddressListView *)listView{
+- (AddressListView *)listView{
     if (_listView == nil) {
         _listView = [[AddressListView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight - NavBar_Height)];
         [_listView setHidden:YES];
@@ -135,7 +135,7 @@
        return _listView;
 }
 
--(void)setAddressListModel:(AddressListModel *)addressListModel{
+- (void)setAddressListModel:(AddressListModel *)addressListModel{
     _addressListModel = addressListModel;
 }
 

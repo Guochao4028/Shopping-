@@ -15,38 +15,40 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 
-@property (nonatomic, copy) NSString *history_id;
-@property (nonatomic, copy) NSString *goods_id;
-@property (nonatomic, copy) NSString *user_id;
-@property (nonatomic, copy) NSString *add_time;
-@property (nonatomic, copy) NSString *attr_id;
-@property (nonatomic, copy) NSString *look_time;
+@property (nonatomic, copy) NSString *historyId;
+@property (nonatomic, copy) NSString *goodsId;
+@property (nonatomic, copy) NSString *userId;
+@property (nonatomic, copy) NSString *addTime;
+@property (nonatomic, copy) NSString *attrId;
+@property (nonatomic, copy) NSString *lookTime;
 
 @end
 
 @interface ClassDetailModel : NSObject
-@property (nonatomic, copy) NSString *subject_id;
+@property (nonatomic, copy) NSString *subjectId;
 ///1 免费 2 会员 3 付费
-@property (nonatomic, copy) NSString *pay_type;
+@property (nonatomic, copy) NSString *payType;
 @property (nonatomic, copy) NSString *classDetailId;
 @property (nonatomic, copy) NSString *classDetailName;
-@property (nonatomic, copy) NSString *level_name;
-@property (nonatomic, copy) NSString *old_price;
-@property (nonatomic, copy) NSString *video_url;
+@property (nonatomic, copy) NSString *levelName;
+@property (nonatomic, copy) NSString *oldPrice;
+@property (nonatomic, copy) NSString *video;
 @property (nonatomic, copy) NSString *weight;
 @property (nonatomic, copy) NSString *level;
-@property (nonatomic, copy) NSString *look_level;
+@property (nonatomic, copy) NSString *lookLevelName;
+@property (nonatomic, copy) NSString *lookLevel;
+
 @property (nonatomic, copy) NSString *desc2;
 @property (nonatomic, copy) NSString *desc;
 @property (nonatomic, copy) NSString *buy;//是否购买
 /**是否收藏*/
 @property (nonatomic, copy) NSString *collect;
-@property (nonatomic, strong) NSArray < ClassGoodsModel *> *goods_next;
-@property (nonatomic, copy) NSArray *img_data;
+@property (nonatomic, strong) NSArray < ClassGoodsModel *> *goodsNext;
+@property (nonatomic, copy) NSArray *imgData;
 @property (nonatomic, copy) NSString *cover;
 
-@property (nonatomic, copy) NSString *look_level_name;
-@property (nonatomic, copy) NSString *app_store_id;
+
+@property (nonatomic, copy) NSString *appStoreId;
 
 ///简介
 @property(nonatomic, copy)NSString *intro;

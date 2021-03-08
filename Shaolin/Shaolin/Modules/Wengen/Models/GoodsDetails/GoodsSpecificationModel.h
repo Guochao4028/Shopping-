@@ -13,23 +13,23 @@ NS_ASSUME_NONNULL_BEGIN
 @interface GoodsSpecificationModel : NSObject
 
 @property(nonatomic, copy)NSString * specificationId;
-@property(nonatomic, copy)NSString * goods_id;
+@property(nonatomic, copy)NSString * goodsId;
 @property(nonatomic, copy)NSString * pid;
 @property(nonatomic, copy)NSString * name;
 @property(nonatomic, copy)NSString * value;
 @property(nonatomic, copy)NSString * price;
-@property(nonatomic, copy)NSString * current_price;
+@property(nonatomic, copy)NSString * oldPrice;
 @property(nonatomic, copy)NSString * stock;
-@property(nonatomic, copy)NSString * has_number;
+@property(nonatomic, copy)NSString * hasNumber;
 @property(nonatomic, copy)NSString * weight;
 @property(nonatomic, copy)NSString * image;
 @property(nonatomic, copy)NSString * video;
 //@property(nonatomic, strong)NSArray *nextAttr;
-@property(nonatomic, copy)NSString *attr_id;
-@property(nonatomic, copy)NSString *update_time;
-@property(nonatomic, copy)NSString *attr_pid;
-@property(nonatomic, copy)NSString *attr_id_str;
-@property(nonatomic, copy)NSString *attr_value_id_str;
+@property(nonatomic, copy)NSString *attrId;
+@property(nonatomic, copy)NSString *updateTime;
+@property(nonatomic, copy)NSString *attrPid;
+@property(nonatomic, copy)NSString *attrIdStr;
+@property(nonatomic, copy)NSString *attrValueIdStr;
 
 //默认是0， 未选中，1， 已选中
 @property(nonatomic, assign)BOOL isSeleced;

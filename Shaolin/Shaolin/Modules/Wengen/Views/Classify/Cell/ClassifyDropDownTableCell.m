@@ -29,7 +29,7 @@
     // Configure the view for the selected state
 }
 
--(void)setModel:(WengenEnterModel *)model{
+- (void)setModel:(WengenEnterModel *)model{
     [self.nameLabel setText:model.name];
     
     if (model.isSelected) {

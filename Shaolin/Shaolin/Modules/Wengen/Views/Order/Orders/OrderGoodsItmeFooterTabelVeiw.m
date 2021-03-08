@@ -16,7 +16,7 @@
 
 @implementation OrderGoodsItmeFooterTabelVeiw
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [[NSBundle mainBundle] loadNibNamed:@"OrderGoodsItmeFooterTabelVeiw" owner:self options:nil];
@@ -27,7 +27,7 @@
     return self;
 }
 
--(void)initUI{
+- (void)initUI{
     
     [self addSubview:self.contentView];
     [self.contentView setFrame:self.bounds];

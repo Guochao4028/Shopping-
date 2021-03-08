@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol AfterSalesApplyReasonTableCellDelegate;
 
-@class OrderDetailsModel;
+@class  OrderDetailsGoodsModel;
 
 typedef void(^AfterSalesApplyReasonTableCellBlock)(BOOL isTap);
 
@@ -26,7 +26,7 @@ typedef void(^AfterSalesApplyReasonTableCellBlock)(BOOL isTap);
 
 @property(nonatomic, copy)NSString *goods_status;
 
-@property(nonatomic, strong)OrderDetailsModel *model;
+@property(nonatomic, strong)OrderDetailsGoodsModel *model;
 
 @property(nonatomic, copy)AfterSalesApplyReasonTableCellBlock block;
 
@@ -36,12 +36,14 @@ typedef void(^AfterSalesApplyReasonTableCellBlock)(BOOL isTap);
 
 @protocol AfterSalesApplyReasonTableCellDelegate <NSObject>
 
--(void)applyReasonTableCell:(AfterSalesApplyReasonTableCell *)cell tapSelectPoto:(BOOL)istap;
+- (void)applyReasonTableCell:(AfterSalesApplyReasonTableCell *)cell tapSelectPoto:(BOOL)istap;
 
--(void)applyReasonTableCell:(AfterSalesApplyReasonTableCell *)cell tapDeleteLocation:(NSInteger)location;
+- (void)applyReasonTableCell:(AfterSalesApplyReasonTableCell *)cell tapDeleteLocation:(NSInteger)location;
 
 
 
 @end
 
 NS_ASSUME_NONNULL_END
+
+

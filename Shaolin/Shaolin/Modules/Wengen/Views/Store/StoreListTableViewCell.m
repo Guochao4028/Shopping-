@@ -33,7 +33,7 @@
     // Configure the view for the selected state
 }
 
--(void)setModel:(GoodsStoreInfoModel *)model{
+- (void)setModel:(GoodsStoreInfoModel *)model{
     
     [self.descLabel setText:model.intro];
     [self.goodsImageView sd_setImageWithURL:[NSURL URLWithString:model.logo] placeholderImage:[UIImage imageNamed:@"default_big"]];

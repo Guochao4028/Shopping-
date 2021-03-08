@@ -50,7 +50,7 @@
 }
 
 
--(void)layoutSubviews {
+- (void)layoutSubviews {
     
     self.topVerLine.hidden = NO;
     self.bottomVerLine.hidden = NO;
@@ -70,22 +70,22 @@
 }
 
 
--(void)setCellModel:(RiteModel *)cellModel {
+- (void)setCellModel:(RiteModel *)cellModel {
     _cellModel = cellModel;
     
     self.stateBtn.hidden = YES;
     
-    if (!cellModel.endDate.length) {
-        self.endTimeLabel.text = cellModel.startDate;
+    if (!cellModel.endTime.length) {
+        self.endTimeLabel.text = cellModel.startTime;
         self.beginTimeLabel.hidden = YES;
         self.centerLabel.hidden = YES;
     } else {
-        self.beginTimeLabel.text = cellModel.startDate;
-        self.endTimeLabel.text = cellModel.endDate;
+        self.beginTimeLabel.text = cellModel.startTime;
+        self.endTimeLabel.text = cellModel.endTime;
         self.centerLabel.hidden = NO;
     }
     
-    if (cellModel.startDate == nil) {
+    if (cellModel.startTime == nil) {
         self.beginTimeLabel.hidden = YES;
         self.centerLabel.hidden = YES;
     }

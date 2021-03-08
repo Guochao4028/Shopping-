@@ -26,17 +26,17 @@
 
 - (void)setModel:(FoundModel *)model {
     _model = model;
-    if (model.coverurlList.count < 1) {
+    if (model.coverUrlList.count < 1) {
         self.imageV.image = [UIImage imageNamed:@"default_collection"];
        }else
        {
-            [self.imageV sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",model.coverurlList[0][@"route"]]] placeholderImage:[UIImage imageNamed:@"default_collection"]];
+           [self.imageV sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",model.coverUrlList[0][@"route"]]] placeholderImage:[UIImage imageNamed:@"default_collection"]];
 
        }
     NSString *str = model.abstracts;//[self filterHTML:model.content];
     self.abstractsLabel.text = [NSString stringWithFormat:@"%@",str];
     self.titleL.text = [NSString stringWithFormat:@"%@",model.title];
-    if ([model.collection isEqualToString:@"0"]) {
+    if ([model.collectionState isEqualToString:@"0"]) {
         [self.priseBtn setSelected:NO];
     }else {
         [self.priseBtn setSelected:YES];

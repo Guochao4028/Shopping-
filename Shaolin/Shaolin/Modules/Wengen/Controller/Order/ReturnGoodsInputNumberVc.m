@@ -36,13 +36,13 @@ static NSString *const inputCellId = @"ReturnGoodsInputCell";
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     
-    self.navLine.hidden = YES;
+//    self.navLine.hidden = YES;
 }
 
--(void)viewWillAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
     
-    self.navLine.hidden = NO;
+//    self.navLine.hidden = NO;
 }
 
 
@@ -87,15 +87,15 @@ static NSString *const inputCellId = @"ReturnGoodsInputCell";
 
 #pragma mark - event
 
--(void)submitHandle {
+- (void)submitHandle {
     NSLog(@"提交");
     
     [self.view endEditing:YES];
     
     NSMutableDictionary *dic = [NSMutableDictionary dictionary];
-    [dic setValue:self.model.order_no forKey:@"id"];
-    [dic setValue:self.logistics_no forKey:@"logistics_no"];
-    [dic setValue:self.logistics_name forKey:@"logistics_name"];
+    [dic setValue:self.model.refundInfoId forKey:@"id"];
+    [dic setValue:self.logistics_no forKey:@"logisticsNo"];
+    [dic setValue:self.logistics_name forKey:@"logisticsName"];
 
     
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
@@ -118,12 +118,12 @@ static NSString *const inputCellId = @"ReturnGoodsInputCell";
                 [self.navigationController popToRootViewControllerAnimated:YES];
             }
         }else{
-            [ShaolinProgressHUD singleTextHud:message.reason view:self.view afterDelay:TipSeconds];
+            [ShaolinProgressHUD singleTextHud:message.reason view:WINDOWSVIEW afterDelay:TipSeconds];
         }
     }];
 }
 
--(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     [self.view endEditing:YES];
 }
 
@@ -134,12 +134,12 @@ static NSString *const inputCellId = @"ReturnGoodsInputCell";
 
 
 #pragma mark - delegate && dataSources
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return 2;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (section == 1) {
         return 2;
@@ -147,7 +147,7 @@ static NSString *const inputCellId = @"ReturnGoodsInputCell";
     return 1;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 0) {
         ReturnGoodsCell * cell = [tableView dequeueReusableCellWithIdentifier:goodsCellId forIndexPath:indexPath];
@@ -187,7 +187,7 @@ static NSString *const inputCellId = @"ReturnGoodsInputCell";
     }
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 1 && indexPath.row == 0){
         LogisticsViewController *vc = [[LogisticsViewController alloc] init];
@@ -201,7 +201,7 @@ static NSString *const inputCellId = @"ReturnGoodsInputCell";
     }
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 1) {
         return 52;
@@ -209,21 +209,21 @@ static NSString *const inputCellId = @"ReturnGoodsInputCell";
     return tableView.rowHeight;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
     return 10;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     return .001;
 }
--(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
     UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWidth, 10)];
     return v;
 }
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWidth, 10)];
     return v;
@@ -241,7 +241,7 @@ static NSString *const inputCellId = @"ReturnGoodsInputCell";
     return _navLine;
 }
 
--(UIButton *)submitBtn {
+- (UIButton *)submitBtn {
     if (!_submitBtn) {
         _submitBtn = [UIButton new];
         [_submitBtn setTitle:SLLocalizedString(@"提交") forState:UIControlStateNormal];
@@ -251,7 +251,7 @@ static NSString *const inputCellId = @"ReturnGoodsInputCell";
     return _submitBtn;
 }
 
--(void)setModel:(OrderRefundInfoModel *)model{
+- (void)setModel:(OrderRefundInfoModel *)model{
     _model=  model;
     [self.tableView reloadData];
 }

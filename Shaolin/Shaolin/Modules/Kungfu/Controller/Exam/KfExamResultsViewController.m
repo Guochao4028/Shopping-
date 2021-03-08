@@ -24,13 +24,13 @@
 
 @implementation KfExamResultsViewController
 
--(void)dealloc {
+- (void)dealloc {
     NSLog(@"考试界面释放了");
     self.navigationController.fd_fullscreenPopGestureRecognizer.enabled = YES;
 }
 
 
--(void)viewDidAppear:(BOOL)animated {
+- (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
     self.navigationController.fd_fullscreenPopGestureRecognizer.enabled = NO;
@@ -54,7 +54,7 @@
     }
 }
 
--(void)leftAction
+- (void)leftAction
 {
      [self.navigationController popToRootViewControllerAnimated:YES];
 }

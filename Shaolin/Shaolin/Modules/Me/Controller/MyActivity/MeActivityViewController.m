@@ -30,8 +30,6 @@ static NSString *const MeActivityCollectionViewCellIdentifier = @"MeActivityColl
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    //[self setNavigationBarYellowTintColor];
-//    [self hideNavigationBarShadow];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -44,15 +42,16 @@ static NSString *const MeActivityCollectionViewCellIdentifier = @"MeActivityColl
     self.pageNum = 1;
     self.pageSize = 30;
     self.meActivityList = [@[] mutableCopy];
+    self.view.backgroundColor = KTextGray_FA;
 //    self.currentData = MeActivityTitleButtonEnum_SignUp;
     
-    [self setUI];
+    [self setupUI];
     [self update];
 
     // Do any additional setup after loading the view.
 }
 
-- (void)setUI{
+- (void)setupUI{
     [self.view addSubview:self.headerView];
     [self.view addSubview:self.activityCollectionView];
     [self setNoData];
@@ -70,7 +69,7 @@ static NSString *const MeActivityCollectionViewCellIdentifier = @"MeActivityColl
 //
     [self.activityCollectionView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.mas_equalTo(0);
-        make.top.mas_equalTo(14);//(self.headerView).mas_offset(NavBar_Height + 5 + 40);
+        make.top.mas_equalTo(0);//(self.headerView).mas_offset(NavBar_Height + 5 + 40);
         make.bottom.mas_equalTo(-kBottomSafeHeight);
     }];
 }
@@ -123,7 +122,7 @@ static NSString *const MeActivityCollectionViewCellIdentifier = @"MeActivityColl
         activityType = @"2";
     }
     NSDictionary *params = @{
-        @"typeId":activityType,
+        @"type":activityType,
         @"pageSize" : [NSString stringWithFormat:@"%ld", self.pageSize],
         @"pageNum" : [NSString stringWithFormat:@"%ld", self.pageNum],
     };
@@ -206,13 +205,13 @@ static NSString *const MeActivityCollectionViewCellIdentifier = @"MeActivityColl
         _activityCollectionView.delegate = self;
         _activityCollectionView.backgroundColor = [UIColor clearColor];
         [_activityCollectionView registerClass:NSClassFromString(MeActivityCollectionViewCellIdentifier) forCellWithReuseIdentifier:MeActivityCollectionViewCellIdentifier];
-        
-        [_activityCollectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"UICollectionReusableView"];
-        
+
+        _activityCollectionView.contentInset = UIEdgeInsetsMake(10, 0, 0, 0);
         WEAKSELF
         MJRefreshNormalHeader *headerView = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
             [weakSelf update];
         }];
+        headerView.ignoredScrollViewContentInsetTop = 10;
         _activityCollectionView.mj_header = headerView;
         _activityCollectionView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
             // 上拉加载
@@ -247,7 +246,7 @@ static NSString *const MeActivityCollectionViewCellIdentifier = @"MeActivityColl
 }
 
 - (void)pushWebViewViewController:(NSString *)url{
-    NSString *token = [SLAppInfoModel sharedInstance].access_token;
+    NSString *token = [SLAppInfoModel sharedInstance].accessToken;
     url = [NSString stringWithFormat:@"%@&token=%@",url, token];
     KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:url type:KfWebView_unknown];
     webVC.disableRightGesture = YES;
@@ -297,7 +296,7 @@ static NSString *const MeActivityCollectionViewCellIdentifier = @"MeActivityColl
 
     WEAKSELF
     [cell setShowDetailsBlock:^{
-        NSString * url = URL_H5_EventRegistration(model.activityCode, [SLAppInfoModel sharedInstance].access_token);
+        NSString * url = URL_H5_EventRegistration(model.activityCode, [SLAppInfoModel sharedInstance].accessToken);
         KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:url type:KfWebView_activityDetail];
         webVC.hidesBottomBarWhenPushed = YES;
         [weakSelf.navigationController pushViewController:webVC animated:YES];
@@ -310,16 +309,6 @@ static NSString *const MeActivityCollectionViewCellIdentifier = @"MeActivityColl
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
-}
-
-- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
-    UICollectionReusableView *heard = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"UICollectionReusableView" forIndexPath:indexPath];
-    heard.backgroundColor = KTextGray_FA;
-    return heard;
-}
-
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
-    return CGSizeMake(ScreenWidth, 10);
 }
 #pragma mark - setter && getter
 - (void)setNoData {

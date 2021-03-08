@@ -15,7 +15,7 @@
 @implementation KfNavigationSearchView
 
 
--(void)layoutSubviews {
+- (void)layoutSubviews {
     [super layoutSubviews];
     
     if (self.isSearchResult) {
@@ -52,7 +52,7 @@
 //    self.shopCarIcon.hidden = YES;
 }
 
--(void)awakeFromNib {
+- (void)awakeFromNib {
     [super awakeFromNib];
     
     self.searchBgView.layer.cornerRadius = 15;
@@ -60,7 +60,7 @@
 }
 
 
--(void)setIsSearchResult:(BOOL)isSearchResult {
+- (void)setIsSearchResult:(BOOL)isSearchResult {
     _isSearchResult = isSearchResult;
     
     if (self.isSearchResult) {
@@ -114,7 +114,7 @@
 }
 
 
--(BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
     if (self.tfBeginEditing) {
         self.tfBeginEditing();
     }
@@ -122,7 +122,7 @@
 }
 
 
--(BOOL)textFieldShouldReturn:(UITextField *)textField{
+- (BOOL)textFieldShouldReturn:(UITextField *)textField{
     
     [self endEditing:YES];
     

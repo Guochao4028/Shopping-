@@ -10,9 +10,9 @@
 
 @protocol CustomSearchViewDelegate <NSObject>
 
--(void)searchBeginEditing;
--(void)didSelectCancelBtn;
--(void)searchString:(NSString *)string;
+- (void)searchBeginEditing;
+- (void)didSelectCancelBtn;
+- (void)searchString:(NSString *)string;
 @end
 
 

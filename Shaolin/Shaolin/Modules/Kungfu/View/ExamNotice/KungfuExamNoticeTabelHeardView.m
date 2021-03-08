@@ -21,7 +21,7 @@
 
 @implementation KungfuExamNoticeTabelHeardView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
         [[NSBundle mainBundle] loadNibNamed:@"KungfuExamNoticeTabelHeardView" owner:self options:nil];
         [self initUI];
@@ -32,7 +32,7 @@
 #pragma mark - methods
 
 /// 初始化UI
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.contentView];
     [self.contentView setFrame:self.bounds];
 }
@@ -46,14 +46,14 @@
 }
 
 #pragma mark - setter / getter
--(void)setTitleStr:(NSString *)titleStr{
+- (void)setTitleStr:(NSString *)titleStr{
     _titleStr = titleStr;
     [self.titleLabel setText:titleStr];
 }
 
 
 
--(void)setModel:(ExamNoticeModel *)model{
+- (void)setModel:(ExamNoticeModel *)model{
     _model = model;
     
     

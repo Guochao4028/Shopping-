@@ -20,11 +20,11 @@
 #import "ZFPlayer.h"
 #import "ZFAVPlayerManager.h"
 #import "ZFIJKPlayerManager.h"
-#import "KSMediaPlayerManager.h"
 #import "ZFPlayerControlView.h"
 #import "ZFUtilities.h"
 #import "UIImageView+ZFCache.h"
 #import "PostManagementVc.h"
+#import "AppDelegate+AppService.h"
 
 @interface DrafrPushVideoViewController ()<UITextFieldDelegate>
 @property(nonatomic,strong) UITextField *textField;
@@ -49,7 +49,7 @@
 
 #pragma mark - life cycle
 
--(void)dealloc {
+- (void)dealloc {
     [self removeKeyboardNotifications];
 }
 
@@ -66,7 +66,7 @@
     [self.oneVideoImage addSubview:self.bgPlayBtn];
     
     
-    [self setUI];
+    [self setupUI];
     
     
     self.oneVideoImage.image = self.videoImage;
@@ -79,7 +79,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardAction:) name:UIKeyboardWillHideNotification object:nil];
     
 }
-- (void)setUI {
+- (void)setupUI {
     [self.oneVideoImage mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(0);
         make.width.mas_equalTo(kWidth);
@@ -164,6 +164,7 @@
     @weakify(self)
     self.player.orientationWillChange = ^(ZFPlayerController * _Nonnull player, BOOL isFullScreen) {
         @strongify(self)
+        [AppDelegate shareAppDelegate].allowOrentitaionRotation = isFullScreen;
         [self setNeedsStatusBarAppearanceUpdate];
     };
     
@@ -236,15 +237,15 @@
 }
 
 #pragma mark - 发布视频步骤1
--(void)pushAction
+- (void)pushAction
 {
     WEAKSELF
     if (self.textField.text.length == 0) {
-        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请填写标题") view:self.view afterDelay:TipSeconds];
+        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请输入标题") view:self.view afterDelay:TipSeconds];
         return;
     }
 //    if (self.introductionField.text.length == 0) {
-//        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请填写简介") view:self.view afterDelay:TipSeconds];
+//        [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"请输入简介") view:self.view afterDelay:TipSeconds];
 //        return;
 //    }
    
@@ -269,7 +270,7 @@
     [weakSelf presentViewController:alert animated:YES completion:nil];
 }
 #pragma mark - 发布视频步骤2--压缩视频
--(void)compressionVideo
+- (void)compressionVideo
 {
     NSString *outPutPath;
     // 设置导出文件的存放路径
@@ -361,11 +362,11 @@
 }
 
 #pragma mark 修改文章
--(void)postDataWithCoverUrlPlist:(NSMutableArray *)plistArr {
+- (void)postDataWithCoverUrlPlist:(NSMutableArray *)plistArr {
     
     NSArray * coverurilids = @[self.model.id];
     
-    [[HomeManager sharedInstance] postUserChangeTextWithTitle:self.textField.text Introduction:self.introductionField.text textId:self.model.id Content:@"" Type:@"3" State:@"2" CreateId:@"" CreateName:@"" CreateType:@"2" Coverurilids:coverurilids CoverUrlPlist:plistArr WithBlock:^(id  _Nonnull responseObject, NSError * _Nonnull error) {
+    [[HomeManager sharedInstance] postUserChangeTextWithTitle:self.textField.text Introduction:self.introductionField.text textId:self.model.id Content:@"" Type:@"3" State:@"2" CreateId:@"" CreateName:@"" CreateType:@"2" Coverurilids:coverurilids CoverUrlPlist:plistArr WithBlock:^(id  _Nonnull responseObject, NSString * _Nonnull error) {
         if ([[responseObject objectForKey:@"code"]integerValue]==200) {
             [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"已提交审核") view:self.view afterDelay:TipSeconds];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -393,7 +394,7 @@
 
 
 
--(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
     [self.textField resignFirstResponder];
     [self.introductionField resignFirstResponder];
@@ -454,7 +455,7 @@
     }
     return _playBtn;
 }
--(UITextField *)textField
+- (UITextField *)textField
 {
     if (!_textField) {
         _textField = [[UITextField alloc] initWithFrame:CGRectMake(SLChange(80),0, kWidth - SLChange(85), SLChange(45))];
@@ -474,7 +475,7 @@
     }
     return _textField;
 }
--(UITextField *)introductionField
+- (UITextField *)introductionField
 {
     if (!_introductionField) {
         _introductionField = [[UITextField alloc] initWithFrame:CGRectMake(SLChange(80),SLChange(46), kWidth - SLChange(85), SLChange(45))];

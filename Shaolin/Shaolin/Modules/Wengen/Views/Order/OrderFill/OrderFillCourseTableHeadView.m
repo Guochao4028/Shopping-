@@ -20,7 +20,7 @@
 
 @implementation OrderFillCourseTableHeadView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [[NSBundle mainBundle] loadNibNamed:@"OrderFillCourseTableHeadView" owner:self options:nil];
@@ -29,17 +29,17 @@
     return self;
 }
 
--(void)initUI{
+- (void)initUI{
     
     [self addSubview:self.contentView];
     [self.contentView setFrame:self.bounds];
     
     SLAppInfoModel *model = [SLAppInfoModel sharedInstance];
     
-    if (model.nickname.length > 0) {
-        [self.nameLabel setText:model.nickname];
+    if (model.nickName.length > 0) {
+        [self.nameLabel setText:model.nickName];
     }else{
-        [self.nameLabel setText:model.realname];
+        [self.nameLabel setText:model.realName];
     }
     
     [self.phoneNumberLabel setText:[NSString numberSuitScanf:model.phoneNumber]];

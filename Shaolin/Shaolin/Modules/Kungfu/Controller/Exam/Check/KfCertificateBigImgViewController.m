@@ -26,10 +26,10 @@
     [super viewDidLoad];
     
     self.titleLabe.text = SLLocalizedString(@"证书查询");
-    [self setUI];
+    [self setupUI];
 }
 
-- (void)setUI{
+- (void)setupUI{
     //cerImg.jpg
     [self.view addSubview:self.bigImgScrollView];
     [self.bigImgScrollView addSubview:self.bigImgView];
@@ -141,7 +141,7 @@
 }
 
 
--(UIView *)footerView {
+- (UIView *)footerView {
     if (!_footerView) {
         CGFloat footerH = 50 + BottomMargin_X;
         _footerView = [[UIView alloc] initWithFrame:CGRectMake(0, kScreenHeight - NavBar_Height - footerH, kScreenWidth, footerH)];
@@ -152,7 +152,7 @@
     return _footerView;
 }
 
--(UIView *)footerViewLine {
+- (UIView *)footerViewLine {
     if (!_footerViewLine) {
         _footerViewLine = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidth, 0.5)];
         _footerViewLine.backgroundColor = KTextGray_E5;
@@ -160,7 +160,7 @@
     return _footerViewLine;
 }
 
--(UIButton *)submitBtn {
+- (UIButton *)submitBtn {
     if (!_submitBtn) {
         _submitBtn = [[UIButton alloc] initWithFrame:CGRectMake(63, 5, kScreenWidth - 126, 40)];
         _submitBtn.layer.cornerRadius = 20;

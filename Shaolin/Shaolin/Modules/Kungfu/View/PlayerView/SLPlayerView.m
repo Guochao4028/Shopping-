@@ -10,7 +10,7 @@
 
 @implementation SLPlayerView
 
-//-(instancetype)initWithFrame:(CGRect)frame andSkin:(AliyunVodPlayerViewSkin)skin {
+//- (instancetype)initWithFrame:(CGRect)frame andSkin:(AliyunVodPlayerViewSkin)skin {
 //    
 //    self = [super initWithFrame:frame andSkin:skin];
 //    if (self) {

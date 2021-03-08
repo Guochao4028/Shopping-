@@ -20,7 +20,7 @@
     return self;
 }
 
--(void)setupUI
+- (void)setupUI
 {
     [self.contentView addSubview:self.imageV];
     [self.imageV addSubview:self.timeLabel];
@@ -54,7 +54,7 @@
 
 
 #pragma mark - set
--(void)setAssetModel:(SLAssetModel *)assetModel {
+- (void)setAssetModel:(SLAssetModel *)assetModel {
     _assetModel = assetModel;
     
     self.timeLabel.text = assetModel.tzAssetModel.timeLength;
@@ -77,7 +77,7 @@
 
 #pragma mark - get
 
--(UIImageView *)imageV
+- (UIImageView *)imageV
 {
     if (!_imageV) {
         _imageV = [[UIImageView alloc]init];
@@ -87,7 +87,7 @@
     return _imageV;
 }
 
--(UIImageView *)localIcon
+- (UIImageView *)localIcon
 {
     if (!_localIcon) {
         _localIcon = [[UIImageView alloc]init];
@@ -97,7 +97,7 @@
     return _localIcon;
 }
 
--(UILabel *)timeLabel
+- (UILabel *)timeLabel
 {
     if (!_timeLabel) {
         _timeLabel = [[UILabel alloc]init];
@@ -108,7 +108,7 @@
     return _timeLabel;
 }
 
--(UIView *)selectView
+- (UIView *)selectView
 {
     if (!_selectView) {
         _selectView = [[UIView alloc]init];

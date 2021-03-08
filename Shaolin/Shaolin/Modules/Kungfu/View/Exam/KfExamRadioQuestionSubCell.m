@@ -38,13 +38,13 @@
 }
 
 
--(void)setAnserStr:(NSString *)anserStr {
+- (void)setAnserStr:(NSString *)anserStr {
     _anserStr = anserStr;
     
     self.contentLabel.text = anserStr;
 }
 
--(void)setIsChoose:(BOOL)isChoose {
+- (void)setIsChoose:(BOOL)isChoose {
     _isChoose = isChoose;
     
     if (isChoose) {

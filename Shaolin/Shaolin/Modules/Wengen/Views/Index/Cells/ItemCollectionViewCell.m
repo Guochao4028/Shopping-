@@ -26,7 +26,7 @@
     [self setBackgroundColor:[UIColor whiteColor]];
 }
 
--(void)setModel:(WengenEnterModel *)model{
+- (void)setModel:(WengenEnterModel *)model{
     
     NSString *nameStr = model.name;
     

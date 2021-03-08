@@ -26,7 +26,7 @@
     // Configure the view for the selected state
 }
 
--(void)setDetailsStr:(NSString *)detailsStr{
+- (void)setDetailsStr:(NSString *)detailsStr{
     [self.kungfuDetailsLabel setText:detailsStr];
 }
 

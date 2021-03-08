@@ -20,11 +20,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UIButton *xiaoliangButton;
 
 
--(void)tuijianTarget:(nullable id)target action:(SEL)action;
--(void)xiaoliangTarget:(nullable id)target action:(SEL)action;
--(void)jiageTarget:(nullable id)target action:(SEL)action;
--(void)zhijianTarget:(nullable id)target action:(SEL)action;
--(void)qiehuanTarget:(nullable id)target action:(SEL)action;
+- (void)tuijianTarget:(nullable id)target action:(SEL)action;
+- (void)xiaoliangTarget:(nullable id)target action:(SEL)action;
+- (void)jiageTarget:(nullable id)target action:(SEL)action;
+- (void)zhijianTarget:(nullable id)target action:(SEL)action;
+- (void)qiehuanTarget:(nullable id)target action:(SEL)action;
 
 @end
 

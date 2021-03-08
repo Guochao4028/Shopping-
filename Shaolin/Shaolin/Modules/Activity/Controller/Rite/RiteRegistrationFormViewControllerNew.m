@@ -23,6 +23,7 @@
 #import "SMAlert.h"
 #import "PaySuccessViewController.h"
 #import "DataManager.h"
+#import "RiteReturnReceiptViewController.h"
 
 @interface RiteRegistrationFormViewControllerNew ()
 @property (nonatomic, strong) UIScrollView *scrollView;
@@ -107,16 +108,6 @@
     WEAKSELF
     dispatch_group_t group = dispatch_group_create();
     dispatch_group_enter(group);
-//    dispatch_group_enter(group);
-//    [ActivityManager getRiteFormModel:self.pujaType success:^(NSDictionary * _Nullable resultDic) {
-//        if (![resultDic isKindOfClass:[NSArray class]]) return;
-//        NSArray *data = (NSArray *)resultDic;
-//        weakSelf.riteFormModels = [RiteFormModel mj_objectArrayWithKeyValuesArray:data];
-//    } failure:^(NSString * _Nullable errorReason) {
-//        NSLog(@"%@", errorReason);
-//    } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
-//        dispatch_group_leave(group);
-//    }];
     
     if (!self.pujaType) self.pujaType = @"";
     if (!self.pujaCode) self.pujaCode = @"";
@@ -177,11 +168,6 @@
     if (!self.pujaType) self.pujaType = @"";
     [params setObject:self.pujaType forKey:@"pujaType"];//法会类型 一级id
     [params setObject:self.pujaCode forKey:@"pujaCode"];//法会编号
-
-//    RiteFormModel *riteFormModel;
-//    RiteFormSecondModel *riteSecondModel;
-//    RiteFormThirdModel *riteThirdModel;
-//    [self getRiteFormModel:&riteFormModel riteSecondModel:&riteSecondModel riteThirdModel:&riteThirdModel byFormModel:riteTypeModel];
 
     if (self.secondLevelModel) {
         [params setValue:self.secondLevelModel.buddhismId forKey:@"buddhismId"]; //二级id
@@ -277,7 +263,7 @@
     } else if ([self.pujaType isEqualToString:@"3"]){
         puJaClassificationName = @"全年佛事";
     } else if ([self.pujaType isEqualToString:@"4"]){
-        puJaClassificationName = @"建寺安僧";
+        puJaClassificationName = @"功德募捐";
     }
 
     if (self.secondLevelModel.buddhismId){
@@ -308,13 +294,20 @@
             [weakSelf showBigImageViewController:url];
         } else {
             NSString *orderCode = [resultDic objectForKey:@"orderCode"];
-            //这里之所以要这样转一下，是因为resultDic中的“money”不是一个字符串类型
+            NSString *orderCarId = [resultDic objectForKey:@"orderCarId"];
+            //这里之所以要这样转一下，是因为resultDic中的“money”不是字符串类型
             NSString *money = [NSString stringWithFormat:@"%@", [resultDic objectForKey:@"money"]];
             if ([money floatValue] == 0.00) {
-                [weakSelf freeOrderPayWithOrderCode:orderCode money:money];
+                [weakSelf freeOrderPayWithOrderCarId:orderCarId money:money];
                 return;
             }
-            [weakSelf pushCheckstandViewController:orderCode money:money];
+            // 如果需要少林填写回执，则跳转到提交成功，请联系少林课堂页面。否则直接去支付
+            if ((weakSelf.threeLevelModel && [weakSelf.threeLevelModel.needReturnReceipt boolValue]) ||
+                (weakSelf.fourLevelModel && [weakSelf.fourLevelModel.needReturnReceipt boolValue])) {
+                [weakSelf pushReturnReceiptViewController];
+            } else {
+                [weakSelf pushCheckstandViewController:orderCode orderCarId:orderCarId money:money];
+            }
         }
     } failure:^(NSString * _Nullable errorReason) {
         [ShaolinProgressHUD singleTextAutoHideHud:errorReason];
@@ -323,8 +316,8 @@
     }];
 }
 
-- (void)freeOrderPayWithOrderCode:(NSString *)orderCode money:(NSString *)money {
-    [[DataManager shareInstance] orderPay:@{@"ordercode" :orderCode, @"orderMoney": money, @"payType":@"6"} Callback:^(Message *message) {
+- (void)freeOrderPayWithOrderCarId:(NSString *)orderCarId money:(NSString *)money {
+    [[DataManager shareInstance] orderPay:@{@"orderCarId" :orderCarId, @"orderMoney": money, @"payType":@"6"} Callback:^(Message *message) {
         if (message.isSuccess) {
             // 支付成功
             PaySuccessViewController *paySuccessVC = [[PaySuccessViewController alloc] init];
@@ -456,9 +449,9 @@
 
 - (void)showBigImageViewController:(NSString *)imageURL{
     ShowBigImageViewController *vc = [[ShowBigImageViewController alloc] init];
-    vc.titleString = @"生成牌位";
-    [vc.saveButton setTitle:@"确定" forState:UIControlStateNormal];
-    [vc.cancelButton setTitle:@"取消" forState:UIControlStateNormal];
+    vc.titleString = SLLocalizedString(@"生成牌位");
+    [vc.saveButton setTitle:SLLocalizedString(@"确定") forState:UIControlStateNormal];
+    [vc.cancelButton setTitle:SLLocalizedString(@"取消") forState:UIControlStateNormal];
     
     vc.imageUrl = imageURL;
     typeof (vc) weakVC = vc;
@@ -473,12 +466,19 @@
     [self.navigationController pushViewController:vc animated:YES];
 }
 
-- (void)pushCheckstandViewController:(NSString *)orderCode money:(NSString *)money{
+- (void)pushReturnReceiptViewController {
+    RiteReturnReceiptViewController *vc = [[RiteReturnReceiptViewController alloc] init];
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
+- (void)pushCheckstandViewController:(NSString *)orderCode orderCarId:(NSString *)orderCarId money:(NSString *)money{
     CheckstandViewController *checkstandVC = [[CheckstandViewController alloc]init];
     checkstandVC.goodsAmountTotal = [NSString stringWithFormat:@"¥%@", money];
     checkstandVC.order_no = orderCode;
+    checkstandVC.orderCarId = orderCarId;
+    checkstandVC.isRite = YES;
     WEAKSELF
-    checkstandVC.paySuccessfulBlock = ^(NSString * _Nonnull orderCode) {
+    checkstandVC.paySuccessfulBlock = ^(NSString * _Nonnull orderCode, NSString * _Nonnull orderCarId) {
         [weakSelf pushRiteBlessingViewController:orderCode];
     };
 //    checkstandVC.activityCode = self.activityCode;
@@ -539,7 +539,10 @@
 //    if ([self.threeLevelModel.showType isEqualToString:@"4"] || [self.fourLevelModel.showType isEqualToString:@"4"]){
 //        [array addObject:[FormViewModel textFieldModel:FormViewLayoutStyle_Vertical identifier:@"其他诵经礼忏" title:@"" checkType:CCCheckNone placeholder:@"请输入其他诵经礼忏"]];
 //    }
-    if (self.threeLevelModel && [self.threeLevelModel.showDate isEqualToString:@"1"]){
+    // TODO: 2021.02.08，新版表单需求，只填写基本信息(功德金、斋主、联系电话、联系地址)
+    // 是否是新版法会表单
+    BOOL newRite = YES;
+    if (self.threeLevelModel && [self.threeLevelModel.showDate isEqualToString:@"1"] && !newRite){
         if (self.riteDateModel && self.riteDateModel.timeList.count){
             NSMutableArray *timeListArray = [@[] mutableCopy];
             for (NSString *time in self.riteDateModel.timeList){
@@ -567,10 +570,10 @@
         [NSString stringWithFormat:@"%@%@", RiteFormModel_Tips_ParamsKey, RiteFormModel_MinValue_ParamsKey] : @"功德金需大于0元",
     }]];
     
-    if (/*[self.secondLevelModel.showType isEqualToString:@"1"] || */[self.threeLevelModel.showType isEqualToString:@"1"] || [self.fourLevelModel.showType isEqualToString:@"1"]){
+    if ((/*[self.secondLevelModel.showType isEqualToString:@"1"] || */[self.threeLevelModel.showType isEqualToString:@"1"] || [self.fourLevelModel.showType isEqualToString:@"1"]) && !newRite){
         [array addObject:[self createTFModel:@"消灾者姓名" title:@"消灾者姓名" value:@"" placeholder:@"请输入消灾者姓名" checkType:CCCheckNone params:@{RiteFormModel_TextMaxLength_ParamsKey : @"20"}]];
     }
-    if (/*[self.secondLevelModel.showType isEqualToString:@"2"] || */[self.threeLevelModel.showType isEqualToString:@"2"] || [self.fourLevelModel.showType isEqualToString:@"2"]){
+    if ((/*[self.secondLevelModel.showType isEqualToString:@"2"] || */[self.threeLevelModel.showType isEqualToString:@"2"] || [self.fourLevelModel.showType isEqualToString:@"2"]) && !newRite){
         NSDate *minDate = [NSDate date];
         NSString *endTime = [NSDate br_stringFromDate:minDate dateFormat:TimeDateFormat_yyyyMMdd];
         [array addObjectsFromArray:@[
@@ -581,16 +584,30 @@
         ]];
         [array addObject:[self createTFModel:@"阳上人姓名" title:@"阳上人姓名" value:@"" placeholder:@"请输入阳上人姓名 多人请以空格分隔" checkType:CCCheckNone params:@{RiteFormModel_TextMaxLength_ParamsKey : @"14"}]];
     }
-    [array addObject:[self createTFModel:@"斋主姓名" title:@"斋主姓名" value:@"" placeholder:@"请输入斋主姓名" checkType:CCCheckNone params:@{RiteFormModel_TextMaxLength_ParamsKey : @"20"}]];
+    FormViewModel *zhaizhuModel = [self createTFModel:@"斋主姓名" title:@"斋主姓名" value:@"" placeholder:@"请输入斋主姓名" checkType:CCCheckNone params:@{RiteFormModel_TextMaxLength_ParamsKey : @"20"}];
+    [array addObject:zhaizhuModel];
     
-    [array addObject:[FormViewModel textFieldModel:FormViewLayoutStyle_Vertical identifier:@"联系电话" title:@"联系电话" checkType:CCCheckPhone placeholder:@"请输入斋主联系电话"]];
+    FormViewModel *zhaizhuPhoneModel = [FormViewModel textFieldModel:FormViewLayoutStyle_Vertical identifier:@"联系电话" title:@"联系电话" checkType:CCCheckPhone placeholder:@"请输入斋主联系电话"];
+    [array addObject:zhaizhuPhoneModel];
     
-    [array addObject:[self createTVModel:@"联系地址" title:@"联系地址" value:@"" placeholder:@"请输入斋主联系地址" checkType:CCCheckNone params:@{RiteFormModel_TextMaxLength_ParamsKey : @"60"}]];
+    FormViewModel *zhaizhuDizhiModel = [self createTVModel:@"联系地址" title:@"联系地址" value:@"" placeholder:@"请输入斋主联系地址" checkType:CCCheckNone params:@{RiteFormModel_TextMaxLength_ParamsKey : @"60"}];
+    [array addObject:zhaizhuDizhiModel];
+    
+    // 功德募捐、随喜的斋主、电话、地址可以不填写(ps:2021.02.08，新需求只有功德金是必填项)
+    if ((self.secondLevelModel && newRite &&
+         ([self.secondLevelModel.buddhismId isEqualToString:@"6"] ||    // 功德募捐
+          [self.secondLevelModel.buddhismId isEqualToString:@"8"]))){   // 随喜
+        zhaizhuModel.forcedInput = NO;
+        zhaizhuPhoneModel.forcedInput = NO;
+    }
+    if (newRite){
+        zhaizhuDizhiModel.forcedInput = NO;
+    }
     if ([self.pujaType isEqualToString:@"4"]){//建寺安僧
         FormViewModel *tmpModel = [self createTFModel:@"祝福语" title:@"祝福语" value:@"" placeholder:@"请输入祝福语" checkType:CCCheckNone params:@{RiteFormModel_TextMaxLength_ParamsKey : @"20"}];
         tmpModel.forcedInput = NO;
         [array addObject:tmpModel];
-    } else {
+    } else if (!newRite){ // 新版表单去掉了斋主需求
         FormViewModel *lordNeedsModel = [self createTVModel:@"斋主需求" title:@"斋主需求" value:@"" placeholder:@"请输入斋主需求" checkType:CCCheckNone params:@{RiteFormModel_TextMaxLength_ParamsKey : @"100"}];
         lordNeedsModel.forcedInput = NO;
         [array addObject:lordNeedsModel];
@@ -600,14 +617,19 @@
 
 - (NSArray *)getBottomRegistrationFormModelList {
     NSMutableArray *array = [@[] mutableCopy];
+    // TODO:去掉法会联系人手机，只留座机(暂时后台不改)
+    self.riteDateModel.contactPerson = @"";
     if (self.riteDateModel.contactPerson && self.riteDateModel.contactPerson.length && self.riteDateModel.contactPhone && self.riteDateModel.contactPhone.length){
         [array addObject:[FormViewModel phoneLabelModel:FormViewLayoutStyle_Vertical identifier:@"联系方式" title:@"联系方式" value:[NSString stringWithFormat:@"%@：%@", self.riteDateModel.contactPerson, self.riteDateModel.contactPhone]]];
     }
 //    else {
 //        [array addObject:[FormViewModel phoneLabelModel:FormViewLayoutStyle_Vertical identifier:@"联系方式" title:@"联系方式" value:@"延耘法师：15890077598"]];
 //    }
-    [array addObject:[FormViewModel phoneLabelModel:FormViewLayoutStyle_Vertical identifier:@"少林寺客堂" title:@"" value:@"少林寺客堂：0371-62745166"]];
-    
+    NSString *title = @"";
+    if (array.count == 0){
+        title = @"联系方式";
+    }
+    [array addObject:[FormViewModel phoneLabelModel:FormViewLayoutStyle_Vertical identifier:@"少林寺客堂" title:title value:@"少林寺客堂：0371-62745166"]];
     [array addObject:[FormViewModel tipsModel:@"*报名后需电话确认" tips:@"*报名后需电话确认"]];
     return array;
 }

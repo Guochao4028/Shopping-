@@ -21,12 +21,12 @@
 @end
 
 @implementation MeCollectionVc
--(void)viewWillAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     //[self setNavigationBarYellowTintColor];
 }
--(void)viewWillDisappear:(BOOL)animated
+- (void)viewWillDisappear:(BOOL)animated
 {
      [super viewWillDisappear:animated];
 }
@@ -34,13 +34,13 @@
     [super viewDidLoad];
     
     [self buildData];
-    [self setUI];
+    [self setupUI];
      [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(buttonNormal) name:@"NormalCollectionButton" object:nil];
 }
 - (void)buttonNormal {
     [self.rightBtn setSelected:NO];
 }
--(void)setUI{
+- (void)setupUI{
        self.titleLabe.text = SLLocalizedString(@"我的收藏");
        self.titleLabe.textColor = [UIColor whiteColor];
        [self.leftBtn setImage:[UIImage imageNamed:@"real_left"] forState:(UIControlStateNormal)];
@@ -58,11 +58,11 @@
     if (button.selected) {
         self.recordIndex = self.selectEdit;
         if (self.selectEdit == 0) {
-            [[NSNotificationCenter defaultCenter]postNotificationName:@"collectionEditCourseSelect" object:nil];
+            [[NSNotificationCenter defaultCenter]postNotificationName:@"collectionEditCourseSelect" object:button];
         }else if(self.selectEdit == 1){
-            [[NSNotificationCenter defaultCenter]postNotificationName:@"collectionEditTextSelect" object:nil];
+            [[NSNotificationCenter defaultCenter]postNotificationName:@"collectionEditTextSelect" object:button];
         }else {
-             [[NSNotificationCenter defaultCenter]postNotificationName:@"collectionEditVideoSelect" object:nil];
+             [[NSNotificationCenter defaultCenter]postNotificationName:@"collectionEditVideoSelect" object:button];
         }
     }else {
         if (self.selectEdit == 0) {

@@ -18,7 +18,9 @@
 //})
 
 ///环信key
-#define EMAppKey @"1133200611065275#shaolintemple"
+//#define EMAppKey @"1133200611065275#shaolintemple"
+#define EMAppKey @"1122200428010315#shaolin"
+#define EMAppUrlKey @"1122200428010315/shaolin"
 
 ///设备屏幕的宽度
 #define ScreenWidth [[UIScreen mainScreen]bounds].size.width
@@ -126,10 +128,22 @@
 
 #define keyBoardDefaultHeight 225 //自定义键盘的高度
 
-//秘钥(用于MD5加密)
-#define ENCRYPTION_KEY      @"@shaolin"
+
 
 //查看视频首帧图片
-#define Video_First_Photo  @"?x-oss-process=video/snapshot,t_3000,m_fast,ar_auto"
+//#define Video_First_Photo  @"?x-oss-process=video/snapshot,t_3000,m_fast,ar_auto"
+
+
+//秘钥(用于AES加密)(弃用)
+#define ENCRYPTION_AES_KEY      @"E9iV7M4buSPyYRFc"
+
+//秘钥(用于MD5加密)
+#define ENCRYPTION_MD5_KEY      @"Vg*2m5nI2y9yajVd"
+
+//秘钥(用于AES加密) 控制密钥
+#define VERSIONKEY @"v1"
+
+//秘钥->公钥(用于RSA加密)
+#define ENCRYPTION_RSA_KEY  @"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj0F3NLM2Tw1R7mvP7dIstPaj4hn7k0xOR/Hx6wZk5MwGfGvvt0Fhk7tbDxW6ON2mYAg6+mqDXO3j4y7Yq+XJcSakjtYqUIuix5sZHvcO/MxwCqJYfmInkrIeTtMFyv6UZjQHuCUkjfpiy+4HRMp7n6ya2h7/1PKewDSoB7IMulyO23dOxrU/ZyDlBn7w4mW4RG/zz+l7HclmRu1iAOtcUKaBLmw1R0EXtMn/tDXO1cHHFnTtDFdkmoXX6PdPJ7QMg3gzwKktE7olqwo+atUSKjAEibVg2HC6/RnzDRaOzEWh1gamtFoJ4/e4i63H1CLDHFkwIytOpUV8pCPd8ZAaIQIDAQAB"
 
 #endif /* DefinedKeys_h */

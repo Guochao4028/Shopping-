@@ -19,7 +19,7 @@
 
 @property (nonatomic, strong) ERichTextToolBar *toolBar;
 
--(instancetype)initWithFrame:(CGRect)frame editView:(ERichTextEditorView *)editView;
+- (instancetype)initWithFrame:(CGRect)frame editView:(ERichTextEditorView *)editView;
 
 
 @end

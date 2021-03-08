@@ -62,7 +62,7 @@
     return self;
 }
 
--(void)longPressToSavePhoto:(UILongPressGestureRecognizer *)sender{
+- (void)longPressToSavePhoto:(UILongPressGestureRecognizer *)sender{
     if (sender.state== UIGestureRecognizerStateBegan){
         if (self.longPressGestureBlock) {
             self.longPressGestureBlock(self);
@@ -92,7 +92,7 @@
     self.imageView.frame = self.imageContainerView.bounds;
 }
 
--(void)layoutSubviews{
+- (void)layoutSubviews{
     [super layoutSubviews];
     [self resizeSubviews];
 }
@@ -160,7 +160,7 @@
     CGFloat offsetY = (scrollView.height > scrollView.contentSize.height) ? (scrollView.height - scrollView.contentSize.height) * 0.5 : 0.0;
     self.imageContainerView.center = CGPointMake(scrollView.contentSize.width * 0.5 + offsetX, scrollView.contentSize.height * 0.5 + offsetY);
 }
--(BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer{
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer{
     return YES;
 }
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {

@@ -19,7 +19,7 @@
 @property(nonatomic,strong) UIButton *refusedBtn;//拒绝
 
 @property (nonatomic, strong) NSIndexPath *indexPath;
--(void)setMePostManagerModel:(MePostManagerModel *)f indexpath:(NSIndexPath *)indexPath;
+- (void)setMePostManagerModel:(MePostManagerModel *)f indexpath:(NSIndexPath *)indexPath;
 @end
 
 

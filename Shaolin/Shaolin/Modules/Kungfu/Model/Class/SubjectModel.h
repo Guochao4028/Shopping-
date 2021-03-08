@@ -19,10 +19,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString * recommend;
 @property (nonatomic, copy) NSString * image;
 
-@property (nonatomic, copy) NSString * is_use;
-@property (nonatomic, copy) NSString * course_id;
-@property (nonatomic, copy) NSString * create_time;
-@property (nonatomic, copy) NSString * level_name;
+@property (nonatomic, copy) NSString * isUse;
+@property (nonatomic, copy) NSString * courseId;
+//@property (nonatomic, copy) NSString * create_time;
+@property (nonatomic, copy) NSString * levelName;
 @property (nonatomic, copy) NSString * time;
 @property (nonatomic, copy) NSString * num;
 

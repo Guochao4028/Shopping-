@@ -12,6 +12,10 @@
 
 #import "OrderDetailsModel.h"
 
+#import "OrderDetailsNewModel.h"
+
+#import "NSString+Tool.h"
+
 @interface OrderGoodsItmeTableViewCell ()
 @property (weak, nonatomic) IBOutlet UILabel *storeNameLabel;
 
@@ -107,7 +111,7 @@
 #pragma mark - methods
 
 ///装饰button
--(void)modifiedButton:(UIButton *)sender borderColor:(UIColor *)color cornerRadius:(CGFloat)radius{
+- (void)modifiedButton:(UIButton *)sender borderColor:(UIColor *)color cornerRadius:(CGFloat)radius{
     sender.layer.borderWidth = 1;
     sender.layer.borderColor = color.CGColor;
     sender.layer.cornerRadius = radius;//SLChange(radius);
@@ -119,7 +123,7 @@
 
 - (IBAction)afterSalesAction:(UIButton *)sender {
     
-    NSString *is_refund = self.model.is_refund;
+    NSString *is_refund = self.model.ifRefund;
     if ([is_refund isEqualToString:@"1"] == YES) {
         if ([self.delegate respondsToSelector:@selector(orderGoodsItmeTableViewCell:afterSales:)] == YES) {
             [self.delegate orderGoodsItmeTableViewCell:self afterSales:self.model];
@@ -172,10 +176,10 @@
 
 #pragma mark - setter / getter
 
--(void)setModel:(OrderDetailsModel *)model{
+- (void)setModel:(OrderDetailsGoodsModel *)model{
     
-    NSLog(@"model.status : %@", model.status);
-    NSLog(@"model.goods_id : %@", model.goods_id);
+//    NSLog(@"model.status : %@", model.status);
+//    NSLog(@"model.goods_id : %@", model.goods_id);
     self.statusAfterSalesButtonW.constant = 80;
 
     _model = model;
@@ -183,21 +187,21 @@
     [self.statusAfterSalesButton setHidden:YES];
     [self.confirmGoodsButton setHidden:YES];
         
-    [self.storeNameLabel setText:model.club_name];
-    [self.goodsImageView sd_setImageWithURL:[NSURL URLWithString:model.goods_image[0]] placeholderImage:[UIImage imageNamed:@"default_small"]];
+    [self.storeNameLabel setText:model.clubName];
+    [self.goodsImageView sd_setImageWithURL:[NSURL URLWithString:model.goodsImages[0]] placeholderImage:[UIImage imageNamed:@"default_small"]];
     
     
-    if ([model.shipping_fee floatValue] == 0.00) {
+    if ([model.shippingFee floatValue] == 0.00) {
         [self.shippingfeeLabel setText:SLLocalizedString(@"免运费")];
     }else{
-        [self.shippingfeeLabel setText:[NSString stringWithFormat:SLLocalizedString(@"运费：+¥%@"),model.shipping_fee]];
+        [self.shippingfeeLabel setText:[NSString stringWithFormat:SLLocalizedString(@"运费：+¥%@"),[model.shippingFee formattedPrice]]];
     }
     
 //    [self.shippingfeeLabel setHidden:YES];
     
 //    NSString *attrStr = [NSString stringWithFormat:SLLocalizedString(@"数量：%@ 规格：%@"),NotNilAndNull(model.num)?model.num:@"",NotNilAndNull(model.goods_attr_name)?model.goods_attr_name:@""];
     
-    NSString *attrStr = [NSString stringWithFormat:SLLocalizedString(@"数量：%@ %@"),NotNilAndNull(model.num)?model.num:@"",NotNilAndNull(model.goods_attr_name)?model.goods_attr_name:@""];
+    NSString *attrStr = [NSString stringWithFormat:SLLocalizedString(@"数量：%@ %@"),NotNilAndNull(model.goodsNum)?model.goodsNum:@"",NotNilAndNull(model.goodsAttrName)?model.goodsAttrName:@""];
     
     if (attrStr.length > 0) {
         [self.arrtLabel setText:attrStr];
@@ -285,11 +289,11 @@
             
         }
     }
-    [self.goodsNameLabel setText:model.goods_name];
+    [self.goodsNameLabel setText:model.goodsName];
     
-    [self.goodsPriceLabel setText:[NSString stringWithFormat:@"¥%@", model.final_price]];
+    [self.goodsPriceLabel setText:[NSString stringWithFormat:@"¥%@", [model.goodsPrice formattedPrice]]];
     
-    NSString *is_refund = model.is_refund;
+    NSString *is_refund = model.ifRefund;
     if ([is_refund isEqualToString:@"1"] == YES) {
         [self.afterSalesButton setTitleColor:KTextGray_333 forState:UIControlStateNormal];
         [self.statusAfterSalesButton setTitleColor:KTextGray_333 forState:UIControlStateNormal];
@@ -301,7 +305,7 @@
         [self.afterSalesButton setTitle:@"已申请售后" forState:UIControlStateNormal];
         [self.statusAfterSalesButton setTitle:@"已申请售后" forState:UIControlStateNormal];
         self.statusAfterSalesButtonW.constant = 96;
-        if ([model.refund_status isEqualToString:@"6"]) {
+        if ([model.refundStatus isEqualToString:@"6"]) {
             [self.afterSalesButton setTitle:@"售后完成" forState:UIControlStateNormal];
             [self.statusAfterSalesButton setTitle:@"售后完成" forState:UIControlStateNormal];
         }

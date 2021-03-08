@@ -8,6 +8,7 @@
 
 #import "KfAllScoreCell.h"
 #import "ScoreListModel.h"
+#import "NSString+Tool.h"
 
 @interface KfAllScoreCell()
 
@@ -41,12 +42,15 @@
 }
 
 
--(void)setCellModel:(ScoreListModel *)cellModel {
+- (void)setCellModel:(ScoreListModel *)cellModel {
     _cellModel = cellModel;
     
     self.levelLabel.text = [NSString stringWithFormat:SLLocalizedString(@"考试位阶：%@"),cellModel.levelName];
     self.applyLabel.text = [NSString stringWithFormat:SLLocalizedString(@"报名时间：%@"),cellModel.signupTime];
     self.testLabel.text = [NSString stringWithFormat:SLLocalizedString(@"考试时间：%@"),cellModel.startTime];
+    
+    
+//    [cellModel.signupTime ]
     
     if ([cellModel.result isEqualToString:@"0"]) {// 不通过
         self.scoreImgv.image = [UIImage imageNamed:@"kungfu_buhege"];

@@ -17,6 +17,7 @@
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *textViewH;
 @property(nonatomic, copy)NSString *contentStr;
 
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *titleLabelTop;
 
 @end
 
@@ -58,7 +59,7 @@
 }
 
 
--(void)textFieldDidChange:(UITextField*)textField{
+- (void)textFieldDidChange:(UITextField*)textField{
     
     NSString *titleStr = self.dataDic[@"title"];
     if ([titleStr isEqualToString:SLLocalizedString(@"手机号")] == YES) {
@@ -75,7 +76,7 @@
     return YES;
 }
 #pragma mark - UITextViewDelegate
--(void)textViewDidEndEditing:(UITextView *)textView{
+- (void)textViewDidEndEditing:(UITextView *)textView{
     if ([textView.text length] < 1){
         textView.text = self.contentStr;
         textView.textColor = [UIColor hexColor:@"909090"];
@@ -86,7 +87,7 @@
     }
 }
 
--(void)textViewDidBeginEditing:(UITextView *)textView{
+- (void)textViewDidBeginEditing:(UITextView *)textView{
     if ([textView.text isEqualToString:self.contentStr]){
         textView.text = @"";
         self.wordTextField.text = @"";
@@ -104,7 +105,7 @@
 
 #pragma mark - setter / getter
 
--(void)setDataDic:(NSDictionary *)dataDic{
+- (void)setDataDic:(NSDictionary *)dataDic{
     _dataDic = dataDic;
     
    NSString *titleStr = dataDic[@"title"];
@@ -115,6 +116,8 @@
     [self.titleLabel setText:titleStr];
     
     self.contentStr = dataDic[@"content"];
+    
+    self.titleLabelTop.constant = (50-21)/2;
     
     [self.wordTextField setPlaceholder:self.contentStr];
     NSMutableAttributedString *placeholder = [[NSMutableAttributedString alloc] initWithString:self.contentStr];
@@ -132,6 +135,7 @@
         [self.wordTextField setHidden:YES];
         [self.textView setText:self.contentStr];
         [self.textView setTextColor:KTextGray_96];
+        self.titleLabelTop.constant = 10;
     }else{
         [self.textView setHidden:YES];
         [self.wordTextField setHidden:NO];
@@ -154,7 +158,7 @@
     }
 }
 
--(void)setAddressStr:(NSString *)addressStr{
+- (void)setAddressStr:(NSString *)addressStr{
     _addressStr = addressStr;
     [self.wordTextField setText:addressStr];
 }

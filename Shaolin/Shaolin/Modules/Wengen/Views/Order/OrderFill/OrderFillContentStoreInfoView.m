@@ -21,7 +21,7 @@
 
 @implementation OrderFillContentStoreInfoView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [[NSBundle mainBundle] loadNibNamed:@"OrderFillContentStoreInfoView" owner:self options:nil];
@@ -31,14 +31,14 @@
 }
 
 // 初始化UI
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.contentView];
     [self.contentView setFrame:self.bounds];
     
 }
 
 /// 重写系统方法
--(void)setFrame:(CGRect)frame{
+- (void)setFrame:(CGRect)frame{
     [super setFrame:frame];
     [self.contentView setFrame:self.bounds];
 }
@@ -46,7 +46,7 @@
 
 #pragma mark - setter / getter
 
--(void)setInfoModel:(GoodsStoreInfoModel *)infoModel{
+- (void)setInfoModel:(GoodsStoreInfoModel *)infoModel{
     _infoModel = infoModel;
     if (infoModel.name != nil && infoModel.name.length > 0) {
         [self.storeNameLabel setText:infoModel.name];

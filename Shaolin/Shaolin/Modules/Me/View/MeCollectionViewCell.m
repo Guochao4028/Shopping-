@@ -9,7 +9,7 @@
 #import "MeCollectionViewCell.h"
 
 @implementation MeCollectionViewCell
--(instancetype)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
@@ -17,12 +17,12 @@
     }
     return self;
 }
--(void)layoutView
+- (void)layoutView
 {
     [self.contentView addSubview:self.logoView];
     [self.contentView addSubview:self.nameLabel];
 }
--(void)layoutSubviews
+- (void)layoutSubviews
 {
     [super layoutSubviews];
     
@@ -39,7 +39,7 @@
         make.height.mas_equalTo(14);
     }];
 }
--(UIImageView *)logoView
+- (UIImageView *)logoView
 {
     if (!_logoView) {
         _logoView = [[UIImageView alloc]init];
@@ -48,7 +48,7 @@
     }
     return _logoView;
 }
--(UILabel *)nameLabel
+- (UILabel *)nameLabel
 {
     if (!_nameLabel) {
         _nameLabel = [[UILabel alloc]init];

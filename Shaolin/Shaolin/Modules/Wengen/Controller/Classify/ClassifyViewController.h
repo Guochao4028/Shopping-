@@ -16,9 +16,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, copy)NSString *keyWordStr;
 
-@property(nonatomic, strong)WengenEnterModel *enterModel;
+@property(nonatomic, strong, nullable)WengenEnterModel *enterModel;
 
--(void)refreshUI;
+- (void)refreshUI;
 
 @end
 

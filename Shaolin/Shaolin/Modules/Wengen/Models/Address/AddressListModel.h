@@ -21,15 +21,25 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, copy)NSString * realname;
 @property(nonatomic, copy)NSString * status;
 
-@property(nonatomic, copy)NSString * country_s;
-@property(nonatomic, copy)NSString * province_s;
-@property(nonatomic, copy)NSString * city_s;
-@property(nonatomic, copy)NSString * re_s;
+//@property(nonatomic, copy)NSString * country_s;
+//@property(nonatomic, copy)NSString * province_s;
+//@property(nonatomic, copy)NSString * city_s;
+//@property(nonatomic, copy)NSString * re_s;
+//
+//@property(nonatomic, copy)NSString * country_id;
+//@property(nonatomic, copy)NSString * province_id;
+//@property(nonatomic, copy)NSString * city_id;
+//@property(nonatomic, copy)NSString * re_id;
 
-@property(nonatomic, copy)NSString * country_id;
-@property(nonatomic, copy)NSString * province_id;
-@property(nonatomic, copy)NSString * city_id;
-@property(nonatomic, copy)NSString * re_id;
+@property(nonatomic, copy)NSString * countryS;
+@property(nonatomic, copy)NSString * provinceS;
+@property(nonatomic, copy)NSString * cityS;
+@property(nonatomic, copy)NSString * reS;
+
+@property(nonatomic, copy)NSString * countryId;
+@property(nonatomic, copy)NSString * provinceId;
+@property(nonatomic, copy)NSString * cityId;
+@property(nonatomic, copy)NSString * reId;
 
 @property(nonatomic, assign)BOOL isSelected;
 
@@ -37,6 +47,8 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+
+
 
 /**
  address = "\U4e09\U53f7\U697c501";

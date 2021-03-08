@@ -36,7 +36,7 @@
 
 @implementation KungfuApplyDetailViewController
 
--(void)viewWillAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 }
 
@@ -49,7 +49,7 @@
 }
 
 
--(void) initUI
+- (void) initUI
 {
     self.titleLabe.text = SLLocalizedString(@"报名详情");
     self.view.backgroundColor = KTextGray_FA;
@@ -67,7 +67,7 @@
 
 - (void)activityDetail
 {
-    NSString * url = URL_H5_EventRegistration(self.detailModel.activityCode,[SLAppInfoModel sharedInstance].access_token);
+    NSString * url = URL_H5_EventRegistration(self.detailModel.activityCode,[SLAppInfoModel sharedInstance].accessToken);
     KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:url type:KfWebView_activityDetail];
     [self.navigationController pushViewController:webVC animated:YES];
 }
@@ -75,19 +75,19 @@
 
 - (void) requestApplyDetailInfo {
     
-    if (self.applyId) {
-        MBProgressHUD * hud = [ShaolinProgressHUD defaultLoadingWithText:SLLocalizedString(@"加载中")];
-
-        [[KungfuManager sharedInstance] getApplicationsDetailWithDic:@{@"accuratenumber":self.applyId} AndCallback:^(NSDictionary *result) {
-
-            self.detailModel = [ApplyListModel mj_objectWithKeyValues:result];
-
-            [hud hideAnimated:YES];
-        }];
-    }else{
+//    if (self.applyId) {
+//        MBProgressHUD * hud = [ShaolinProgressHUD defaultLoadingWithText:SLLocalizedString(@"加载中")];
+//
+//        [[KungfuManager sharedInstance] getApplicationsDetailWithDic:@{@"accuratenumber":self.applyId} AndCallback:^(NSDictionary *result) {
+//
+//            self.detailModel = [ApplyListModel mj_objectWithKeyValues:result];
+//
+//            [hud hideAnimated:YES];
+//        }];
+//    }else{
 //        self.detailModel = self.model;
         [self setDetailModel:self.model];
-    }
+//    }
     
     
 }
@@ -104,7 +104,7 @@
 
 #pragma mark - delegate && dataSources
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (!self.contentList) {
         return 0;
@@ -112,7 +112,7 @@
     return self.titleList.count;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
     KungfuApplyDetailCell *cell = [tableView dequeueReusableCellWithIdentifier:[NSString stringWithFormat:@"KungfuApplyDetailCell%ld",indexPath.row]];
@@ -160,19 +160,19 @@
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return tableView.rowHeight;
 }
 
 
 #pragma mark - setter && getter
--(UITableView *)tableView
+- (UITableView *)tableView
 {
     if (!_tableView) {
         _tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 15, kWidth, kHeight - NavBar_Height - 15) style:(UITableViewStylePlain)];
@@ -186,7 +186,7 @@
     return _tableView;
 }
 
--(void)setDetailModel:(ApplyListModel *)detailModel {
+- (void)setDetailModel:(ApplyListModel *)detailModel {
     if (IsNilOrNull(detailModel)) {
         [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"报名详情获取失败") view:self.view afterDelay:TipSeconds];
         [self.navigationController popViewControllerAnimated:YES];
@@ -195,7 +195,7 @@
     
     _detailModel = detailModel;
     
-    NSInteger activityTypeIdIngteger = [detailModel.activityTypeId integerValue];
+    NSInteger activityTypeIdIngteger = detailModel.activityTypeId;
     
     if (activityTypeIdIngteger == 4) {
         // 考试
@@ -209,7 +209,7 @@
 }
 
 //加载考试数据
--(void)examLoadingData:(ApplyListModel *)detailModel {
+- (void)examLoadingData:(ApplyListModel *)detailModel {
     
     
     self.titleList = @[
@@ -261,7 +261,7 @@
     //性      别：
     [self.contentList addObject:[self getNotNilString:detailModel.gender]];
     //出生年月：
-    [self.contentList addObject:[self getNotNilString:detailModel.bormtime]];
+    [self.contentList addObject:[self getNotNilString:detailModel.bormTime]];
     //身份证号：
     [self.contentList addObject:[self getNotNilString:detailModel.idCard]];
     
@@ -278,9 +278,9 @@
     //职      务：
     [self.contentList addObject:[self getNotNilString:detailModel.post]];
     //现位阶：
-    [self.contentList addObject:[self getNotNilString:detailModel.memberLevel]];
+    [self.contentList addObject:[self getNotNilString:detailModel.levelName]];
     //申报位阶：
-    [self.contentList addObject:[self getNotNilString:detailModel.levelIds]];
+    [self.contentList addObject:[self getNotNilString:detailModel.intervalName]];
     //举办机构：
     [self.contentList addObject:[self getNotNilString:detailModel.mechanismName]];
     //微      信：
@@ -302,9 +302,7 @@
     //练武年限(年)：
     [self.contentList addObject:[self getNotNilString:detailModel.martialArtsYears]];
     //报名时间：
-//    NSString *createTime = [self getNotNilString:detailModel.createTime];
-//    [self.contentList addObject:[NSString timeStrIntoTimeWithString:createTime andFormatter:@"yyyy-mm-dd"]];
-    [self.contentList addObject:[self getNotNilString:detailModel.createTime]];
+    [self.contentList addObject:[self getNotNilString:detailModel.applyDetailTime]];
     //培训时间：
     [self.contentList addObject:[self getNotNilString:detailModel.trainingTime]];
     //考试时间：
@@ -319,7 +317,7 @@
 
 
 //加载活动数据
--(void)activityLoadingData:(ApplyListModel *)detailModel {
+- (void)activityLoadingData:(ApplyListModel *)detailModel {
     
     
     self.titleList = @[
@@ -359,7 +357,7 @@
     //性      别：
     [self.contentList addObject:[self getNotNilString:detailModel.gender]];
     //出生年月：
-    [self.contentList addObject:[self getNotNilString:detailModel.bormtime]];
+    [self.contentList addObject:[self getNotNilString:detailModel.bormTime]];
     //身份证号：
     [self.contentList addObject:[self getNotNilString:detailModel.idCard]];
     
@@ -376,9 +374,9 @@
     //职      务：
     [self.contentList addObject:[self getNotNilString:detailModel.post]];
     //现位阶：
-    [self.contentList addObject:[self getNotNilString:detailModel.memberLevel]];
+    [self.contentList addObject:[self getNotNilString:detailModel.levelName]];
     //申报位阶：
-    [self.contentList addObject:[self getNotNilString:detailModel.levelIds]];
+    [self.contentList addObject:[self getNotNilString:detailModel.intervalName]];
     //举办机构：
     [self.contentList addObject:[self getNotNilString:detailModel.mechanismName]];
     //微      信：
@@ -392,11 +390,9 @@
 //    //护  照 号：
 //    [self.contentList addObject:[self getNotNilString:detailModel.passportNumber]];
     //报名时间:
-//    NSString *createTime = [self getNotNilString:detailModel.createTime];
-//    [self.contentList addObject:[NSString timeStrIntoTimeWithString:createTime andFormatter:@"yyyy-mm-dd"]];
-    [self.contentList addObject:[self getNotNilString:detailModel.createTime]];
+    [self.contentList addObject:[self getNotNilString:detailModel.applyDetailTime]];
     //活动时间：
-    [self.contentList addObject:[self getNotNilString:detailModel.activityStartTime]];
+    [self.contentList addObject:[self getNotNilString:detailModel.activityTime]];
     //活动地点：
     [self.contentList addObject:[self getNotNilString:detailModel.examAddress]];
     //签到时间：
@@ -411,7 +407,7 @@
 /// 拼接所有的数据
 /// @param title title table title 的显示
 /// @param dataStr table cell 显示
--(void)mergeDataWithTitle:(NSString *)title dataStr:(NSString *)dataStr{
+- (void)mergeDataWithTitle:(NSString *)title dataStr:(NSString *)dataStr{
     
 //    if ([self determinesWhetherStringLengthIsValid:dataStr]) {
 //        [self.titleList addObject:title];
@@ -420,7 +416,7 @@
 }
 
 //头像数据刷新列表
--(void)baggingHeadDataAndReloadData:(ApplyListModel *)detailModel{
+- (void)baggingHeadDataAndReloadData:(ApplyListModel *)detailModel{
     //头像
     NSString * headUrl = NotNilAndNull(detailModel.photosUrl)?detailModel.photosUrl:@"";
     [self.headImgv sd_setImageWithURL:[NSURL URLWithString:headUrl] placeholderImage:[UIImage imageNamed:@"default_small"]];
@@ -430,7 +426,7 @@
 }
 
 //判断字符串长度是否有效
--(BOOL)determinesWhetherStringLengthIsValid:(NSString *)text{
+- (BOOL)determinesWhetherStringLengthIsValid:(NSString *)text{
     BOOL flag = NO;
     NSString *temStr = [self getNotNilString:text];
     if (temStr.length > 0) {
@@ -439,11 +435,11 @@
     return flag;
 }
 
--(NSString *)getNotNilString:(NSString *)text {
+- (NSString *)getNotNilString:(NSString *)text {
     return NotNilAndNull(text)?text:@"";
 }
 
--(NSString *)getTimeString:(NSString *)startTime endTime:(NSString *)endTime
+- (NSString *)getTimeString:(NSString *)startTime endTime:(NSString *)endTime
 {
     
     NSString * result = @"";
@@ -464,14 +460,14 @@
     return result;
 }
 
-//-(NSMutableArray *)titleList {
+//- (NSMutableArray *)titleList {
 //    if (!_titleList) {
 //        _titleList = [NSMutableArray array];
 //    }
 //    return _titleList;
 //}
 
--(NSArray *)titleList{
+- (NSArray *)titleList{
     
     if (_titleList == nil) {
     }
@@ -482,14 +478,14 @@
 
 
 
--(NSMutableArray *)contentList {
+- (NSMutableArray *)contentList {
     if (!_contentList) {
         _contentList = [NSMutableArray new];
     }
     return _contentList;
 }
 
--(UIImageView *)headImgv {
+- (UIImageView *)headImgv {
     if (!_headImgv) {
         _headImgv = [[UIImageView alloc] init];
 //        _headImgv.image = [UIImage imageNamed:@"default_small"];
@@ -500,7 +496,7 @@
     return _headImgv;
 }
 
--(UIView *)tableFooterView {
+- (UIView *)tableFooterView {
     if (!_tableFooterView) {
         _tableFooterView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.view.width, 40)];
         

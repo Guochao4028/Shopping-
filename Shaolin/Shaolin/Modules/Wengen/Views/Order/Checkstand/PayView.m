@@ -26,7 +26,7 @@
 
 @implementation PayView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [[NSBundle mainBundle] loadNibNamed:@"PayView" owner:self options:nil];
@@ -37,7 +37,7 @@
 
 #pragma mark - methods
 /// 初始化UI
--(void)initUI{
+- (void)initUI{
     [self setBackgroundColor:[UIColor colorWithWhite:0 alpha:0.6]];
     
     [self addSubview:self.contentView];
@@ -73,7 +73,7 @@
 }
 
 
--(void)gone{
+- (void)gone{
     [UIView animateWithDuration:0.3 animations:^{
         self.alpha = 0;
     } completion:^(BOOL finished) {
@@ -85,7 +85,7 @@
 }
 
 #pragma mark - getter /setter
--(LYSecurityField *)passwordField{
+- (LYSecurityField *)passwordField{
     
     if (_passwordField == nil) {
         _passwordField = [[LYSecurityField alloc]initWithNumberOfCharacters:6 securityCharacterType:SecurityCharacterTypeSecurityDot borderType:BorderTypeHaveRoundedCorner];
@@ -94,11 +94,11 @@
 
 }
 
--(void)setPriceStr:(NSString *)priceStr{
+- (void)setPriceStr:(NSString *)priceStr{
     [self.moneyLabel setText:priceStr];
 }
 
--(void)setSubtitleStr:(NSString *)subtitleStr{
+- (void)setSubtitleStr:(NSString *)subtitleStr{
     [self.subtitleLabel setText:subtitleStr];
 }
 

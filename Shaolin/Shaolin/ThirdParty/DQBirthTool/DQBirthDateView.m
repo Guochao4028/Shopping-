@@ -17,7 +17,7 @@ static NSString *EditPath = @"/api/user/edit";
 @property (nonatomic, strong) DQCanCerEnsureView *CancerEnsure;
 @property (strong,nonatomic) UIPickerView * pickerView;
 @property (nonatomic, strong) NSMutableArray *yearArr;
-@property (nonatomic, copy) NSMutableArray *monthArr;
+@property (nonatomic, strong) NSMutableArray *monthArr;
 @property (nonatomic, strong) NSMutableArray *dayArr;
 @property (nonatomic, copy) NSString *BirthStr;//保存出生年月日的时间戳
 @property (nonatomic, strong) UITapGestureRecognizer *ges;
@@ -186,7 +186,7 @@ static NSString *EditPath = @"/api/user/edit";
     }
     
 }
--(UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view{
+- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view{
     UILabel *lable=[[UILabel alloc]init];
     lable.textAlignment=NSTextAlignmentCenter;
     if (component == 0) {

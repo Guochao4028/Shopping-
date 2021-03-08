@@ -464,7 +464,7 @@ static OSStatus XMExtractIdentityAndTrustFromPKCS12(CFDataRef inPKCS12Data, CFSt
     if ([request.api isEqualToString:@"/common/uploadImage"]) {
         request.timeoutInterval = 120;
     } else {
-        request.timeoutInterval = 30;
+        request.timeoutInterval = 5;
     }
     urlRequest.timeoutInterval = request.timeoutInterval;
 }
@@ -573,8 +573,14 @@ static OSStatus XMExtractIdentityAndTrustFromPKCS12(CFDataRef inPKCS12Data, CFSt
 - (AFURLSessionManager *)securitySessionManager {
     if (!_securitySessionManager) {
         _securitySessionManager = [[AFURLSessionManager alloc] initWithSessionConfiguration:nil];
+        
+        // 获取证书
+        NSString *cerPath = [[NSBundle mainBundle] pathForResource:@"shaolinN" ofType:@"cer"];
+        NSData *certData = [NSData dataWithContentsOfFile:cerPath];
+        NSSet *pinnedCertificates = [[NSSet alloc] initWithObjects:certData, nil];
+        
         _securitySessionManager.responseSerializer = self.afHTTPResponseSerializer;
-        _securitySessionManager.securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+        _securitySessionManager.securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate withPinnedCertificates:pinnedCertificates];
         _securitySessionManager.operationQueue.maxConcurrentOperationCount = 5;
         _securitySessionManager.securityPolicy.allowInvalidCertificates = YES;
         // 是否在证书域字段中验证域名

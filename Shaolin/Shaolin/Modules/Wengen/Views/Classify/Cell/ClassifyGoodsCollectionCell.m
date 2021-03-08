@@ -43,11 +43,11 @@
     self.goodsImageView.layer.masksToBounds = YES;
 }
 
--(void)setModel:(WengenGoodsModel *)model{
+- (void)setModel:(WengenGoodsModel *)model{
     
     _model = model;
     //商品图片
-    NSString *imgeUrlStr = [model.img_data firstObject];
+    NSString *imgeUrlStr = [model.imgDataList firstObject];
     [self.goodsImageView sd_setImageWithURL:[NSURL URLWithString:imgeUrlStr] placeholderImage:[UIImage imageNamed:@"default_small"]];
     self.goodsImageView.contentMode = UIViewContentModeScaleAspectFill;
     //商品名称
@@ -64,13 +64,13 @@
     //商品价格
     NSString *priceStr ;
     
-    if ([model.is_discount boolValue] == YES) {
-        priceStr = [NSString stringWithFormat:@"¥%@",model.old_price];
-        
-    }else{
+//    if ([model.isDiscount boolValue] == YES) {
+//        priceStr = [NSString stringWithFormat:@"¥%@",model.oldPrice];
+//
+//    }else{
         priceStr = [NSString stringWithFormat:@"¥%@",model.price];
         
-    }
+//    }
     
     
     
@@ -102,11 +102,11 @@
         starStr = model.star;
     }
     
-    self.starAndNumberLabel.text = [NSString stringWithFormat:SLLocalizedString(@"销量 %@    星级 %.1f"),NotNilAndNull(model.user_num)?model.user_num:@"0",[starStr floatValue]];
+    self.starAndNumberLabel.text = [NSString stringWithFormat:SLLocalizedString(@"销量 %@    星级 %.1f"),NotNilAndNull(model.userNum)?model.userNum:@"0",[starStr floatValue]];
     
     
-    BOOL is_self = [model.is_self boolValue];
-    if (is_self) {
+    BOOL isSelf = [model.isSelf boolValue];
+    if (isSelf) {
         [self.proprietaryImageView setHidden:NO];
         self.proprietaryImageViewW.constant = 35;
         self.proprietaryGayW.constant = 5;

@@ -47,7 +47,7 @@
     [self initUI];
 }
 
--(void)initUI{
+- (void)initUI{
     [self.view setBackgroundColor:[UIColor whiteColor]];
    
     [self addChildViewController:self.pageViewController];
@@ -56,13 +56,13 @@
 
 #pragma mark - Action
 //功夫订单
--(void)rightAction{
+- (void)rightAction{
 //    OrderInvoiceFillOpenViewController * vc = [OrderInvoiceFillOpenViewController new];
 //    [self.navigationController pushViewController:vc animated:YES];
 }
 
 //返回按钮
--(void)leftAction{
+- (void)leftAction{
     
 //    self.tabBarController.selectedIndex = 4;
     
@@ -75,6 +75,7 @@
     OrderViewController *orderVC = [[OrderViewController alloc]init];
     orderVC.disableRightGesture = self.disableRightGesture;
     if (index == 0) {
+//        orderVC.status = @"1,2,3,4,5,6,7";
          orderVC.isOrder = YES;
     }
     
@@ -127,7 +128,7 @@
 }
 
 #pragma mark - getter / setter
--(XLPageViewController *)pageViewController{
+- (XLPageViewController *)pageViewController{
     
     if (_pageViewController == nil) {
         _pageViewController = [[XLPageViewController alloc]initWithConfig:self.config];
@@ -138,7 +139,7 @@
     
 }
 
--(XLPageViewControllerConfig *)config{
+- (XLPageViewControllerConfig *)config{
     
     if (_config == nil) {
         _config = [XLPageViewControllerConfig defaultConfig];
@@ -165,14 +166,14 @@
     
 }
 
--(NSArray *)titles{
+- (NSArray *)titles{
     if (_titles == nil) {
         _titles = @[SLLocalizedString(@"全部"), SLLocalizedString(@"待付款"), SLLocalizedString(@"待收货"), SLLocalizedString(@"已完成"), SLLocalizedString(@"已取消"), SLLocalizedString(@"售后")];
     }
     return _titles;
 }
 
--(void)setIndex:(NSInteger)index{
+- (void)setIndex:(NSInteger)index{
     [self.pageViewController setSelectedIndex:index];
 }
 @end

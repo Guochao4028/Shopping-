@@ -10,16 +10,16 @@
 #import <objc/runtime.h>
 
 @implementation UIViewController (WMExtension)
--(PopBlock)popBlock{
+- (PopBlock)popBlock{
     return objc_getAssociatedObject(self, _cmd);
 }
--(void)setPopBlock:(PopBlock)popBlock{
+- (void)setPopBlock:(PopBlock)popBlock{
     objc_setAssociatedObject(self, @selector(popBlock), popBlock, OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
--(BOOL)isHideBackItem{
+- (BOOL)isHideBackItem{
     return [objc_getAssociatedObject(self, _cmd) boolValue];
 }
--(void)setIsHideBackItem:(BOOL)isHideBackItem{
+- (void)setIsHideBackItem:(BOOL)isHideBackItem{
     objc_setAssociatedObject(self, @selector(isHideBackItem), @(isHideBackItem), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 //默认YES
@@ -28,7 +28,7 @@
 }
 #warning 必须指定模式返回按钮的图片
 //返回按钮的图片,默认为back_white,想要其他颜色，重写方法，返回按钮的图片名字
--(NSString *)backIconName{
+- (NSString *)backIconName{
     return @"back_white";
 }
 

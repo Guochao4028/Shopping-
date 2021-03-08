@@ -31,13 +31,13 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        [self setUI];
+        [self setupUI];
     }
     return self;
 }
 
 #pragma mark - UI
-- (void)setUI{
+- (void)setupUI{
     [self addSubview:self.backView];
     self.stateBackView = [[UIView alloc] init];
     self.stateBackView.backgroundColor = UIColor.whiteColor;
@@ -287,7 +287,7 @@
     }
 }
 
--(NSString *)formatterTime:(NSString *)timeStr{
+- (NSString *)formatterTime:(NSString *)timeStr{
     
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];

@@ -152,7 +152,7 @@
 }
 
 ///装饰view
--(void)decorationView:(UIView *)view{
+- (void)decorationView:(UIView *)view{
     view.layer.cornerRadius = 4;
     view.layer.borderWidth = 0.5;
     view.layer.borderColor = [UIColor colorForHex:@"CECECE"].CGColor;
@@ -167,7 +167,7 @@
 }
 
 #pragma mark - action
--(void)radio1TapSelected:(UITapGestureRecognizer *)sender{
+- (void)radio1TapSelected:(UITapGestureRecognizer *)sender{
     [self.radio1ImageView setImage:[UIImage imageNamed:@"exam_choose"]];
     [self.radio2ImageView setImage:[UIImage imageNamed:@"exam_unChoose"]];
 
@@ -182,7 +182,7 @@
     }
 }
 
--(void)radio2TapSelected:(UITapGestureRecognizer *)sender{
+- (void)radio2TapSelected:(UITapGestureRecognizer *)sender{
     
     [self.radio2ImageView setImage:[UIImage imageNamed:@"exam_choose"]];
     [self.radio1ImageView setImage:[UIImage imageNamed:@"exam_unChoose"]];
@@ -200,7 +200,7 @@
 
 #pragma mark - UITextFieldDelegate
 
-//-(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{
+//- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{
 //    if ([string length] == 0) {
 //        return YES;
 //    }
@@ -369,7 +369,7 @@
 
 #pragma mark - setter / getter
 
--(void)setModel:(NSDictionary *)model{
+- (void)setModel:(NSDictionary *)model{
     _model = model;
     NSString *type = model[@"type"];
     
@@ -469,7 +469,7 @@
 }
 
 
--(void)setRegistModel:(EnrollmentRegistModel *)registModel {
+- (void)setRegistModel:(EnrollmentRegistModel *)registModel {
     _registModel = registModel;
     
     NSString * title = self.model[@"title"];
@@ -655,7 +655,7 @@
 }
 
 
--(void)setMechanismName:(NSString *)mechanismName{
+- (void)setMechanismName:(NSString *)mechanismName{
     _mechanismName = mechanismName;
     
    NSString *title = self.model[@"title"];

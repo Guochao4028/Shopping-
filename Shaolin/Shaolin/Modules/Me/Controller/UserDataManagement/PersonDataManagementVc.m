@@ -38,7 +38,7 @@
 {
     NSInteger _levelLabelTag;
 }
--(void)viewWillAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
 }
@@ -66,12 +66,12 @@
 }
 
 - (void)getData {
-    [_headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",[self.dicData objectForKey:@"headurl"]]] placeholderImage:[UIImage imageNamed:@"shaolinlogo"]];
+    [_headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",[self.dicData objectForKey:@"headUrl"]]] placeholderImage:[UIImage imageNamed:@"shaolinlogo"]];
    
-    if ([[self.dicData objectForKey:@"nickname"] isEqual:[NSNull null]] || [self.dicData objectForKey:@"nickname"] == nil || [[self.dicData objectForKey:@"nickname"] isEqual:@"(null)"]) {
+    if ([[self.dicData objectForKey:@"nickName"] isEqual:[NSNull null]] || [self.dicData objectForKey:@"nickName"] == nil || [[self.dicData objectForKey:@"nickName"] isEqual:@"(null)"]) {
             self.nameLabel.text = SLLocalizedString(@"暂无昵称");
        }else{
-           self.nameLabel.text = [self.dicData objectForKey:@"nickname"];
+           self.nameLabel.text = [self.dicData objectForKey:@"nickName"];
        }
     
     if ([[self.dicData objectForKey:@"id"] isEqual:[NSNull null]]) {
@@ -95,7 +95,7 @@
     
 }
 
--(void)reloadLevelView:(NSString *)levelName{
+- (void)reloadLevelView:(NSString *)levelName{
     [self.view layoutIfNeeded];
     UILabel *levelLabel = [self.levelView viewWithTag:_levelLabelTag];
     levelLabel.text = levelName;
@@ -129,13 +129,13 @@
     [self.navigationController pushViewController:v animated:YES];
 }
 #pragma mark - 编辑
--(void)editAction
+- (void)editAction
 {
     PersonDataEditVc *v = [[PersonDataEditVc alloc]init];
     v.dicData = self.dicData;
     [self.navigationController pushViewController:v animated:YES];
 }
--(void)layoutView
+- (void)layoutView
 {
    
     self.tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, kWidth, kHeight-SLChange(50)-SLChange(30)-BottomMargin_X) style:(UITableViewStyleGrouped)];
@@ -174,7 +174,9 @@
     [self.levelView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(self.nameLabel);
         make.top.mas_equalTo(self.nameLabel.mas_bottom).mas_offset(SLChange(18));
-        make.size.mas_equalTo(CGSizeMake(SLChange(44), SLChange(18)));
+        make.width.mas_greaterThanOrEqualTo(SLChange(44));
+        make.height.mas_equalTo(SLChange(18));
+//        make.size.mas_equalTo(CGSizeMake(SLChange(44), SLChange(18)));
     }];
     [self.signatureLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(self.levelView.mas_right).offset(SLChange(10));
@@ -189,19 +191,20 @@
         make.height.mas_equalTo(SLChange(50));
         make.bottom.mas_equalTo(self.view.mas_bottom).offset(-SLChange(30)-BottomMargin_X);
     }];
-    
+    [self.signatureLabel setContentHuggingPriority:UILayoutPriorityFittingSizeLevel forAxis:UILayoutConstraintAxisHorizontal];
+    [self.signatureLabel setContentCompressionResistancePriority:UILayoutPriorityFittingSizeLevel forAxis:UILayoutConstraintAxisHorizontal];
     self.levelView.layer.cornerRadius = SLChange(18)/2;
 }
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return self.dataArray.count;
 }
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return self.dataArray[section].count;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
      static NSString *cellIdentifier = @"cellID";
@@ -221,13 +224,13 @@
     cell.textLabel.text = title;
     cell.textLabel.font = kRegular(16);
     cell.textLabel.textColor = [UIColor blackColor];
+    [cell.detailTextLabel setFont:kRegular(14)];
     if (indexPath.section == 0 && [title isEqualToString:SLLocalizedString(@"实名认证")]){
         if ([[self.dicData objectForKey:@"verifiedState"] integerValue]==0) {
             [cell.detailTextLabel setText:SLLocalizedString(@"去认证")];
         }
         if ([[self.dicData objectForKey:@"verifiedState"] integerValue]==1) {
             [cell.detailTextLabel setText:SLLocalizedString(@"已认证")];
-            [cell.detailTextLabel setFont:kRegular(13)];
         }
         if ([[self.dicData objectForKey:@"verifiedState"] integerValue]==2) {
             [cell.detailTextLabel setText:SLLocalizedString(@"认证中")];
@@ -239,13 +242,17 @@
             cell.accessoryView.hidden = YES;
             cell.accessoryType = UITableViewCellAccessoryNone;
         }
+    } else if (indexPath.section == 1 && [title isEqualToString:SLLocalizedString(@"清除缓存")]){
+       CGFloat cacheSize = [[SLAppInfoModel sharedInstance] getAppCacheSize];
+        
+        [cell.detailTextLabel setText:[NSString stringWithFormat:@"%.2fM", cacheSize]];
     }
      cell.selectionStyle = UITableViewCellSelectionStyleNone;
      cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
     return cell;
 }
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     //SLLocalizedString(@"修改密码"),SLLocalizedString(@"实名认证"),SLLocalizedString(@"支付密码"), SLLocalizedString(@"三方登录")], @[SLLocalizedString(@"收货地址"), SLLocalizedString(@"增票资质"), SLLocalizedString(@"关于少林")
     NSString *title = self.dataArray[indexPath.section][indexPath.row];
@@ -253,11 +260,11 @@
         ChangePasswordVc *v = [[ChangePasswordVc alloc]init];
         [self.navigationController pushViewController:v animated:YES];
     } else if ([title isEqualToString:SLLocalizedString(@"实名认证")]){
-        if ([[self.dicData objectForKey:@"verifiedState"] integerValue]==1) {
+        if ([[self.dicData objectForKey:@"verifiedState"] integerValue] == 1) { // 认证成功
             //认证成功后直接进入认证成功页面
             [self pushRealNameSuccessViewController];
-//                [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"实名认证已经认证成功!") view:self.view afterDelay:TipSeconds];
-//                return;
+        } else if ([[self.dicData objectForKey:@"verifiedState"] integerValue] == 2) { // 认证中
+            
         } else {
             [self pushSelectAuthenticationMethodViewController];
         }
@@ -281,35 +288,24 @@
         AboutShaolinViewController *aboutShaolinVC = [[AboutShaolinViewController alloc]init];
         [self.navigationController pushViewController:aboutShaolinVC animated:YES];
     } else if ([title isEqualToString:SLLocalizedString(@"清除缓存")]){
-        [SMAlert setConfirmBtBackgroundColor:kMainYellow];
-        [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
-        [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
-        [SMAlert setCancleBtTitleColor:KTextGray_333];
-        [SMAlert setAlertBackgroundColor:[UIColor colorWithWhite:0 alpha:0.5]];
-        UIView *customView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 300, 100)];
-        UILabel *title = [[UILabel alloc]initWithFrame:customView.bounds];
-        [title setFont:[UIFont systemFontOfSize:15]];
-        [title setTextColor:[UIColor darkGrayColor]];
-        title.text = @"是否清除缓存？";
-        [title setTextAlignment:NSTextAlignmentCenter];
-        [customView addSubview:title];
         
-        [SMAlert showCustomView:customView stroke:YES confirmButton:[SMButton initWithTitle:SLLocalizedString(@"确定") clickAction:^{
-           
-            [[SLAppInfoModel sharedInstance] clearAppCache];
-            
-        }] cancleButton:[SMButton initWithTitle:SLLocalizedString(@"取消") clickAction:nil]];
+        WEAKSELF
+        [SMAlert showAlertWithInfoString:@"是否清除缓存？" confirmButtonTitle:SLLocalizedString(@"确定") cancelButtonTitle:SLLocalizedString(@"取消") success:^{
+            [[SLAppInfoModel sharedInstance] clearAppCache:^{
+                [weakSelf.tableView reloadData];
+            }];
+        } cancel:nil];
     }
 }
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 50;
 }
--(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
     return 0.001;
 }
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
 //    return 10;
     
@@ -318,17 +314,17 @@
        }
        return 5;
 }
--(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
     UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 0, 0)];
     return v;
 }
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWidth, 10)];
     return v;
 }
--(UIView *)headerView
+- (UIView *)headerView
 {
     if (!_headerView) {
         _headerView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWidth, SLChange(126))];
@@ -348,7 +344,7 @@
 //    }
 //    return _navLine;
 //}
--(UIImageView *)headerImage
+- (UIImageView *)headerImage
 {
     if (!_headerImage) {
         _headerImage = [[UIImageView alloc]init];
@@ -360,7 +356,7 @@
     return _headerImage;
 }
 
--(UIView *)levelView
+- (UIView *)levelView
 {
     if (!_levelView){
         _levelView = [[UIView alloc] init];
@@ -373,13 +369,15 @@
         
         [_levelView addSubview:levelLabel];
         [levelLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.edges.mas_equalTo(0);
+            make.left.mas_equalTo(8);
+            make.right.mas_equalTo(-8);
+            make.centerY.mas_equalTo(self.levelView);
         }];
     }
     return _levelView;
 }
 
--(UILabel *)nameLabel
+- (UILabel *)nameLabel
 {
     if (!_nameLabel) {
         _nameLabel = [[UILabel alloc]init];
@@ -389,7 +387,7 @@
     }
     return _nameLabel;
 }
--(UILabel *)idLabel{
+- (UILabel *)idLabel{
     if (!_idLabel){
         _idLabel = [[UILabel alloc]init];
 //        _idLabel.textColor = [UIColor colorForHex:@"999999"];
@@ -400,7 +398,7 @@
     }
     return _idLabel;
 }
--(UILabel *)signatureLabel
+- (UILabel *)signatureLabel
 {
     if (!_signatureLabel) {
         _signatureLabel = [[UILabel alloc]init];
@@ -419,6 +417,7 @@
         [_outBtn setTitle:SLLocalizedString(@"退出登录") forState:(UIControlStateNormal)];
         [_outBtn setTitleColor:[UIColor whiteColor] forState:(UIControlStateNormal)];
         _outBtn.titleLabel.font = kRegular(16);
+        _outBtn.cornerRadius = 4;
         [_outBtn addTarget:self action:@selector(outAction) forControlEvents:(UIControlEventTouchUpInside)];
     }
     return _outBtn;

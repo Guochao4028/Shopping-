@@ -12,6 +12,8 @@
 
 #import "NSString+Tool.h"
 
+#import "OrderDetailsNewModel.h"
+
 @interface RiteOrderDetailPriceCell ()
 
 @property (weak, nonatomic) IBOutlet UILabel *allGoodsPriceLabel;
@@ -36,15 +38,16 @@
     // Configure the view for the selected state
 }
 
--(void)setModel:(OrderDetailsModel *)model{
+- (void)setModel:(OrderDetailsNewModel *)model{
     _model = model;
     
     NSString *money = [NSString stringWithFormat:@"¥%@", NotNilAndNull(model.money)?model.money:@""];
+//
     
-    self.allGoodsPriceLabel.text = money;
+    self.allGoodsPriceLabel.attributedText = [money moneyStringWithFormatting:MoneyStringFormattingMoneyCoincidenceType];
 //    self.needPriceLabel.text = [NSString stringWithFormat:@"￥%@", NotNilAndNull(model.money)?model.money:@""];
     
-    NSString *price = [NSString stringWithFormat:@"¥%@", model.price];
+    NSString *price = [NSString stringWithFormat:@"¥%@", model.money];
         
 //           NSMutableAttributedString *attrStr = [[NSMutableAttributedString alloc] initWithString:price];
 //

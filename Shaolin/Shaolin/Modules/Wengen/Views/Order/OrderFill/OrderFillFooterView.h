@@ -18,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 //是否可以点击
 @property(nonatomic, assign)BOOL isTap;
 
--(void)comittTarget:(nullable id)target action:(SEL)action;
+- (void)comittTarget:(nullable id)target action:(SEL)action;
 
 @end
 

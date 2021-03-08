@@ -26,7 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol WengenCategoryTableCellDelegate <NSObject>
 
--(void)cell:(WengenCategoryTableCell *)cell selectItem:(WengenEnterModel *)model;
+- (void)cell:(WengenCategoryTableCell *)cell selectItem:(WengenEnterModel *)model;
 
 @end
 

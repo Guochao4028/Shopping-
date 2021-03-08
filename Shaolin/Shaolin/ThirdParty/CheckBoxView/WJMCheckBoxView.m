@@ -20,14 +20,14 @@
 - (instancetype)initRadioBtnStyleWithTitle:(NSString *)title identifier:(NSString *)identifier{
     self = [self init];
     if (self){
-        [self setUI];
+        [self setupUI];
         self.tagView.backgroundColor = [UIColor clearColor];
         [self setTitle:title andIdentifier:identifier];
     }
     return self;
 }
 
-- (void)setUI{
+- (void)setupUI{
     [self addSubview:self.tagView];
     [self.tagView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(self);//.insets(UIEdgeInsetsMake(5, 5, 5, 5));

@@ -10,6 +10,8 @@
 #import "OrderDetailsModel.h"
 #import "OrderStoreModel.h"
 #import "OrderGoodsModel.h"
+#import "OrderDetailsNewModel.h"
+#import "NSString+Tool.h"
 
 @interface RiteOrderGoodsTableViewCell ()
 @property (weak, nonatomic) IBOutlet UIImageView *goodsImg;
@@ -36,11 +38,11 @@
 }
 
 #pragma mark - setter / getter
--(void)setModel:(OrderDetailsModel *)model{
+- (void)setModel:(OrderDetailsGoodsModel *)model{
     _model = model;
     
     
-    self.nameLabel.text = model.goods_name;
+    self.nameLabel.text = model.goodsName;
    
     ///5:水陆法会，6:全年佛事， 7:建寺供僧 8:普通法会
     NSInteger type = [model.type integerValue];
@@ -71,14 +73,20 @@
     
     self.storeNameLabel.text = typeStr;
     
-    [self.goodsImg sd_setImageWithURL:[NSURL URLWithString:model.goods_image[0]] placeholderImage:[UIImage imageNamed:@"default_small"]];
+    [self.goodsImg sd_setImageWithURL:[NSURL URLWithString:model.goodsImages[0]] placeholderImage:[UIImage imageNamed:@"default_small"]];
 
     
     NSString *desc = [model.desc stringByReplacingOccurrencesOfString:@"," withString:@"/"];
       
     self.descLabel.text = desc;
+    
+    NSString *priceStr = [NSString stringWithFormat:@"¥%@", [model.goodsPrice formattedPrice]];
 
-    [self.priceLabel setText:[NSString stringWithFormat:@"¥%@", model.money]];
+//    [self.priceLabel setText:[NSString stringWithFormat:@"¥%@", model.goodsPrice]];
+    
+    
+    NSAttributedString *attrStr = [priceStr moneyStringWithFormatting:MoneyStringFormattingMoneyAllFormattingType];
+    self.priceLabel.attributedText = attrStr;
     
 }
 

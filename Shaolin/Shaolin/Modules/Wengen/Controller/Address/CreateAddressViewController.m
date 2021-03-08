@@ -32,7 +32,7 @@
     [self initUI];
 }
 
--(void)viewWillAppear:(BOOL)animated{
+- (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     if (self.type == AddressModifyType) {
         [self.rightBtn setTitle:SLLocalizedString(@"删除") forState:UIControlStateNormal];
@@ -51,19 +51,19 @@
     }
 }
 
--(void)viewWillDisappear:(BOOL)animated{
+- (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
 }
 
 #pragma mark - methods
--(void)initUI{
+- (void)initUI{
     [self.view setBackgroundColor:[UIColor whiteColor]];
     [self.view addSubview:self.createAddressView];
 }
 
 #pragma mark - action
 
--(void)rightAction{
+- (void)rightAction{
     [SMAlert setConfirmBtBackgroundColor:kMainYellow];
     [SMAlert setConfirmBtTitleColor:[UIColor whiteColor]];
     [SMAlert setCancleBtBackgroundColor:[UIColor whiteColor]];
@@ -76,7 +76,7 @@
     title.text = SLLocalizedString(@"是否删除该地址？");
     [title setTextAlignment:NSTextAlignmentCenter];
     [customView addSubview:title];
-    [SMAlert showCustomView:customView stroke:YES confirmButton:[SMButton initWithTitle:SLLocalizedString(@"确定") clickAction:^{
+    [SMAlert showCustomView:customView stroke:YES confirmButton:[SMButton initWithTitle:SLLocalizedString(@"删除地址") clickAction:^{
         
         if (self.addressId) {
             NSDictionary *param = @{@"id" : self.addressId};
@@ -87,9 +87,10 @@
                     if (isSuccess == YES) {
                         [self.navigationController popViewControllerAnimated:YES];
                     }
-                    [ShaolinProgressHUD singleTextHud:message.reason view:self.view afterDelay:TipSeconds];
+//                    [ShaolinProgressHUD singleTextHud:message.reason view:WINDOWSVIEW afterDelay:TipSeconds];
+                    [ShaolinProgressHUD singleTextHud:@"删除成功" view:WINDOWSVIEW afterDelay:TipSeconds];
                 }else{
-                    [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"网络异常") view:self.view afterDelay:TipSeconds];
+                    [ShaolinProgressHUD singleTextHud:SLLocalizedString(@"网络异常") view:WINDOWSVIEW afterDelay:TipSeconds];
                 }
                 
             }];
@@ -98,12 +99,12 @@
     }] cancleButton:[SMButton initWithTitle:SLLocalizedString(@"取消") clickAction:nil]];
 }
 
--(void)leftAction{
+- (void)leftAction{
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - CreateAddressViewDelegate
--(void)createAddressView:(CreateAddressView *)view tapSave:(NSDictionary *)model{
+- (void)createAddressView:(CreateAddressView *)view tapSave:(NSDictionary *)model{
     
     if (self.type == AddressModifyType) {
         

@@ -11,7 +11,6 @@
 @implementation HotClassModel
 + (NSDictionary *)mj_replacedKeyFromPropertyName{
     return @{
-             @"classId" : @"id",
              @"className" : @"name"
              };
 }

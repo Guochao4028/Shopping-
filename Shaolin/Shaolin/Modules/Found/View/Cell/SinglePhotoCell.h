@@ -19,7 +19,7 @@
 @property (nonatomic, strong) NSIndexPath *indexPath;
 @property (nonatomic, strong) FoundModel *model;
 
--(void)setFoundModel:(FoundModel *)f indexpath:(NSIndexPath *)indexPath;
+- (void)setFoundModel:(FoundModel *)f indexpath:(NSIndexPath *)indexPath;
 
 @end
 

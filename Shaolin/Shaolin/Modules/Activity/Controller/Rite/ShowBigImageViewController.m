@@ -30,11 +30,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [self setUI];
+    [self setupUI];
     self.titleLabe.text = self.titleString;
 }
 
-- (void)setUI{
+- (void)setupUI{
     //cerImg.jpg
     [self.view addSubview:self.bigImgScrollView];
     [self.bigImgScrollView addSubview:self.bigImgView];
@@ -171,7 +171,7 @@
 }
 
 
--(UIView *)footerView {
+- (UIView *)footerView {
     if (!_footerView) {
         _footerView = [[UIView alloc] initWithFrame:CGRectZero];
         _footerView.backgroundColor = [UIColor clearColor];
@@ -179,7 +179,7 @@
     return _footerView;
 }
 
--(UIView *)footerViewLine {
+- (UIView *)footerViewLine {
     if (!_footerViewLine) {
         _footerViewLine = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kWidth, 0.5)];
         _footerViewLine.backgroundColor = KTextGray_E5;
@@ -217,7 +217,7 @@
     return _cancelButton;
 }
 
--(void)setIsHiddenBottom:(BOOL)isHiddenBottom{
+- (void)setIsHiddenBottom:(BOOL)isHiddenBottom{
     _isHiddenBottom = isHiddenBottom;
     
     [self.footerView setHidden:isHiddenBottom];

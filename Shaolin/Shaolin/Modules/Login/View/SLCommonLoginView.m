@@ -11,12 +11,14 @@
 
 @interface SLCommonLoginView()<UITextFieldDelegate>
 @property (nonatomic , strong) UIImageView *bgImage;//阴影
-
+@property (nonatomic) BOOL isEdit;
 @end
+
 @implementation SLCommonLoginView
 - (instancetype)initWithplaceholder:(NSString *)placeholder secure:(BOOL)isSecure keyboardType:(UIKeyboardType)keyboardType
 {
     if (self = [self init]) {
+        self.isEdit = NO;
         self.bgImage = [[UIImageView alloc] init];
 //        self.bgImage.image = [UIImage imageNamed:@"login_input"];
         self.bgImage.userInteractionEnabled = YES;
@@ -99,7 +101,6 @@
     
     if (self.wordNumber == 16) {
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"eyesCantTap"];
-        
         [[NSUserDefaults standardUserDefaults]synchronize];
     }
     
@@ -119,15 +120,14 @@
     
     if (self.wordNumber == 16) {
         NSLog(@"333333333");
+        textField.text = @"";
         NSString *phonePassword=  [[NSUserDefaults standardUserDefaults]objectForKey:@"passwordSelect"];
-        if (phonePassword.length == 0) {
-            
-        }else {
-            textField.text = nil;
+        if (phonePassword.length) {
             [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"passwordSelect"];
-            [[NSUserDefaults standardUserDefaults]synchronize];
+            [[NSUserDefaults standardUserDefaults] synchronize];
         }
     }
+    self.isEdit = YES;
     return YES;
 }
 /*

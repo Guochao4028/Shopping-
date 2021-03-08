@@ -41,15 +41,25 @@ static NSString *const kItemCollectionViewCellIdentifier = @"ItemCollectionViewC
     // Configure the view for the selected state
 }
 
--(void)initUI{
+- (void)initUI{
     [self.contentView setBackgroundColor:[UIColor whiteColor]];
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
     [self.contentView addSubview:self.collectionView];
+    
+//    CGRectMake(33, 20, totalWidth, self.heigth)
+    CGFloat totalWidth = ScreenWidth - 66;
+    [self.collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
+        
+        make.left.mas_equalTo(33);
+        make.bottom.mas_equalTo(15);
+        make.top.mas_equalTo(20);
+        make.width.mas_equalTo(totalWidth);
+    }];
 }
 
 #pragma mark - UICollectionViewDataSource & UICollectionViewDelegate
--(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
     
     return self.dataArray.count;
 }
@@ -66,7 +76,7 @@ static NSString *const kItemCollectionViewCellIdentifier = @"ItemCollectionViewC
     return CGSizeMake(56, 74);
 }
 
--(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     ItemCollectionViewCell * cell  = [collectionView dequeueReusableCellWithReuseIdentifier:kItemCollectionViewCellIdentifier forIndexPath:indexPath];
     
     cell.model = self.dataArray[indexPath.row];
@@ -74,7 +84,7 @@ static NSString *const kItemCollectionViewCellIdentifier = @"ItemCollectionViewC
     return cell;
 }
 
--(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     
     self.loction = indexPath.row;
     if([self.delegate respondsToSelector:@selector(cell:selectItem:)] == YES){
@@ -82,48 +92,59 @@ static NSString *const kItemCollectionViewCellIdentifier = @"ItemCollectionViewC
     }
 }
 
--(void)setDataArray:(NSArray *)dataArray{
+- (void)setDataArray:(NSArray *)dataArray{
     _dataArray = dataArray;
     
-    NSInteger count = dataArray.count;
-    
-    if (count > 4) {
-        self.heigth = 191;
-    }else if ( count > 0 && count <= 4){
-        self.heigth = 96;
-    }else{
-        self.heigth = 0;
-    }
+//    NSInteger count = dataArray.count;
+//    
+//    if (count > 4) {
+//        self.heigth = 191;
+//    }else if (count > 0 && count <= 4){
+//        self.heigth = 96;
+//    }else{
+//        self.heigth = 0;
+//    }
 
     
     [self initUI];
     [self.collectionView reloadData];
 }
 
--(UICollectionView *)collectionView{
+- (UICollectionView *)collectionView{
     if (_collectionView == nil) {
         
         CGFloat totalWidth = ScreenWidth - 66;
         
-        GCCollectionViewFlowLayout *layout = [[GCCollectionViewFlowLayout alloc]init];
-        layout.row = 2;
-        layout.column = 4;
-        layout.rowSpacing = 15;
+//        GCCollectionViewFlowLayout *layout = [[GCCollectionViewFlowLayout alloc]init];
+//        layout.row = 2;
+//        layout.column = 4;
+//        layout.rowSpacing = 15;
+//
+//        layout.pageWidth = totalWidth;
+//
+//        layout.columnSpacing = (totalWidth - (56 *4))/3;
+//
+////        layout.minimumInteritemSpacing = 10;
+//        /**
+//         32 是两边的边距 ，|-16-16-|
+//         30 是3*10，10是 间距
+//         */
+//        layout.size = CGSizeMake(56, 74);
+//
+//        layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
         
-        layout.pageWidth = totalWidth;
         
-        layout.columnSpacing = (totalWidth - (56 *4))/3;
+        UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc]init];
+        CGFloat width = 56;
+        CGFloat higth = 74;
+        layout.itemSize = CGSizeMake(width, higth);
+        layout.scrollDirection = UICollectionViewScrollDirectionVertical;
+        layout.minimumLineSpacing = 10;
+        layout.minimumInteritemSpacing = (totalWidth - (56 *4))/4;
+//
         
-//        layout.minimumInteritemSpacing = 10;
-        /**
-         32 是两边的边距 ，|-16-16-|
-         30 是3*10，10是 间距
-         */
-        layout.size = CGSizeMake(56, 74);
         
-        layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-        
-        _collectionView = [[UICollectionView alloc]initWithFrame:CGRectMake(33, 20, totalWidth, self.heigth + 15) collectionViewLayout:layout];
+        _collectionView = [[UICollectionView alloc]initWithFrame:CGRectZero collectionViewLayout:layout];
         
         [_collectionView setDelegate:self];
         [_collectionView setDataSource:self];

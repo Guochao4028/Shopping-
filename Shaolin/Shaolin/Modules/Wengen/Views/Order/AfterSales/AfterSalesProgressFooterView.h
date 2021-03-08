@@ -14,10 +14,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface AfterSalesProgressFooterView : UIView
 //撤销申请
--(void)applyCancelTarget:(nullable id)target action:(SEL)action;
+- (void)applyCancelTarget:(nullable id)target action:(SEL)action;
 
 //订单地址
--(void)numberTarget:(nullable id)target action:(SEL)action;
+- (void)numberTarget:(nullable id)target action:(SEL)action;
 
 @property(nonatomic, strong)OrderRefundInfoModel *model;
 

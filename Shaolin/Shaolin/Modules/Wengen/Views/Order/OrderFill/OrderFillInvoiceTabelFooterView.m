@@ -26,7 +26,7 @@
 
 @implementation OrderFillInvoiceTabelFooterView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [[NSBundle mainBundle] loadNibNamed:@"OrderFillInvoiceTabelFooterView" owner:self options:nil];
@@ -38,7 +38,7 @@
 #pragma mark - methods
 
 /// 初始化UI
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.contentView];
     [self.contentView setFrame:self.bounds];
     [UIButton setupButtonSelected:self.goodsDetailButton];
@@ -78,7 +78,7 @@
     }
 }
 
--(void)setIsInvoice:(BOOL)isInvoice{
+- (void)setIsInvoice:(BOOL)isInvoice{
     _isInvoice = isInvoice;
     if (isInvoice) {
         [UIButton setupButtonSelected:self.goodsDetailButton];

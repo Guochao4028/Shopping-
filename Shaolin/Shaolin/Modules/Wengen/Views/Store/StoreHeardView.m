@@ -39,7 +39,7 @@
 
 @implementation StoreHeardView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [[NSBundle mainBundle] loadNibNamed:@"StoreHeardView" owner:self options:nil];
@@ -50,7 +50,7 @@
 
 #pragma mark - methods
 
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.contentView];
     
     self.starLabel.text = @"0";
@@ -67,18 +67,18 @@
 }
 
 /// 重写系统方法
--(void)setFrame:(CGRect)frame{
+- (void)setFrame:(CGRect)frame{
     [super setFrame:frame];
     [self.contentView setFrame:self.bounds];
 }
 
--(void)focusTarget:(id)target action:(SEL)action{
+- (void)focusTarget:(id)target action:(SEL)action{
     [self.focusButton addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
 }
 
 #pragma mark - getter / setter
 
--(void)setStoreInfoModel:(GoodsStoreInfoModel *)storeInfoModel{
+- (void)setStoreInfoModel:(GoodsStoreInfoModel *)storeInfoModel{
     _storeInfoModel = storeInfoModel;
     
     [self.bgImageView sd_setImageWithURL:[NSURL URLWithString:storeInfoModel.logo] placeholderImage:[UIImage imageNamed:@"default_big"]];
@@ -106,6 +106,7 @@
     [self.countColletLabel setText:strCount];
     
     BOOL isCollect  = [storeInfoModel.collect boolValue];
+    [self.focusButton setSelected:isCollect];
     if (isCollect == YES) {
         [self.focusButton setImage:[UIImage imageNamed:@""] forState:UIControlStateNormal];
         self.focusButton.layer.borderColor = UIColor.whiteColor.CGColor;

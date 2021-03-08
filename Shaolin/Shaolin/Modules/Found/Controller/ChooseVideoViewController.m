@@ -19,7 +19,7 @@
 #import <TZImageManager.h>
 #import "ChooseVideoiCloudView.h"
 #import "UIButton+HitBounds.h"
-
+#import "AppDelegate+AppService.h"
 
 static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/635942-14593722fe3f0695.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240";
 
@@ -51,7 +51,7 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
 
 #pragma mark - life cycle
 
--(void)dealloc
+- (void)dealloc
 {
 //    [self.urlArr removeAllObjects];
 }
@@ -62,7 +62,7 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     self.player.viewControllerDisappear = NO;
 }
 
--(void)viewDidAppear:(BOOL)animated {
+- (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 }
 
@@ -91,12 +91,12 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     [super viewDidLoad];
     
     self.videoMaxSize = 100;
-    [self setUI];
+    [self setupUI];
     
     [self getVideoData];
 }
 
-- (void)setUI {
+- (void)setupUI {
     
     self.titleLabe.text = SLLocalizedString(@"选择视频");
     self.selectIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
@@ -278,6 +278,7 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     @weakify(self)
     self.player.orientationWillChange = ^(ZFPlayerController * _Nonnull player, BOOL isFullScreen) {
         @strongify(self)
+        [AppDelegate shareAppDelegate].allowOrentitaionRotation = isFullScreen;
         [self setNeedsStatusBarAppearanceUpdate];
     };
     
@@ -357,7 +358,7 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     return YES;
 }
 
--(CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
+- (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
     return -70;
 }
 
@@ -520,7 +521,7 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     return _collectionView;
 }
 
--(UICollectionViewFlowLayout *)layout
+- (UICollectionViewFlowLayout *)layout
 {
     if (!_layout) {
         _layout = [UICollectionViewFlowLayout new];
@@ -553,7 +554,7 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     return _topVideoPlayBtn;
 }
 
--(ChooseVideoiCloudView *)iCloudView {
+- (ChooseVideoiCloudView *)iCloudView {
     WEAKSELF
     if (!_iCloudView) {
         _iCloudView = [[NSBundle mainBundle] loadNibNamed:@"ChooseVideoiCloudView" owner:self options:nil].firstObject;
@@ -585,7 +586,7 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     return _iCloudView;
 }
 
--(NSMutableArray *)slAssetModelList {
+- (NSMutableArray *)slAssetModelList {
     if (!_slAssetModelList) {
         _slAssetModelList = [NSMutableArray new];
     }

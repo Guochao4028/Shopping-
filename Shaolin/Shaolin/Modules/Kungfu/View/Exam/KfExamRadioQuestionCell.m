@@ -48,7 +48,7 @@ static NSString *const questionSubCellId = @"KfExamRadioQuestionSubCell";
     // Configure the view for the selected state
 }
 
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         
@@ -61,7 +61,7 @@ static NSString *const questionSubCellId = @"KfExamRadioQuestionSubCell";
     return self;
 }
 
--(void) updateWithQuestion:(QuestionModel *)question
+- (void) updateWithQuestion:(QuestionModel *)question
                  answerDic:(NSMutableDictionary *)answerDic
                  examModel:(ExamDetailModel *)examModel
                    cellTag:(NSInteger)cellTag
@@ -86,12 +86,12 @@ static NSString *const questionSubCellId = @"KfExamRadioQuestionSubCell";
 
 #pragma mark - delegate && dataSources
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return self.question.optionsPList.count;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
      KfExamRadioQuestionSubCell * cell = [tableView dequeueReusableCellWithIdentifier:questionSubCellId forIndexPath:indexPath];
     
@@ -109,26 +109,26 @@ static NSString *const questionSubCellId = @"KfExamRadioQuestionSubCell";
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    OptionModel * option = self.question.optionsPList[indexPath.row];
+//    OptionModel * option = self.question.optionsPList[indexPath.row];
+//
+//    // 本地保存所选的答案
+//    [self.answerDic setObject:option.optionsName forKey:self.question.questionCode];
+//
+//    // 上传服务器所选的答案
+//    NSDictionary * dic = @{
+//        @"examHistoryCode":self.detailModel.userExamination.examHistoryCode,
+//        @"questionCode":self.question.questionCode,
+//        @"chooseAnswer":option.optionsName
+//    };
     
-    // 本地保存所选的答案
-    [self.answerDic setObject:option.optionsName forKey:self.question.questionCode];
-    
-    // 上传服务器所选的答案
-    NSDictionary * dic = @{
-        @"examHistoryCode":self.detailModel.userExamination.examHistoryCode,
-        @"questionCode":self.question.questionCode,
-        @"chooseAnswer":option.optionsName
-    };
-    
-    [[KungfuManager sharedInstance] getSaveExaminationWithDic:dic callback:^(Message *message) {}];
+//    [[KungfuManager sharedInstance] getSaveExaminationWithDic:dic callback:^(Message *message) {}];
 
-    [self.tableView reloadData];
+//    [self.tableView reloadData];
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 //    NSString * anserStr = self.anserList[indexPath.row];
 //    CGRect anserRect = [anserStr boundingRectWithSize:CGSizeMake(kScreenWidth - 62 - 27, 0) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil];
@@ -142,23 +142,23 @@ static NSString *const questionSubCellId = @"KfExamRadioQuestionSubCell";
     return tableView.rowHeight;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
     return 0.001;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     return .001;
 }
 
--(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
     UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 0, 0)];
     return v;
 }
 
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 0, 0)];
     return v;
@@ -166,7 +166,7 @@ static NSString *const questionSubCellId = @"KfExamRadioQuestionSubCell";
 
 
 #pragma mark - getter && setter
--(UIView *)bgView {
+- (UIView *)bgView {
     if (!_bgView) {
         _bgView = [UIView new];
         _bgView.backgroundColor = KTextGray_FA;
@@ -176,7 +176,7 @@ static NSString *const questionSubCellId = @"KfExamRadioQuestionSubCell";
 }
 
 
--(UILabel *)questionLabel {
+- (UILabel *)questionLabel {
     if (!_questionLabel) {
         _questionLabel = [UILabel new];
         _questionLabel.textColor = KTextGray_333;
@@ -187,7 +187,7 @@ static NSString *const questionSubCellId = @"KfExamRadioQuestionSubCell";
     return _questionLabel;
 }
 
--(UITableView *)tableView {
+- (UITableView *)tableView {
     if (!_tableView) {
         _tableView = [[UITableView alloc]initWithFrame:CGRectZero style:(UITableViewStyleGrouped)];
         _tableView.delegate = self;

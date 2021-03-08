@@ -12,7 +12,7 @@
 #define HKVersion [[[UIDevice currentDevice] systemVersion] floatValue]
 
 @interface UITextView (Placeholder)
--(void)setPlaceholder:(NSString *)placeholdStr placeholdColor:(UIColor *)placeholdColor;
+- (void)setPlaceholder:(NSString *)placeholdStr placeholdColor:(UIColor *)placeholdColor;
 @end
 
 

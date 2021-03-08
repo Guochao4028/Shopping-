@@ -28,12 +28,12 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        [self setUI];
+        [self setupUI];
     }
     return self;
 }
 
-- (void)setUI{
+- (void)setupUI{
     [self addSubview:self.backImageView];
     [self.backImageView addSubview:self.titleLabel];
     [self.backImageView addSubview:self.certificateLabel];

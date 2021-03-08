@@ -14,9 +14,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol CustomerServiceMessageTableCellDelegate <NSObject>
 
--(void)customerServiceMessageTableCell:(CustomerServiceMessageTableCell *)cell tapCell:(CustomerServieListModel *)model;
+- (void)customerServiceMessageTableCell:(CustomerServiceMessageTableCell *)cell tapCell:(CustomerServieListModel *)model;
 
--(void)customerServiceMessageTableCell:(CustomerServiceMessageTableCell *)cell tapContactArtificial:(BOOL)isTap;
+- (void)customerServiceMessageTableCell:(CustomerServiceMessageTableCell *)cell tapContactArtificial:(BOOL)isTap;
 
 @end
 

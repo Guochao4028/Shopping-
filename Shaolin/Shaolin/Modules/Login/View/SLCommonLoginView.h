@@ -11,6 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 typedef NS_ENUM(NSInteger, InputType) {
+    InputType_None,
     InputType_onlyNumbersAndEnglish,
 };
 
@@ -22,6 +23,8 @@ typedef NS_ENUM(NSInteger, InputType) {
 @property (nonatomic, copy) void (^CheckTextNumberBlock)(BOOL checkResult);
 
 @property (nonatomic) InputType inputType;
+
+@property (nonatomic, readonly) BOOL isEdit;
 
 - (instancetype)initWithplaceholder:(NSString *)placeholder secure:(BOOL)isSecure keyboardType:(UIKeyboardType)keyboardType;
 @property (nonatomic , strong) UITextField *myTextField;

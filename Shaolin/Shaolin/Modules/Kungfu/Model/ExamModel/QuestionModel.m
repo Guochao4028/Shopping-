@@ -21,7 +21,7 @@
 }
 
 
--(CGFloat)questionCellHeight {
+- (CGFloat)questionCellHeight {
     
     NSString * questionStr = [NSString stringWithFormat:@"10、%@",NotNilAndNull(self.questionName)?self.questionName:@""];
     
@@ -47,7 +47,7 @@
     return questionRect.size.height + cellHeight + 50;
 }
 
--(CGFloat)questionLabelHeight {
+- (CGFloat)questionLabelHeight {
     
     NSString * questionStr = [NSString stringWithFormat:@"10、%@",NotNilAndNull(self.questionName)?self.questionName:@""];
     

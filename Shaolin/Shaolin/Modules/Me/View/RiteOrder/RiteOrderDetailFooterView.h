@@ -10,13 +10,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OrderDetailsModel;
+@class OrderDetailsNewModel;
 
 @protocol RiteOrderDetailFooterViewDelegate;
 
 @interface RiteOrderDetailFooterView : UIView
 
-@property(nonatomic, strong) OrderDetailsModel *detailsModel;
+@property(nonatomic, strong) OrderDetailsNewModel *detailsModel;
 
 @property(nonatomic, weak)id<RiteOrderDetailFooterViewDelegate> delegate;
 
@@ -27,20 +27,24 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 //去支付
--(void)riteOrderDetailFooterView:(RiteOrderDetailFooterView *)view pay:(OrderDetailsModel *)model;
+- (void)riteOrderDetailFooterView:(RiteOrderDetailFooterView *)view pay:(OrderDetailsNewModel *)model;
 
 //删除订单
--(void)riteOrderDetailFooterView:(RiteOrderDetailFooterView *)view delOrder:(OrderDetailsModel *)model;
+- (void)riteOrderDetailFooterView:(RiteOrderDetailFooterView *)view delOrder:(OrderDetailsNewModel *)model;
 
 //取消订单
--(void)riteOrderDetailFooterView:(RiteOrderDetailFooterView *)view cancelOrder:(OrderDetailsModel *)model;
+- (void)riteOrderDetailFooterView:(RiteOrderDetailFooterView *)view cancelOrder:(OrderDetailsNewModel *)model;
 
 
 //查看发票
--(void)riteOrderDetailFooterView:(RiteOrderDetailFooterView *)view lookInvoice:(OrderDetailsModel *)model;
+- (void)riteOrderDetailFooterView:(RiteOrderDetailFooterView *)view lookInvoice:(OrderDetailsNewModel *)model;
 
 //补开发票
--(void)riteOrderDetailFooterView:(RiteOrderDetailFooterView *)cell repairInvoice:(OrderDetailsModel *)model;
+- (void)riteOrderDetailFooterView:(RiteOrderDetailFooterView *)cell repairInvoice:(OrderDetailsNewModel *)model;
+
+//查看回执
+- (void)riteOrderDetailFooterView:(RiteOrderDetailFooterView *)cell returnReceipt:(OrderDetailsNewModel *)model;
+
 
 
 @end

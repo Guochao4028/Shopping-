@@ -29,7 +29,7 @@ typedef void(^GoodsSpecificationViewSaveBlock)(NSDictionary *dic);
 
 @property(nonatomic, copy, nullable)NSString *goodsNumber;
 
-@property(nonatomic, copy)NSString *goods_attr_id;
+@property(nonatomic, copy)NSString *goodsAttrId;
 
 
 
@@ -37,11 +37,11 @@ typedef void(^GoodsSpecificationViewSaveBlock)(NSDictionary *dic);
 
 @protocol GoodsSpecificationViewDelegate <NSObject>
 
--(void)tapBuy:(NSDictionary *)dic;
+- (void)tapBuy:(NSDictionary *)dic;
 
--(void)tapAddCart:(NSDictionary *)dic;
+- (void)tapAddCart:(NSDictionary *)dic;
 
--(void)getSpecification:(NSDictionary *)dic;
+- (void)getSpecification:(NSDictionary *)dic;
 
 
 @end

@@ -9,7 +9,7 @@
 #import "PersonDataEditVc.h"
 #import "PersonDataCell.h"
 
-#import "UICustomDatePicker.h"
+//#import "UICustomDatePicker.h"
 #import "MeManager.h"
 #import "HomeManager.h"
 #import <Photos/Photos.h>
@@ -60,7 +60,7 @@
 
 @implementation PersonDataEditVc
 
--(void)viewWillAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
 }
@@ -83,17 +83,17 @@
 }
 - (void)getData {
     
-    [self.headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",[self.dicData objectForKey:@"headurl"]]] placeholderImage:[UIImage imageNamed:@"shaolinlogo"]];
-    self.headerUrl =[NSString stringWithFormat:@"%@",[self.dicData objectForKey:@"headurl"]];
+    [self.headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@",[self.dicData objectForKey:@"headUrl"]]] placeholderImage:[UIImage imageNamed:@"shaolinlogo"]];
+    self.headerUrl =[NSString stringWithFormat:@"%@",[self.dicData objectForKey:@"headUrl"]];
     if ([[self.dicData objectForKey:@"id"] isEqual:[NSNull null]]) {
         self.nameLabel.text = @"ID:";
     }else{
         self.nameLabel.text = [NSString stringWithFormat:@"ID:%@",[self.dicData objectForKey:@"id"]];
     }
-    if ([[self.dicData objectForKey:@"nickname"] isEqual:[NSNull null]] || [self.dicData objectForKey:@"nickname"] == nil || [[self.dicData objectForKey:@"nickname"] isEqual:@"(null)"]) {
+    if ([[self.dicData objectForKey:@"nickName"] isEqual:[NSNull null]] || [self.dicData objectForKey:@"nickName"] == nil || [[self.dicData objectForKey:@"nickName"] isEqual:@"(null)"]) {
         self.nickNameTf.placeholder = SLLocalizedString(@"请填写昵称");
     }else{
-        self.nickNameTf.text = [NSString stringWithFormat:@"%@",[self.dicData objectForKey:@"nickname"]];
+        self.nickNameTf.text = [NSString stringWithFormat:@"%@",[self.dicData objectForKey:@"nickName"]];
     }
     self.sexState = [NSString stringWithFormat:@"%@",[self.dicData objectForKey:@"gender"]];
     if ([[self.dicData objectForKey:@"gender"] integerValue]== 0 ) {
@@ -108,13 +108,13 @@
         self.pickerViewStr = self.sexBtn.titleLabel.text;
         [self.sexBtn setTitleColor:KTextGray_12 forState:(UIControlStateNormal)];
     }
-    NSString *birthtime = [self.dicData objectForKey:@"birthtime"];
+    NSString *birthtime = [self.dicData objectForKey:@"birthTime"];
     self.birthdayStr = birthtime;
     if (birthtime.length == 0) {
         [self.birthdayBtn setTitle:SLLocalizedString(@"请选择出生年月日") forState:(UIControlStateNormal)];
         [self.birthdayBtn setTitleColor:KTextGray_B7 forState:(UIControlStateNormal)];
     }else{
-        [self.birthdayBtn setTitle:[self.dicData objectForKey:@"birthtime"] forState:(UIControlStateNormal)];
+        [self.birthdayBtn setTitle:[self.dicData objectForKey:@"birthTime"] forState:(UIControlStateNormal)];
     }
     
     NSString *emailS = [self.dicData objectForKey:@"email"];
@@ -130,7 +130,7 @@
     }
     
 }
--(void)layoutView
+- (void)layoutView
 {
     
     self.tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, kWidth, kHeight-SLChange(78)-NavBar_Height) style:(UITableViewStyleGrouped)];
@@ -211,30 +211,30 @@
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return SLChange(60);
 }
--(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
     return 0.001;
     
 }
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     return 5;
 }
--(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
     UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 0, 0)];
     return v;
 }
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWidth, 5)];
     return v;
 }
--(UIView *)headerView
+- (UIView *)headerView
 {
     if (!_headerView) {
         _headerView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWidth, SLChange(126))];
@@ -248,7 +248,7 @@
     [super viewWillDisappear:animated];
 }
 
--(UIImageView *)headerImage
+- (UIImageView *)headerImage
 {
     if (!_headerImage) {
         _headerImage = [[UIImageView alloc]init];
@@ -432,8 +432,8 @@
     imagePicker.allowPickingVideo = NO;
     
     //裁剪高度  一寸照片的宽度比 5：7
-    CGFloat h =(ScreenWidth /5) * 7;
-    imagePicker.cropRect = CGRectMake(0, (ScreenHeight - h) / 2, ScreenWidth, (ScreenWidth /5) * 7);
+    CGFloat h = ScreenWidth ;
+    imagePicker.cropRect = CGRectMake(0, (ScreenHeight - h) / 2, ScreenWidth, h);
     
     
  
@@ -480,7 +480,7 @@
            
        }];
 }
--(UILabel *)nameLabel
+- (UILabel *)nameLabel
 {
     if (!_nameLabel) {
         _nameLabel = [[UILabel alloc]init];
@@ -557,7 +557,7 @@
 //    }
     
 //    self.birthPickerView.top -= 50;
-//    self.sexPickerView.top = -(kBottomSafeHeight + 50);;
+//    self.sexPickerView.top = - (kBottomSafeHeight + 50);;
 //    self.pickerType = 1;
     
 //    [self.pickerBottomLeftBtn setTitle:SLLocalizedString(@"取消") forState:UIControlStateNormal];
@@ -574,7 +574,7 @@
     
 //    self.birthPickerView.top -= 50;
     
-//    self.birthPickerView.top = -(kBottomSafeHeight + 50);
+//    self.birthPickerView.top = - (kBottomSafeHeight + 50);
 //    self.birthPickerView.top = ScreenHeight - kBottomSafeHeight - 50;
 //    self.pickerType = 2;
     
@@ -621,7 +621,7 @@
     }
     [[MeManager sharedInstance] changeUserDataHeaderUrl:self.headerUrl NickName:self.nickNameTf.text Sex:self.sexState Birthday:self.birthdayStr Email:self.emailTf.text SigName:self.sigNameTf.text Phone:[self.dicData objectForKey:@"phoneNumber"] success:^(id  _Nonnull responseObject) {
         [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"保存成功")];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"MeViewController_ReloadUserData" object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"MeViewControllerDidReloadUserDataNotification" object:nil];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.8 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self.navigationController popViewControllerAnimated:YES];
 //            [self.navigationController popToRootViewControllerAnimated:YES];
@@ -631,7 +631,7 @@
     } finish:nil];
 }
 
-//-(void)leftAction {
+//- (void)leftAction {
 //    if (![self.headerUrl isEqualToString:[self.dicData objectForKey:@"headurl"]] ||
 //        ![self.sexState isEqualToString:[self.dicData objectForKey:@"gender"]] ||
 //        ![self.birthdayStr isEqualToString:[self.dicData objectForKey:@"birthtime"]] ||
@@ -668,7 +668,7 @@
     return [emailTest evaluateWithObject:email];
     
 }
--(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
 {
     if ([[info objectForKey:UIImagePickerControllerMediaType]isEqualToString:(__bridge NSString *)kUTTypeImage]) {
         UIImage *img = [info objectForKey:UIImagePickerControllerEditedImage];
@@ -676,11 +676,11 @@
     }
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
--(void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
 {
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
--(void)saveImage:(UIImage *)image
+- (void)saveImage:(UIImage *)image
 {
     BOOL success;
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -713,7 +713,7 @@
 
 #pragma mark - getter / setter
 
--(UIImageView *)iconImage
+- (UIImageView *)iconImage
 {
     if (_iconImage == nil) {
         _iconImage = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"xiangjiYellow"]];
@@ -761,7 +761,7 @@
     return _birthPickerView;
 }
 
--(SLStringPickerView *)sexPickerView {
+- (SLStringPickerView *)sexPickerView {
     WEAKSELF
     if (!_sexPickerView) {
         _sexPickerView = [[SLStringPickerView alloc] init];
@@ -836,7 +836,7 @@
 }
 
 
-//-(UIButton *)pickerBottomLeftBtn {
+//- (UIButton *)pickerBottomLeftBtn {
 //    if (!_pickerBottomLeftBtn) {
 //        _pickerBottomLeftBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, kScreenHeight - 50 - kBottomSafeHeight - NavBar_Height, kScreenWidth/2, 50)];
 //        _pickerBottomLeftBtn.hidden = YES;
@@ -849,7 +849,7 @@
 //    return _pickerBottomLeftBtn;
 //}
 
--(UIButton *)pickerBottomRightBtn {
+- (UIButton *)pickerBottomRightBtn {
     if (!_pickerBottomRightBtn) {
         _pickerBottomRightBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, kScreenHeight - 50 - kBottomSafeHeight - NavBar_Height, kScreenWidth, 50)];
         
@@ -865,7 +865,7 @@
 
 #pragma mark - image method
 //改变图像的尺寸，方便上传服务器
--(UIImage *)scaleFromImage:(UIImage *)image toSize:(CGSize)size
+- (UIImage *)scaleFromImage:(UIImage *)image toSize:(CGSize)size
 {
     UIGraphicsBeginImageContext(size);
     [image drawInRect:CGRectMake(0, 0, SLChange(64), SLChange(64))];

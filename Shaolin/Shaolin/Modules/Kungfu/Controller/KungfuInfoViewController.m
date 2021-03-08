@@ -21,7 +21,7 @@
 @implementation KungfuInfoViewController
 
 #pragma mark - life cycle
--(void)viewWillAppear:(BOOL)animated{
+- (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self hideNavigationBarShadow];
 }
@@ -39,13 +39,15 @@
     
 }
 
--(void)initUI{
+- (void)initUI{
     WKWebViewConfiguration *config = [WKWebViewConfiguration new];
     config.preferences = [WKPreferences new];
     config.preferences.minimumFontSize = 10;
     config.preferences.javaScriptEnabled = YES;
     config.preferences.javaScriptCanOpenWindowsAutomatically = YES;
     
+    self.progressView = [[UIProgressView alloc]initWithFrame:CGRectZero];
+    self.progressView.progressTintColor = kMainYellow;
     self.webView = [[WKWebView alloc]initWithFrame:CGRectZero configuration:config];
     [self.webView setAllowsLinkPreview:NO];
     self.webView.UIDelegate = self;
@@ -55,21 +57,23 @@
                       options:0
                       context:nil];
     
-    
-    
     [self.view addSubview:self.webView];
     [self.view addSubview:self.progressView];
-     
-    [self.webView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.mas_equalTo(0);
+    
+    [self.progressView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.left.right.mas_equalTo(0);
+        make.height.mas_equalTo(2);
     }];
     
-    self.progressView = [[UIProgressView alloc]initWithFrame:CGRectMake(0, CGRectGetMinY(self.webView.frame), ScreenWidth, 2)];
+    [self.webView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(self.progressView.mas_bottom);
+        make.left.right.bottom.mas_equalTo(0);
+    }];
     
     [self initData];
 }
 
--(void)initData{
+- (void)initData{
     NSMutableURLRequest *request =[NSMutableURLRequest requestWithURL:[NSURL URLWithString:URL_H5_Introduce]];
     [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
     [self.webView loadRequest:request];
@@ -82,7 +86,7 @@
 
 #pragma mark - kvo
 //kvo 监听进度 必须实现此方法
--(void)observeValueForKeyPath:(NSString *)keyPath
+- (void)observeValueForKeyPath:(NSString *)keyPath
                      ofObject:(id)object
                        change:(NSDictionary<NSKeyValueChangeKey,id> *)change
                       context:(void *)context{

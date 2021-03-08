@@ -302,7 +302,8 @@ static  WSIAPManager *manager = nil;
     BOOL isAddKeychain = YES;
     for (WSIAPModel * saveM in saveList) {
         if ([saveM.transactionId isEqualToString: iapModel.transactionId]) {
-            // 交易id相同，不添加，而是改变checkType,同时对凭证重新赋值
+            // 交易id相同，不添加，而是改变checkType,同时对凭证重新赋值，改变关联id
+            saveM.customIdentifier = iapModel.customIdentifier;
             // 因为同一个交易id，凭证可能会改变
             isAddKeychain = NO;
             if (saveM.checkType != WSIAPCheckFinish) {

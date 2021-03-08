@@ -36,7 +36,7 @@
     // Configure the view for the selected state
 }
 
--(void)layoutSubviews {
+- (void)layoutSubviews {
     [super layoutSubviews];
     
     [self updateCell];
@@ -54,7 +54,7 @@
     }
 }
 
--(void)updateCell {
+- (void)updateCell {
     if (self.kungfuLevel.length == 0 || [self.kungfuLevel isEqualToString:@"0%"]) {
         self.examLabel.text = SLLocalizedString(@"您当前暂无考取位阶");
 //        self.examBtn.hidden = NO;
@@ -70,13 +70,13 @@
     }
 }
 
--(void)setKungfuLevel:(NSString *)kungfuLevel {
+- (void)setKungfuLevel:(NSString *)kungfuLevel {
     _kungfuLevel = kungfuLevel;
     
     [self updateCell];
 }
 
-//-(void)setResultDic:(NSDictionary *)resultDic {
+//- (void)setResultDic:(NSDictionary *)resultDic {
 //    _resultDic = resultDic;
 //    
 //    if (IsNilOrNull(resultDic) || ![resultDic isKindOfClass:[NSDictionary class]]) {

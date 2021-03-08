@@ -341,7 +341,7 @@ lgf_SBViewControllerForM(LGFCenterPageChildVC, @"LGFCenterPageVC", @"LGFCenterPa
 }
 
 
--(UIView *)notGoodsView{
+- (UIView *)notGoodsView{
     
     if (_notGoodsView == nil) {
         

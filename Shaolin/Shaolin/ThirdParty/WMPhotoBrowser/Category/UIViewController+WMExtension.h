@@ -19,7 +19,7 @@ typedef void(^PopBlock)(UIBarButtonItem *backItem);
  
  @return 图片名字
  */
--(NSString *)backIconName;
+- (NSString *)backIconName;
 @end
 
 @interface UITabBarController (WMExtension)

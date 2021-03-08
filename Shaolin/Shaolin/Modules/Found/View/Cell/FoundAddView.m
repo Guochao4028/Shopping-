@@ -12,7 +12,7 @@
 @property (nonatomic,strong)UIWindow *window;
 @end
 @implementation FoundAddView
--(instancetype)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     
@@ -21,7 +21,7 @@
     }
     return self;
 }
--(void)layoutView
+- (void)layoutView
 {
     _bgView = [[UIView alloc]initWithFrame:self.frame];
 //    _bgView.alpha = 0.3;
@@ -68,7 +68,7 @@
    UITapGestureRecognizer *tapGes1 = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(dismissContactView:)];
    [_bgView addGestureRecognizer:tapGes1];
 }
--(void)chooseAction:(UIButton *)sender
+- (void)chooseAction:(UIButton *)sender
 {
     UIButton *btn = sender;
     if (btn.tag == 100) {
@@ -79,12 +79,12 @@
     }
      [self dismissView];
 }
--(void)dismissContactView:(UITapGestureRecognizer *)tagGes
+- (void)dismissContactView:(UITapGestureRecognizer *)tagGes
 {
     
     [self dismissView];
 }
--(void)dismissView
+- (void)dismissView
 {
    
     __weak typeof(self)weakSelf =self;

@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, assign)BOOL isWhite;
 
--(void)backTarget:(nullable id)target action:(SEL)action;
+- (void)backTarget:(nullable id)target action:(SEL)action;
 
 @property(nonatomic, weak)id<StoreNavgationViewDelege>delegate;
 
@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol StoreNavgationViewDelege <NSObject>
 
--(void)tapSearch;
+- (void)tapSearch;
 
 @end
 

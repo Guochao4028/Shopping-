@@ -73,6 +73,16 @@
 @property (weak, nonatomic) IBOutlet UIButton *firstButton;
 - (IBAction)firstButonAction:(UIButton *)sender;
 
+/**
+ 回执按钮
+ */
+@property (weak, nonatomic) IBOutlet UIButton *returnReceiptButton;
+
+/**
+ 回执按钮Action
+ */
+- (IBAction)returnReceiptAction:(UIButton *)sender;
+
 @end
 
 
@@ -90,10 +100,14 @@
     
     [self modifiedButton:self.secondButton borderColor:KTextGray_96 cornerRadius:15];
     
+    [self modifiedButton:self.returnReceiptButton borderColor:KTextGray_96 cornerRadius:15];
+
+    
+//    [self.returnReceiptButton setHidden:YES];
 }
 
 ///装饰button
--(void)modifiedButton:(UIButton *)sender borderColor:(UIColor *)color cornerRadius:(CGFloat)radius{
+- (void)modifiedButton:(UIButton *)sender borderColor:(UIColor *)color cornerRadius:(CGFloat)radius{
     sender.layer.borderWidth = 1;
     sender.layer.borderColor = color.CGColor;
     sender.layer.cornerRadius = radius;
@@ -110,7 +124,7 @@
 #pragma mark - 待付款
 
 /// 待付款
--(void)p_obligation{
+- (void)p_obligation{
     //待付款
     [self.stateLabel setHidden:YES];
     [self.deleteButton setHidden:YES];
@@ -129,11 +143,39 @@
 }
 
 
+/// 待付款 有回执时
+- (void)p_HasReturnReceiptobligation{
+    //待付款
+    [self.stateLabel setHidden:YES];
+    [self.deleteButton setHidden:YES];
+    [self.waitingPaymentLabel setHidden:NO];
+    
+    [self.firstButton setHidden:NO];
+    [self.secondButton setHidden:NO];
+    
+    
+    
+    [self.secondButton setTitle:@"去支付" forState:UIControlStateNormal];
+    [self.secondButton setTitleColor:kMainYellow forState:UIControlStateNormal];
+    [self modifiedButton:self.secondButton borderColor:kMainYellow cornerRadius:15];
+    
+    
+    BOOL isPayable = [self.listModel.payable boolValue];
+    if (isPayable) {
+        self.secondButtonW.constant = 80;
+        self.intervalW.constant = 5;
+    }else{
+        self.secondButtonW.constant = 0;
+        self.intervalW.constant = 0;
+    }
+}
+
+
 
 #pragma mark - 已取消
 
 /// 已取消
--(void)p_canceled{
+- (void)p_canceled{
     // 已取消
     [self.waitingPaymentLabel setHidden:YES];
     [self.stateLabel setHidden:NO];
@@ -143,6 +185,8 @@
     [self.firstButton setHidden:NO];
     [self.secondButton setHidden:YES];
     
+    
+    
     self.secondButtonW.constant = 0;
     self.intervalW.constant = 0;
 }
@@ -150,7 +194,7 @@
 #pragma mark - 已完成
 
 /// 已完成
--(void)p_finished{
+- (void)p_finished{
     //已完成
     [self.waitingPaymentLabel setHidden:YES];
     [self.stateLabel setHidden:NO];
@@ -172,32 +216,32 @@
 
 #pragma mark - setter / getter
 
--(void)setListModel:(OrderListModel *)listModel{
+- (void)setListModel:(OrderListModel *)listModel{
     
     _listModel = listModel;
     
-    [self.numberLabel setText:[NSString stringWithFormat:@"功德编号：%@", listModel.order_sn]];
+    [self.numberLabel setText:[NSString stringWithFormat:@"功德编号：%@", listModel.orderCarSn]];
     
     
-    NSArray *orderStoreArray = listModel.order_goods;
+//    NSArray *orderStoreArray = listModel.order_goods;
+//
+//    OrderStoreModel *storeModel = [orderStoreArray firstObject];
+//
+//    NSArray *orderGoodsArray = storeModel.goods;
+//
+//    OrderGoodsModel *goodsModel = [orderGoodsArray firstObject];
     
-    OrderStoreModel *storeModel = [orderStoreArray firstObject];
-    
-    NSArray *orderGoodsArray = storeModel.goods;
-    
-    OrderGoodsModel *goodsModel = [orderGoodsArray firstObject];
-    
-    if([goodsModel.goods_image count] > 0){
-        NSString * goodsImageStr = goodsModel.goods_image[0];
+//    if([goodsModel.goods_image count] > 0){
+        NSString * goodsImageStr = listModel.goodsImages[0];
         [self.goodsImageView sd_setImageWithURL:[NSURL URLWithString:goodsImageStr] placeholderImage:[UIImage imageNamed:@"default_small"]];
-    }
+//    }
     
-    [self.goodsNameLabel setText:goodsModel.goods_name];
+    [self.goodsNameLabel setText:listModel.goodsName];
     
-    NSString *desc = [goodsModel.desc stringByReplacingOccurrencesOfString:@"," withString:@"/"];
+    NSString *desc = [listModel.desc stringByReplacingOccurrencesOfString:@"," withString:@"/"];
     [self.introductionLabel setText:desc];
     
-    NSString *pay_money = [NSString stringWithFormat:@"¥%@", listModel.order_car_money];
+    NSString *pay_money = [NSString stringWithFormat:@"¥%@", listModel.money];
     
 //    NSRange range = [pay_money rangeOfString:@"."];
 //    if (range.location != NSNotFound) {
@@ -208,37 +252,80 @@
 //        self.priceLabel.attributedText = attrStr;
     self.priceLabel.attributedText = [pay_money moneyStringWithFormatting:MoneyStringFormattingMoneyAllFormattingType];
 //    }
-    ///1：待付款，2：待发货，3：待收货，4：已收货，5：完成，6：取消 7：支付超时
-    NSInteger status = [goodsModel.status integerValue];
-    if (status == 1) {
-        //待付款
-        [self p_obligation];
-    }else if(status == 4 || status == 5){
-        // 已完成
-        [self p_finished];
+    
+    /**
+     判断 法会 是否需要有回执，有回执 需要有回执布局
+     */
+    if([listModel.needReturnReceipt boolValue]){
         
-       NSInteger order_check = [goodsModel.order_check integerValue];
-        
-        if (order_check == 1) {
-            BOOL is_invoice = [goodsModel.is_invoice boolValue];
-               NSString *buttonTitle = @"查看发票";
-               if (is_invoice == NO) {
-                   buttonTitle = @"补开发票";
-               }
+//        [self.returnReceiptButton setHidden:NO];
+        ///1：待付款，2：待发货，3：待收货，4：已收货，5：完成，6：取消 7：支付超时
+        NSInteger status = [listModel.status integerValue];
+        if (status == 1) {
+            //待付款
+            [self p_HasReturnReceiptobligation];
+        }else if(status == 4 || status == 5){
+            // 已完成
+            [self p_finished];
+            
+            BOOL isInvoice = [listModel.isInvoice boolValue];
+            NSString *buttonTitle = @"查看发票";
+            if (isInvoice == NO) {
+                buttonTitle = @"补开发票";
+            }
             [self.secondButton setTitle:buttonTitle forState:UIControlStateNormal];
-        }else{
-            [self.secondButton setHidden:YES];
-               
-            self.secondButtonW.constant = 0;
-            self.intervalW.constant = 0;
+            
+        }else if(status == 6 || status == 7){
+            // 已取消
+            [self p_canceled];
         }
         
+    }else{
         
+//        [self.returnReceiptButton setHidden:YES];
         
-    }else if(status == 6 || status == 7){
-        // 已取消
-        [self p_canceled];
+        ///1：待付款，2：待发货，3：待收货，4：已收货，5：完成，6：取消 7：支付超时
+        NSInteger status = [listModel.status integerValue];
+        if (status == 1) {
+            //待付款
+            [self p_obligation];
+        }else if(status == 4 || status == 5){
+            // 已完成
+            [self p_finished];
+            
+//           NSInteger orderCheck = [listModel.orderCheck integerValue];
+//
+//            if (orderCheck == 1) {
+//                BOOL isInvoice = [listModel.isInvoice boolValue];
+//                   NSString *buttonTitle = @"查看发票";
+//                   if (isInvoice == NO) {
+//                       buttonTitle = @"补开发票";
+//                   }
+//                [self.secondButton setTitle:buttonTitle forState:UIControlStateNormal];
+//            }else{
+//                [self.secondButton setHidden:YES];
+//
+//                self.secondButtonW.constant = 0;
+//                self.intervalW.constant = 0;
+//            }
+            
+            BOOL isInvoice = [listModel.isInvoice boolValue];
+            NSString *buttonTitle = @"查看发票";
+            if (isInvoice == NO) {
+                buttonTitle = @"补开发票";
+            }
+            [self.secondButton setTitle:buttonTitle forState:UIControlStateNormal];
+            
+            
+            
+        }else if(status == 6 || status == 7){
+            // 已取消
+            [self p_canceled];
+        }
+        
     }
+    
+    
 }
 
 - (IBAction)deleteAction:(UIButton *)sender {
@@ -286,6 +373,13 @@
         }
     }
     
+}
+
+- (IBAction)returnReceiptAction:(UIButton *)sender {
+    
+    if ([self.delegate respondsToSelector:@selector(riteOrderTableViewCell:returnReceipt:)]) {
+        [self.delegate riteOrderTableViewCell:self returnReceipt:self.listModel];
+    }
 }
 
 @end

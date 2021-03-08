@@ -22,7 +22,7 @@
         [WSHookTools hookClassExchangeFromSelector:sysMethod toSelector:safeMethod];
     });
 }
--(instancetype)safe_initWithObjects:(id *)objects forKeys:(id<NSCopying> *)keys count:(NSUInteger)count {
+- (instancetype)safe_initWithObjects:(id *)objects forKeys:(id<NSCopying> *)keys count:(NSUInteger)count {
     NSUInteger rightCount = 0;
     for (NSUInteger i = 0; i < count; i++) {
         if (!(keys[i] && objects[i])) {

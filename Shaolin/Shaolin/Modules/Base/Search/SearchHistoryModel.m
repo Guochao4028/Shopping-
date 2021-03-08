@@ -10,7 +10,7 @@
 
 @implementation SearchHistoryModel
 
--(void)addSearchWordWithDataArray:(NSMutableArray *)dataArray{
+- (void)addSearchWordWithDataArray:(NSMutableArray *)dataArray{
 //    SearchHistoryArticleType
 
     for (int i = 0; i < dataArray.count; i++) {

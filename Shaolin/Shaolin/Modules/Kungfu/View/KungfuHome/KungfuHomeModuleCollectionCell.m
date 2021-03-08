@@ -16,12 +16,12 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        [self setUI];
+        [self setupUI];
     }
     return self;
 }
 
--(void)layoutSubviews {
+- (void)layoutSubviews {
     [super layoutSubviews];
     
     
@@ -50,7 +50,7 @@
 //    }
 }
 
-- (void)setUI {
+- (void)setupUI {
     [self.contentView addSubview:self.bgView];
     
     [self.bgView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -76,7 +76,7 @@
 //    }];
 }
 
--(UIView *)bgView {
+- (UIView *)bgView {
     if (!_bgView) {
         _bgView = [UIView new];
         _bgView.backgroundColor = UIColor.whiteColor;
@@ -112,7 +112,7 @@
     return _nameLabel;
 }
 
--(UILabel *)numLabel {
+- (UILabel *)numLabel {
     if (!_numLabel) {
         _numLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 10)];
         _numLabel.font = kRegular(7);
@@ -128,7 +128,7 @@
     return _numLabel;
 }
 
--(void)setMessageNum:(NSString *)messageNum {
+- (void)setMessageNum:(NSString *)messageNum {
     _messageNum = messageNum;
 }
 

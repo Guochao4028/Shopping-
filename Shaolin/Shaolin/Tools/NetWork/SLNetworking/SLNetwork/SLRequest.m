@@ -12,6 +12,8 @@
 #import "DefinedURLs.h"
 #import "AppDelegate+AppService.h"
 
+#import "NSString+Tool.h"
+
 @implementation SLRequest
 
 +(NSString *)getRequestWithApi:(NSString *)api
@@ -27,6 +29,9 @@
 //                    parameters:(NSDictionary *)parameter
 //                       success:(nullable SLSuccessDicBlock)successBlock
 //                       failure:(nullable SLFailureReasonBlock)failureBlock {
+/*
+
+ */
 //
 //    return [self sendRequestWithApi:api parameters:parameter requestType:kSLRequestSerializerRAW method:kXMHTTPMethodGET success:successBlock failure:failureBlock finish:nil];
 //}
@@ -126,8 +131,9 @@
         });
     } onFinished:^(id  _Nullable responseObject, NSError * _Nullable error) {
         NSString *errorString = error.localizedDescription;
+        NSLog(@"%@", errorString);
         dispatch_async(dispatch_get_main_queue(), ^{
-            if (finishBlock) finishBlock(downloadSavePath,errorString);
+            if (finishBlock) finishBlock(downloadSavePath,error);
         });
     }];
 }
@@ -155,7 +161,11 @@
         NSLog(@"refreshToken 还未到token刷新时间(还需等待%.0f秒)", refreshIn - currentTime);
         return;
     }
-    NSLog(@"refreshToken oldToken:%@", [SLAppInfoModel sharedInstance].access_token);
+    NSString *accessToken = [SLAppInfoModel sharedInstance].accessToken;
+    NSLog(@"refreshToken oldToken:%@", accessToken);
+    // 当前没有登录，不能刷新token
+    if (accessToken.length == 0) return;
+    
     NSString *url = [NSString stringWithFormat:@"%@%@",Found, URL_GET_REFRESHTOKEN];
     // 判断是否有正在执行的refreshToken请求
     id request = [XMCenter getRequest:refreshTokenURL_identifier];
@@ -183,7 +193,14 @@
                           finish:(nullable SLFinishedResultBlock)finishBlock {
     [self refreshToken];
     return [XMCenter sendRequest:^(XMRequest * _Nonnull request) {
-        request = [self configRequestWithRequest:request api:api parameter:parameter requestType:requestType method:method];
+        
+//        if (IsEncryption) {
+//            NSDictionary *params = [NSString dataEncryption:parameter];
+//
+//            request = [self configRequestWithRequest:request api:api parameter:params requestType:requestType method:method];
+//        }else{
+            request = [self configRequestWithRequest:request api:api parameter:parameter requestType:requestType method:method];
+//        }
     } onSuccess:^(id  _Nullable responseObject) {
         // 上层已经过滤过错误数据
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -214,6 +231,7 @@
     request.api = api;
     request.httpMethod = method;
     request.parameters = parameter;
+    request.timeoutInterval = 5;
     
     if (request.httpMethod == kXMHTTPMethodPOST) {
         XMRequestSerializerType type = kXMRequestSerializerJSON;

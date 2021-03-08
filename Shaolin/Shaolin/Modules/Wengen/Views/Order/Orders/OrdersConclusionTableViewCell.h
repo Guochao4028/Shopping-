@@ -10,11 +10,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OrderDetailsModel;
+@class OrderDetailsNewModel;
 
 @interface OrdersConclusionTableViewCell : UITableViewCell
 
-@property(nonatomic, strong)OrderDetailsModel *model;
+@property(nonatomic, strong)OrderDetailsNewModel *model;
 
 @property(nonatomic, copy)NSString *goodsTotalAmount;
 @property(nonatomic, copy)NSString *shippingFee;

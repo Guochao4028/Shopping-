@@ -22,7 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol AddressNotHasViewDelegate <NSObject>
 
--(void)notHasView:(AddressNotHasView *)view tapAddress:(BOOL)istap;
+- (void)notHasView:(AddressNotHasView *)view tapAddress:(BOOL)istap;
 
 
 @end

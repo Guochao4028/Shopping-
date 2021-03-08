@@ -22,7 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, strong)GoodsInfoModel *model;
 
--(void)refreshUI;
+- (void)refreshUI;
 
 @property(nonatomic, strong)ShoppingCartGoodsModel *carGoodsModel;
 

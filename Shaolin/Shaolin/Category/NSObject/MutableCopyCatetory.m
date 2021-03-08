@@ -15,7 +15,7 @@
 
 @implementation NSArray (Catetory)
 
--(NSMutableArray *)mutableArrayDeeoCopy{
+- (NSMutableArray *)mutableArrayDeeoCopy{
     
     NSMutableArray * array = [NSMutableArray array];
     [self enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -42,7 +42,7 @@
 
 @end
 @implementation NSDictionary (Catetory)
--(NSMutableDictionary *)mutableDicDeepCopy{
+- (NSMutableDictionary *)mutableDicDeepCopy{
     
     NSMutableDictionary *dict=[[NSMutableDictionary alloc] initWithCapacity:[self count]];
     

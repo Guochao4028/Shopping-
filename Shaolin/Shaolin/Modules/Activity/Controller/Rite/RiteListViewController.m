@@ -54,6 +54,8 @@ static NSInteger riteIndex = 4;
 @property (nonatomic, strong) NSArray * marqueeList;
 @property (nonatomic, strong) NSMutableArray * riteList;
 
+@property (nonatomic, assign) BOOL isShowEmpty;
+
 @property (nonatomic, strong) SLDateRangeView * dateRangeView;
 //@property (nonatomic, strong) SLRiteFilterView * filterView;
 
@@ -73,12 +75,12 @@ static NSInteger riteIndex = 4;
 
 @implementation RiteListViewController
 
--(void)viewWillAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self hideNavigationBarShadow];
 }
 
--(void)viewDidAppear:(BOOL)animated {
+- (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
     
@@ -100,6 +102,8 @@ static NSInteger riteIndex = 4;
 
 
 - (void) initUI {
+    
+    self.isShowEmpty = NO;
     
     [self.view addSubview:self.homeTableView];
     
@@ -186,8 +190,8 @@ static NSInteger riteIndex = 4;
     if (self.startYear && self.startMonth && self.endYear && self.endMonth) {
         NSString * startDate = [NSString stringWithFormat:@"%@-%@",self.startYear,[self converWithMonth:self.startMonth]];
         NSString * endDate = [NSString stringWithFormat:@"%@-%@",self.endYear,[self converWithMonth:self.endMonth]];
-        [params setValue:startDate forKey:@"startDate"];
-        [params setValue:endDate forKey:@"endDate"];
+        [params setValue:startDate forKey:@"startTime"];
+        [params setValue:endDate forKey:@"endTime"];
     }
     
     NSString * typeCode = @"";
@@ -206,6 +210,7 @@ static NSInteger riteIndex = 4;
         NSArray * data = resultDic[@"data"];
         NSArray * dataList = [RiteModel mj_objectArrayWithKeyValuesArray:data];
         
+        
         [self.riteList addObjectsFromArray:dataList];
         [self.homeTableView reloadData];
         
@@ -214,6 +219,8 @@ static NSInteger riteIndex = 4;
         [ShaolinProgressHUD singleTextAutoHideHud:errorReason];
     } finish:^(NSDictionary * _Nullable resultDic, NSString * _Nullable errorReason) {
         [hud hideAnimated:YES];
+        
+        self.isShowEmpty = YES;
         [self.homeTableView.mj_header endRefreshing];
         [self.homeTableView.mj_footer endRefreshing];
     }];
@@ -274,12 +281,12 @@ static NSInteger riteIndex = 4;
     [self.navigationController pushViewController:vc animated:YES];
 }
 #pragma mark - delegate && dataSources
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return riteIndex + 1;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (section == riteIndex) {
         return self.riteList.count;
@@ -287,7 +294,7 @@ static NSInteger riteIndex = 4;
     return 1;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     WEAKSELF
     if (indexPath.section == bannerIndex) {
@@ -340,8 +347,18 @@ static NSInteger riteIndex = 4;
             CGRect rect = [weakSelf.homeTableView rectForRowAtIndexPath:indexPath];
             CGPoint pickerPoint = CGPointMake(rect.origin.x, rect.origin.y + 45 + NavBar_Height + 48 - self.tableOffsetY + 58);
             
-            NSString *startYear = weakSelf.startYear ? weakSelf.startYear : weakSelf.yearsRange.firstObject;
-            NSString *endYear = weakSelf.endYear ? weakSelf.endYear : weakSelf.yearsRange.firstObject;
+            NSString * defaultYear = @"";
+            
+            NSDateComponents *componentBegin = [self currentDateComponents];
+            NSString * currentYear = [NSString stringWithFormat:@"%d",(int)componentBegin.year];
+            if ([weakSelf.yearsRange containsObject:currentYear]) {
+                defaultYear = currentYear;
+            } else {
+                defaultYear = weakSelf.yearsRange.firstObject;
+            }
+            
+            NSString *startYear = weakSelf.startYear ? weakSelf.startYear : defaultYear;
+            NSString *endYear = weakSelf.endYear ? weakSelf.endYear : defaultYear;
             NSString *startMonth = weakSelf.startMonth ? weakSelf.startMonth : @"1";
             NSString *endMonth = weakSelf.endMonth ? weakSelf.endMonth : @"12";
             
@@ -373,7 +390,7 @@ static NSInteger riteIndex = 4;
         cell.cellModel = model;
 //        cell.positionType = RiteCellPositionCenter;
 //        cell.cellSelectHandle = ^{
-//            KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteDetail(model.code, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_rite];
+//            KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteDetail(model.code, [SLAppInfoModel sharedInstance].accessToken) type:KfWebView_rite];
 //            webVC.fillToView = YES;
 //            webVC.hidesBottomBarWhenPushed = YES;
 //            [webVC hideWebViewScrollIndicator];
@@ -391,14 +408,14 @@ static NSInteger riteIndex = 4;
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
     if (indexPath.section == riteIndex) {
 
         RiteModel * model = self.riteList[indexPath.row];
 
-        KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteDetail(model.code, [SLAppInfoModel sharedInstance].access_token) type:KfWebView_rite];
+        KungfuWebViewController *webVC = [[KungfuWebViewController alloc] initWithUrl:URL_H5_RiteDetail(model.code, [SLAppInfoModel sharedInstance].accessToken) type:KfWebView_rite];
         webVC.fillToView = YES;
         webVC.hidesBottomBarWhenPushed = YES;
         [webVC hideWebViewScrollIndicator];
@@ -406,7 +423,7 @@ static NSInteger riteIndex = 4;
     }
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == bannerIndex) {
         return kBannerHeight + 12;
@@ -433,7 +450,7 @@ static NSInteger riteIndex = 4;
     return .001;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
     if (!self.riteList.count && section == riteIndex) {
         return 160;
@@ -441,14 +458,14 @@ static NSInteger riteIndex = 4;
     return .001;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     return .001;
 }
 
--(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
-    if (!self.riteList.count && section == riteIndex) {
+    if (!self.riteList.count && section == riteIndex && self.isShowEmpty) {
         UIView * view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidth, 160)];
         
         UIImageView * imgv = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"categorize_nogoods"]];
@@ -477,7 +494,7 @@ static NSInteger riteIndex = 4;
     }
 }
 
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     return [UIView new];
 }
@@ -485,7 +502,7 @@ static NSInteger riteIndex = 4;
 
 #pragma mark - getter && setter
 
--(UITableView *)homeTableView {
+- (UITableView *)homeTableView {
     WEAKSELF
     if (!_homeTableView) {
         _homeTableView = [[UITableView alloc]initWithFrame:CGRectZero style:(UITableViewStyleGrouped)];
@@ -528,14 +545,14 @@ static NSInteger riteIndex = 4;
 }
 
 
--(NSMutableArray *)riteList {
+- (NSMutableArray *)riteList {
     if (!_riteList) {
         _riteList = [NSMutableArray new];
     }
     return _riteList;
 }
 
--(SLDateRangeView *)dateRangeView {
+- (SLDateRangeView *)dateRangeView {
     WEAKSELF
     if (!_dateRangeView) {
         _dateRangeView = [[SLDateRangeView alloc] init];
@@ -571,7 +588,7 @@ static NSInteger riteIndex = 4;
     return _dateRangeView;
 }
 
-//-(SLRiteFilterView *)filterView {
+//- (SLRiteFilterView *)filterView {
 //    WEAKSELF
 //    if (!_filterView) {
 //        _filterView = [[SLRiteFilterView alloc] init];
@@ -591,7 +608,7 @@ static NSInteger riteIndex = 4;
 //}
 
 
-//-(NSString *)timeRangeStr {
+//- (NSString *)timeRangeStr {
 //    if (!_timeRangeStr) {
 //        NSDateComponents *componentBegin = [self currentDateComponents];
 //        _timeRangeStr = [NSString stringWithFormat:@"%d.01-%d.12",(int)componentBegin.year,(int)componentBegin.year];
@@ -599,14 +616,14 @@ static NSInteger riteIndex = 4;
 //    return _timeRangeStr;
 //}
 
--(NSString *)typeStr {
+- (NSString *)typeStr {
     if (!_typeStr) {
         _typeStr = @"近期";
     }
     return _typeStr;
 }
 
-//-(NSString *)startYear {
+//- (NSString *)startYear {
 //    if (!_startYear) {
 //        NSDateComponents *componentBegin = [self currentDateComponents];
 //        _startYear = [NSString stringWithFormat:@"%d",(int)componentBegin.year];
@@ -614,14 +631,14 @@ static NSInteger riteIndex = 4;
 //    return _startYear;
 //}
 //
-//-(NSString *)startMonth {
+//- (NSString *)startMonth {
 //    if (!_startMonth) {
 //        _startMonth = @"1";
 //    }
 //    return _startMonth;
 //}
 //
-//-(NSString *)endYear {
+//- (NSString *)endYear {
 //    if (!_endYear) {
 //        NSDateComponents *componentBegin = [self currentDateComponents];
 //        _endYear = [NSString stringWithFormat:@"%d",(int)componentBegin.year];
@@ -629,14 +646,15 @@ static NSInteger riteIndex = 4;
 //    return _endYear;
 //}
 //
-//-(NSString *)endMonth {
+//- (NSString *)endMonth {
 //    if (!_endMonth) {
 //        _endMonth = @"12";
 //    }
 //    return _endMonth;
 //}
 
--(NSMutableArray *)yearsRange {
+
+- (NSMutableArray *)yearsRange {
     if (!_yearsRange) {
         _yearsRange = [NSMutableArray new];
     }

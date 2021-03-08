@@ -10,6 +10,8 @@
 
 #import "OrderRefundInfoModel.h"
 
+#import "NSString+Tool.h"
+
 @interface ReturnGoodsDetailFooter()
 
 @property (weak, nonatomic) IBOutlet UIImageView *goodsImageView;
@@ -26,6 +28,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *timeLabel;
 
 @property (weak, nonatomic) IBOutlet UILabel *returnNumberLabel;
+@property (weak, nonatomic) IBOutlet UILabel *freightLabel;
 
 
 @end
@@ -40,25 +43,31 @@
 }
 */
 
--(void)setModel:(OrderRefundInfoModel *)model{
+- (void)setModel:(OrderRefundInfoModel *)model{
     _model = model;
-    NSString *goodsImageUrl = model.goods_image[0];
+    
+    
+//    NSArray *goodsImages = [model.imgData componentsSeparatedByString:@","];
+    NSString *goodsImageUrl = model.goodsImage[0];
+    
     [self.goodsImageView sd_setImageWithURL:[NSURL URLWithString:goodsImageUrl] placeholderImage:[UIImage imageNamed:@"default_small"]];
            
-    [self.goodsNameLabel setText:model.goods_name];
-    [self.numberLabel setText:model.goods_num];
-    [self.applyNumberLabel setText:model.goods_num];
+    [self.goodsNameLabel setText:model.goodsName];
+    [self.numberLabel setText:model.goodsNum];
+    [self.applyNumberLabel setText:model.goodsNum];
     
-    [self.goodsPriceLabel setText:[NSString stringWithFormat:@"¥%@",model.final_price]];
+    [self.goodsPriceLabel setText:[NSString stringWithFormat:@"¥%@",model.finalPrice]];
     
     [self.reasonLabel setText:[NSString stringWithFormat:SLLocalizedString(@"退款原因：%@"), model.content]];
     
     [self.returnPriceLabel setText:[NSString stringWithFormat:SLLocalizedString(@"退款金额：¥%@"), model.money]];
     
+    [self.freightLabel setText:[NSString stringWithFormat:SLLocalizedString(@"运费赔付：%@"), [model.shippingFee formattingPriceString]]];
     
-    [self.timeLabel setText:[NSString stringWithFormat:SLLocalizedString(@"申请时间：%@"), model.create_time]];
     
-    [self.returnNumberLabel setText:[NSString stringWithFormat:SLLocalizedString(@"退款编号：%@"), model.order_no]];
+    [self.timeLabel setText:[NSString stringWithFormat:SLLocalizedString(@"申请时间：%@"), model.createTime]];
+    
+    [self.returnNumberLabel setText:[NSString stringWithFormat:SLLocalizedString(@"退款编号：%@"), model.orderNo]];
 }
 
 @end

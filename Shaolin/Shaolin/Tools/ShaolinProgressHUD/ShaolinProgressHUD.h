@@ -86,7 +86,7 @@ NS_ASSUME_NONNULL_BEGIN
 /*! 纯文字 hud，需要手动调用 MBProgressHUD的实例方法 hideAnimated: 来隐藏 hud*/
 + (MBProgressHUD *)textHud:(nullable NSString *)text view:(nullable UIView *)view;
 /*! 纯文字 hud，delay秒后自动隐藏*/
-+ (MBProgressHUD *)textHud:(nullable NSString *)text view:(nullable UIView *)view afterDelay:(NSTimeInterval)delay;
++ (MBProgressHUD *)textHud:(nullable NSString *)text view:(nullable UIView *)view afterDelay:(NSTimeInterval)delay isFill:(BOOL)isFill;
 
 /*! 纯文字 hud，需要手动调用 hideSingleProgressHUD 来隐藏 hud*/
 + (void)singleTextHud:(nullable NSString *)text;
@@ -94,7 +94,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)singleTextHud:(nullable NSString *)text view:(nullable UIView *)view;
 /*! 纯文字 hud，delay秒后自动隐藏*/
 + (void)singleTextHud:(nullable NSString *)text view:(nullable UIView *)view afterDelay:(NSTimeInterval)delay;
-
+/*! 纯文字 hud，delay秒后自动隐藏，isFillHud是否铺满全屏*/
++ (void)singleTextHud:(nullable NSString *)text view:(nullable UIView *)view afterDelay:(NSTimeInterval)delay isFill:(BOOL)isFill;
 /*! 关闭由single开头的方法创建的hud */
 + (void)hideSingleProgressHUD;
 

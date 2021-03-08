@@ -10,13 +10,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OrderListModel;
+@class  OrderAfterSalesModel;
 
 @protocol OrderAfterSalesItmeTableViewCellDelegate;
 
 @interface OrderAfterSalesItmeTableViewCell : UITableViewCell
 
-@property(nonatomic, strong)OrderListModel *listModel;
+@property(nonatomic, strong)OrderAfterSalesModel *listModel;
 
 @property(nonatomic, weak)id<OrderAfterSalesItmeTableViewCellDelegate> delegate;
 
@@ -26,16 +26,16 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol OrderAfterSalesItmeTableViewCellDelegate <NSObject>
 
 //填写退货信息
--(void)orderAfterSalesItmeTableViewCell:(OrderAfterSalesItmeTableViewCell *)cell fillReturnInformation:(OrderListModel *)model;
+- (void)orderAfterSalesItmeTableViewCell:(OrderAfterSalesItmeTableViewCell *)cell fillReturnInformation:(OrderAfterSalesModel *)model;
 
 //查看进度
--(void)orderAfterSalesItmeTableViewCell:(OrderAfterSalesItmeTableViewCell *)cell checkSchedule:(OrderListModel *)model;
+- (void)orderAfterSalesItmeTableViewCell:(OrderAfterSalesItmeTableViewCell *)cell checkSchedule:(OrderAfterSalesModel *)model;
 
 //撤销申请
--(void)orderAfterSalesItmeTableViewCell:(OrderAfterSalesItmeTableViewCell *)cell cancelApplication:(OrderListModel *)model;
+- (void)orderAfterSalesItmeTableViewCell:(OrderAfterSalesItmeTableViewCell *)cell cancelApplication:(OrderAfterSalesModel *)model;
 
 //删除申请
--(void)orderAfterSalesItmeTableViewCell:(OrderAfterSalesItmeTableViewCell *)cell deleteApplication:(OrderListModel *)model;
+- (void)orderAfterSalesItmeTableViewCell:(OrderAfterSalesItmeTableViewCell *)cell deleteApplication:(OrderAfterSalesModel *)model;
 
 @end
 

@@ -10,7 +10,7 @@
 #import "ZFPlayer.h"
 #import "ZFAVPlayerManager.h"
 #import "ZFPlayerControlView.h"
-
+#import "AppDelegate+AppService.h"
 
 @interface GoodsVideoView ()<UIScrollViewDelegate>
 
@@ -31,7 +31,7 @@
 
 @implementation GoodsVideoView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     
     
     if (self = [super initWithFrame:frame]) {
@@ -40,9 +40,14 @@
     return self;
 }
 
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.carousel];
     
+}
+
+-(void)stopPlay{
+    self.player.viewControllerDisappear = YES;
+    [self.player stop];
 }
 
 #pragma mark - action
@@ -57,6 +62,7 @@
     @weakify(self)
     self.player.orientationWillChange = ^(ZFPlayerController * _Nonnull player, BOOL isFullScreen) {
         @strongify(self)
+        [AppDelegate shareAppDelegate].allowOrentitaionRotation = isFullScreen;
         [self endEditing:YES];
 //        [self setNeedsStatusBarAppearanceUpdate];
     };
@@ -112,16 +118,18 @@
         _carousel.pagingEnabled  = YES;
         _carousel.showsVerticalScrollIndicator = NO;
         _carousel.showsHorizontalScrollIndicator = NO;
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(stopPlay) name:KVideoPlayStatusStop object:nil];
     }
     
     return _carousel;
 }
 
--(CGFloat)viewWidth{
+- (CGFloat)viewWidth{
     return CGRectGetWidth(self.bounds);
 }
 
--(CGFloat)viewHeigth{
+- (CGFloat)viewHeigth{
     return CGRectGetHeight(self.bounds);
 }
 
@@ -155,7 +163,7 @@
     return _playButton;
 }
 
--(void)setDataArray:(NSArray *)dataArray{
+- (void)setDataArray:(NSArray *)dataArray{
     _dataArray = dataArray;
     
     self.carousel.contentSize = CGSizeMake(dataArray.count * self.viewWidth, self.viewHeigth);

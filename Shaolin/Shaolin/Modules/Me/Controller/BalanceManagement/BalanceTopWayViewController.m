@@ -19,7 +19,7 @@
 @implementation BalanceTopWayViewController
 
 
--(void)viewWillAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 }
 
@@ -28,9 +28,9 @@
     self.titleLabe.text = SLLocalizedString(@"充值方式");
     [self.view addSubview:self.tableView];
     self.view.backgroundColor = RGBA(251, 251, 251, 1);
-    [self setUI];
+    [self setupUI];
 }
-- (void)setUI {
+- (void)setupUI {
     [self.view addSubview:self.payButton];
     
     NSString *priceStr = [NSString stringWithFormat:SLLocalizedString(@"立即支付（ ¥%@元 ）"),self.priceStr];
@@ -53,23 +53,23 @@
     
 }
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 2;
 }
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return 1;
 }
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     UIView *view = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWidth, SLChange(8))];
     view.backgroundColor = RGBA(251, 251, 251, 1);
     return view;
 }
--(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     UIView *view = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kWidth, 0)];
     
     return view;
 }
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *cellIdentifier = @"cellID";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if (!cell)
@@ -90,7 +90,7 @@
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0) {
         self.payType = @"1";
         [_weixinBtn setImage:[UIImage imageNamed:@"balancePaySelect"] forState:(UIControlStateNormal)];
@@ -101,13 +101,13 @@
         [_alipayBtn setImage:[UIImage imageNamed:@"balancePaySelect"] forState:(UIControlStateNormal)];
     }
 }
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return  SLChange(60);
 }
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     return SLChange(8);
 }
--(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     return 0.01;
 }
 
@@ -122,7 +122,7 @@
     }
     return _tableView;
 }
--(UIButton *)weixinBtn
+- (UIButton *)weixinBtn
 {
     if (!_weixinBtn) {
         _weixinBtn = [[UIButton alloc] initWithFrame:CGRectMake(kWidth-SLChange(36), SLChange(21), SLChange(18), SLChange(18))];
@@ -134,7 +134,7 @@
     }
     return _weixinBtn;
 }
--(UIButton *)alipayBtn
+- (UIButton *)alipayBtn
 {
     if (!_alipayBtn) {
         _alipayBtn = [[UIButton alloc] initWithFrame:CGRectMake(kWidth-SLChange(36), SLChange(21), SLChange(18), SLChange(18))];
@@ -146,7 +146,7 @@
     }
     return _alipayBtn;
 }
--(void)choosePayAction:(UIButton *)button
+- (void)choosePayAction:(UIButton *)button
 {
     NSInteger i = button.tag;
     if (i == 101) {
@@ -160,7 +160,7 @@
         [_alipayBtn setImage:[UIImage imageNamed:@"balancePaySelect"] forState:(UIControlStateNormal)];
     }
 }
--(UIButton *)payButton {
+- (UIButton *)payButton {
     if (!_payButton) {
         _payButton = [[UIButton alloc]initWithFrame:CGRectMake(0, kHeight-SLChange(50)-NavBar_Height-BottomMargin_X, kWidth, SLChange(50)+BottomMargin_X)];
         [_payButton setBackgroundImage:[UIImage imageNamed:@"balancePush"] forState:(UIControlStateNormal)];

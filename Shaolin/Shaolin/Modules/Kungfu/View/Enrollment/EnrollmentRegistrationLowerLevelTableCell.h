@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class EnrollmentRegistrationLowerLevelTableCell;
 @protocol EnrollmentRegistrationLowerLevelTableCellDelegate <NSObject>
 
--(void)enrollmentRegistrationLowerLevelTableCell:(EnrollmentRegistrationLowerLevelTableCell *)cell didSelectItemAtIndexPath:(NSIndexPath *)indexPath currentData:(NSDictionary *)dic;
+- (void)enrollmentRegistrationLowerLevelTableCell:(EnrollmentRegistrationLowerLevelTableCell *)cell didSelectItemAtIndexPath:(NSIndexPath *)indexPath currentData:(NSDictionary *)dic;
 
 @end
 

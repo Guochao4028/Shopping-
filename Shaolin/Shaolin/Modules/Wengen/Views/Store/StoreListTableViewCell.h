@@ -28,7 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol StoreListTableViewCellDelegate <NSObject>
 
--(void)storeListTableViewCell:(StoreListTableViewCell *)cell collectTap:(NSIndexPath *)indexPath;
+- (void)storeListTableViewCell:(StoreListTableViewCell *)cell collectTap:(NSIndexPath *)indexPath;
 
 
 @end

@@ -12,7 +12,7 @@
 @property(nonatomic,strong) UILabel *titleL;
 @property(nonatomic,strong) UIImageView *imageV;
 @property(nonatomic,strong) UIButton *strategyBtn;//攻略
--(void)setFoundModel:(FoundModel *)f;
+- (void)setFoundModel:(FoundModel *)f;
 @end
 
 

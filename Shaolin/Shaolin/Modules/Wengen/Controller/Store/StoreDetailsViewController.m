@@ -78,9 +78,9 @@
 
 #pragma mark - methods
 
--(void)initData{
+- (void)initData{
     MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
-    [[DataManager shareInstance]getStoreInfo:@{@"id":self.storeId} Callback:^(NSObject *object) {
+    [[DataManager shareInstance]getStoreInfo:@{@"clubId":self.storeId} Callback:^(NSObject *object) {
         [hud hideAnimated:YES];
         self.storeInfoModel = (GoodsStoreInfoModel *)object;
         
@@ -97,7 +97,7 @@
     }];
 }
 
--(void)initUI{
+- (void)initUI{
     [self.view setBackgroundColor:KTextGray_FA];
     [self.lookBtn horizontalCenterTitleAndImageRight:10];
     
@@ -118,7 +118,7 @@
            }else{
                self.automaticallyAdjustsScrollViewInsets = NO;
            }
-    
+    [self.focusButton setSelected:self.isCollect];
     if (self.isCollect == YES) {
            [self.focusButton setImage:[UIImage imageNamed:@""] forState:UIControlStateNormal];
            self.focusButton.layer.borderColor = KTextGray_999.CGColor;
@@ -140,7 +140,7 @@
     
 }
 
--(void)cornerRadius:(UIView *)view radius:(CGFloat)cout{
+- (void)cornerRadius:(UIView *)view radius:(CGFloat)cout{
     view.layer.cornerRadius = SLChange(cout);
     view.layer.masksToBounds = YES;
 }
@@ -169,7 +169,7 @@
     
      SLAppInfoModel *appInfoModel = [[SLAppInfoModel sharedInstance] getCurrentUserInfo];
     
-    NSString *urlStr = URL_H5_ShopInfo(self.storeId, appInfoModel.access_token);
+    NSString *urlStr = URL_H5_ShopInfo(self.storeId, appInfoModel.accessToken);
     
     WengenWebViewController *webVC = [[WengenWebViewController alloc]initWithUrl:urlStr title:SLLocalizedString(@"证照信息")];
     webVC.navigationBarStyle = NavigationBarClearTintColor_blackStyle;
@@ -180,7 +180,8 @@
     sender.selected = !sender.isSelected;
     if (sender.isSelected) {
         //关注
-        [[DataManager shareInstance]addCollect:@{@"club_id":self.storeId} Callback:^(Message *message) {
+        [[DataManager shareInstance]addCollect:@{@"clubId":self.storeId, @"type":@"1"} Callback:^(Message *message) {
+            [self initData];
             if (message.isSuccess == YES) {
                 [sender setImage:[UIImage imageNamed:@""] forState:UIControlStateNormal];
                 sender.layer.borderColor = KTextGray_999.CGColor;
@@ -195,7 +196,8 @@
         
     }else{
         //取消关注
-        [[DataManager shareInstance]cancelCollect:@{@"club_id":self.storeId} Callback:^(Message *message) {
+        [[DataManager shareInstance]cancelCollect:@{@"clubId":self.storeId,@"type":@"1"} Callback:^(Message *message) {
+            [self initData];
             if (message.isSuccess == YES) {
                 [sender setImage:[UIImage imageNamed:@"baiGuanzhu"] forState:UIControlStateNormal];
                 [sender setTitle:SLLocalizedString(@" 关注") forState:UIControlStateNormal];
@@ -210,7 +212,7 @@
 }
 
 #pragma mark - getter / setter
--(void)setStoreInfoModel:(GoodsStoreInfoModel *)storeInfoModel{
+- (void)setStoreInfoModel:(GoodsStoreInfoModel *)storeInfoModel{
     _storeInfoModel = storeInfoModel;
     
     NSString *logo = storeInfoModel.logo;
@@ -233,8 +235,8 @@
     [self.descLabel setText:storeInfoModel.intro];
     [self.addressLabel setText:storeInfoModel.address];
     
-    if ([storeInfoModel.start_time containsString:@" "]) {
-        NSString * start_time = [storeInfoModel.start_time componentsSeparatedByString:@" "].firstObject;
+    if ([storeInfoModel.startTime containsString:@" "]) {
+        NSString * start_time = [storeInfoModel.startTime componentsSeparatedByString:@" "].firstObject;
         [self.timeLabel setText:start_time];
     } else {
         [self.timeLabel setText:SLLocalizedString(@"未知")];

@@ -19,7 +19,7 @@
 @property(nonatomic,strong) UIButton *sendBtn;
 @end
 @implementation StorePhoneView
--(instancetype)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     
@@ -28,7 +28,7 @@
     }
     return self;
 }
--(void)layoutView
+- (void)layoutView
 {
     _bgView = [[UIView alloc]initWithFrame:self.frame];
     _bgView.alpha = 0.3;
@@ -160,7 +160,7 @@
 
 }
 #pragma mark - 发生验证码
--(void)tapVerBtnAction:(id)sender
+- (void)tapVerBtnAction:(id)sender
 {
     
    
@@ -237,7 +237,7 @@
     [self.phoneTf resignFirstResponder];
     [self.codeTf resignFirstResponder];
 }
--(void)dismissView
+- (void)dismissView
 {
     [self.phoneTf resignFirstResponder];
     [self.codeTf resignFirstResponder];

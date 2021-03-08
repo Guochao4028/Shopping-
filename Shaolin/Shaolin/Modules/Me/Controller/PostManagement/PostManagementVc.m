@@ -18,7 +18,9 @@
 #import "WMPhotoBrowser.h"
 #import "EditTextViewController.h"
 #import "DraftEditVideoViewController.h"
-#import "LookVideoViewController.h"
+#import "FoundVideoListVc.h"
+#import "DefinedURLs.h"
+
 @interface PostManagementVc ()<UITableViewDelegate,UITableViewDataSource,DZNEmptyDataSetDelegate,DZNEmptyDataSetSource>
 @property (nonatomic,strong) UITableView *tableView;
 @property (nonatomic ,strong) NSMutableArray *dataArray;//数据源
@@ -32,21 +34,21 @@
 @end
 
 @implementation PostManagementVc
--(NSMutableArray *)dataArray
+- (NSMutableArray *)dataArray
 {
     if (!_dataArray) {
         _dataArray = [NSMutableArray array];
     }
     return _dataArray;
 }
--(NSMutableArray *)deleteArray
+- (NSMutableArray *)deleteArray
 {
     if (!_deleteArray) {
         _deleteArray = [NSMutableArray array];
     }
     return _deleteArray;
 }
--(PostManagementBottomView *)bottomView
+- (PostManagementBottomView *)bottomView
 {
     if (!_bottomView) {
         _bottomView = [[PostManagementBottomView alloc]initWithFrame:CGRectMake(0, kHeight-NavBar_Height, kWidth, SLChange(40)+BottomMargin_X)];
@@ -56,12 +58,12 @@
     }
     return _bottomView;
 }
--(void)viewWillAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     //[self setNavigationBarYellowTintColor];
 }
--(void)viewWillDisappear:(BOOL)animated
+- (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
 }
@@ -69,14 +71,14 @@
     [super viewDidLoad];
     _isInsertEdit = NO;
     self.total = 1;
-    [self setUI];
-    
+    [self setupUI];
+    WEAKSELF
     self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-        [self getTableviewData];
+        [weakSelf getTableviewData];
     }];
     self.tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
         // 上拉加载
-        [self loadNowMoreAction];
+        [weakSelf loadNowMoreAction];
     }];
     
     [self.tableView.mj_header beginRefreshing];
@@ -92,10 +94,10 @@
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(lookOneImage:) name:@"SelectLookOneImage" object:nil];
     //     [self setNoData];
 }
--(void)getRefreshPageData:(NSNotification *)user {
+- (void)getRefreshPageData:(NSNotification *)user {
     [self getTableviewData];
 }
--(void)lookOneImage:(NSNotification *)user
+- (void)lookOneImage:(NSNotification *)user
 {
     NSDictionary *dic = user.userInfo;
     NSArray *arr = [dic objectForKey:@"selectImage"];
@@ -106,7 +108,7 @@
     browser.currentPhotoIndex= 2;
     [self.navigationController pushViewController:browser animated:YES];
 }
--(void)setUI{
+- (void)setupUI{
     self.titleLabe.text = SLLocalizedString(@"发文管理");
     self.titleLabe.textColor = [UIColor whiteColor];
     [self.leftBtn setImage:[UIImage imageNamed:@"real_left"] forState:(UIControlStateNormal)];
@@ -118,7 +120,7 @@
     [self.rightBtn addTarget:self action:@selector(rightAction:) forControlEvents:(UIControlEventTouchUpInside)];
     self.rightBtn.titleLabel.font =kRegular(15);
 }
--(void)registerCell
+- (void)registerCell
 {
     
     [_tableView registerClass:[PostPureTextCell class] forCellReuseIdentifier:NSStringFromClass([PostPureTextCell class])];
@@ -147,13 +149,15 @@
             }
             [[MeManager sharedInstance] postDeleteText:deleteArr finish:^(id  _Nonnull responseObject, NSString * _Nonnull errorReason) {
                 if ([ModelTool checkResponseObject:responseObject]){
-                    [self hiddenBoomtoView];
+                   
                     [self.dataArray removeObjectsInArray:self.deleteArray];
                     if (self.dataArray.count == 0){
                         self.tableView.mj_footer.hidden = YES;
+                        [self hiddenBoomtoView];
                     }
                     [self.tableView reloadData];
                     [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"删除成功")];
+                    [self rightAction:self.rightBtn];
                 } else {
                     [ShaolinProgressHUD singleTextAutoHideHud:errorReason];
                 }
@@ -178,7 +182,7 @@
     //        [self.tableView reloadData];
     //    }
 }
--(void)hiddenBoomtoView
+- (void)hiddenBoomtoView
 {
     [self.rightBtn setSelected:NO];
     _isInsertEdit = NO;
@@ -229,7 +233,7 @@
 //        [hud hideAnimated:YES];
     }];
 }
--(void)loadNowMoreAction
+- (void)loadNowMoreAction
 {
     self.pager ++;
 //    MBProgressHUD *hud = [ShaolinProgressHUD defaultLoadingWithText:nil];
@@ -257,7 +261,7 @@
     return !self.dataArray.count;
 }
 
--(CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
+- (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
     return -70;
 }
 
@@ -271,7 +275,7 @@
     return [[NSAttributedString alloc] initWithString:text attributes:attributes];
 }
 
-//-(NSAttributedString *)descriptionForEmptyDataSet:(UIScrollView *)scrollView {
+//- (NSAttributedString *)descriptionForEmptyDataSet:(UIScrollView *)scrollView {
 //    NSString *text = SLLocalizedString(@"快去写文章吧");
 //
 //    NSDictionary *attributes = @{NSFontAttributeName: [UIFont boldSystemFontOfSize:13.0f],
@@ -285,7 +289,7 @@
 }
 
 #pragma mark - 右侧编辑
--(void)rightAction:(UIButton *)button
+- (void)rightAction:(UIButton *)button
 {
     if (self.dataArray.count == 0){
         [ShaolinProgressHUD singleTextAutoHideHud:SLLocalizedString(@"暂无可编辑内容")];
@@ -357,15 +361,15 @@
     
     
 }
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return 1;
 }
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return _dataArray.count;
 }
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     MePostManagerModel *model = _dataArray[indexPath.row];
     PostALLCell *cell;
@@ -477,12 +481,12 @@
 //
 //    }];
 }
-//-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 //{
 //    MePostManagerModel *model = self.dataArray[indexPath.row];
 //    return model.cellHeight;
 //}
--(UITableView *)tableView
+- (UITableView *)tableView
 {
     if (!_tableView) {
         _tableView = [[UITableView alloc]init];
@@ -500,12 +504,12 @@
     }
     return _tableView;
 }
-//-(NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
+//- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
 //    return SLLocalizedString(@"删除");
 //}
 //
 //
-//-(UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+//- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 //{
 //
 //    //根据不同状态返回不同编辑模式
@@ -537,6 +541,9 @@
     if (self.rightBtn.selected) {
         NSLog(@"选中");
         [self.deleteArray addObject:[self.dataArray objectAtIndex:indexPath.row]];
+        //删除数组和数据数组的数量一样，就点亮全选
+        self.bottomView.allBtn.selected = [self.deleteArray count] == [self.dataArray count] ? YES : NO;
+      
         
     }else{
         MePostManagerModel *model = self.dataArray[indexPath.row];
@@ -546,15 +553,19 @@
         
         if ([model.kind isEqualToString:@"3"]) {
             NSString *videoStr ;
-            for (NSDictionary *dic in model.coverurlList) {
+            for (NSDictionary *dic in model.coverUrlList) {
                 videoStr = [NSString stringWithFormat:@"%@",[dic objectForKey:@"route"]];
             }
-            LookVideoViewController *lookVC = [[LookVideoViewController alloc]init];
-            lookVC.model = model;
-            lookVC.videoStr = videoStr;
-            lookVC.imgUrl = [NSString stringWithFormat:@"%@%@",videoStr,Video_First_Photo];
-            lookVC.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:lookVC animated:YES];
+            
+            FoundVideoListVc *vC = [[FoundVideoListVc alloc]init];
+            vC.hidesBottomBarWhenPushed = YES;
+            vC.hideNavigationBarView = YES;
+            vC.fieldId = model.fieldId;
+            vC.videoId = model.id;
+            vC.tabbarStr = @"Dispatch";
+            vC.model = model;
+            vC.typeStr = @"1";
+            [self.navigationController pushViewController:vC animated:YES];
         } else {
             FoundDetailsViewController *vC = [[FoundDetailsViewController alloc]init];
             vC.idStr = model.id;
@@ -575,10 +586,11 @@
     
     if (self.rightBtn.selected) {
         [self.deleteArray removeObject:[self.dataArray objectAtIndex:indexPath.row]];
+        self.bottomView.allBtn.selected = [self.deleteArray count] == [self.dataArray count] ? YES : NO;
     }
 }
 
--(UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 
     //根据不同状态返回不同编辑模式

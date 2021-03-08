@@ -33,7 +33,7 @@
 
 @implementation OrderFillContentTableHeadView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self != nil) {
         [[NSBundle mainBundle] loadNibNamed:@"OrderFillContentTableHeadView" owner:self options:nil];
@@ -43,7 +43,7 @@
 }
 
 /// 初始化UI
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.contentView];
     [self.contentView setFrame:self.bounds];
     
@@ -56,20 +56,20 @@
 }
 
 /// 重写系统方法
--(void)setFrame:(CGRect)frame{
+- (void)setFrame:(CGRect)frame{
     [super setFrame:frame];
     [self.contentView setFrame:self.bounds];
 }
 
 #pragma mark - action
--(void)orderFillContentTableHeadTarget:(nullable id)target action:(SEL)action{
+- (void)orderFillContentTableHeadTarget:(nullable id)target action:(SEL)action{
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:target action:action];
     [self addGestureRecognizer:tap];
 }
 
 #pragma mark - setter / getter
 
--(void)setAddressListModel:(AddressListModel *)addressListModel{
+- (void)setAddressListModel:(AddressListModel *)addressListModel{
     _addressListModel = addressListModel;
     [self.addressLabel setText:addressListModel.address];
     
@@ -79,10 +79,10 @@
     [self.phoneLabel setText:[NSString numberSuitScanf:addressListModel.phone]];
     
     NSString *str;
-       if ([addressListModel.country_s isEqualToString:SLLocalizedString(@"中国")] == NO) {
-           str  = [NSString stringWithFormat:@"%@ %@ %@ %@ ",addressListModel.country_s, addressListModel.province_s, addressListModel.city_s, addressListModel.re_s];
+       if ([addressListModel.countryS isEqualToString:SLLocalizedString(@"中国")] == NO) {
+           str  = [NSString stringWithFormat:@"%@ %@ %@ %@ ",addressListModel.countryS, addressListModel.provinceS, addressListModel.cityS, addressListModel.reS];
        }else{
-          str = [NSString stringWithFormat:@"%@ %@ %@", addressListModel.province_s, addressListModel.city_s, addressListModel.re_s];
+          str = [NSString stringWithFormat:@"%@ %@ %@", addressListModel.provinceS, addressListModel.cityS, addressListModel.reS];
        }
     
     if (addressListModel == nil) {

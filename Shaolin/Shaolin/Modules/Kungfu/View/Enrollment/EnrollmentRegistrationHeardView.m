@@ -29,7 +29,7 @@
 
 @implementation EnrollmentRegistrationHeardView
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
         [[NSBundle mainBundle] loadNibNamed:@"EnrollmentRegistrationHeardView" owner:self options:nil];
         [self initUI];
@@ -38,7 +38,7 @@
 }
 
 #pragma mark - methods
--(void)initUI{
+- (void)initUI{
     [self addSubview:self.contentView];
     [self.contentView setFrame:self.bounds];
     
@@ -63,14 +63,14 @@
 }
 
 ///装饰View
--(void)decorationView:(UIView *)view{
+- (void)decorationView:(UIView *)view{
     view.layer.cornerRadius = 4;
     view.layer.borderWidth = 0.5;
     view.layer.borderColor = [UIColor colorForHex:@"CECECE"].CGColor;
 }
 
 #pragma mark - action
--(void)uploadPicturesAction{
+- (void)uploadPicturesAction{
     if ([self.delegate respondsToSelector:@selector(enrollmentRegistrationHeardView:tapUploadPictures:)]) {
         [self.delegate enrollmentRegistrationHeardView:self tapUploadPictures:YES];
     }
@@ -84,7 +84,7 @@
 //    self.registModel.nationality = self.nationalityTF.text;
 }
 
-//-(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{
+//- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{
 //    //只允许输入中英文
 //    if ([string length] == 0) {
 //        return YES;
@@ -114,7 +114,7 @@
 
 #pragma mark - setter / getter
 
--(void)setRegistModel:(EnrollmentRegistModel *)registModel {
+- (void)setRegistModel:(EnrollmentRegistModel *)registModel {
     _registModel = registModel;
     
     self.nameTF.text = self.registModel.realName;
@@ -135,7 +135,7 @@
     [self.logoImageView sd_setImageWithURL:[NSURL URLWithString:registModel.photosUrl] placeholderImage:[UIImage imageNamed:@"Group"]];
 }
 
--(void)setPicUrlStr:(NSString *)picUrlStr{
+- (void)setPicUrlStr:(NSString *)picUrlStr{
     _picUrlStr = picUrlStr;
     [self.logoImageView sd_setImageWithURL:[NSURL URLWithString:picUrlStr] placeholderImage:[UIImage imageNamed:@"default_small"]];
 }

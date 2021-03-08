@@ -29,7 +29,7 @@
     } else if ([idCardType isEqualToString:@"2"]){
         self.titleLabe.text = SLLocalizedString(@"护照认证");
     }
-    [self setUI];
+    [self setupUI];
     [self reloadView];
     // Do any additional setup after loading the view.
 }
@@ -59,7 +59,7 @@
     self.idCardLabel.text = [NSString stringWithFormat:@"%@：%@", idCardText, idCard];
 }
 #pragma mark - UI
-- (void)setUI{
+- (void)setupUI{
 //    [self.view addSubview:self.collectionView];
 //    [self.collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
 //        make.edges.mas_equalTo(0);
@@ -184,23 +184,23 @@
 
 - (NSString *)getIdCardType{
     if (self.params && NotNilAndNull([self.params objectForKey:@"idCard_type"])){
-        return [self.params objectForKey:@"idCard_type"];
+        return [NSString stringWithFormat:@"%@",[self.params objectForKey:@"idCard_type"]];
     }
-    return  [SLAppInfoModel sharedInstance].idCard_type;
+    return  [SLAppInfoModel sharedInstance].idCardType;
 }
 
 - (NSString *)getIdcard{
     if (self.params && NotNilAndNull([self.params objectForKey:@"idcard"])){
         return [self.params objectForKey:@"idcard"];
     }
-    return  [SLAppInfoModel sharedInstance].idcard;
+    return  [SLAppInfoModel sharedInstance].idCard;
 }
 
 - (NSString *)getRealname{
     if (self.params && NotNilAndNull([self.params objectForKey:@"realname"])){
         return [self.params objectForKey:@"realname"];
     }
-    return  [SLAppInfoModel sharedInstance].realname;
+    return  [SLAppInfoModel sharedInstance].realName;
 }
 
 - (UICollectionView *)collectionView{
